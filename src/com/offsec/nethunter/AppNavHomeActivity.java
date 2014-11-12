@@ -14,9 +14,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Home activity for app navigation code samples.
- */
 public class AppNavHomeActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
