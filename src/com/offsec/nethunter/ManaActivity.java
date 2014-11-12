@@ -44,7 +44,7 @@ public class ManaActivity extends FragmentActivity implements ActionBar.TabListe
 	private Integer selectedScriptIndex = 0;
 	final CharSequence[] scripts={"mana-nat-full","mana-nat-simple","start-noupstream","start-noupstream-eap"};
 	private static Context context;
-	private String configFilePath = "/data/local/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
+	private String configFilePath = "files/hostapd-karma.conf";
 	
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,7 +140,6 @@ public class ManaActivity extends FragmentActivity implements ActionBar.TabListe
             case R.id.source_button:
             	Intent i = new Intent(this, EditSourceActivity.class);
             	i.putExtra("path", configFilePath);
-            	i.putExtra("shell", true);
             	startActivity(i);
                 return true;
             default:
@@ -268,7 +267,9 @@ public class ManaActivity extends FragmentActivity implements ActionBar.TabListe
     
     public static class HostapdFragment extends Fragment {
 
-    	private String configFilePath = "/data/local/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
+    	//private String configFilePath = "/data/local/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
+    	private String configFilePath = "files/hostapd-karma.conf";
+    	
     	
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -281,10 +282,24 @@ public class ManaActivity extends FragmentActivity implements ActionBar.TabListe
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                	                	
+                	File sdcard = Environment.getExternalStorageDirectory();
+                    File file = new File(sdcard, configFilePath);
+                    StringBuilder text = new StringBuilder();
+                    try {
+                    	BufferedReader br = new BufferedReader(new FileReader(file));
+                    	String line;
+                    	while ((line = br.readLine()) != null) {
+                    		text.append(line);
+                    		text.append('\n');
+                    	}
+                    	br.close();
+                    }
+                    catch (IOException e) {
+                    	Log.e("Nethunter", "exception", e);
+                    }
+                	String source = text.toString();
                 	
-                	ShellExecuter exe = new ShellExecuter();
-            		String source = exe.Executer("cat "+ configFilePath);
-            		
                     EditText ifc = (EditText) getView().findViewById(R.id.ifc);
                     EditText bssid = (EditText) getView().findViewById(R.id.bssid);
                     EditText ssid = (EditText) getView().findViewById(R.id.ssid);
@@ -298,9 +313,18 @@ public class ManaActivity extends FragmentActivity implements ActionBar.TabListe
                 	source = source.replaceAll("(?m)^channel=(.*)$", "channel="+channel.getText().toString());
                 	source = source.replaceAll("(?m)^enable_karma=(.*)$", "enable_karma="+enableKarma.getText().toString());
                 	source = source.replaceAll("(?m)^karma_loud=(.*)$", "karma_loud="+karmaLoud.getText().toString());
-                    String[] command = {"sh", "-c", "cat <<'EOF' > " + configFilePath + "\n" + source + "\nEOF"};
-                    exe.RunAsRoot(command);
+                	
+                	try {
+                		file.createNewFile();       
+                		FileOutputStream fOut = new FileOutputStream(file);
+                		OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+                		myOutWriter.append(source);
+                		myOutWriter.close();
+                		fOut.close();
                 	showMessage("Options updated!");
+                	} catch (Exception e) {
+                		showMessage(e.getMessage());
+                	}
                 }
             });
             return rootView;
@@ -309,8 +333,21 @@ public class ManaActivity extends FragmentActivity implements ActionBar.TabListe
         public void onResume()
         {
         	super.onResume();
-        	ShellExecuter exe = new ShellExecuter();
-    		String text = exe.Executer("cat "+ configFilePath);
+        	File sdcard = Environment.getExternalStorageDirectory();
+            File file = new File(sdcard, configFilePath);
+            StringBuilder text = new StringBuilder();
+            try {
+            	BufferedReader br = new BufferedReader(new FileReader(file));
+            	String line;
+            	while ((line = br.readLine()) != null) {
+            		text.append(line);
+            		text.append('\n');
+            	}
+            	br.close();
+            }
+            catch (IOException e) {
+            	Log.e("Nethunter", "exception", e);
+            }        	
             /*
              * Interface
              */
