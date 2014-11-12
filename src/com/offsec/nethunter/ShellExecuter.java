@@ -68,21 +68,21 @@ public class ShellExecuter {
    
    public String RunAsRootOutput (String command)
    {
-	   try {
-		   Process process;
-		   process = Runtime.getRuntime().exec("su");
-		   process = Runtime.getRuntime().exec(command);
-		   
-		   BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
-		   //BufferedReader stdError = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-		   String str = "";
-		   String s = null;
-		   while ((s = stdInput.readLine()) != null) {
-			   str += s;
-		   }
-		   return str;
-       } catch (Exception ex) {
-           throw new RuntimeException(ex);
-       }
+   	try {
+   		
+	   Process process;
+	   process = Runtime.getRuntime().exec("su\n"+command);
+	   BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+	   
+	   String str = "";
+	   String s = null;
+	   while ((s = stdInput.readLine()) != null) {
+		   str += s;
+	   }
+	   return str;
+	   
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
    }
 }
