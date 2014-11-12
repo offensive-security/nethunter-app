@@ -1,92 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:padding="16dp"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
     <TextView android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:text="@string/kali_services_description" />
-
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <TableRow
-            android:id="@+id/tableRow1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-
-            <Switch
-                android:id="@+id/kalissh"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Kali ssh" />
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/tableRow2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-
-            <Switch
-                android:id="@+id/kalidnsmasq"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Kali Dnsmasq" />
-
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/tableRow3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-
-            <Switch
-                android:id="@+id/kalihostapd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Kali Hostapd" />
-
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/tableRow4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-
-            <Switch
-                android:id="@+id/kalivpn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Kali VPN" />
-
-        </TableRow>
-        <TableRow
-            android:id="@+id/tableRow5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-            
-    		<Switch
-        android:id="@+id/kaliapache"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Kali Apache" />
-            
-            </TableRow>
-            
-       	<TableRow
-            android:id="@+id/tableRow6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-    		
- 		
-    		<Switch
-        		android:id="@+id/kalimetasploit"
-        		android:layout_width="wrap_content"
-        		android:layout_height="wrap_content"
-        		android:text="Kali Metasploit" />
-    	</TableRow>      	    
-    </TableLayout>
+        android:padding="16dp"
+        android:text="@string/kali_services_description"
+        />
+
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/servicesList"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:divider="#333"
+        android:dividerHeight="1dp"
+        />
+
 </LinearLayout>
