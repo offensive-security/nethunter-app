@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:padding="16dp"
+              android:orientation="vertical">
+                  
+<TextView 
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/nethunter_description"
+          android:padding="4dp" />
+          
+<TextView 
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/nethunter_note"
+          android:padding="4dp" />
+
+<TextView 
+    		android:textStyle="bold"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/nethunter_current_interfaces"
+          android:padding="4dp" />
+
+<EditText
+    android:id="@+id/editText1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:ems="10" >
+
+    <requestFocus />
+</EditText>
+
+<TextView 
+          android:textStyle="bold"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/nethunter_external_ip"
+          android:padding="4dp" />
+
+<EditText
+    android:id="@+id/editText2"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:ems="10" />
+
+<Button
+    android:id="@+id/button1"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Get external IP" 
+    android:onClick="getExternalIp" />   
+</LinearLayout>

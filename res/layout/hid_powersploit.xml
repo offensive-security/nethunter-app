@@ -1,0 +1,72 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:orientation="vertical" >
+
+ 
+    <TextView 
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="IP address"
+		android:padding="4dp" />
+                    
+	<EditText
+		android:id="@+id/ipaddress"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:ems="10" >
+	</EditText>
+	
+	<TextView 
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="port"
+		android:padding="4dp" />
+                    
+	<EditText
+		android:id="@+id/port"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:ems="10" >
+	</EditText>
+					
+	<TextView 
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="payload"
+		android:padding="4dp" />
+                    
+	<Spinner
+		android:id="@+id/payload"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:entries="@array/payloads"
+		android:prompt="@string/payload_select" />
+
+	<TextView 
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="URL:"
+		android:padding="4dp" />
+                    
+	<EditText
+		android:id="@+id/payloadUrl"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:ems="10" >
+	</EditText>
+					
+	<Button
+		android:id="@+id/powersploitOptionsUpdate"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Update" />
+</LinearLayout>
+
+</FrameLayout>

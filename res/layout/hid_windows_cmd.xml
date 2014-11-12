@@ -1,0 +1,32 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:orientation="vertical" >
+                    
+	<EditText
+		android:id="@+id/windowsCmdSource"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:singleLine="false"
+		android:lines="5"
+		android:includeFontPadding="false"
+		android:paddingTop="0px" 
+		android:gravity="top"
+		android:layout_marginLeft="1dip"
+		android:layout_marginRight="1dip" />          
+          
+	<Button
+    	android:id="@+id/windowsCmdUpdate"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:text="Update" />
+ 
+</LinearLayout>
+
+</FrameLayout>

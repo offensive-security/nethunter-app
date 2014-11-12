@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView 
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:id="@+id/scroll" 
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content">
+      
+	<LinearLayout
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:orientation="vertical"
+    	android:padding="16dp" >
+    
+    	<TextView 
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/hostapd_headline"
+			android:textSize="28sp"
+			android:padding="4dp" />
+
+		<TextView
+        	android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:padding="4dp"
+        	android:text="@string/hostapd_description" />
+
+		<TextView 
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="interface"
+			android:padding="4dp" />
+                    
+		<EditText
+			android:id="@+id/ifc"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:ems="10" >
+		</EditText>
+					
+		<TextView 
+          			android:layout_width="match_parent"
+          			android:layout_height="wrap_content"
+          			android:text="bssid"
+          			android:padding="4dp" />
+                    
+	<EditText
+    					android:id="@+id/bssid"
+    					android:layout_width="match_parent"
+    					android:layout_height="wrap_content"
+    					android:ems="10" >
+					</EditText>
+					
+	<TextView 
+          			android:layout_width="match_parent"
+          			android:layout_height="wrap_content"
+          			android:text="ssid"
+          			android:padding="4dp" />
+                    
+	<EditText
+    					android:id="@+id/ssid"
+    					android:layout_width="match_parent"
+    					android:layout_height="wrap_content"
+    					android:ems="10" >
+					</EditText>
+					
+	<TextView 
+          			android:layout_width="match_parent"
+          			android:layout_height="wrap_content"
+          			android:text="channel"
+          			android:padding="4dp" />
+                    
+	<EditText
+    					android:id="@+id/channel"
+    					android:layout_width="match_parent"
+    					android:layout_height="wrap_content"
+    					android:ems="10" >
+					</EditText>
+					
+	<TextView 
+          			android:layout_width="match_parent"
+          			android:layout_height="wrap_content"
+          			android:text="enable_carma"
+          			android:padding="4dp" />
+                    
+	<EditText
+    					android:id="@+id/enableKarma"
+    					android:layout_width="match_parent"
+    					android:layout_height="wrap_content"
+    					android:ems="10" >
+					</EditText>
+     
+	<Button
+                android:id="@+id/updateOptions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="updateOptions"
+                android:text="Update" />
+               
+	</LinearLayout>
+</ScrollView>
