@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.view.Gravity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +25,7 @@ public class KaliServicesActivity extends Activity {
             // name, check  cmd, start cmd, stop cmd, state
             // since the script check-kaliweb isnt in the master i coment lighttp here
             //{"Lighttpd", "sh /system/xbin/check-kaliweb","start-web","stop-web"},
+    		
             {"SSH", "sh /system/xbin/check-kalissh","start-ssh","stop-ssh"},
             {"Dnsmasq", "sh /system/xbin/check-kalidnsmq","start-dnsmasq","stop-dnsmasq"},
             {"Hostapd", "sh /system/xbin/check-kalihostapd","start-hostapd &","stop-hostapd"},
@@ -33,9 +34,9 @@ public class KaliServicesActivity extends Activity {
             {"Metasploit", "sh /system/xbin/check-kalimetasploit","start-msf","stop-msf"},
             // {"DHCP", "sh /system/xbin/check-kalidhcp","NOSCRIPT","NOSCRIPT"},
             // the stop script isnt working well, doing a raw cmd instead to stop vnc
-            {"VNC", "sh /system/xbin/check-kalivnc","bootkali\nvncserver","bootkali\nkill $(ps aux | grep 'Xtightvnc' | awk '{print $2}');CT=0;for x in $(ps aux | grep 'Xtightvnc' | awk '{print $2}'); do CT=$[$CT +1];tightvncserver -kill :$CT; done;rm /root/.vnc/*.log;rm -r /tmp/.X*"},
+            //{"VNC", "sh /system/xbin/check-kalivnc","bootkali\nvncserver","bootkali\nkill $(ps aux | grep 'Xtightvnc' | awk '{print $2}');CT=0;for x in $(ps aux | grep 'Xtightvnc' | awk '{print $2}'); do CT=$[$CT +1];tightvncserver -kill :$CT; done;rm /root/.vnc/*.log;rm -r /tmp/.X*"},
             // REMOVE THE INTENT FROM THE SCRIPT start-beef-xss!!! (sleep 35 \n am start -a android.intent.action.VIEW -d http://127.0.0.1:3000/ui/panel) not needed there.
-            {"BeefXSS", "sh /system/xbin/check-kalibeef-xss","start-beef-xss","stop-beef-xss"}
+            //{"BeefXSS", "sh /system/xbin/check-kalibeef-xss","start-beef-xss","stop-beef-xss"}
     };
 
 
@@ -64,8 +65,9 @@ public class KaliServicesActivity extends Activity {
                 for (int i = 0; i < KaliServices.length; i++) {
                     checkCmd += KaliServices[i][1] + ";";
                 }
-
+                //Log.d("command", checkCmd);
                 final String outp1 = exe.RunAsRootOutput(checkCmd);
+                Log.d("output", outp1);
                 // Once all its done, we have the states an can populate the listview
                 servicesList.post(new Runnable() {
                     public void run() {
@@ -100,11 +102,13 @@ class SwichLoader extends BaseAdapter
     private ShellExecuter sExec = new ShellExecuter();
     private String[] curstats;
     private String services[][];
+    
     public SwichLoader(Context context, String serviceStates, String[][] KaliServices)
     {
         services = KaliServices;
         mContext=context;
         curstats =  serviceStates.split("(?!^)");
+        Log.d("curstats", serviceStates);
 
 
 
@@ -130,7 +134,7 @@ class SwichLoader extends BaseAdapter
 
         if(convertView == null) {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.swichitem, parent, false);
+            convertView = inflater.inflate(R.layout.swich_item, parent, false);
 
             // set up the ViewHolder
             vH = new ViewHolderItem();
@@ -153,22 +157,20 @@ class SwichLoader extends BaseAdapter
         // clear state
         vH.sw.setChecked(false);
         // check it
-        if(curstats[position].equals("1")){
 
+        if(curstats[position].equals("1")){
             vH.sw.setChecked(true);
             vH.sw.setTextColor(mContext.getResources().getColor(R.color.blue));
             vH.swholder.setText(services[position][0] + " Service is currently UP");
             vH.swholder.setTextColor(mContext.getResources().getColor(R.color.blue));
-
         }
         else {
-
             vH.sw.setChecked(false);
             vH.sw.setTextColor(mContext.getResources().getColor(R.color.clearTitle));
             vH.swholder.setText(services[position][0] + " Service is currently DOWN");
             vH.swholder.setTextColor(mContext.getResources().getColor(R.color.clearText));
         }
-
+	
         // add listeners
         final ViewHolderItem finalVH = vH;
         vH.sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

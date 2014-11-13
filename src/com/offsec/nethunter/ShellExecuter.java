@@ -3,7 +3,11 @@ package com.offsec.nethunter;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+
+import android.util.Log;
 
 
 public class ShellExecuter {
@@ -66,7 +70,7 @@ public class ShellExecuter {
 	   }
    }
    
-   public String RunAsRootOutput (String command)
+   public String RunAsRootOutput2 (String command)
    {
    	try {
    		
@@ -84,5 +88,41 @@ public class ShellExecuter {
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
+   }
+   
+   public String RunAsRootOutput (String command)
+   {
+	   String output = "";
+	   String line;  
+	   try {
+		   Process process = Runtime.getRuntime().exec("su");
+		   OutputStream stdin = process.getOutputStream();
+           InputStream stderr = process.getErrorStream();
+           InputStream stdout = process.getInputStream();
+		   
+           stdin.write((command +"\n").getBytes() );
+           stdin.write(("exit\n").getBytes());
+           stdin.flush();
+		   stdin.close();
+		   
+		   BufferedReader br = new BufferedReader(new InputStreamReader(stdout));
+           while ((line = br.readLine()) != null) {
+               output = output + line;
+           }
+           br.close();
+           br = new BufferedReader(new InputStreamReader(stderr));
+           while ((line = br.readLine()) != null) {
+           	Log.e("Shell Error:", line);
+           }
+           br.close();
+           process.waitFor();
+           process.destroy();
+	   } catch (IOException e) {
+		   Log.d("An IOException was caught: ", e.getMessage());
+	   } 
+	   catch(InterruptedException ex) {
+		   Log.d("An InterruptedException was caught: ", ex.getMessage());
+	   }
+	   return output;
    }
 }
