@@ -7,6 +7,7 @@
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="jackpal.androidterm.permission.RUN_SCRIPT"/>
 	
     <uses-sdk android:minSdkVersion="19" android:targetSdkVersion="19" />
     
@@ -29,6 +30,16 @@
             </intent-filter>
             <meta-data android:name="android.support.PARENT_ACTIVITY"
                        android:value=".NethunterActivity" />
+        </activity>
+        
+        <activity android:name=".KaliLauncherActivity"
+                  android:label="@string/KaliLauncherLabel">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.SAMPLE_CODE" />
+            </intent-filter>
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                       android:value=".AppNavHomeActivity" />
         </activity>
         
         <activity android:name=".KaliServicesActivity"
@@ -107,14 +118,12 @@
                        android:value=".AppNavHomeActivity" />
         </activity>
         
-        <activity
-        android:name=".EditSourceActivity"
-		android:windowSoftInputMode="stateHidden"
-        android:label="Edit Source"
-        android:parentActivityName=".HostapdActivity" >
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value=".HostapdActivity" />
+        <activity android:name=".EditSourceActivity"
+				  android:windowSoftInputMode="stateHidden"
+        		  android:label="Edit Source"
+        		  android:parentActivityName=".HostapdActivity" >
+        	<meta-data android:name="android.support.PARENT_ACTIVITY"
+					   android:value=".HostapdActivity" />
     </activity>
         
     </application>

@@ -1,0 +1,51 @@
+<LinearLayout
+	android:layout_width="fill_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:background="#ff000000">
+	<Button
+		android:id="@+id/button_start_kali"
+		android:layout_weight="1"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/launch_kali_shell"
+		android:textColor="#ffffffff" />
+	<Button
+		android:id="@+id/button_start_kalimenu"
+		android:layout_weight="1"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/launch_kali_menu"
+		android:textColor="#ffffffff" />
+	<Button
+		android:id="@+id/button_stop_kali"
+		android:layout_weight="1"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/kill_kali"
+		android:clickable="true"
+		android:textColor="#ffffffff" />
+	<Button
+		android:id="@+id/button_launch_wifite"
+		android:layout_weight="1"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/launch_wifite"
+		android:clickable="true"
+		android:textColor="#ffffffff" />
+	<Button
+		android:id="@+id/button_start_web"
+		android:layout_weight="1"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/start_web"
+		android:textColor="#ffffffff" />
+	<Button
+		android:id="@+id/button_stop_web"
+		android:layout_weight="1"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/stop_web"
+		android:textColor="#ffffffff" />
+</LinearLayout>

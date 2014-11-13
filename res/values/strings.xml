@@ -64,4 +64,12 @@
     
     <string name="start_badusb">Start BadUSB attack</string>
     <string name="stop_badusb">Stop BadUSB attack</string>
+    
+    <string name="KaliLauncherLabel">Kali Launcher</string>
+	<string name="launch_kali_menu">Launch Kali Menu in Terminal</string>
+	<string name="launch_kali_shell">Launch Kali Shell in Terminal</string>
+	<string name="launch_wifite">Launch Wifite</string>
+	<string name="kill_kali">Shutdown Kali</string>
+	<string name="start_web">Start Webserver</string>
+	<string name="stop_web">Stop Webserver</string>
 </resources>
