@@ -7,6 +7,6 @@
           android:title="@string/start_badusb"
           android:showAsAction="never" />
     <item android:id="@+id/stop_service"
-          android:title="@string/start_badusb"
+          android:title="@string/stop_badusb"
           android:showAsAction="never" />    
 </menu>
