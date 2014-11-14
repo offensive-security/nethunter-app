@@ -4,7 +4,7 @@
     <string name="app_nav_home_label">NetHunter Android Application</string>
 
     <string name="nethunter_label">Nethunter Panel Home</string>
-    <string name="nethunter_description">Welcome to Kali Linux NetHunter! This web panel is designed to make it easier to execute attacks and control services. The navigation menu contains links to useful commands, settings, macros, and attack configuration pages. If you have any suggestions for additional features, contact us!</string>
+    <string name="nethunter_description">Welcome to Kali Linux NetHunter! This application is designed to make it easier to execute attacks and control services. The navigation menu contains links to useful commands, settings, macros, and attack configuration pages. If you have any suggestions for additional features, contact us!</string>
     <string name="nethunter_note">Most configurations work out of the box but some may require some minimal tweaking. Make sure you read more about these attacks (links are included on each page) to get them working perfectly.</string>
 	<string name="nethunter_current_interfaces">Current interfaces</string>
 	<string name="nethunter_external_ip">External IP address</string>
@@ -25,7 +25,7 @@
 
 
     <string name="badusb_label">BadUSB MITM Attack</string>
-    <string name="badusb_description">his is our implementation of the BadUSB attack as demonstrated at Black Hat USA 2014. Enabling this USB mode will turn your device with its OTG USB cable into a network interface when plugged into a target computer. Connecting the USB cable to a PC will force all traffic from that PC (Windows or Linux) through the NetHunter device, where the traffic can be MITM\'ed.</string>
+    <string name="badusb_description">This is our implementation of the BadUSB attack as demonstrated at Black Hat USA 2014. Enabling this USB mode will turn your device with its OTG USB cable into a network interface when plugged into a target computer. Connecting the USB cable to a PC will force all traffic from that PC (Windows or Linux) through the NetHunter device, where the traffic can be MITM\'ed.</string>
     
 
     <string name="mana_label">MANA Evil Access Point</string>
