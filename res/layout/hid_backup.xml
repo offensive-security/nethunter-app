@@ -6,26 +6,26 @@
           android:showAsAction="ifRoom" />
     
     <item android:id="@+id/start_service"
-          android:title="Execute"
+          android:title="@string/execute"
           android:showAsAction="never" />
           
     <item android:id="@+id/stop_service"
-          android:title="Reset USB"
+          android:title="@string/reset_usb"
           android:showAsAction="never" />    
           
 	<group android:checkableBehavior="single" >
             <item
                 android:id="@+id/none"
-                android:title="None"
+                android:title="@string/none"
                 android:checked="true"
                 android:showAsAction="never"/>
             <item
                 android:id="@+id/win7"
-                android:title="Win7"
+                android:title="@string/win7"
                 android:showAsAction="never"/>
             <item
                 android:id="@+id/win8"
-                android:title="Win8"
+                android:title="@string/win8"
                 android:showAsAction="never"/>
         </group>
           

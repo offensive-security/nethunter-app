@@ -12,7 +12,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="interface"
+            android:text="@string/iface"
             android:padding="4dp" />
 
         <EditText
@@ -24,7 +24,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="bssid"
+            android:text="@string/bssid"
             android:padding="4dp" />
 
         <EditText
@@ -36,7 +36,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="ssid"
+            android:text="@string/ssid"
             android:padding="4dp" />
 
         <EditText
@@ -48,7 +48,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="channel"
+            android:text="@string/chanel"
             android:padding="4dp" />
 
         <EditText
@@ -60,7 +60,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="enable_karma"
+            android:text="@string/enable_karma"
             android:padding="4dp" />
 
         <EditText
@@ -72,7 +72,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="karma_loud"
+            android:text="@string/karma_loud"
             android:padding="4dp" />
 
         <EditText
@@ -85,7 +85,7 @@
             android:id="@+id/updateButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Update" />
+            android:text="@string/update" />
     </LinearLayout>
 
 </FrameLayout>

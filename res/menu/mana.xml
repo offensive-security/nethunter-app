@@ -7,12 +7,12 @@
 
     <item
         android:id="@+id/start_service"
-        android:title="Start mana"
+        android:title="@string/start_mana"
         android:showAsAction="never" />
 
     <item
         android:id="@+id/stop_service"
-        android:title="Stop mana"
+        android:title="@string/stop_mana"
         android:showAsAction="never" />
 
 

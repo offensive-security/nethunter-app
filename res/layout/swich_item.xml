@@ -7,7 +7,7 @@
     <Switch
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Loading"
+        android:text="@string/loading"
         android:id="@+id/switch1"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
@@ -28,7 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Loading service state"
+        android:text="@string/loading_service"
         android:id="@+id/switchHolder"
         android:paddingLeft="@dimen/base_listItem_LR"
         android:paddingRight="@dimen/base_listItem_LR"

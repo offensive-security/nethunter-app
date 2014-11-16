@@ -15,8 +15,6 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/servicesList"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
         android:divider="#333"
         android:dividerHeight="1dp" />
 

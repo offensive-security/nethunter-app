@@ -27,7 +27,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="address"
+            android:text="@string/address"
             android:padding="4dp" />
 
         <EditText
@@ -39,7 +39,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="address"
+            android:text="@string/address"
             android:padding="4dp" />
 
         <EditText
@@ -51,7 +51,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="interface"
+            android:text="@string/iface"
             android:padding="4dp" />
 
         <EditText
@@ -63,7 +63,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="dhcp-range"
+            android:text="@string/dhcp_range"
             android:padding="4dp" />
 
         <EditText
@@ -75,32 +75,32 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="dhcp option"
+            android:text="@string/dhcp_options"
             android:padding="4dp" />
 
         <EditText
             android:id="@+id/dhcpOption1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"></EditText>
+            android:ems="10"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="dhcp option"
+            android:text="@string/dhcp_options"
             android:padding="4dp" />
 
         <EditText
             android:id="@+id/dhcpOption2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"></EditText>
+            android:ems="10"/>
 
         <Button
             android:id="@+id/updateOptions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="updateOptions"
-            android:text="Update" />
+            android:text="@string/update" />
     </LinearLayout>
 </ScrollView>

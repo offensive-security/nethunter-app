@@ -26,7 +26,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="interface"
+            android:text="@string/iface"
             android:padding="4dp" />
 
         <EditText
@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="updateOptions"
-            android:text="Update" />
+            android:text="@string/update" />
 
     </LinearLayout>
 </ScrollView>

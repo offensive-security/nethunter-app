@@ -18,20 +18,5 @@
     <item name="darkTitle" type="color">#444</item>
     <item name="darkText" type="color">#888</item>
 
-    <integer-array name="androidcolors">
 
-        <item>@color/blue</item>
-        <item>@color/purple</item>
-        <item>@color/green</item>
-        <item>@color/orange</item>
-        <item>@color/red</item>
-        <item>@color/darkblue</item>
-        <item>@color/darkpurple</item>
-        <item>@color/darkgreen</item>
-        <item>@color/darkorange</item>
-        <item>@color/darkred</item>
-        <item>@color/clearTitle</item>
-        <item>@color/clearText</item>
-
-    </integer-array>
 </resources>

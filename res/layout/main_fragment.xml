@@ -15,33 +15,25 @@
     </android.support.v4.app.FragmentTabHost>
 
 
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
-        <TableRow
-            android:id="@+id/tableRow9"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
 
             <Button
                 android:id="@+id/button1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Execute" />
+                android:text="@string/execute" />
 
             <Button
                 android:id="@+id/button2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Reset USB" />
+                android:text="@string/reset_usb" />
 
             <CheckBox
                 android:id="@+id/checkBox1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Admin" />
-        </TableRow>
-    </TableLayout>
+                android:text="@string/admin" />
+
 
 </LinearLayout>

@@ -13,31 +13,30 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="IP address"
+            android:text="@string/ip_address"
             android:padding="4dp" />
 
         <EditText
             android:id="@+id/ipaddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"></EditText>
-
+            android:ems="10"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="port"
+            android:text="@string/port"
             android:padding="4dp" />
 
         <EditText
             android:id="@+id/port"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"></EditText>
+            android:ems="10"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="payload"
+            android:text="@string/payload"
             android:padding="4dp" />
 
         <Spinner
@@ -50,20 +49,21 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="URL:"
+            android:text="@string/ulr"
             android:padding="4dp" />
 
         <EditText
             android:id="@+id/payloadUrl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"></EditText>
+            android:ems="10"
+            android:inputType="text"/>
 
         <Button
             android:id="@+id/powersploitOptionsUpdate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Update" />
+            android:text="@string/update" />
     </LinearLayout>
 
 </FrameLayout>

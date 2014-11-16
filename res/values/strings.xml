@@ -13,7 +13,7 @@
     <string name="kali_services_description">Various Kali network services can be started and stopped via the buttons in this part of the interface.</string>
 
     <string name="hid_label">HID Keyboard Attack</string>
-    <string name="hid_description">This attack turns your device and its OTG USB cable into a pre-programmed keyboard, able to type any given commands. Previously, only "Teensy" type devices were able to do this...but no longer!</string>
+    <string name="hid_description">This attack turns your device and its OTG USB cable into a pre-programmed keyboard, able to type any given commands. Previously, only "Teensy" type devices were able to do this…but no longer!</string>
     <string name="hid_configuration">Configuration:</string>
     <string name="hid_conf_description">The default config should work as-is; just configure your commands, IPs, or ports. The PowerSploit URL option should point back to the Nexus device IP or some other webserver that is hosting the PowerShell payload. If you choose to use the built-in Apache server on NetHunter, don\'t forget to start the Apache server before you initiate the attack. If the attack becomes non-responsive, simply use the "Reset USB" button to freshen up the USB stack.</string>
 
@@ -75,4 +75,32 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="close_app">Close Application</string>
+
+    <string name="update">Update</string>
+    <string name="execute">Execute</string>
+    <string name="stop_mana">Stop mana</string>
+    <string name="start_mana">Start mana</string>
+    <string name="ip_address">IP address</string>
+    <string name="bssid">BSSID</string>
+    <string name="ssid">SSID</string>
+    <string name="chanel">Chanel</string>
+    <string name="enable_karma">Enable karma</string>
+    <string name="admin">Admin</string>
+    <string name="reset_usb">Reset USB</string>
+
+    <string name="none">None</string>
+    <string name="win7">Windows7</string>
+    <string name="win8">Windows8</string>
+    <string name="loading">Loading</string>
+    <string name="iface">Interface</string>
+    <string name="port">Port</string>
+    <string name="address">Address</string>
+    <string name="ulr">URL:</string>
+    <string name="payload">Payload</string>
+    <string name="dhcp_options">dhcp options</string>
+    <string name="loading_service">Loading service state</string>
+    <string name="get_external_ip">Get external IP</string>
+    <string name="karma_loud">karma loud</string>
+    <string name="dhcp_range">dhcp range</string>
 </resources>

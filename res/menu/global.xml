@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/closeApp"
-        android:title="Close Application"
+        android:title="@string/close_app"
         android:orderInCategory="100"
         android:showAsAction="never" />
 </menu>
