@@ -39,7 +39,7 @@ public class BadusbActivity extends Activity {
 
         }
         loadOptions();
-        ActionBarCompat.setDisplayHomeAsUpEnabled(this, true);
+        ActionBarCompat.setDisplayHomeAsUpEnabled(this);
     }
 
     @Override

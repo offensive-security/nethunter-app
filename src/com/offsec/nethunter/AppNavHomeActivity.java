@@ -14,7 +14,6 @@ import android.os.Environment;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.ImageView;
 
 
@@ -70,7 +69,7 @@ public class AppNavHomeActivity extends Activity
     public void onNavigationDrawerItemSelected(int position, String activity) {
         Log.d("POSI", String.valueOf(position));
         // This is called from the sidemenu as callback when a item  is clickled
-        Fragment fragment = null;
+        Fragment fragment;
         FragmentManager fragmentManager = getFragmentManager();
         // home, services and kali launcher are now fragments
         // Should we made all a fragment?
@@ -123,11 +122,7 @@ public class AppNavHomeActivity extends Activity
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
 
-        return super.onOptionsItemSelected(item);
-    }
 
 
     @Override

@@ -45,16 +45,16 @@ public class ManaActivity extends FragmentActivity implements ActionBar.TabListe
     private Integer selectedScriptIndex = 0;
     final CharSequence[] scripts = {"mana-nat-full", "mana-nat-simple", "start-noupstream", "start-noupstream-eap"};
     private static Context context;
-    private String configFilePath = "files/hostapd-karma.conf";
+    String configFilePath = "files/hostapd-karma.conf";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getApplicationContext();
         setContentView(R.layout.mana);
+
         if (Build.VERSION.SDK_INT >= 21) {
             // detail for android 5 devices
             getWindow().setStatusBarColor(getResources().getColor(R.color.darkTitle));
-
         }
         mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(getSupportFragmentManager());
 
@@ -106,7 +106,7 @@ public class ManaActivity extends FragmentActivity implements ActionBar.TabListe
                         .setText("start-noupstream-eap")
                         .setTabListener(this));
 
-        ActionBarCompat.setDisplayHomeAsUpEnabled(this, true);
+        ActionBarCompat.setDisplayHomeAsUpEnabled(this);
 
     }
 
@@ -158,7 +158,7 @@ public class ManaActivity extends FragmentActivity implements ActionBar.TabListe
         builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String command = "";
+                String command;
                 switch (which) {
                     case 0:
                         command = "start-mana-full &> /sdcard/htdocs/mana.log &";
@@ -205,10 +205,10 @@ public class ManaActivity extends FragmentActivity implements ActionBar.TabListe
         showMessage("Mana Stopped");
     }
 
-    public void onPageSelected(int pageNum) {
-        int currentposition = pageNum;
-        invalidateOptionsMenu();
-    }
+    // public void onPageSelected(int pageNum) {
+    //     int currentposition = pageNum;
+    //     invalidateOptionsMenu();
+    // }
 
 
     @Override

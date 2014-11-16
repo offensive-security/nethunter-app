@@ -86,7 +86,7 @@ public class HidActivity extends FragmentActivity implements ActionBar.TabListen
                 actionBar.newTab()
                         .setText("Windows CMD")
                         .setTabListener(this));
-        ActionBarCompat.setDisplayHomeAsUpEnabled(this, true);
+        ActionBarCompat.setDisplayHomeAsUpEnabled(this);
 
     }
 
@@ -161,8 +161,6 @@ public class HidActivity extends FragmentActivity implements ActionBar.TabListen
                     command[0] = "start-hid-cmd-elevated-win8";
                     break;
             }
-        } else {
-
         }
         ShellExecuter exe = new ShellExecuter();
         exe.RunAsRoot(command);
@@ -175,11 +173,13 @@ public class HidActivity extends FragmentActivity implements ActionBar.TabListen
         exe.RunAsRoot(command);
         showMessage("Reseting USB");
     }
-
-    public void onPageSelected(int pageNum) {
-        int currentposition = pageNum;
-        invalidateOptionsMenu();
-    }
+    //
+    // this never is called
+    //
+    // public void onPageSelected(int pageNum) {
+    //    int currentposition = pageNum;
+    //    invalidateOptionsMenu();
+    // }
 
     public void openDialog() {
 
@@ -312,7 +312,7 @@ public class HidActivity extends FragmentActivity implements ActionBar.TabListen
                     Pattern pattern = Pattern.compile(regExPat, Pattern.MULTILINE);
                     Matcher matcher = pattern.matcher(source);
                     if (matcher.find()) {
-                        source = source.replace(matcher.group(0).toString(), newString);
+                        source = source.replace(matcher.group(0), newString);
                         String[] command = {"sh", "-c", "cat <<'EOF' > " + configFilePath + "\n" + source + "\nEOF"};
                         exe.RunAsRoot(command);
                         showMessage("Options updated:");
@@ -390,7 +390,8 @@ public class HidActivity extends FragmentActivity implements ActionBar.TabListen
                 Spinner payload = (Spinner) getView().findViewById(R.id.payload);
                 ArrayAdapter myAdap = (ArrayAdapter) payload.getAdapter();
 
-                int spinnerPosition = myAdap.getPosition(payloadValue);
+                int spinnerPosition;
+                spinnerPosition = myAdap.getPosition(payloadValue);
                 payload.setSelection(spinnerPosition);
             }
         }

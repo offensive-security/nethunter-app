@@ -16,9 +16,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
-/**
- * Created by 3boll on 11/14/2014.
- */
 public class NetHunterFragment extends Fragment {
 
     /**
@@ -26,8 +23,8 @@ public class NetHunterFragment extends Fragment {
      * fragment.
      */
 
-    private int ARG_SECTION_NUMBER;
-    private String ARG_ACTIVITY_NAME;
+     int ARG_SECTION_NUMBER;
+     String ARG_ACTIVITY_NAME;
 
     /**
      * Returns a new instance of this fragment for the given section

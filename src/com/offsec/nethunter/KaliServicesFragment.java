@@ -19,27 +19,10 @@ public class KaliServicesFragment extends Fragment {
      * The fragment argument representing the section number for this
      * fragment.
      */
-    private String[][] KaliServices = new String[][]{
+    private String[][] KaliServices;
 
-            // name, check  cmd, start cmd, stop cmd, state
-            // since the script check-kaliweb isnt in the master i coment lighttp here
-            //{"Lighttpd", "sh /system/xbin/check-kaliweb","start-web","stop-web"},
-
-            {"SSH", "sh /system/xbin/check-kalissh", "start-ssh", "stop-ssh"},
-            {"Dnsmasq", "sh /system/xbin/check-kalidnsmq", "start-dnsmasq", "stop-dnsmasq"},
-            {"Hostapd", "sh /system/xbin/check-kalihostapd", "start-hostapd &", "stop-hostapd"},
-            {"VPN", "sh /system/xbin/check-kalivpn", "start-vpn", "stop-vpn"},
-            {"Apache", "sh /system/xbin/check-kaliapache", "start-apache", "stop-apache"},
-            {"Metasploit", "sh /system/xbin/check-kalimetasploit", "start-msf", "stop-msf"},
-            // {"DHCP", "sh /system/xbin/check-kalidhcp","NOSCRIPT","NOSCRIPT"},
-            // the stop script isnt working well, doing a raw cmd instead to stop vnc
-            // {"VNC", "sh /system/xbin/check-kalivnc", "bootkali\nvncserver", "bootkali\nkill $(ps aux | grep 'Xtightvnc' | awk '{print $2}');CT=0;for x in $(ps aux | grep 'Xtightvnc' | awk '{print $2}'); do CT=$[$CT +1];tightvncserver -kill :$CT; done;rm /root/.vnc/*.log;rm -r /tmp/.X*"},
-            // REMOVE THE INTENT FROM THE SCRIPT start-beef-xss!!! (sleep 35 \n am start -a android.intent.action.VIEW -d http://127.0.0.1:3000/ui/panel) not needed there.
-            // {"BeefXSS", "sh /system/xbin/check-kalibeef-xss","start-beef-xss","stop-beef-xss"}
-    };
-
-    private int ARG_SECTION_NUMBER;
-    private String ARG_ACTIVITY_NAME;
+    int ARG_SECTION_NUMBER;
+    String ARG_ACTIVITY_NAME;
 
     /**
      * Returns a new instance of this fragment for the given section
@@ -50,6 +33,24 @@ public class KaliServicesFragment extends Fragment {
     public KaliServicesFragment(int sectionNumber, String activityName) {
         ARG_SECTION_NUMBER = sectionNumber;
         ARG_ACTIVITY_NAME = activityName;
+        KaliServices = new String[][]{
+
+                // name, check  cmd, start cmd, stop cmd, state
+                // since the script check-kaliweb isnt in the master i coment lighttp here
+                //{"Lighttpd", "sh /system/xbin/check-kaliweb","start-web","stop-web"},
+
+                {"SSH", "sh /system/xbin/check-kalissh", "start-ssh", "stop-ssh"},
+                {"Dnsmasq", "sh /system/xbin/check-kalidnsmq", "start-dnsmasq", "stop-dnsmasq"},
+                {"Hostapd", "sh /system/xbin/check-kalihostapd", "start-hostapd &", "stop-hostapd"},
+                {"VPN", "sh /system/xbin/check-kalivpn", "start-vpn", "stop-vpn"},
+                {"Apache", "sh /system/xbin/check-kaliapache", "start-apache", "stop-apache"},
+                {"Metasploit", "sh /system/xbin/check-kalimetasploit", "start-msf", "stop-msf"},
+                // {"DHCP", "sh /system/xbin/check-kalidhcp","NOSCRIPT","NOSCRIPT"},
+                // the stop script isnt working well, doing a raw cmd instead to stop vnc
+                // {"VNC", "sh /system/xbin/check-kalivnc", "bootkali\nvncserver", "bootkali\nkill $(ps aux | grep 'Xtightvnc' | awk '{print $2}');CT=0;for x in $(ps aux | grep 'Xtightvnc' | awk '{print $2}'); do CT=$[$CT +1];tightvncserver -kill :$CT; done;rm /root/.vnc/*.log;rm -r /tmp/.X*"},
+                // REMOVE THE INTENT FROM THE SCRIPT start-beef-xss!!! (sleep 35 \n am start -a android.intent.action.VIEW -d http://127.0.0.1:3000/ui/panel) not needed there.
+                // {"BeefXSS", "sh /system/xbin/check-kalibeef-xss","start-beef-xss","stop-beef-xss"}
+        };
     }
 
     @Override
@@ -79,8 +80,8 @@ public class KaliServicesFragment extends Fragment {
                 // generate check cmd with all the services
                 String checkCmd = "";
 
-                for (int i = 0; i < KaliServices.length; i++) {
-                    checkCmd += KaliServices[i][1] + ";";
+                for (String[] KaliService : KaliServices) {
+                    checkCmd += KaliService[1] + ";";
                 }
                 //Log.d("command", checkCmd);
                 final String outp1 = exe.RunAsRootOutput(checkCmd);
@@ -135,7 +136,7 @@ class SwichLoader extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         // inflate the layout for each item of listView (our services)
 
-        ViewHolderItem vH = null;
+        ViewHolderItem vH;
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
