@@ -1,19 +1,24 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/source_button"
-          android:title="@string/source"
-          android:showAsAction="ifRoom" />
-    
-    <item android:id="@+id/admin"
-          android:title="Admin"
-          android:showAsAction="never" />
-          
-    <item android:id="@+id/start_service"
-          android:title="Execute"
-          android:showAsAction="never" />
-          
-    <item android:id="@+id/stop_service"
-          android:title="Reset USB"
-          android:showAsAction="never" />    
-    
-          
+    <item
+        android:id="@+id/source_button"
+        android:title="@string/source"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:showAsAction="ifRoom|withText"  />
+
+    <item
+        android:id="@+id/admin"
+        android:title="Admin"
+        android:showAsAction="never" />
+
+    <item
+        android:id="@+id/start_service"
+        android:title="Execute"
+        android:showAsAction="never" />
+
+    <item
+        android:id="@+id/stop_service"
+        android:title="Reset USB"
+        android:showAsAction="never" />
+
+
 </menu>

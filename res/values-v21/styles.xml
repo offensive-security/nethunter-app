@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme" parent="android:Theme.Material">
+        <!-- Main theme colors -->
+        <!--   your app branding color for the app bar -->
+
+        <item name="android:colorAccent">@color/darkText</item>
+
+    </style>
+</resources>

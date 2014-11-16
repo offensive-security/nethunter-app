@@ -1,8 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/run_iptables"
-          android:title="@string/run_iptables"
-          android:showAsAction="never" />
-    <item android:id="@+id/flush"
-          android:title="@string/flush"
-          android:showAsAction="never" />    
+    <item
+        android:id="@+id/run_iptables"
+        android:title="@string/run_iptables"
+        android:showAsAction="never" />
+    <item
+        android:id="@+id/flush"
+        android:title="@string/flush"
+        android:showAsAction="never" />
 </menu>

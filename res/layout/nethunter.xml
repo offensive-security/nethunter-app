@@ -1,55 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:padding="16dp"
-              android:orientation="vertical">
-                  
-<TextView 
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="@string/nethunter_description"
-          android:padding="4dp" />
-          
-<TextView 
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="@string/nethunter_note"
-          android:padding="4dp" />
-
-<TextView 
-    		android:textStyle="bold"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="@string/nethunter_current_interfaces"
-          android:padding="4dp" />
-
-<EditText
-    android:id="@+id/editText1"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:ems="10" >
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <requestFocus />
-</EditText>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView">
 
-<TextView 
-          android:textStyle="bold"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="@string/nethunter_external_ip"
-          android:padding="4dp" />
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            android:orientation="vertical">
 
-<EditText
-    android:id="@+id/editText2"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:ems="10" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/nethunter_description"
+                android:padding="4dp" />
 
-<Button
-    android:id="@+id/button1"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Get external IP" 
-    android:onClick="getExternalIp" />   
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/nethunter_note"
+                android:padding="4dp" />
+
+            <TextView
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/nethunter_current_interfaces"
+                android:padding="4dp" />
+
+            <EditText
+                android:id="@+id/editText1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="none">
+
+
+            </EditText>
+
+            <TextView
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/nethunter_external_ip"
+                android:padding="4dp"
+                android:elevation="5dp"/>
+
+            <EditText
+                android:id="@+id/editText2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="none"
+                android:elevation="5dp"/>
+
+            <Button
+                android:id="@+id/button1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Get external IP"
+                android:elevation="5dp"/>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

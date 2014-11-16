@@ -1,197 +1,181 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView 
-      xmlns:android="http://schemas.android.com/apk/res/android"
-      android:id="@+id/scroll" 
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content">
-      
-<LinearLayout
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp" >
-    
-    <TextView 
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="@string/hostapd_headline"
-          android:textSize="28sp"
-          android:padding="4dp" />
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:padding="4dp"
-        android:text="@string/hostapd_description" />
-    
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <TabHost
-        android:id="@+id/tabHost"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical" >
+            android:layout_height="wrap_content"
+            android:text="@string/hostapd_headline"
+            android:textSize="28sp"
+            android:padding="4dp" />
 
-            <TabWidget
-                android:id="@android:id/tabs"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content" >
-            </TabWidget>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:text="@string/hostapd_description" />
 
-            <FrameLayout
-                android:id="@android:id/tabcontent"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content" >
 
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:id="@+id/options_container"
+        <TabHost
+            android:id="@+id/tabHost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TabWidget
+                    android:id="@android:id/tabs"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" >
+                    android:layout_height="wrap_content"></TabWidget>
 
-                    <TextView 
-          			android:layout_width="match_parent"
-          			android:layout_height="wrap_content"
-          			android:text="interface"
-          			android:padding="4dp" />
-                    
-                    <EditText
-    					android:id="@+id/ifc"
-    					android:layout_width="match_parent"
-    					android:layout_height="wrap_content"
-    					android:ems="10" >
-					</EditText>
-					
-                    <TextView 
-          			android:layout_width="match_parent"
-          			android:layout_height="wrap_content"
-          			android:text="bssid"
-          			android:padding="4dp" />
-                    
-                    <EditText
-    					android:id="@+id/bssid"
-    					android:layout_width="match_parent"
-    					android:layout_height="wrap_content"
-    					android:ems="10" >
-					</EditText>
-					
-                    <TextView 
-          			android:layout_width="match_parent"
-          			android:layout_height="wrap_content"
-          			android:text="ssid"
-          			android:padding="4dp" />
-                    
-                    <EditText
-    					android:id="@+id/ssid"
-    					android:layout_width="match_parent"
-    					android:layout_height="wrap_content"
-    					android:ems="10" >
-					</EditText>
-					
-                    <TextView 
-          			android:layout_width="match_parent"
-          			android:layout_height="wrap_content"
-          			android:text="channel"
-          			android:padding="4dp" />
-                    
-                    <EditText
-    					android:id="@+id/channel"
-    					android:layout_width="match_parent"
-    					android:layout_height="wrap_content"
-    					android:ems="10" >
-					</EditText>
-					
-                    <TextView 
-          			android:layout_width="match_parent"
-          			android:layout_height="wrap_content"
-          			android:text="enable_carma"
-          			android:padding="4dp" />
-                    
-                    <EditText
-    					android:id="@+id/enableKarma"
-    					android:layout_width="match_parent"
-    					android:layout_height="wrap_content"
-    					android:ems="10" >
-					</EditText>
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-					
+                <FrameLayout
+                    android:id="@android:id/tabcontent"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
 
-					
-                    
-                    <Button
-                android:id="@+id/updateOptions"
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:id="@+id/options_container"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="interface"
+                            android:padding="4dp" />
+
+                        <EditText
+                            android:id="@+id/ifc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"></EditText>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="bssid"
+                            android:padding="4dp" />
+
+                        <EditText
+                            android:id="@+id/bssid"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"></EditText>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="ssid"
+                            android:padding="4dp" />
+
+                        <EditText
+                            android:id="@+id/ssid"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"></EditText>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="channel"
+                            android:padding="4dp" />
+
+                        <EditText
+                            android:id="@+id/channel"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"></EditText>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="enable_carma"
+                            android:padding="4dp" />
+
+                        <EditText
+                            android:id="@+id/enableKarma"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"></EditText>
+
+
+                        <Button
+                            android:id="@+id/updateOptions"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:onClick="updateOptions"
+                            android:text="Update" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:id="@+id/source_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/source"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:singleLine="false"
+                            android:lines="10"
+                            android:paddingTop="0px"
+                            android:gravity="top"
+                            android:layout_marginLeft="1dip"
+                            android:layout_marginRight="1dip" />
+
+
+                        <Button
+                            android:id="@+id/updateSource"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:onClick="updateSource"
+                            android:text="Update" />
+                    </LinearLayout>
+
+                </FrameLayout>
+            </LinearLayout>
+        </TabHost>
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TableRow
+                android:id="@+id/tableRow9"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="updateOptions"
-                android:text="Update" />
-                    
-                </LinearLayout>
+                android:layout_height="wrap_content">
+                <!--
+                <Button
+                    android:id="@+id/startHostapd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="startHostapd"
+                    android:text="Start hostapd" />
 
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:id="@+id/source_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" >    
-                    
-                    <EditText
-    					android:id="@+id/source"
-    					android:layout_width="fill_parent"
-    					android:layout_height="wrap_content"
-    					android:singleLine="false"
-    					android:lines="10"
-    					android:paddingTop="0px" 
-						android:gravity="top"
-    					android:layout_marginLeft="1dip"
-    					android:layout_marginRight="1dip" />
-                    
-                    
-                    <Button
-                android:id="@+id/updateSource"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="updateSource"
-                android:text="Update" />
-                </LinearLayout>
+                <Button
+                    android:id="@+id/stopHostapd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="stopHostapd"
+                    android:text="Stop hostapd" />
+                    -->
+            </TableRow>
 
-            </FrameLayout>
-        </LinearLayout>
-    </TabHost>
+        </TableLayout>
 
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <TableRow
-            android:id="@+id/tableRow9"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-			<!--
-            <Button
-                android:id="@+id/startHostapd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="startHostapd"
-                android:text="Start hostapd" />
-
-            <Button
-                android:id="@+id/stopHostapd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="stopHostapd"
-                android:text="Stop hostapd" />
-                -->
-        </TableRow>
-        
-    </TableLayout>
-
-</LinearLayout>
+    </LinearLayout>
 </ScrollView>
