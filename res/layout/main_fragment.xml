@@ -1,29 +1,28 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
- 
+    android:orientation="vertical">
+
     <android.support.v4.app.FragmentTabHost
         android:id="@android:id/tabhost"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
- 
+        android:layout_height="match_parent">
+
         <FrameLayout
             android:id="@+id/tabcontent"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </android.support.v4.app.FragmentTabHost>
- 	
- 	
- 	
- 	<TableLayout
+
+
+    <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content">
 
         <TableRow
             android:id="@+id/tableRow9"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <Button
                 android:id="@+id/button1"
@@ -44,5 +43,5 @@
                 android:text="Admin" />
         </TableRow>
     </TableLayout>
- 	
+
 </LinearLayout>

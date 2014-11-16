@@ -1,4 +1,6 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
     <item android:id="@+id/source_button"
           android:title="@string/source"
           android:showAsAction="ifRoom" />

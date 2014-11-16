@@ -1,5 +1,7 @@
 package com.offsec.nethunter;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -7,122 +9,112 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 
-import android.util.Log;
-
 
 public class ShellExecuter {
-   public ShellExecuter() 
-   {
-      
-   }
-   public String Executer(String command) 
-   {
-      StringBuffer output = new StringBuffer();
-      Process p;
-      try {
-        p = Runtime.getRuntime().exec(command);
-        p.waitFor();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        String line = "";
-        while ((line = reader.readLine())!= null) {
-          output.append(line + "\n");
-        }
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-      String response = output.toString();
-      return response;
+    public ShellExecuter() {
+
     }
-   
-   public String Executer(String command[]) 
-   {
-      StringBuffer output = new StringBuffer();
-      Process p;
-      try {
-        p = Runtime.getRuntime().exec(command);
-        p.waitFor();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        String line = "";
-        while ((line = reader.readLine())!= null) {
-          output.append(line + "\n");
+
+    public String Executer(String command) {
+        StringBuffer output = new StringBuffer();
+        Process p;
+        try {
+            p = Runtime.getRuntime().exec(command);
+            p.waitFor();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                output.append(line + "\n");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-      String response = output.toString();
-      return response;
+        String response = output.toString();
+        return response;
     }
-   
-   public void RunAsRoot(String[] command) 
-   {
-	   try {
-		   Process process = Runtime.getRuntime().exec("su");
-		   DataOutputStream os = new DataOutputStream(process.getOutputStream());
-		   for (String tmpmd : command)
-		   {
-			   os.writeBytes(tmpmd +"\n" );
-		   }
-		   os.writeBytes("exit\n");
-		   os.flush();
-	   }
-	   catch (IOException e) {
-		   e.printStackTrace();
-	   }
-   }
-   
-   public String RunAsRootOutput2 (String command)
-   {
-   	try {
-   		
-	   Process process;
-	   process = Runtime.getRuntime().exec("su\n"+command);
-	   BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
-	   
-	   String str = "";
-	   String s = null;
-	   while ((s = stdInput.readLine()) != null) {
-		   str += s;
-	   }
-	   return str;
-	   
+
+    public String Executer(String command[]) {
+        StringBuffer output = new StringBuffer();
+        Process p;
+        try {
+            p = Runtime.getRuntime().exec(command);
+            p.waitFor();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                output.append(line + "\n");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String response = output.toString();
+        return response;
+    }
+
+    public void RunAsRoot(String[] command) {
+        try {
+            Process process = Runtime.getRuntime().exec("su");
+            DataOutputStream os = new DataOutputStream(process.getOutputStream());
+            for (String tmpmd : command) {
+                os.writeBytes(tmpmd + "\n");
+            }
+            os.writeBytes("exit\n");
+            os.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String RunAsRootOutput2(String command) {
+        try {
+
+            Process process;
+            process = Runtime.getRuntime().exec("su\n" + command);
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            String str = "";
+            String s = null;
+            while ((s = stdInput.readLine()) != null) {
+                str += s;
+            }
+            return str;
+
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
-   }
-   
-   public String RunAsRootOutput (String command)
-   {
-	   String output = "";
-	   String line;  
-	   try {
-		   Process process = Runtime.getRuntime().exec("su");
-		   OutputStream stdin = process.getOutputStream();
-           InputStream stderr = process.getErrorStream();
-           InputStream stdout = process.getInputStream();
-		   
-           stdin.write((command +"\n").getBytes() );
-           stdin.write(("exit\n").getBytes());
-           stdin.flush();
-		   stdin.close();
-		   
-		   BufferedReader br = new BufferedReader(new InputStreamReader(stdout));
-           while ((line = br.readLine()) != null) {
-               output = output + line;
-           }
-           br.close();
-           br = new BufferedReader(new InputStreamReader(stderr));
-           while ((line = br.readLine()) != null) {
-           	Log.e("Shell Error:", line);
-           }
-           br.close();
-           process.waitFor();
-           process.destroy();
-	   } catch (IOException e) {
-		   Log.d("An IOException was caught: ", e.getMessage());
-	   } 
-	   catch(InterruptedException ex) {
-		   Log.d("An InterruptedException was caught: ", ex.getMessage());
-	   }
-	   return output;
-   }
+    }
+
+    public String RunAsRootOutput(String command) {
+        String output = "";
+        String line;
+        try {
+            Process process = Runtime.getRuntime().exec("su");
+            OutputStream stdin = process.getOutputStream();
+            InputStream stderr = process.getErrorStream();
+            InputStream stdout = process.getInputStream();
+
+            stdin.write((command + "\n").getBytes());
+            stdin.write(("exit\n").getBytes());
+            stdin.flush();
+            stdin.close();
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(stdout));
+            while ((line = br.readLine()) != null) {
+                output = output + line;
+            }
+            br.close();
+            br = new BufferedReader(new InputStreamReader(stderr));
+            while ((line = br.readLine()) != null) {
+                Log.e("Shell Error:", line);
+            }
+            br.close();
+            process.waitFor();
+            process.destroy();
+        } catch (IOException e) {
+            Log.d("An IOException was caught: ", e.getMessage());
+        } catch (InterruptedException ex) {
+            Log.d("An InterruptedException was caught: ", ex.getMessage());
+        }
+        return output;
+    }
 }

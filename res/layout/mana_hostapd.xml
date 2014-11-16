@@ -2,96 +2,90 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:orientation="vertical" >
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:orientation="vertical">
 
-    <TextView 
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="interface"
-		android:padding="4dp" />
-                    
-	<EditText
-		android:id="@+id/ifc"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:ems="10" >
-	</EditText>
-					
-	<TextView 
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="bssid"
-		android:padding="4dp" />
-                    
-	<EditText
-		android:id="@+id/bssid"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:ems="10" >
-	</EditText>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="interface"
+            android:padding="4dp" />
 
-	<TextView 
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="ssid"
-		android:padding="4dp" />
-                    
-	<EditText
-		android:id="@+id/ssid"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:ems="10" >
-	</EditText>
-	
-	<TextView 
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="channel"
-		android:padding="4dp" />
-                    
-	<EditText
-		android:id="@+id/channel"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:ems="10" >
-	</EditText>
-	
-	<TextView 
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="enable_karma"
-		android:padding="4dp" />
-                    
-	<EditText
-		android:id="@+id/enable_karma"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:ems="10" >
-	</EditText>
-	
-	<TextView 
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="karma_loud"
-		android:padding="4dp" />
-                    
-	<EditText
-		android:id="@+id/karma_loud"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:ems="10" >
-	</EditText>
-					
-	<Button
-		android:id="@+id/updateButton"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="Update" />
-</LinearLayout>
+        <EditText
+            android:id="@+id/ifc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="bssid"
+            android:padding="4dp" />
+
+        <EditText
+            android:id="@+id/bssid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ssid"
+            android:padding="4dp" />
+
+        <EditText
+            android:id="@+id/ssid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="channel"
+            android:padding="4dp" />
+
+        <EditText
+            android:id="@+id/channel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="enable_karma"
+            android:padding="4dp" />
+
+        <EditText
+            android:id="@+id/enable_karma"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="karma_loud"
+            android:padding="4dp" />
+
+        <EditText
+            android:id="@+id/karma_loud"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"/>
+
+        <Button
+            android:id="@+id/updateButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Update" />
+    </LinearLayout>
 
 </FrameLayout>
