@@ -34,7 +34,7 @@ tmp/**/*
 .settings/
 .loadpath
 .gradle
-.idea/*
+.idea/
 
 .DS_Store
 /build
