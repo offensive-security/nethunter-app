@@ -32,7 +32,6 @@ public class AppNavHomeActivity extends Activity
      */
     private CharSequence mTitle;
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
