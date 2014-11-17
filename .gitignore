@@ -29,11 +29,15 @@ tmp/**/*
 *.bak
 *.swp
 *~.nib
-local.properties
+
 .classpath
 .settings/
 .loadpath
+.gradle
+.idea/*
 
+.DS_Store
+/build
 # External tool builders
 .externalToolBuilders/
 
