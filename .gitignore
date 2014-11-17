@@ -43,7 +43,7 @@ tmp/**/*
 
 # Locally stored "Eclipse launch configurations"
 *.launch
-
+nethunter-app.iml
 # CDT-specific
 .cproject
 
