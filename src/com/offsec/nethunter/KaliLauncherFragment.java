@@ -14,7 +14,6 @@ public class KaliLauncherFragment extends Fragment {
      * fragment.
      */
     private int ARG_SECTION_NUMBER;
-    private String ARG_ACTIVITY_NAME;
 
     /**
      * Returns a new instance of this fragment for the given section
@@ -24,7 +23,7 @@ public class KaliLauncherFragment extends Fragment {
 
     public KaliLauncherFragment(int sectionNumber, String activityName) {
         ARG_SECTION_NUMBER = sectionNumber;
-        ARG_ACTIVITY_NAME = activityName;
+
     }
 
     @Override

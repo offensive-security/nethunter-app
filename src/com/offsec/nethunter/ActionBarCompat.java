@@ -13,14 +13,16 @@ public class ActionBarCompat {
      * don't exist on older platform versions.
      */
     static class ActionBarCompatImpl {
-        static void setDisplayHomeAsUpEnabled(Activity activity, boolean enable) {
-            activity.getActionBar().setDisplayHomeAsUpEnabled(enable);
+        static void setDisplayHomeAsUpEnabled(Activity activity) {
+            activity.getActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
 
-    public static void setDisplayHomeAsUpEnabled(Activity activity, boolean enable) {
+
+
+    public static void setDisplayHomeAsUpEnabled(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            ActionBarCompatImpl.setDisplayHomeAsUpEnabled(activity, enable);
+            ActionBarCompatImpl.setDisplayHomeAsUpEnabled(activity);
         }
     }
 }

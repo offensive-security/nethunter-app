@@ -23,7 +23,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,7 +40,7 @@ public class DnsmasqActivity extends Activity {
 
         }
         loadOptions();
-        ActionBarCompat.setDisplayHomeAsUpEnabled(this, true);
+        ActionBarCompat.setDisplayHomeAsUpEnabled(this);
     }
 
     @Override
@@ -67,8 +66,7 @@ public class DnsmasqActivity extends Activity {
             addresses.add(matcherAddress.group(1));
         }
         Integer a = 0;
-        for (Iterator<String> i = addresses.iterator(); i.hasNext(); ) {
-            String item = i.next();
+        for (String item : addresses) {
             a++;
             if (a.equals(1)) {
                 address1.setText(item);
@@ -113,8 +111,7 @@ public class DnsmasqActivity extends Activity {
             dhcpOptions.add(matcherDhcpOption.group(1));
         }
         Integer b = 0;
-        for (Iterator<String> i = dhcpOptions.iterator(); i.hasNext(); ) {
-            String item = i.next();
+        for (String item : dhcpOptions) {
             b++;
             if (b.equals(1)) {
                 dhcpOption1.setText(item);
@@ -176,17 +173,17 @@ public class DnsmasqActivity extends Activity {
         while (matcherAddress.find()) {
             a++;
             if (a.equals(1)) {
-                if (matcherAddress.group(0).toString().startsWith("#")) {
-                    source = source.replace(matcherAddress.group(0).toString(), "#address" + address1.getText().toString());
+                if (matcherAddress.group(0).startsWith("#")) {
+                    source = source.replace(matcherAddress.group(0), "#address" + address1.getText().toString());
                 } else {
-                    source = source.replace(matcherAddress.group(0).toString(), "address" + address1.getText().toString());
+                    source = source.replace(matcherAddress.group(0), "address" + address1.getText().toString());
                 }
             }
             if (a.equals(2)) {
-                if (matcherAddress.group(0).toString().startsWith("#")) {
-                    source = source.replace(matcherAddress.group(0).toString(), "#address" + address2.getText().toString());
+                if (matcherAddress.group(0).startsWith("#")) {
+                    source = source.replace(matcherAddress.group(0), "#address" + address2.getText().toString());
                 } else {
-                    source = source.replace(matcherAddress.group(0).toString(), "address" + address2.getText().toString());
+                    source = source.replace(matcherAddress.group(0), "address" + address2.getText().toString());
                 }
             }
         }
@@ -201,10 +198,10 @@ public class DnsmasqActivity extends Activity {
         while (matcherDhcpOption.find()) {
             a++;
             if (a.equals(1)) {
-                source = source.replace(matcherDhcpOption.group(0).toString(), "dhcp-option" + dhcpOption1.getText().toString());
+                source = source.replace(matcherDhcpOption.group(0), "dhcp-option" + dhcpOption1.getText().toString());
             }
             if (a.equals(2)) {
-                source = source.replace(matcherDhcpOption.group(0).toString(), "dhcp-option" + dhcpOption2.getText().toString());
+                source = source.replace(matcherDhcpOption.group(0), "dhcp-option" + dhcpOption2.getText().toString());
             }
         }
         updateConfigFile(source);

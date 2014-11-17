@@ -43,14 +43,14 @@ public class EditSourceActivity extends Activity {
 
         }
         EditText source = (EditText) findViewById(R.id.source);
-        String text = "";
+        String text;
         if (shell) {
             text = readFileShell();
         } else {
             text = readFile();
         }
         source.setText(text);
-        ActionBarCompat.setDisplayHomeAsUpEnabled(this, true);
+        ActionBarCompat.setDisplayHomeAsUpEnabled(this);
     }
 
     private String readFile() {
@@ -92,7 +92,8 @@ public class EditSourceActivity extends Activity {
             String newSource = source.getText().toString();
 
             ShellExecuter exe = new ShellExecuter();
-            String news = newSource;
+            String news;
+            news = newSource;
 
             String[] command = {"sh", "-c", "cat <<'EOF' > " + configFilePath + "\n" + news + "\nEOF"};
             exe.RunAsRoot(command);

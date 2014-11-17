@@ -50,7 +50,7 @@ public class IptablesActivity extends Activity {
             Log.e("Nethunter", "exception", e);
         }
         source.setText(text);
-        ActionBarCompat.setDisplayHomeAsUpEnabled(this, true);
+        ActionBarCompat.setDisplayHomeAsUpEnabled(this);
     }
 
 

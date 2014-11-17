@@ -9,7 +9,6 @@
 bin/
 gen/
 # Gradle files
-.gradle/
 build/
 # Local configuration file (sdk path, etc)
 local.properties
@@ -29,17 +28,21 @@ tmp/**/*
 *.bak
 *.swp
 *~.nib
-local.properties
+
 .classpath
 .settings/
 .loadpath
+.gradle
+.idea/
 
+.DS_Store
+/build
 # External tool builders
 .externalToolBuilders/
 
 # Locally stored "Eclipse launch configurations"
 *.launch
-
+nethunter-app.iml
 # CDT-specific
 .cproject
 

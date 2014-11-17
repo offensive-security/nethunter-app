@@ -7,17 +7,17 @@
 
     <item
         android:id="@+id/admin"
-        android:title="Admin"
+        android:title="@string/admin"
         android:showAsAction="never" />
 
     <item
         android:id="@+id/start_service"
-        android:title="Execute"
+        android:title="@string/execute"
         android:showAsAction="never" />
 
     <item
         android:id="@+id/stop_service"
-        android:title="Reset USB"
+        android:title="@string/reset_usb"
         android:showAsAction="never" />
 
 

@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:id="@+id/bgHome"
         android:layout_alignParentTop="true"
-
+        android:contentDescription="@string/app_name"
         android:alpha="0.05"
         android:scaleType="centerCrop"
         />

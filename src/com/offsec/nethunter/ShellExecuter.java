@@ -16,39 +16,37 @@ public class ShellExecuter {
     }
 
     public String Executer(String command) {
-        StringBuffer output = new StringBuffer();
+        StringBuilder output = new StringBuilder();
         Process p;
         try {
             p = Runtime.getRuntime().exec(command);
             p.waitFor();
             BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line = "";
+            String line;
             while ((line = reader.readLine()) != null) {
-                output.append(line + "\n");
+                output.append(line).append("\n");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String response = output.toString();
-        return response;
+        return output.toString();
     }
 
     public String Executer(String command[]) {
-        StringBuffer output = new StringBuffer();
+        StringBuilder output = new StringBuilder();
         Process p;
         try {
             p = Runtime.getRuntime().exec(command);
             p.waitFor();
             BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line = "";
+            String line;
             while ((line = reader.readLine()) != null) {
-                output.append(line + "\n");
+                output.append(line).append("\n");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String response = output.toString();
-        return response;
+        return output.toString();
     }
 
     public void RunAsRoot(String[] command) {
@@ -73,7 +71,7 @@ public class ShellExecuter {
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
             String str = "";
-            String s = null;
+            String s;
             while ((s = stdInput.readLine()) != null) {
                 str += s;
             }
