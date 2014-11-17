@@ -1,6 +1,5 @@
 package com.offsec.nethunter;
 
-import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
