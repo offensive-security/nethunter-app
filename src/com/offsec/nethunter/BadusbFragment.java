@@ -1,15 +1,11 @@
 package com.offsec.nethunter;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 //import android.app.Fragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -93,10 +89,13 @@ public class BadusbFragment extends Fragment {
     	String source = ((AppNavHomeActivity) getActivity()).readConfigFile(configFilePath);
         EditText ifc = (EditText) arg0.findViewById(R.id.ifc);
         source = source.replaceAll("(?m)^INTERFACE=(.*)$", "INTERFACE=" + ifc.getText().toString());
-        updateConfigFile(source);
-        ((AppNavHomeActivity) getActivity()).showMessage("Options updated!");
+        Boolean r = ((AppNavHomeActivity) getActivity()).updateConfigFile(configFilePath, source);
+        if (r) {
+        	((AppNavHomeActivity) getActivity()).showMessage("Options updated!");
+        } else {
+        	((AppNavHomeActivity) getActivity()).showMessage("Options not updated!");
+        }
     }
-
 
     public void start() {
         ShellExecuter exe = new ShellExecuter();
@@ -110,21 +109,5 @@ public class BadusbFragment extends Fragment {
         String[] command = {"stop-badusb"};
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("BadUSB attack stopped!");
-    }
-
-    private void updateConfigFile(String source) {
-        try {
-            File sdcard = Environment.getExternalStorageDirectory();
-            File myFile = new File(sdcard, configFilePath);
-            myFile.createNewFile();
-            FileOutputStream fOut = new FileOutputStream(myFile);
-            OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-            myOutWriter.append(source);
-            myOutWriter.close();
-            fOut.close();
-            ((AppNavHomeActivity) getActivity()).showMessage("Source updated!");
-        } catch (Exception e) {
-            ((AppNavHomeActivity) getActivity()).showMessage(e.getMessage());
-        }
     }
 }

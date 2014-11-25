@@ -1,8 +1,5 @@
 package com.offsec.nethunter;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,7 +7,6 @@ import java.util.regex.Pattern;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 //import android.app.Fragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -134,7 +130,6 @@ public class DnsmasqFragment extends Fragment {
                 dhcpOption2.setText(item);
             }
         }
-
     }
 
     @Override
@@ -159,8 +154,6 @@ public class DnsmasqFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
-
-
     }
 
     public void updateOptions(View arg0) {
@@ -212,10 +205,13 @@ public class DnsmasqFragment extends Fragment {
                 source = source.replace(matcherDhcpOption.group(0), "dhcp-option" + dhcpOption2.getText().toString());
             }
         }
-        updateConfigFile(source);
-        ((AppNavHomeActivity) getActivity()).showMessage("Options updated!");
+        Boolean r = ((AppNavHomeActivity) getActivity()).updateConfigFile(configFilePath, source);
+        if (r) {
+        	((AppNavHomeActivity) getActivity()).showMessage("Options updated!");
+        } else {
+        	((AppNavHomeActivity) getActivity()).showMessage("Options not updated!");
+        }
     }
-
 
     public void start() {
         ShellExecuter exe = new ShellExecuter();
@@ -229,21 +225,5 @@ public class DnsmasqFragment extends Fragment {
         String[] command = {"stop-dnsmasq"};
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("Dnsmasq stopped!");
-    }
-
-    private void updateConfigFile(String source) {
-        try {
-            File sdcard = Environment.getExternalStorageDirectory();
-            File myFile = new File(sdcard, configFilePath);
-            myFile.createNewFile();
-            FileOutputStream fOut = new FileOutputStream(myFile);
-            OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-            myOutWriter.append(source);
-            myOutWriter.close();
-            fOut.close();
-            ((AppNavHomeActivity) getActivity()).showMessage("Source updated");
-        } catch (Exception e) {
-            ((AppNavHomeActivity) getActivity()).showMessage(e.getMessage());
-        }
     }
 }
