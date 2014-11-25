@@ -57,7 +57,7 @@ public class HidActivity extends FragmentActivity implements ActionBar.TabListen
         setContentView(R.layout.hid);
         if (Build.VERSION.SDK_INT >= 21) {
             // detail for android 5 devices
-            getWindow().setStatusBarColor(getResources().getColor(R.color.darkTitle));
+          //  getWindow().setStatusBarColor(getResources().getColor(R.color.darkTitle));
 
         }
         mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(getSupportFragmentManager());
@@ -67,7 +67,7 @@ public class HidActivity extends FragmentActivity implements ActionBar.TabListen
         actionBar.setHomeButtonEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager = (ViewPager) findViewById(R.id.pagerHid);
         mViewPager.setAdapter(mAppSectionsPagerAdapter);
 
         mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {

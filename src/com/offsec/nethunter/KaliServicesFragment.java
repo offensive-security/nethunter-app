@@ -1,7 +1,8 @@
 package com.offsec.nethunter;
 
 import android.app.Activity;
-import android.app.Fragment;
+//import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -58,8 +59,6 @@ public class KaliServicesFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.kali_services, container, false);
         checkServices(rootView);
-
-
         return rootView;
     }
 

@@ -1,7 +1,8 @@
 package com.offsec.nethunter;
 
 import android.app.Activity;
-import android.app.Fragment;
+//import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.LayoutInflater;

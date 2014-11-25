@@ -1,21 +1,5 @@
 package com.offsec.nethunter;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Environment;
-import android.support.v4.app.NavUtils;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.Toast;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,37 +10,80 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class DnsmasqActivity extends Activity {
+
+
+
+
+
+
+//import android.app.Fragment;
+import android.support.v4.app.Fragment;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+public class DnsmasqFragment extends Fragment {
 
     private String configFilePath = "files/dnsmasq.conf";
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.dnsmasq);
-        if (Build.VERSION.SDK_INT >= 21) {
-            // detail for android 5 devices
-            getWindow().setStatusBarColor(getResources().getColor(R.color.darkTitle));
-
-        }
-        loadOptions();
-        ActionBarCompat.setDisplayHomeAsUpEnabled(this);
+    
+    int ARG_SECTION_NUMBER;
+    String ARG_ACTIVITY_NAME;
+    
+    public DnsmasqFragment(int sectionNumber, String activityName) {
+        ARG_SECTION_NUMBER = sectionNumber;
+        ARG_ACTIVITY_NAME = activityName;
     }
+    
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        View rootView = inflater.inflate(R.layout.dnsmasq, container, false);
+        loadOptions(rootView);
+        
+        final Button button = (Button) rootView.findViewById(R.id.updateOptions);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	updateOptions(v);
+            }    
+        });
+        setHasOptionsMenu(true);
+        return rootView;
+    }
+    
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        ((AppNavHomeActivity) activity).onSectionAttached(ARG_SECTION_NUMBER);
+    }
+    
     @Override
     public void onResume() {
         super.onResume();
-        loadOptions();
+        loadOptions(getView().getRootView());
     }
 
-    private void loadOptions() {
+
+    private void loadOptions(final View rootView) {
         String text = readConfigFile();
 
-	        /*
-	         * Addresses
-	         */
-        EditText address1 = (EditText) findViewById(R.id.address1);
-        EditText address2 = (EditText) findViewById(R.id.address2);
+        /*
+		* Addresses
+		*/
+        EditText address1 = (EditText) rootView.findViewById(R.id.address1);
+        EditText address2 = (EditText) rootView.findViewById(R.id.address2);
         String regExPatAddress = "^#{0,1}address=(.*)$";
         Pattern patternAddress = Pattern.compile(regExPatAddress, Pattern.MULTILINE);
         Matcher matcherAddress = patternAddress.matcher(text);
@@ -75,10 +102,10 @@ public class DnsmasqActivity extends Activity {
                 address2.setText(item);
             }
         }
-	        /*
-	         * Interface
-	         */
-        EditText ifc = (EditText) findViewById(R.id.ifc);
+        /*
+         * Interface
+         */
+        EditText ifc = (EditText) rootView.findViewById(R.id.ifc);
         String regExpatInterface = "^interface=(.*)$";
         Pattern patternIfc = Pattern.compile(regExpatInterface, Pattern.MULTILINE);
         Matcher matcherIfc = patternIfc.matcher(text);
@@ -86,10 +113,10 @@ public class DnsmasqActivity extends Activity {
             String ifcValue = matcherIfc.group(1);
             ifc.setText(ifcValue);
         }
-	        /*
-	         * dhcp range
-	         */
-        EditText dhcpRange = (EditText) findViewById(R.id.dhcpRange);
+        /*
+         * dhcp range
+         */
+        EditText dhcpRange = (EditText) rootView.findViewById(R.id.dhcpRange);
         String regExpatDhcpRange = "^dhcp-range=(.*)$";
         Pattern patternDhcpRange = Pattern.compile(regExpatDhcpRange, Pattern.MULTILINE);
         Matcher matcherDhcpRange = patternDhcpRange.matcher(text);
@@ -97,11 +124,11 @@ public class DnsmasqActivity extends Activity {
             String dhcpRangeValue = matcherDhcpRange.group(1);
             dhcpRange.setText(dhcpRangeValue);
         }
-	        /*
-	         * dhcp options
-	         */
-        EditText dhcpOption1 = (EditText) findViewById(R.id.dhcpOption1);
-        EditText dhcpOption2 = (EditText) findViewById(R.id.dhcpOption2);
+        /*
+         * dhcp options
+         */
+        EditText dhcpOption1 = (EditText) rootView.findViewById(R.id.dhcpOption1);
+        EditText dhcpOption2 = (EditText) rootView.findViewById(R.id.dhcpOption2);
         String regExPatDhcpOption = "dhcp-option=(.*)$";
         Pattern patternDhcpOption = Pattern.compile(regExPatDhcpOption, Pattern.MULTILINE);
         Matcher matcherDhcpOption = patternDhcpOption.matcher(text);
@@ -124,19 +151,13 @@ public class DnsmasqActivity extends Activity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu items for use in the action bar
-        MenuInflater inflater = getMenuInflater();
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.dnsmasq, menu);
-        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
             case R.id.start_service:
                 start();
                 return true;
@@ -144,9 +165,9 @@ public class DnsmasqActivity extends Activity {
                 stop();
                 return true;
             case R.id.source_button:
-                Intent i = new Intent(this, EditSourceActivity.class);
+            	Intent i = new Intent(getActivity(), EditSourceActivity.class);
                 i.putExtra("path", configFilePath);
-                startActivity(i);
+                getActivity().startActivity(i);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -157,12 +178,12 @@ public class DnsmasqActivity extends Activity {
 
     public void updateOptions(View arg0) {
 
-        EditText address1 = (EditText) findViewById(R.id.address1);
-        EditText address2 = (EditText) findViewById(R.id.address2);
-        EditText ifc = (EditText) findViewById(R.id.ifc);
-        EditText dhcpRange = (EditText) findViewById(R.id.dhcpRange);
-        EditText dhcpOption1 = (EditText) findViewById(R.id.dhcpOption1);
-        EditText dhcpOption2 = (EditText) findViewById(R.id.dhcpOption2);
+        EditText address1 = (EditText) getActivity().findViewById(R.id.address1);
+        EditText address2 = (EditText) getActivity().findViewById(R.id.address2);
+        EditText ifc = (EditText) getActivity().findViewById(R.id.ifc);
+        EditText dhcpRange = (EditText) getActivity().findViewById(R.id.dhcpRange);
+        EditText dhcpOption1 = (EditText) getActivity().findViewById(R.id.dhcpOption1);
+        EditText dhcpOption2 = (EditText) getActivity().findViewById(R.id.dhcpOption2);
 
         String source = readConfigFile();
         String regExPatAddress = "^#{0,1}address=(.*)$";
@@ -205,7 +226,7 @@ public class DnsmasqActivity extends Activity {
             }
         }
         updateConfigFile(source);
-        showMessage("Options updated");
+        ((AppNavHomeActivity) getActivity()).showMessage("Options updated!");
     }
 
 
@@ -213,22 +234,14 @@ public class DnsmasqActivity extends Activity {
         ShellExecuter exe = new ShellExecuter();
         String[] command = {"start-dnsmasq"};
         exe.RunAsRoot(command);
-        showMessage("Dnsmasq started");
+        ((AppNavHomeActivity) getActivity()).showMessage("Dnsmasq started!");
     }
 
     public void stop() {
         ShellExecuter exe = new ShellExecuter();
         String[] command = {"stop-dnsmasq"};
         exe.RunAsRoot(command);
-        showMessage("Dnsmasq stopped");
-    }
-
-    private void showMessage(String message) {
-        Context context = getApplicationContext();
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context, message, duration);
-        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
-        toast.show();
+        ((AppNavHomeActivity) getActivity()).showMessage("Dnsmasq stopped!");
     }
 
     private void updateConfigFile(String source) {
@@ -241,9 +254,9 @@ public class DnsmasqActivity extends Activity {
             myOutWriter.append(source);
             myOutWriter.close();
             fOut.close();
-            showMessage("Source updated");
+            ((AppNavHomeActivity) getActivity()).showMessage("Source updated");
         } catch (Exception e) {
-            showMessage(e.getMessage());
+            ((AppNavHomeActivity) getActivity()).showMessage(e.getMessage());
         }
     }
 

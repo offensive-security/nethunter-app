@@ -23,14 +23,7 @@
             android:text="@string/iptables_description"
             android:padding="4dp" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/source"
-            android:textSize="22sp"
-            android:padding="4dp" />
-
-
+       
         <EditText
             android:id="@+id/source"
             android:layout_width="fill_parent"
@@ -47,8 +40,6 @@
             android:id="@+id/update"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/update"
-            android:onClick="updateSource" />
-
+            android:text="@string/update" />
     </LinearLayout>
 </ScrollView>

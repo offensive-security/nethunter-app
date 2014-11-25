@@ -54,7 +54,7 @@ public class ManaActivity extends FragmentActivity implements ActionBar.TabListe
 
         if (Build.VERSION.SDK_INT >= 21) {
             // detail for android 5 devices
-            getWindow().setStatusBarColor(getResources().getColor(R.color.darkTitle));
+           // getWindow().setStatusBarColor(getResources().getColor(R.color.darkTitle));
         }
         mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(getSupportFragmentManager());
 
@@ -63,7 +63,7 @@ public class ManaActivity extends FragmentActivity implements ActionBar.TabListe
         actionBar.setHomeButtonEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager = (ViewPager) findViewById(R.id.pagerMana);
         mViewPager.setAdapter(mAppSectionsPagerAdapter);
 
         mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
