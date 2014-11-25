@@ -68,37 +68,15 @@ class HidFragment extends Fragment implements ActionBar.TabListener 	{
 		 View rootView = inflater.inflate(R.layout.hid, container, false);
 		 TabsPagerAdapter = new TabsPagerAdapter(getActivity().getSupportFragmentManager());
 		 
-		 //final ActionBar actionBar = getActivity().getActionBar();
-		 //actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		 //actionBar.setHomeButtonEnabled(false);
-		 //actionBar.setDisplayHomeAsUpEnabled(true);
-		 //actionBar.setDisplayShowTitleEnabled(false);
-		 
-
-
 		 mViewPager = (ViewPager) rootView.findViewById(R.id.pagerHid);
 		 mViewPager.setAdapter(TabsPagerAdapter);
 
 		 mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 			 @Override
 			 public void onPageSelected(int position) {
-				 //actionBar.setSelectedNavigationItem(position);
 				 getActivity().invalidateOptionsMenu();
 			 }
 		 });
-		    
-		 /*
-		 Tab tab1 = actionBar.newTab()
-                 .setText("PowerSploit")
-                 .setTabListener(this);
-		 actionBar.addTab(tab1);
-
-		 
-		 Tab tab2 = actionBar.newTab()
-                 .setText("Windows CMD")
-                 .setTabListener(this);
-		 actionBar.addTab(tab2);
-		 */
 		 setHasOptionsMenu(true);
 		 return rootView;
 	 }

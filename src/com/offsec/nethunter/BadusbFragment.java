@@ -1,10 +1,7 @@
 package com.offsec.nethunter;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,7 +12,6 @@ import android.os.Bundle;
 import android.os.Environment;
 //import android.app.Fragment;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -57,7 +53,7 @@ public class BadusbFragment extends Fragment {
     
     
     private void loadOptions(View rootView) {
-        String text = readConfigFile();
+    	String text = ((AppNavHomeActivity) getActivity()).readConfigFile(configFilePath);
 
         EditText ifc = (EditText) rootView.findViewById(R.id.ifc);
         String regExpatInterface = "^INTERFACE=(.*)$";
@@ -94,7 +90,7 @@ public class BadusbFragment extends Fragment {
     }
 
     public void updateOptions(View arg0) {
-        String source = readConfigFile();
+    	String source = ((AppNavHomeActivity) getActivity()).readConfigFile(configFilePath);
         EditText ifc = (EditText) arg0.findViewById(R.id.ifc);
         source = source.replaceAll("(?m)^INTERFACE=(.*)$", "INTERFACE=" + ifc.getText().toString());
         updateConfigFile(source);
@@ -130,23 +126,5 @@ public class BadusbFragment extends Fragment {
         } catch (Exception e) {
             ((AppNavHomeActivity) getActivity()).showMessage(e.getMessage());
         }
-    }
-
-    private String readConfigFile() {
-        File sdcard = Environment.getExternalStorageDirectory();
-        File file = new File(sdcard, configFilePath);
-        StringBuilder text = new StringBuilder();
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = br.readLine()) != null) {
-                text.append(line);
-                text.append('\n');
-            }
-            br.close();
-        } catch (IOException e) {
-            Log.e("Nethunter", "exception", e);
-        }
-        return text.toString();
     }
 }

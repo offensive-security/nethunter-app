@@ -1,30 +1,18 @@
 package com.offsec.nethunter;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
-
-
-
-
-
-//import android.app.Fragment;
-import android.support.v4.app.Fragment;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
-import android.view.Gravity;
+//import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,7 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 public class DnsmasqFragment extends Fragment {
 
@@ -77,7 +64,7 @@ public class DnsmasqFragment extends Fragment {
 
 
     private void loadOptions(final View rootView) {
-        String text = readConfigFile();
+    	String text = ((AppNavHomeActivity) getActivity()).readConfigFile(configFilePath);
 
         /*
 		* Addresses
@@ -185,7 +172,7 @@ public class DnsmasqFragment extends Fragment {
         EditText dhcpOption1 = (EditText) getActivity().findViewById(R.id.dhcpOption1);
         EditText dhcpOption2 = (EditText) getActivity().findViewById(R.id.dhcpOption2);
 
-        String source = readConfigFile();
+        String source = ((AppNavHomeActivity) getActivity()).readConfigFile(configFilePath);
         String regExPatAddress = "^#{0,1}address=(.*)$";
         Pattern patternAddress = Pattern.compile(regExPatAddress, Pattern.MULTILINE);
         Matcher matcherAddress = patternAddress.matcher(source);
@@ -258,23 +245,5 @@ public class DnsmasqFragment extends Fragment {
         } catch (Exception e) {
             ((AppNavHomeActivity) getActivity()).showMessage(e.getMessage());
         }
-    }
-
-    private String readConfigFile() {
-        File sdcard = Environment.getExternalStorageDirectory();
-        File file = new File(sdcard, configFilePath);
-        StringBuilder text = new StringBuilder();
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = br.readLine()) != null) {
-                text.append(line);
-                text.append('\n');
-            }
-            br.close();
-        } catch (IOException e) {
-            Log.e("Nethunter", "exception", e);
-        }
-        return text.toString();
     }
 }

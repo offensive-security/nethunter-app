@@ -173,13 +173,6 @@ public class HidActivity extends FragmentActivity implements ActionBar.TabListen
         exe.RunAsRoot(command);
         showMessage("Reseting USB");
     }
-    //
-    // this never is called
-    //
-    // public void onPageSelected(int pageNum) {
-    //    int currentposition = pageNum;
-    //    invalidateOptionsMenu();
-    // }
 
     public void openDialog() {
 

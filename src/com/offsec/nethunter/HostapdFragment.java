@@ -1,21 +1,13 @@
 package com.offsec.nethunter;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 //import android.app.Fragment;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -103,7 +95,7 @@ public class HostapdFragment extends Fragment {
 	    }
 	    
 	    private void loadOptions(final View rootView) {
-	        String text = readConfigFile();
+	    	String text = ((AppNavHomeActivity) getActivity()).readConfigFile(configFilePath);
 	        /*
 	         * Interface
 	         */
@@ -163,7 +155,7 @@ public class HostapdFragment extends Fragment {
 	    }
 	    
 	    public void updateOptions(View arg0) {
-	        String source = readConfigFile();
+	        String source = ((AppNavHomeActivity) getActivity()).readConfigFile(configFilePath);
 	        EditText ifc = (EditText) getActivity().findViewById(R.id.ifc);
 	        EditText bssid = (EditText) getActivity().findViewById(R.id.bssid);
 	        EditText ssid = (EditText) getActivity().findViewById(R.id.ssid);
@@ -176,43 +168,11 @@ public class HostapdFragment extends Fragment {
 	        source = source.replaceAll("(?m)^channel=(.*)$", "channel=" + channel.getText().toString());
 	        source = source.replaceAll("(?m)^enable_karma=(.*)$", "enable_karma=" + enableKarma.getText().toString());
 
-	        updateConfigFile(source);
-	        ((AppNavHomeActivity) getActivity()).showMessage("Options updated!");
-	        
-	    }
-	    
-	    
-	    private String readConfigFile() {
-	        File sdcard = Environment.getExternalStorageDirectory();
-	        File file = new File(sdcard, configFilePath);
-	        StringBuilder text = new StringBuilder();
-	        try {
-	            BufferedReader br = new BufferedReader(new FileReader(file));
-	            String line;
-	            while ((line = br.readLine()) != null) {
-	                text.append(line);
-	                text.append('\n');
-	            }
-	            br.close();
-	        } catch (IOException e) {
-	            Log.e("Nethunter", "exception", e);
-	        }
-	        return text.toString();
-	    }
-	    
-	    private void updateConfigFile(String source) {
-	        try {
-	            File sdcard = Environment.getExternalStorageDirectory();
-	            File myFile = new File(sdcard, configFilePath);
-	            myFile.createNewFile();
-	            FileOutputStream fOut = new FileOutputStream(myFile);
-	            OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-	            myOutWriter.append(source);
-	            myOutWriter.close();
-	            fOut.close();
-	            ((AppNavHomeActivity) getActivity()).showMessage("Source updated!");
-	        } catch (Exception e) {
-	            ((AppNavHomeActivity) getActivity()).showMessage(e.getMessage());
+	        boolean r = ((AppNavHomeActivity) getActivity()).updateConfigFile(configFilePath, source);
+	        if (r) {
+	        	((AppNavHomeActivity) getActivity()).showMessage("Options updated!");
+	        } else {
+	        	((AppNavHomeActivity) getActivity()).showMessage("There was a problem with updating options!");
 	        }
 	    }
 }

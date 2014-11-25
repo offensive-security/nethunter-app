@@ -1,5 +1,12 @@
 package com.offsec.nethunter;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+
 import android.app.ActionBar;
 //import android.app.Fragment;
 //import android.app.FragmentManager;
@@ -13,11 +20,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 
 public class AppNavHomeActivity extends FragmentActivity
         implements SideMenu.NavigationDrawerCallbacks {
@@ -49,8 +56,7 @@ public class AppNavHomeActivity extends FragmentActivity
 
         if (Build.VERSION.SDK_INT >= 21) {
             // detail for android 5 devices
-            //getWindow().setStatusBarColor(getResources().getColor(R.color.darkTitle));
-
+        	getWindow().setStatusBarColor(getResources().getColor(R.color.darkTitle));
         }
 
         mNavigationDrawerFragment = (SideMenu)
@@ -172,6 +178,42 @@ public class AppNavHomeActivity extends FragmentActivity
 		 toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
 		 toast.show();
 	 }
+    
+    
+    public String readConfigFile(String configFilePath) {
+        File sdcard = Environment.getExternalStorageDirectory();
+        File file = new File(sdcard, configFilePath);
+        StringBuilder text = new StringBuilder();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = br.readLine()) != null) {
+                text.append(line);
+                text.append('\n');
+            }
+            br.close();
+        } catch (IOException e) {
+            Log.e("Nethunter", "exception", e);
+        }
+        return text.toString();
+    }
+    
+    public boolean updateConfigFile(String configFilePath, String source) {
+        try {
+            File sdcard = Environment.getExternalStorageDirectory();
+            File myFile = new File(sdcard, configFilePath);
+            myFile.createNewFile();
+            FileOutputStream fOut = new FileOutputStream(myFile);
+            OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+            myOutWriter.append(source);
+            myOutWriter.close();
+            fOut.close();
+            return true;
+        } catch (Exception e) {
+        	showMessage(e.getMessage());
+        	return false;
+        }
+    }
 
 
 }
