@@ -137,7 +137,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
                     command[0] = "su -c bootkali start-rev-met-elevated-win7";
                     break;
                 default:
-                    command[0] = "su -c bootkali start-rev-met";
+                    command[0] = "su -c bootkali start-rev-met-elevated-win8";
                     break;
             }
         } else if (pageNum == 1) {
