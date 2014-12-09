@@ -37,7 +37,7 @@ public class KaliLauncherFragment extends Fragment {
                 Intent intent =
                         new Intent("jackpal.androidterm.RUN_SCRIPT");
                 intent.addCategory(Intent.CATEGORY_DEFAULT);
-                intent.putExtra("jackpal.androidterm.iInitialCommand", "su\nbootkali");
+                intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c bootkali");
                 startActivity(intent);
             }
         }, rootView);
@@ -49,7 +49,7 @@ public class KaliLauncherFragment extends Fragment {
                 Intent intent =
                         new Intent("jackpal.androidterm.RUN_SCRIPT");
                 intent.addCategory(Intent.CATEGORY_DEFAULT);
-                intent.putExtra("jackpal.androidterm.iInitialCommand", "su\nbootkali\nkalimenu");
+                intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c bootkali kalimenu");
                 startActivity(intent);
             }
         }, rootView);
@@ -61,7 +61,7 @@ public class KaliLauncherFragment extends Fragment {
                 Intent intent =
                         new Intent("jackpal.androidterm.RUN_SCRIPT");
                 intent.addCategory(Intent.CATEGORY_DEFAULT);
-                intent.putExtra("jackpal.androidterm.iInitialCommand", "su\nkillkali");
+                intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c killkali");
                 startActivity(intent);
             }
         }, rootView);
@@ -73,7 +73,7 @@ public class KaliLauncherFragment extends Fragment {
                 Intent intent =
                         new Intent("jackpal.androidterm.RUN_SCRIPT");
                 intent.addCategory(Intent.CATEGORY_DEFAULT);
-                intent.putExtra("jackpal.androidterm.iInitialCommand", "su\nstart-wifite");
+                intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c bootkali wifite");
                 startActivity(intent);
             }
         }, rootView);
