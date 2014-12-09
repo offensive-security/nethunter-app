@@ -89,14 +89,14 @@ public class HostapdFragment extends Fragment {
 
     public void startHostapd() {
         ShellExecuter exe = new ShellExecuter();
-        String[] command = {"start-hostapd &"};
+        String[] command = {"su -c bootkali hostapd start"};
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("Hostapd started!");
     }
 
     public void stopHostapd() {
         ShellExecuter exe = new ShellExecuter();
-        String[] command = {"stop-hostapd"};
+        String[] command = {"su -c bootkali hostapd stop"};
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("Hostapd stopped!");
     }

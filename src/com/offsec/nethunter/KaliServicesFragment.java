@@ -31,21 +31,17 @@ public class KaliServicesFragment extends Fragment {
         KaliServices = new String[][]{
 
                 // name, check  cmd, start cmd, stop cmd, state
-                // since the script check-kaliweb isnt in the master i coment lighttp here
-                //{"Lighttpd", "sh /system/xbin/check-kaliweb","start-web","stop-web"},
 
-                {"SSH", "sh /system/xbin/check-kalissh", "start-ssh", "stop-ssh"},
-                {"Dnsmasq", "sh /system/xbin/check-kalidnsmq", "start-dnsmasq", "stop-dnsmasq"},
-                {"Hostapd", "sh /system/xbin/check-kalihostapd", "start-hostapd &", "stop-hostapd"},
-                {"VPN", "sh /system/xbin/check-kalivpn", "start-vpn", "stop-vpn"},
-                {"Apache", "sh /system/xbin/check-kaliapache", "start-apache", "stop-apache"},
-                {"Metasploit", "sh /system/xbin/check-kalimetasploit", "start-msf", "stop-msf"},
-
-                // {"DHCP", "sh /system/xbin/check-kalidhcp","NOSCRIPT","NOSCRIPT"},
+                {"SSH", "sh /system/xbin/check-kalissh", "su -c bootkali ssh start", "su -c bootkali ssh stop"},
+                {"Dnsmasq", "sh /system/xbin/check-kalidnsmq", "su -c bootkali dnsmasq start", "su -c bootkali dnsmasq stop"},
+                {"Hostapd", "sh /system/xbin/check-kalihostapd", "su -c bootkali hostapd start", "su -c bootkali hostapd stop"},
+                {"OpenVPN", "sh /system/xbin/check-kalivpn", "su -c bootkali openvpn start", "su -c bootkali openvpn stop"},
+                {"Apache", "sh /system/xbin/check-kaliapache", "su -c bootkali apache start", "su -c bootkali apache stop"},
+                {"Metasploit", "sh /system/xbin/check-kalimetasploit", "su -c bootkali msf start", "su -c bootkali msf stop"},
+                {"DHCP", "sh /system/xbin/check-kalidhcp","su -c bootkali dhcp start","su -c bootkali dhcp stop"},
+                {"BeefXSS", "sh /system/xbin/check-kalibeef-xss","su -c bootkali beef-xss start","su -c bootkali beef-xss stop"}
                 // the stop script isnt working well, doing a raw cmd instead to stop vnc
                 // {"VNC", "sh /system/xbin/check-kalivnc", "bootkali\nvncserver", "bootkali\nkill $(ps aux | grep 'Xtightvnc' | awk '{print $2}');CT=0;for x in $(ps aux | grep 'Xtightvnc' | awk '{print $2}'); do CT=$[$CT +1];tightvncserver -kill :$CT; done;rm /root/.vnc/*.log;rm -r /tmp/.X*"},
-                // REMOVE THE INTENT FROM THE SCRIPT start-beef-xss!!! (sleep 35 \n am start -a android.intent.action.VIEW -d http://127.0.0.1:3000/ui/panel) not needed there.
-                // {"BeefXSS", "sh /system/xbin/check-kalibeef-xss","start-beef-xss","stop-beef-xss"}
         };
     }
     /**

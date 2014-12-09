@@ -129,22 +129,22 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
                 String command;
                 switch (selectedScriptIndex) {
                     case 0:
-                        command = "start-mana-full &> /sdcard/htdocs/mana.log &";
+                        command = "su -c bootkali mana-full start";
                         break;
                     case 1:
-                        command = "start-mana-simple &> /sdcard/htdocs/mana.log &";
+                        command = "su -c bootkali mana-simple start";
                         break;
                     case 2:
-                        command = "start-mana-noup &> /sdcard/htdocs/mana.log &";
+                        command = "su -c bootkali mana-noup start";
                         break;
                     case 3:
-                        command = "start-mana-noupeap &> /sdcard/htdocs/mana.log &";
+                        command = "su -c bootkali mana-noupeap start";
                         break;
                     default:
                         ((AppNavHomeActivity) getActivity()).showMessage("Invalid script!");
                         return;
                 }
-                String[] commands = {"sh", "-c", command};
+                String[] commands = {command};
                 ShellExecuter exe = new ShellExecuter();
                 exe.RunAsRoot(commands);
                 ((AppNavHomeActivity) getActivity()).showMessage("Attack executed!");
@@ -168,7 +168,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
 
     private void stopMana() {
         ShellExecuter exe = new ShellExecuter();
-        String[] command = {"stop-mana"};
+        String[] command = {"su -c bootkali mana stop"};
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("Mana Stopped");
     }
