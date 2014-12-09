@@ -131,25 +131,25 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
         if (pageNum == 0) {
             switch (selectedPlatformIndex) {
                 case 0:
-                    command[0] = "start-rev-met";
+                    command[0] = "su -c bootkali start-rev-met";
                     break;
                 case 1:
-                    command[0] = "start-rev-met-elevated-win7";
+                    command[0] = "su -c bootkali start-rev-met-elevated-win7";
                     break;
                 default:
-                    command[0] = "start-rev-met-elevated-win8";
+                    command[0] = "su -c bootkali start-rev-met";
                     break;
             }
         } else if (pageNum == 1) {
             switch (selectedPlatformIndex) {
                 case 0:
-                    command[0] = "start-hid-cmd";
+                    command[0] = "su -c bootkali hid-cmd";
                     break;
                 case 1:
-                    command[0] = "start-hid-cmd-elevated-win7";
+                    command[0] = "su -c bootkali hid-cmd-elevated-win7";
                     break;
                 default:
-                    command[0] = "start-hid-cmd-elevated-win8";
+                    command[0] = "su -c bootkali hid-cmd-elevated-win8";
                     break;
             }
         }
@@ -245,8 +245,8 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
     }
 
     public static class PowerSploitFragment extends Fragment implements OnClickListener {
-
-        private String configFilePath = "/data/local/kali-armhf/var/www/payload";
+        // NOT WORKING???
+        private String configFilePath = "/data/local/kali-armhf/var/www/payload"; //this file exists? can be files/powersploit-payload instead?
         private String configFileUrlPath = "files/powersploit-url";
 
         @Override
@@ -301,6 +301,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
                     String regExPat = "^Invoke-Shellcode -Payload(.*)$";
                     Pattern pattern = Pattern.compile(regExPat, Pattern.MULTILINE);
                     Matcher matcher = pattern.matcher(source);
+                    // NEVER MATCH?
                     if (matcher.find()) {
                         source = source.replace(matcher.group(0), newString);
                         String[] command = {"sh", "-c", "cat <<'EOF' > " + configFilePath + "\n" + source + "\nEOF"};

@@ -219,14 +219,14 @@ public class DnsmasqFragment extends Fragment {
 
     public void start() {
         ShellExecuter exe = new ShellExecuter();
-        String[] command = {"start-dnsmasq"};
+        String[] command = {"su -c bootkali dnsmasq start"};
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("Dnsmasq started!");
     }
 
     public void stop() {
         ShellExecuter exe = new ShellExecuter();
-        String[] command = {"stop-dnsmasq"};
+        String[] command = {"su -c bootkali dnsmasq stop"};
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("Dnsmasq stopped!");
     }

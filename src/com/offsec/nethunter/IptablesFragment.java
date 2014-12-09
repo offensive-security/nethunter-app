@@ -113,14 +113,14 @@ public class IptablesFragment extends Fragment {
 
     public void runIptables() {
         ShellExecuter exe = new ShellExecuter();
-        String[] command = {"start-iptables"};
+        String[] command = {"su -c bootkali iptables"};
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("Iptables started");
     }
 
     public void flushIptables() {
         ShellExecuter exe = new ShellExecuter();
-        String[] command = {"iptables-flush"};
+        String[] command = {"iptables-flush"}; // still works well
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("Iptables flushed");
     }
