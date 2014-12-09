@@ -39,7 +39,7 @@ public class KaliServicesFragment extends Fragment {
                 {"Apache", "sh /system/xbin/check-kaliapache", "su -c bootkali apache start", "su -c bootkali apache stop"},
                 {"Metasploit", "sh /system/xbin/check-kalimetasploit", "su -c bootkali msf start", "su -c bootkali msf stop"},
                 {"DHCP", "sh /system/xbin/check-kalidhcp","su -c bootkali dhcp start","su -c bootkali dhcp stop"},
-                {"BeefXSS", "sh /system/xbin/check-kalibeef-xss","start-beef-xss","stop-beef-xss"}
+                {"BeefXSS", "sh /system/xbin/check-kalibeef-xss","su -c bootkali beef-xss start","su -c bootkali beef-xss stop"}
                 // the stop script isnt working well, doing a raw cmd instead to stop vnc
                 // {"VNC", "sh /system/xbin/check-kalivnc", "bootkali\nvncserver", "bootkali\nkill $(ps aux | grep 'Xtightvnc' | awk '{print $2}');CT=0;for x in $(ps aux | grep 'Xtightvnc' | awk '{print $2}'); do CT=$[$CT +1];tightvncserver -kill :$CT; done;rm /root/.vnc/*.log;rm -r /tmp/.X*"},
         };
