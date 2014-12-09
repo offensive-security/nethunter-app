@@ -21,19 +21,13 @@ public class KaliServicesFragment extends Fragment {
      * fragment.
      */
     private String[][] KaliServices;
-
-    int ARG_SECTION_NUMBER;
-    String ARG_ACTIVITY_NAME;
-
-    /**
-     * Returns a new instance of this fragment for the given section
-     * number.
-     */
+    private static final String ARG_SECTION_NUMBER = "section_number";
 
 
-    public KaliServicesFragment(int sectionNumber, String activityName) {
-        ARG_SECTION_NUMBER = sectionNumber;
-        ARG_ACTIVITY_NAME = activityName;
+
+
+
+    public KaliServicesFragment() {
         KaliServices = new String[][]{
 
                 // name, check  cmd, start cmd, stop cmd, state
@@ -46,6 +40,7 @@ public class KaliServicesFragment extends Fragment {
                 {"VPN", "sh /system/xbin/check-kalivpn", "start-vpn", "stop-vpn"},
                 {"Apache", "sh /system/xbin/check-kaliapache", "start-apache", "stop-apache"},
                 {"Metasploit", "sh /system/xbin/check-kalimetasploit", "start-msf", "stop-msf"},
+
                 // {"DHCP", "sh /system/xbin/check-kalidhcp","NOSCRIPT","NOSCRIPT"},
                 // the stop script isnt working well, doing a raw cmd instead to stop vnc
                 // {"VNC", "sh /system/xbin/check-kalivnc", "bootkali\nvncserver", "bootkali\nkill $(ps aux | grep 'Xtightvnc' | awk '{print $2}');CT=0;for x in $(ps aux | grep 'Xtightvnc' | awk '{print $2}'); do CT=$[$CT +1];tightvncserver -kill :$CT; done;rm /root/.vnc/*.log;rm -r /tmp/.X*"},
@@ -53,7 +48,17 @@ public class KaliServicesFragment extends Fragment {
                 // {"BeefXSS", "sh /system/xbin/check-kalibeef-xss","start-beef-xss","stop-beef-xss"}
         };
     }
-
+    /**
+     * Returns a new instance of this fragment for the given section
+     * number.
+     */
+    public static KaliServicesFragment newInstance(int sectionNumber) {
+        KaliServicesFragment fragment = new KaliServicesFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        fragment.setArguments(args);
+        return fragment;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -65,7 +70,7 @@ public class KaliServicesFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((AppNavHomeActivity) activity).onSectionAttached(ARG_SECTION_NUMBER);
+        ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
     private void checkServices(final View rootView) {

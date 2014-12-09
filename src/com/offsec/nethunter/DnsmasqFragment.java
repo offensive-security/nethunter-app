@@ -21,15 +21,19 @@ import android.widget.EditText;
 public class DnsmasqFragment extends Fragment {
 
     private String configFilePath = "files/dnsmasq.conf";
+    private static final String ARG_SECTION_NUMBER = "section_number";
+
     
-    int ARG_SECTION_NUMBER;
-    String ARG_ACTIVITY_NAME;
-    
-    public DnsmasqFragment(int sectionNumber, String activityName) {
-        ARG_SECTION_NUMBER = sectionNumber;
-        ARG_ACTIVITY_NAME = activityName;
+    public DnsmasqFragment() {
+
     }
-    
+    public static DnsmasqFragment newInstance(int sectionNumber) {
+        DnsmasqFragment fragment = new DnsmasqFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        fragment.setArguments(args);
+        return fragment;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -49,7 +53,7 @@ public class DnsmasqFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((AppNavHomeActivity) activity).onSectionAttached(ARG_SECTION_NUMBER);
+        ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
     }
     
     @Override

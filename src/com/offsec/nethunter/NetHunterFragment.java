@@ -24,8 +24,7 @@ public class NetHunterFragment extends Fragment {
      * fragment.
      */
 
-     int ARG_SECTION_NUMBER;
-     String ARG_ACTIVITY_NAME;
+    private static final String ARG_SECTION_NUMBER = "section_number";
 
     /**
      * Returns a new instance of this fragment for the given section
@@ -33,11 +32,15 @@ public class NetHunterFragment extends Fragment {
      */
 
 
-    public NetHunterFragment(int sectionNumber, String activityName) {
+    public NetHunterFragment() {
 
-        ARG_SECTION_NUMBER = sectionNumber;
-        ARG_ACTIVITY_NAME = activityName;
-
+    }
+    public static NetHunterFragment newInstance(int sectionNumber) {
+        NetHunterFragment fragment = new NetHunterFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -65,7 +68,7 @@ public class NetHunterFragment extends Fragment {
     public void onAttach(Activity activity) {
 
         super.onAttach(activity);
-        ((AppNavHomeActivity) activity).onSectionAttached(ARG_SECTION_NUMBER);
+        ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
 
     }
 
