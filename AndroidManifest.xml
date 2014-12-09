@@ -59,21 +59,6 @@
                 android:value=".AppNavHomeActivity" />
         </activity-alias>
 
-		<!--
-        <activity
-            android:name=".HidActivity"
-            android:label="@string/hid_label"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.SAMPLE_CODE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".AppNavHomeActivity" />
-        </activity>
-        -->
-        
         <activity-alias
             android:name=".HidActivity"
             android:targetActivity=".AppNavHomeActivity"
@@ -86,20 +71,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".AppNavHomeActivity" />
         </activity-alias>
-		<!--
-        <activity
-            android:name=".BadusbActivity"
-            android:label="@string/badusb_label"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.SAMPLE_CODE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".AppNavHomeActivity" />
-        </activity>
-		-->
+
 		<activity-alias
             android:targetActivity=".AppNavHomeActivity"
             android:name=".BadusbActivity"
@@ -113,20 +85,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".AppNavHomeActivity" />
         </activity-alias>
-        <!--
-        <activity
-            android:name=".ManaActivity"
-            android:label="@string/mana_label"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.SAMPLE_CODE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".AppNavHomeActivity" />
-        </activity>
-        -->
         <activity-alias
             android:targetActivity=".AppNavHomeActivity"
             android:name=".ManaActivity"
@@ -140,20 +98,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".AppNavHomeActivity" />
         </activity-alias>
-		<!--
-        <activity
-            android:name=".DnsmasqActivity"
-            android:label="@string/dnsmasq_label"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.SAMPLE_CODE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".AppNavHomeActivity" />
-        </activity>
-		-->
 		<activity-alias
             android:targetActivity=".AppNavHomeActivity"
             android:name=".DnsmasqActivity"
@@ -167,20 +111,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".AppNavHomeActivity" />
         </activity-alias>
-        <!--
-        <activity
-            android:name=".HostapdActivity"
-            android:label="@string/hostapd_label"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.SAMPLE_CODE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".AppNavHomeActivity" />
-        </activity>
-        -->
         <activity-alias
             android:targetActivity=".AppNavHomeActivity"
             android:name=".HostapdActivity"
@@ -194,20 +124,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".AppNavHomeActivity" />
         </activity-alias>
-		<!--
-        <activity
-            android:name=".IptablesActivity"
-            android:label="@string/iptables_label"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.SAMPLE_CODE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".AppNavHomeActivity" />
-        </activity>
-        -->
+
         <activity-alias
             android:targetActivity=".AppNavHomeActivity"
             android:name=".IptablesActivity"
@@ -225,11 +142,10 @@
         <activity
             android:name=".EditSourceActivity"
             android:windowSoftInputMode="stateHidden"
-            android:label="Edit Source"
-            android:parentActivityName=".HostapdActivity">
+            android:label="Edit Source">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".HostapdActivity" />
+                android:value=".EditSourceActivity" />
         </activity>
 
     </application>

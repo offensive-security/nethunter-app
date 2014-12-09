@@ -14,7 +14,7 @@ public class KaliLauncherFragment extends Fragment {
      * The fragment argument representing the section number for this
      * fragment.
      */
-    private int ARG_SECTION_NUMBER;
+    private static final String ARG_SECTION_NUMBER = "section_number";
 
     /**
      * Returns a new instance of this fragment for the given section
@@ -22,11 +22,16 @@ public class KaliLauncherFragment extends Fragment {
      */
 
 
-    public KaliLauncherFragment(int sectionNumber, String activityName) {
-        ARG_SECTION_NUMBER = sectionNumber;
+    public KaliLauncherFragment() {
 
     }
-
+    public static KaliLauncherFragment newInstance(int sectionNumber) {
+        KaliLauncherFragment fragment = new KaliLauncherFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        fragment.setArguments(args);
+        return fragment;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -37,7 +42,7 @@ public class KaliLauncherFragment extends Fragment {
                 Intent intent =
                         new Intent("jackpal.androidterm.RUN_SCRIPT");
                 intent.addCategory(Intent.CATEGORY_DEFAULT);
-                intent.putExtra("jackpal.androidterm.iInitialCommand", "su\nbootkali");
+                intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c bootkali");
                 startActivity(intent);
             }
         }, rootView);
@@ -49,7 +54,7 @@ public class KaliLauncherFragment extends Fragment {
                 Intent intent =
                         new Intent("jackpal.androidterm.RUN_SCRIPT");
                 intent.addCategory(Intent.CATEGORY_DEFAULT);
-                intent.putExtra("jackpal.androidterm.iInitialCommand", "su\nbootkali\nkalimenu");
+                intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c bootkali kalimenu");
                 startActivity(intent);
             }
         }, rootView);
@@ -61,7 +66,7 @@ public class KaliLauncherFragment extends Fragment {
                 Intent intent =
                         new Intent("jackpal.androidterm.RUN_SCRIPT");
                 intent.addCategory(Intent.CATEGORY_DEFAULT);
-                intent.putExtra("jackpal.androidterm.iInitialCommand", "su\nkillkali");
+                intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c killkali");
                 startActivity(intent);
             }
         }, rootView);
@@ -73,7 +78,7 @@ public class KaliLauncherFragment extends Fragment {
                 Intent intent =
                         new Intent("jackpal.androidterm.RUN_SCRIPT");
                 intent.addCategory(Intent.CATEGORY_DEFAULT);
-                intent.putExtra("jackpal.androidterm.iInitialCommand", "su\nstart-wifite");
+                intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c bootkali wifite");
                 startActivity(intent);
             }
         }, rootView);
@@ -105,7 +110,7 @@ public class KaliLauncherFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((AppNavHomeActivity) activity).onSectionAttached(ARG_SECTION_NUMBER);
+        ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
 

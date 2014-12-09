@@ -18,38 +18,43 @@ import android.widget.EditText;
 
 
 public class BadusbFragment extends Fragment {
-	private int ARG_SECTION_NUMBER;
-	String ARG_ACTIVITY_NAME;
-	private String configFilePath = "files/startbadusb.sh";
-	
-	public BadusbFragment(int sectionNumber, String activityName) {
-        ARG_SECTION_NUMBER = sectionNumber;
-        ARG_ACTIVITY_NAME = activityName;
+
+    private String configFilePath = "files/startbadusb.sh";
+    private static final String ARG_SECTION_NUMBER = "section_number";
+
+    public BadusbFragment() {
+
     }
-	
+    public static BadusbFragment newInstance(int sectionNumber) {
+        BadusbFragment fragment = new BadusbFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        fragment.setArguments(args);
+        return fragment;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    	View rootView = inflater.inflate(R.layout.badusb, container, false);
-    	loadOptions(rootView);
-    	setHasOptionsMenu(true);
-    	return rootView;
-        
+        View rootView = inflater.inflate(R.layout.badusb, container, false);
+        loadOptions(rootView);
+        setHasOptionsMenu(true);
+        return rootView;
+
     }
-    
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((AppNavHomeActivity) activity).onSectionAttached(ARG_SECTION_NUMBER);
+        ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
     }
-    
+
     public void onResume() {
         super.onResume();
         loadOptions(getView().getRootView());
     }
-    
-    
+
+
     private void loadOptions(View rootView) {
-    	String text = ((AppNavHomeActivity) getActivity()).readConfigFile(configFilePath);
+        String text = ((AppNavHomeActivity) getActivity()).readConfigFile(configFilePath);
 
         EditText ifc = (EditText) rootView.findViewById(R.id.ifc);
         String regExpatInterface = "^INTERFACE=(.*)$";
@@ -84,19 +89,19 @@ public class BadusbFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
-
+    /*
     public void updateOptions(View arg0) {
-    	String source = ((AppNavHomeActivity) getActivity()).readConfigFile(configFilePath);
+        String source = ((AppNavHomeActivity) getActivity()).readConfigFile(configFilePath);
         EditText ifc = (EditText) arg0.findViewById(R.id.ifc);
         source = source.replaceAll("(?m)^INTERFACE=(.*)$", "INTERFACE=" + ifc.getText().toString());
         Boolean r = ((AppNavHomeActivity) getActivity()).updateConfigFile(configFilePath, source);
         if (r) {
-        	((AppNavHomeActivity) getActivity()).showMessage("Options updated!");
+            ((AppNavHomeActivity) getActivity()).showMessage("Options updated!");
         } else {
-        	((AppNavHomeActivity) getActivity()).showMessage("Options not updated!");
+            ((AppNavHomeActivity) getActivity()).showMessage("Options not updated!");
         }
     }
-
+    */
     public void start() {
         ShellExecuter exe = new ShellExecuter();
         String[] command = {"start-badusb &> /sdcard/htdocs/badusb.log &"};

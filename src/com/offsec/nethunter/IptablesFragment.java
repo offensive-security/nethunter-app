@@ -24,19 +24,24 @@ import android.widget.EditText;
 
 
 public class IptablesFragment extends Fragment {
-	private int ARG_SECTION_NUMBER;
-	String ARG_ACTIVITY_NAME;
-	
-	public IptablesFragment(int sectionNumber, String activityName) {
-        ARG_SECTION_NUMBER = sectionNumber;
-        ARG_ACTIVITY_NAME = activityName;
+
+    private static final String ARG_SECTION_NUMBER = "section_number";
+
+    public IptablesFragment() {
+
     }
-	
+    public static IptablesFragment newInstance(int sectionNumber) {
+        IptablesFragment fragment = new IptablesFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        fragment.setArguments(args);
+        return fragment;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.iptables, container, false);
-        
+
         EditText source = (EditText) rootView.findViewById(R.id.source);
         File sdcard = Environment.getExternalStorageDirectory();
         File file = new File(sdcard, "files/iptables.conf");
@@ -53,11 +58,11 @@ public class IptablesFragment extends Fragment {
             Log.e("Nethunter", "exception", e);
         }
         source.setText(text);
-        
+
         final Button button = (Button) rootView.findViewById(R.id.update);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	try {
+                try {
                     File sdcard = Environment.getExternalStorageDirectory();
                     File myFile = new File(sdcard, "files/iptables.conf");
                     myFile.createNewFile();
@@ -71,27 +76,27 @@ public class IptablesFragment extends Fragment {
                 } catch (Exception e) {
                     ((AppNavHomeActivity) getActivity()).showMessage(e.getMessage());
                 }
-            	
-            	
-            	
+
+
+
             }
         });
         setHasOptionsMenu(true);
         return rootView;
     }
-    
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((AppNavHomeActivity) activity).onSectionAttached(ARG_SECTION_NUMBER);
+        ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
     }
-    
+
     @Override
     public void onCreateOptionsMenu(
-    	      Menu menu, MenuInflater inflater) {
-    	   inflater.inflate(R.menu.iptables, menu);
+            Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.iptables, menu);
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -105,7 +110,7 @@ public class IptablesFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
-    
+
     public void runIptables() {
         ShellExecuter exe = new ShellExecuter();
         String[] command = {"start-iptables"};

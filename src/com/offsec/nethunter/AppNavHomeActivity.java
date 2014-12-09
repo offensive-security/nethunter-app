@@ -35,7 +35,7 @@ public class AppNavHomeActivity extends FragmentActivity
 
     private SideMenu mNavigationDrawerFragment;
     private String[] activityNames;
-   
+
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
@@ -56,7 +56,7 @@ public class AppNavHomeActivity extends FragmentActivity
 
         if (Build.VERSION.SDK_INT >= 21) {
             // detail for android 5 devices
-        	getWindow().setStatusBarColor(getResources().getColor(R.color.darkTitle));
+            getWindow().setStatusBarColor(getResources().getColor(R.color.darkTitle));
         }
 
         mNavigationDrawerFragment = (SideMenu)
@@ -76,58 +76,79 @@ public class AppNavHomeActivity extends FragmentActivity
     public void onNavigationDrawerItemSelected(int position, String activity) {
         //Log.d("POSI", String.valueOf(position));
         // This is called from the sidemenu as callback when a item  is clickled
-    	
-        Fragment fragment;
-        //FragmentManager fragmentManager = getFragmentManager();
+
         FragmentManager fragmentManager = getSupportFragmentManager();
-        
+
         if (position == 0) {
-        	fragment = new NetHunterFragment(position, activity);
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, fragment).addToBackStack(null)
+            fragmentManager
+                    .beginTransaction()
+                    .replace(R.id.container, NetHunterFragment.newInstance(position))
+                    .addToBackStack(null)
                     .commit();
         } else if (position == 1) {
-        		fragment = new KaliLauncherFragment(position, activity);
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, fragment).addToBackStack(null)
+
+            fragmentManager
+                    .beginTransaction()
+                    .replace(R.id.container, KaliLauncherFragment.newInstance(position))
+                    .addToBackStack(null)
                     .commit();
         } else if (position == 2) {
-            fragment = new KaliServicesFragment(position, activity);
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, fragment).addToBackStack(null)
+
+            fragmentManager
+                    .beginTransaction()
+                    .replace(R.id.container, KaliServicesFragment.newInstance(position))
+                    .addToBackStack(null)
                     .commit();
+
         } else if (position == 3) {
-        	fragment = new HidFragment(position, activity);
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, fragment).addToBackStack(null)
-                    .commit();    
+
+            fragmentManager
+                    .beginTransaction()
+                    .replace(R.id.container, HidFragment.newInstance(position))
+                    .addToBackStack(null)
+                    .commit();
         } else if (position == 4) {
-            fragment = new BadusbFragment(position, activity);
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, fragment).addToBackStack(null)
-                    .commit();    
+
+            fragmentManager
+                    .beginTransaction()
+                    .replace(R.id.container, BadusbFragment.newInstance(position))
+                    .addToBackStack(null)
+                    .commit();
+
         } else if (position == 5) {
-        	fragment = new ManaFragment(position, activity);
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, fragment).addToBackStack(null)
+
+            fragmentManager
+                    .beginTransaction()
+                    .replace(R.id.container, ManaFragment.newInstance(position))
+                    .addToBackStack(null)
                     .commit();
+
         } else if (position == 6) {
-            fragment = new DnsmasqFragment(position, activity);
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, fragment).addToBackStack(null)
+
+            fragmentManager
+                    .beginTransaction()
+                    .replace(R.id.container, DnsmasqFragment.newInstance(position))
+                    .addToBackStack(null)
                     .commit();
+
         } else if (position == 7) {
-            fragment = new HostapdFragment(position, activity);
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, fragment).addToBackStack(null)
+
+            fragmentManager
+                    .beginTransaction()
+                    .replace(R.id.container, HostapdFragment.newInstance(position))
+                    .addToBackStack(null)
                     .commit();
+
         } else if (position == 8) {
-            fragment = new IptablesFragment(position, activity);
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, fragment).addToBackStack(null)
+
+            fragmentManager
+                    .beginTransaction()
+                    .replace(R.id.container, IptablesFragment.newInstance(position))
+                    .addToBackStack(null)
                     .commit();
+
         } else {
-            // Start activity as usually
+            // Start activity as usually // REMOVE THIS SOON no needed
             Intent target = new Intent();
             target.setClassName(getApplicationContext(), activity);
             startActivity(target);
@@ -171,15 +192,15 @@ public class AppNavHomeActivity extends FragmentActivity
         }
         super.onBackPressed();
     }
-    
+
     public void showMessage(String message) {
-		 int duration = Toast.LENGTH_SHORT;
-		 Toast toast = Toast.makeText(this, message, duration);
-		 toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
-		 toast.show();
-	 }
-    
-    
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(this, message, duration);
+        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
+        toast.show();
+    }
+
+
     public String readConfigFile(String configFilePath) {
         File sdcard = Environment.getExternalStorageDirectory();
         File file = new File(sdcard, configFilePath);
@@ -197,7 +218,7 @@ public class AppNavHomeActivity extends FragmentActivity
         }
         return text.toString();
     }
-    
+
     public boolean updateConfigFile(String configFilePath, String source) {
         try {
             File sdcard = Environment.getExternalStorageDirectory();
@@ -210,8 +231,8 @@ public class AppNavHomeActivity extends FragmentActivity
             fOut.close();
             return true;
         } catch (Exception e) {
-        	showMessage(e.getMessage());
-        	return false;
+            showMessage(e.getMessage());
+            return false;
         }
     }
 
