@@ -40,7 +40,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
     ViewPager mViewPager;
 
     private Integer selectedScriptIndex = 0;
-    final CharSequence[] scripts = {"mana-nat-full", "mana-nat-simple", "start-noupstream", "start-noupstream-eap"};
+    final CharSequence[] scripts = {"mana-nat-full", "mana-nat-simple", "mana-noupstream", "mana-noupstream-eap", "mana-nat-simple-bdf"};
 
     String configFilePath = "files/hostapd-karma.conf";
 
@@ -122,7 +122,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
 
     private void startMana() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Pick script:");
+        builder.setTitle("Script to execute:");
         builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -139,6 +139,9 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
                         break;
                     case 3:
                         command = "su -c bootkali mana-noupeap start";
+                        break;
+                    case 4:
+                        command = "su -c bootkali mana-bdf start";
                         break;
                     default:
                         ((AppNavHomeActivity) getActivity()).showMessage("Invalid script!");
@@ -205,7 +208,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
 
         @Override
         public int getCount() {
-            return 7;
+            return 8;
         }
 
         @Override
@@ -223,8 +226,10 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
                     return new ManaNatSimpleFragment();
                 case 5:
                     return new ManaStartNoUpstreamFragment();
+                case 6:    
+                	return new ManaStartNoUpstreamEapFragment();
                 default:
-                    return new ManaStartNoUpstreamEapFragment();
+                	return new ManaStartNatSimpleBdfFragment();
             }
         }
 
@@ -242,9 +247,12 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
                 case 4:
                     return "nat-mana-simple";
                 case 5:
-                    return "start-nouopstream";
+                    return "mana-nouopstream";
+                case 6:
+                	return "mana-noupstream-eap";
                 default:
-                    return "start-noupstream-eap";
+                	return "mana-nat-simple-bdf";
+                	
             }
         }
     } //end class
@@ -583,6 +591,37 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
     public static class ManaStartNoUpstreamEapFragment extends Fragment {
 
         private String configFilePath = "/data/local/kali-armhf/usr/share/mana-toolkit/run-mana/start-noupstream-eap.sh";
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.source_short, container, false);
+            ShellExecuter exe = new ShellExecuter();
+            String text = exe.Executer("cat " + configFilePath);
+            EditText source = (EditText) rootView.findViewById(R.id.source);
+            source.setText(text);
+
+            Button button = (Button) rootView.findViewById(R.id.update);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    EditText source = (EditText) getView().findViewById(R.id.source);
+                    String newSource = source.getText().toString();
+
+                    ShellExecuter exe = new ShellExecuter();
+                    String[] command = {"sh", "-c", "cat <<'EOF' > " + configFilePath + "\n" + newSource + "\nEOF"};
+                    exe.RunAsRoot(command);
+                    ((AppNavHomeActivity) getActivity()).showMessage("Source updated");
+                }
+            });
+            return rootView;
+        }
+    }
+    
+    public static class ManaStartNatSimpleBdfFragment extends Fragment {
+
+        private String configFilePath = "/data/local/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-simple-bdf.sh";
+        
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
