@@ -87,6 +87,7 @@
     <string name="chanel">Chanel</string>
     <string name="enable_karma">Enable karma</string>
     <string name="admin">Admin</string>
+    <string name="choose_language">Choose Language</string>
     <string name="reset_usb">Reset USB</string>
 
     <string name="none">None</string>

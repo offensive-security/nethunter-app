@@ -45,6 +45,9 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
 
     private Integer selectedPlatformIndex = 0;
     final CharSequence[] platforms = {"General", "Win7", "Win8"};
+    
+    private Integer selectedLanguageIndex = 0;
+    final CharSequence[] languages = {"English", "French", "Spanish", "German"};
 
     private static final String configFilePath = "/data/local/kali-armhf/var/www/payload";
 
@@ -113,6 +116,9 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
                 return true;
             case R.id.admin:
                 openDialog();
+                return true;
+            case R.id.language:
+                openLanguageDialog();
                 return true;
             case R.id.source_button:
                 Intent i = new Intent(getActivity(), EditSourceActivity.class);
@@ -187,7 +193,26 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
         builder.show();
     }
 
+    public void openLanguageDialog() {
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Choose language:");
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+
+        builder.setSingleChoiceItems(languages, selectedLanguageIndex, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                selectedLanguageIndex = which;
+            }
+        });
+        builder.show();
+    }
 
     @Override
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {

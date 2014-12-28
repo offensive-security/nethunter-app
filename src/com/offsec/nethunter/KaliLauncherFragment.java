@@ -82,28 +82,6 @@ public class KaliLauncherFragment extends Fragment {
                 startActivity(intent);
             }
         }, rootView);
-        /**
-         * Start Webserver
-         */
-        addClickListener(R.id.button_start_web, new View.OnClickListener() {
-            public void onClick(View v) {
-                String[] command = {"start-web"};
-                ShellExecuter exe = new ShellExecuter();
-                exe.RunAsRoot(command);
-            }
-        }, rootView);
-        /**
-         * Stop Webserver
-         */
-        addClickListener(R.id.button_stop_web, new View.OnClickListener() {
-            public void onClick(View v) {
-                String[] command = {"stop-web"};
-                ShellExecuter exe = new ShellExecuter();
-                exe.RunAsRoot(command);
-            }
-        }, rootView);
-
-
         return rootView;
     }
 

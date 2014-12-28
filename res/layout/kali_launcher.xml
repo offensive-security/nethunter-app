@@ -37,20 +37,4 @@
         android:text="@string/launch_wifite"
         android:clickable="true"
         android:textColor="#ffffffff" />
-
-    <Button
-        android:id="@+id/button_start_web"
-        android:layout_weight="1"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/start_web"
-        android:textColor="#ffffffff" />
-
-    <Button
-        android:id="@+id/button_stop_web"
-        android:layout_weight="1"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/stop_web"
-        android:textColor="#ffffffff" />
 </LinearLayout>
