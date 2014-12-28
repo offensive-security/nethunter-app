@@ -15,7 +15,7 @@
         android:showAsAction="never" />
     <item
         android:id="@+id/start_service"
-        android:title="@string/execute"
+        android:title="@string/execute_attack"
         android:showAsAction="never" />
 
     <item

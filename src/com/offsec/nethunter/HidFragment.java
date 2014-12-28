@@ -44,7 +44,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
 
 
     private Integer selectedPlatformIndex = 0;
-    final CharSequence[] platforms = {"General", "Win7", "Win8"};
+    final CharSequence[] platforms = {"No UAC Bypass", "Windows 7", "Windows 8"};
     
     private Integer selectedLanguageIndex = 0;
     final CharSequence[] languages = {"English", "French", "Spanish", "German"};
@@ -186,7 +186,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
     public void openDialog() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Pick platform:");
+        builder.setTitle("UAC Bypass:");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
             @Override
@@ -207,7 +207,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
     public void openLanguageDialog() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Choose language:");
+        builder.setTitle("Keyboard Layout:");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
             @Override

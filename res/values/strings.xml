@@ -70,8 +70,6 @@
     <string name="launch_kali_shell">Launch Kali Shell in Terminal</string>
     <string name="launch_wifite">Launch Wifite</string>
     <string name="kill_kali">Shutdown Kali</string>
-    <string name="start_web">Start Webserver</string>
-    <string name="stop_web">Stop Webserver</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -79,6 +77,8 @@
 
     <string name="update">Update</string>
     <string name="execute">Execute</string>
+    <string name="execute_attack">Execute Attack</string>
+    
     <string name="stop_mana">Stop mana</string>
     <string name="start_mana">Start mana</string>
     <string name="ip_address">IP address</string>
@@ -86,8 +86,8 @@
     <string name="ssid">SSID</string>
     <string name="chanel">Chanel</string>
     <string name="enable_karma">Enable karma</string>
-    <string name="admin">Admin</string>
-    <string name="choose_language">Choose language</string>
+    <string name="admin">UAC Bypass</string>
+    <string name="choose_language">Keyboard Layout</string>
     <string name="reset_usb">Reset USB</string>
 
     <string name="none">None</string>
