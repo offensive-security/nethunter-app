@@ -47,7 +47,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
     final CharSequence[] platforms = {"No UAC Bypass", "Windows 7", "Windows 8"};
     
     private Integer selectedLanguageIndex = 0;
-    final CharSequence[] languages = {"English", "French", "Spanish", "German"};
+    final CharSequence[] languages = {"English", "French", "Spanish", "German", "Swedish"};
     private static final String configFilePath = "/data/local/kali-armhf/var/www/payload";
 
     private static final String ARG_SECTION_NUMBER = "section_number";
@@ -139,6 +139,8 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
                      break;
             case 3:  lang = "de";
                      break;
+            case 4:  lang = "sv";
+            		break;
             default: lang = "us";
                      break;
         }
