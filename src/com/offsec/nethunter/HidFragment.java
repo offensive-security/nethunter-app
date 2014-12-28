@@ -48,7 +48,6 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
     
     private Integer selectedLanguageIndex = 0;
     final CharSequence[] languages = {"English", "French", "Spanish", "German"};
-
     private static final String configFilePath = "/data/local/kali-armhf/var/www/payload";
 
     private static final String ARG_SECTION_NUMBER = "section_number";
@@ -117,7 +116,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
             case R.id.admin:
                 openDialog();
                 return true;
-            case R.id.language:
+            case R.id.chooseLanguage:
                 openLanguageDialog();
                 return true;
             case R.id.source_button:
@@ -192,7 +191,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
         });
         builder.show();
     }
-
+    
     public void openLanguageDialog() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

@@ -10,7 +10,7 @@
         android:title="@string/admin"
         android:showAsAction="never" />
 	<item
-        android:id="@+id/language"
+        android:id="@+id/chooseLanguage"
         android:title="@string/choose_language"
         android:showAsAction="never" />
     <item
