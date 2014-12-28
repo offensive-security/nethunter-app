@@ -131,30 +131,42 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
     }
 
     private void start() {
-        String[] command = new String[1];
+        String lang;
+        switch (selectedLanguageIndex) {
+            case 1:  lang = "fr";
+                     break;
+            case 2:  lang = "es";
+                     break;
+            case 3:  lang = "de";
+                     break;
+            default: lang = "us";
+                     break;
+        }
+    	
+    	String[] command = new String[1];
         int pageNum = mViewPager.getCurrentItem();
         if (pageNum == 0) {
             switch (selectedPlatformIndex) {
                 case 0:
-                    command[0] = "su -c bootkali start-rev-met";
+                    command[0] = "su -c bootkali start-rev-met --" + lang;
                     break;
                 case 1:
-                    command[0] = "su -c bootkali start-rev-met-elevated-win7";
+                    command[0] = "su -c bootkali start-rev-met-elevated-win7 --" + lang;
                     break;
                 default:
-                    command[0] = "su -c bootkali start-rev-met-elevated-win8";
+                    command[0] = "su -c bootkali start-rev-met-elevated-win8 --" + lang;
                     break;
             }
         } else if (pageNum == 1) {
             switch (selectedPlatformIndex) {
                 case 0:
-                    command[0] = "su -c bootkali hid-cmd";
+                    command[0] = "su -c bootkali hid-cmd --" + lang;
                     break;
                 case 1:
-                    command[0] = "su -c bootkali hid-cmd-elevated-win7";
+                    command[0] = "su -c bootkali hid-cmd-elevated-win7 --" + lang;
                     break;
                 default:
-                    command[0] = "su -c bootkali hid-cmd-elevated-win8";
+                    command[0] = "su -c bootkali hid-cmd-elevated-win8 --" + lang;
                     break;
             }
         }
