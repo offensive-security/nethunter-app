@@ -283,8 +283,8 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
     }
 
     public static class PowerSploitFragment extends Fragment implements OnClickListener {
-        // NOT WORKING???
-        private String configFilePath = "/data/local/kali-armhf/var/www/payload"; //this file exists? can be files/powersploit-payload instead?
+
+        private String configFilePath = "/data/local/kali-armhf/var/www/payload";
         private String configFileUrlPath = "files/powersploit-url";
 
         @Override

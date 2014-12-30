@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 
 
@@ -36,6 +37,12 @@ public class BadusbFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.badusb, container, false);
         loadOptions(rootView);
+        final Button button = (Button) rootView.findViewById(R.id.updateOptions);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                updateOptions(v);
+            }
+        });
         setHasOptionsMenu(true);
         return rootView;
 
@@ -89,10 +96,10 @@ public class BadusbFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
-    /*
+    
     public void updateOptions(View arg0) {
         String source = ((AppNavHomeActivity) getActivity()).readConfigFile(configFilePath);
-        EditText ifc = (EditText) arg0.findViewById(R.id.ifc);
+        EditText ifc = (EditText) getActivity().findViewById(R.id.ifc);
         source = source.replaceAll("(?m)^INTERFACE=(.*)$", "INTERFACE=" + ifc.getText().toString());
         Boolean r = ((AppNavHomeActivity) getActivity()).updateConfigFile(configFilePath, source);
         if (r) {
@@ -101,7 +108,7 @@ public class BadusbFragment extends Fragment {
             ((AppNavHomeActivity) getActivity()).showMessage("Options not updated!");
         }
     }
-    */
+    
     public void start() {
         ShellExecuter exe = new ShellExecuter();
         String[] command = {"start-badusb &> /sdcard/htdocs/badusb.log &"};

@@ -40,9 +40,11 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
     ViewPager mViewPager;
 
     private Integer selectedScriptIndex = 0;
-    final CharSequence[] scripts = {"mana-nat-full", "mana-nat-simple", "mana-noupstream", "mana-noupstream-eap", "mana-nat-simple-bdf"};
+    final CharSequence[] scripts = {"mana-nat-full", "mana-nat-simple", "mana-nat-simple-bdf", "mana-noupstream", "mana-noupstream-eap"};
 
-    String configFilePath = "files/hostapd-karma.conf";
+    //String configFilePath = "files/hostapd-karma.conf";
+    //String configFilePath = "/etc/mana-toolkit/hostapd-karma.conf";
+    String configFilePath = "/data/local/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -113,6 +115,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
             case R.id.source_button:
                 Intent i = new Intent(getActivity(), EditSourceActivity.class);
                 i.putExtra("path", configFilePath);
+                i.putExtra("shell", true);
                 startActivity(i);
                 return true;
             default:
@@ -135,13 +138,13 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
                         command = "su -c bootkali mana-simple start";
                         break;
                     case 2:
-                        command = "su -c bootkali mana-noup start";
+                    	command = "su -c bootkali mana-bdf start";
                         break;
                     case 3:
-                        command = "su -c bootkali mana-noupeap start";
+                    	command = "su -c bootkali mana-noup start";
                         break;
                     case 4:
-                        command = "su -c bootkali mana-bdf start";
+                    	command = "su -c bootkali mana-noupeap start";
                         break;
                     default:
                         ((AppNavHomeActivity) getActivity()).showMessage("Invalid script!");
@@ -225,11 +228,11 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
                 case 4:
                     return new ManaNatSimpleFragment();
                 case 5:
-                    return new ManaStartNoUpstreamFragment();
-                case 6:    
-                	return new ManaStartNoUpstreamEapFragment();
-                default:
                 	return new ManaStartNatSimpleBdfFragment();
+                case 6:    
+                	return new ManaStartNoUpstreamFragment();
+                default:
+                	return new ManaStartNoUpstreamEapFragment();
             }
         }
 
@@ -247,12 +250,11 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
                 case 4:
                     return "nat-mana-simple";
                 case 5:
-                    return "mana-nouopstream";
-                case 6:
-                	return "mana-noupstream-eap";
-                default:
                 	return "mana-nat-simple-bdf";
-                	
+                case 6:
+                	return "mana-nouopstream";
+                default:
+                	return "mana-noupstream-eap";   	
             }
         }
     } //end class
@@ -261,7 +263,10 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
     public static class HostapdFragment extends Fragment {
 
         //private String configFilePath = "/data/local/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
-        private String configFilePath = "files/hostapd-karma.conf";
+        //private String configFilePath = "files/hostapd-karma.conf";
+    	//private String configFilePath = "/etc/mana-toolkit/hostapd-karma.conf";
+    	private String configFilePath = "/data/local/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
+        
 
 
         @Override
@@ -275,23 +280,9 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    File sdcard = Environment.getExternalStorageDirectory();
-                    File file = new File(sdcard, configFilePath);
-                    StringBuilder text = new StringBuilder();
-                    try {
-                        BufferedReader br = new BufferedReader(new FileReader(file));
-                        String line;
-                        while ((line = br.readLine()) != null) {
-                            text.append(line);
-                            text.append('\n');
-                        }
-                        br.close();
-                    } catch (IOException e) {
-                        Log.e("Nethunter", "exception", e);
-                    }
-                    String source = text.toString();
-
+                	ShellExecuter exe = new ShellExecuter();
+                    String source = exe.Executer("cat " + configFilePath);
+                	
                     EditText ifc = (EditText) getView().findViewById(R.id.ifc);
                     EditText bssid = (EditText) getView().findViewById(R.id.bssid);
                     EditText ssid = (EditText) getView().findViewById(R.id.ssid);
@@ -305,19 +296,10 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
                     source = source.replaceAll("(?m)^channel=(.*)$", "channel=" + channel.getText().toString());
                     source = source.replaceAll("(?m)^enable_karma=(.*)$", "enable_karma=" + enableKarma.getText().toString());
                     source = source.replaceAll("(?m)^karma_loud=(.*)$", "karma_loud=" + karmaLoud.getText().toString());
-
-                    try {
-                        file.createNewFile();
-                        FileOutputStream fOut = new FileOutputStream(file);
-                        OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-                        myOutWriter.append(source);
-                        myOutWriter.close();
-                        fOut.close();
-                        ((AppNavHomeActivity) getActivity()).showMessage("Options updated!");
-
-                    } catch (Exception e) {
-                        ((AppNavHomeActivity) getActivity()).showMessage(e.getMessage());
-                    }
+                    
+                    String[] command = {"sh", "-c", "cat <<'EOF' > " + configFilePath + "\n" + source + "\nEOF"};
+                    exe.RunAsRoot(command);
+                    ((AppNavHomeActivity) getActivity()).showMessage("Options updated!");
                 }
             });
             return rootView;
@@ -326,23 +308,11 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
 
         public void loadOptions(View rootView)
         {
-            File sdcard = Environment.getExternalStorageDirectory();
-            File file = new File(sdcard, configFilePath);
-            StringBuilder text = new StringBuilder();
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file));
-                String line;
-                while ((line = br.readLine()) != null) {
-                    text.append(line);
-                    text.append('\n');
-                }
-                br.close();
-            } catch (IOException e) {
-                Log.e("Nethunter", "exception", e);
-            }
-	            /*
-	             * Interface
-	             */
+            ShellExecuter exe = new ShellExecuter();
+            String text = exe.Executer("cat " + configFilePath);
+            /*
+             * Interface
+             */
             EditText ifc = (EditText) rootView.findViewById(R.id.ifc);
             String regExpatInterface = "^interface=(.*)$";
             Pattern patternIfc = Pattern.compile(regExpatInterface, Pattern.MULTILINE);

@@ -1,11 +1,9 @@
 package com.offsec.nethunter;
 
 import android.app.Activity;
-//import android.app.Fragment;
-import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +20,7 @@ public class KaliServicesFragment extends Fragment {
      */
     private String[][] KaliServices;
     private static final String ARG_SECTION_NUMBER = "section_number";
+    boolean updateStatuses = false;
 
 
 
@@ -38,8 +37,8 @@ public class KaliServicesFragment extends Fragment {
                 {"OpenVPN", "sh /system/xbin/check-kalivpn", "su -c bootkali openvpn start", "su -c bootkali openvpn stop"},
                 {"Apache", "sh /system/xbin/check-kaliapache", "su -c bootkali apache start", "su -c bootkali apache stop"},
                 {"Metasploit", "sh /system/xbin/check-kalimetasploit", "su -c bootkali msf start", "su -c bootkali msf stop"},
-                {"DHCP", "sh /system/xbin/check-kalidhcp","su -c bootkali dhcp start","su -c bootkali dhcp stop"},
-                {"BeefXSS", "sh /system/xbin/check-kalibeef-xss","su -c bootkali beef-xss start","su -c bootkali beef-xss stop"},
+                //{"DHCP", "sh /system/xbin/check-kalidhcp","su -c bootkali dhcp start","su -c bootkali dhcp stop"},
+                {"BeEF Framework", "sh /system/xbin/check-kalibeef-xss","su -c bootkali beef-xss start","su -c bootkali beef-xss stop"},
                 //{"Fruity WiFi", "sh /system/xbin/check-fruity-wifi","su -c start-fruity-wifi","su -c  stop-fruity-wifi"}
                 // the stop script isnt working well, doing a raw cmd instead to stop vnc
                 // {"VNC", "sh /system/xbin/check-kalivnc", "bootkali\nvncserver", "bootkali\nkill $(ps aux | grep 'Xtightvnc' | awk '{print $2}');CT=0;for x in $(ps aux | grep 'Xtightvnc' | awk '{print $2}'); do CT=$[$CT +1];tightvncserver -kill :$CT; done;rm /root/.vnc/*.log;rm -r /tmp/.X*"},
@@ -69,32 +68,55 @@ public class KaliServicesFragment extends Fragment {
         super.onAttach(activity);
         ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
     }
+    
+    public void onResume()
+    {
+    	super.onResume();
+    	updateStatuses = true;
+    }
+    
+    public void onPause()
+    {
+    	super.onPause();
+    	updateStatuses = false;
+    }
+    
+    public void onStop()
+    {
+    	super.onStop();
+    	updateStatuses = false;
+    }
+    
 
     private void checkServices(final View rootView) {
-        //doit in the bg
+
         new Thread(new Runnable() {
             public void run() {
-
                 ShellExecuter exe = new ShellExecuter();
-
-                final ListView servicesList = (ListView) rootView.findViewById(R.id.servicesList);
-                // generate check cmd with all the services
-                String checkCmd = "";
-
-                for (String[] KaliService : KaliServices) {
-                    checkCmd += KaliService[1] + ";";
-                }
-                //Log.d("command", checkCmd);
-                final String outp1 = exe.RunAsRootOutput(checkCmd);
-                Log.d("output", outp1);
-                // Once all its done, we have the states an can populate the listview
-                servicesList.post(new Runnable() {
-                    public void run() {
-                        // New instance of the swichLoader
-                        servicesList.setAdapter(new SwichLoader(getActivity().getApplicationContext(), outp1, KaliServices));
+                int c = 0;
+                while (updateStatuses) {
+                    try {
+                    	if (c > 0) {
+                    		Thread.sleep(10000);
+                    	} else {
+                    		c++;
+                    	}
+                        final ListView servicesList = (ListView) rootView.findViewById(R.id.servicesList);
+                        String checkCmd = "";
+                        for (String[] KaliService : KaliServices) {
+                            checkCmd += KaliService[1] + ";";
+                        }
+                        final String outp1 = exe.RunAsRootOutput(checkCmd);
+                        servicesList.post(new Runnable() {
+                            @Override
+                            public void run() {
+                            	servicesList.setAdapter(new SwichLoader(getActivity().getApplicationContext(), outp1, KaliServices));
+                            }
+                        });
+                    } catch (Exception e) {
+                    
                     }
-                });
-
+                }
             }
         }).start();
     }
@@ -116,9 +138,6 @@ class SwichLoader extends BaseAdapter {
         services = KaliServices;
         mContext = context;
         curstats = serviceStates.split("(?!^)");
-        Log.d("curstats", serviceStates);
-
-
     }
 
     static class ViewHolderItem {
@@ -181,16 +200,13 @@ class SwichLoader extends BaseAdapter {
         vH.sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
                 if (isChecked) {
-
                     sExec.RunAsRoot(new String[]{services[position][2]});
                     curstats[position] = "1";
                     finalVH.swholder.setText(services[position][0] + " Service Started");
                     finalVH.sw.setTextColor(mContext.getResources().getColor(R.color.blue));
                     finalVH.swholder.setTextColor(mContext.getResources().getColor(R.color.blue));
                 } else {
-
                     sExec.RunAsRoot(new String[]{services[position][3]});
                     curstats[position] = "0";
                     finalVH.swholder.setText(services[position][0] + " Service Stopped");
@@ -199,21 +215,16 @@ class SwichLoader extends BaseAdapter {
                 }
             }
         });
-
         return convertView;
     }
-
 
     public String[] getItem(int position) {
 
         return services[position];
     }
-
-
+    
     public long getItemId(int position) {
 
         return position;
     }
-
-
 }
