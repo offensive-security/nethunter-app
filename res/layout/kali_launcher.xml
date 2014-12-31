@@ -21,15 +21,6 @@
         android:textColor="#ffffffff" />
 
     <Button
-        android:id="@+id/button_stop_kali"
-        android:layout_weight="1"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/kill_kali"
-        android:clickable="true"
-        android:textColor="#ffffffff" />
-
-    <Button
         android:id="@+id/button_launch_wifite"
         android:layout_weight="1"
         android:layout_width="fill_parent"
@@ -37,4 +28,12 @@
         android:text="@string/launch_wifite"
         android:clickable="true"
         android:textColor="#ffffffff" />
+	<Button
+        android:id="@+id/update_kali_chroot"
+        android:layout_weight="1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/update_kali_chroot"
+        android:clickable="true"
+        android:textColor="#ffffffff" />      
 </LinearLayout>

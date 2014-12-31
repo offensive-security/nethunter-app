@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,23 +91,26 @@ public class KaliServicesFragment extends Fragment {
 
     private void checkServices(final View rootView) {
 
-        new Thread(new Runnable() {
+    	
+    	new Thread(new Runnable() {
             public void run() {
                 ShellExecuter exe = new ShellExecuter();
-                int c = 0;
-                while (updateStatuses) {
+                Logger Logger = new Logger();
+                //int c = 0;
+                //while (updateStatuses) {
                     try {
-                    	if (c > 0) {
-                    		Thread.sleep(10000);
-                    	} else {
-                    		c++;
-                    	}
+                  //  	if (c > 0) {
+                  // 		Thread.sleep(10000);
+                  //  	} else {
+                  //  		c++;
+                  // 	}
                         final ListView servicesList = (ListView) rootView.findViewById(R.id.servicesList);
                         String checkCmd = "";
                         for (String[] KaliService : KaliServices) {
                             checkCmd += KaliService[1] + ";";
                         }
                         final String outp1 = exe.RunAsRootOutput(checkCmd);
+                        //Logger.appendLog(outp1);
                         servicesList.post(new Runnable() {
                             @Override
                             public void run() {
@@ -114,13 +118,12 @@ public class KaliServicesFragment extends Fragment {
                             }
                         });
                     } catch (Exception e) {
-                    
+                    	Logger.appendLog(e.getMessage());
                     }
                 }
-            }
+            //}
         }).start();
     }
-
 }
 
 

@@ -10,17 +10,27 @@
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:orientation="vertical">
-
+        <ImageView 
+   			android:id="@+id/test_image"
+   			android:src="@drawable/offsec_logo_2"
+			android:layout_width="match_parent"
+   			android:layout_height="match_parent" 
+   			 android:scaleType="fitCenter" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/nethunter_description"
+            android:text="@string/hometitle"
+            android:layout_gravity="center_horizontal|center" 
+            android:gravity="center"
+            android:textSize="22sp"
             android:padding="4dp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/nethunter_note"
+            android:text="@string/nethunter_description"
+            android:layout_gravity="center_horizontal|center" 
+            android:gravity="center"
             android:padding="4dp" />
 
         <TextView
@@ -28,6 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/nethunter_current_interfaces"
+            android:textSize="18sp"
             android:padding="4dp" />
 
         <EditText
@@ -36,8 +47,6 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="none">
-
-
         </EditText>
 
         <TextView
@@ -45,6 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/nethunter_external_ip"
+            android:textSize="18sp"
             android:padding="4dp"
             />
 

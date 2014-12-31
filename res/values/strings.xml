@@ -3,9 +3,10 @@
     <string name="app_name">NetHunter Android</string>
     <string name="app_nav_home_label">NetHunter Home</string>
 
+
+	<string name="hometitle">Offensive Security NetHunter</string>
     <string name="nethunter_label">Nethunter Panel Home</string>
-    <string name="nethunter_description">Welcome to Kali Linux NetHunter! This application is designed to make it easier to execute attacks and control services. The navigation menu contains links to useful commands, settings, macros, and attack configuration pages. If you have any suggestions for additional features, contact us!</string>
-    <string name="nethunter_note">Most configurations work out of the box but some may require some minimal tweaking. Make sure you read more about these attacks (links are included on each page) to get them working perfectly.</string>
+    <string name="nethunter_description">Welcome to Kali Linux NetHunter, by Offensive Security! This application is designed to make it easier to execute attacks and control services. The navigation menu contains links to useful commands, settings, macros, and attack configuration pages. Most configurations work out of the box but some may require some minimal tweaking.</string>
     <string name="nethunter_current_interfaces">Current interfaces</string>
     <string name="nethunter_external_ip">External IP address</string>
 
@@ -70,6 +71,8 @@
     <string name="launch_kali_shell">Launch Kali Shell in Terminal</string>
     <string name="launch_wifite">Launch Wifite</string>
     <string name="kill_kali">Shutdown Kali</string>
+    <string name="update_kali_chroot">Update Kali chroot</string>
+    
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -104,4 +107,9 @@
     <string name="get_external_ip">Get external IP</string>
     <string name="karma_loud">karma loud</string>
     <string name="dhcp_range">dhcp range</string>
+    
+    <string name="ps_ip_address">IP Address (LHOST)</string>
+    <string name="ps_port">Port (LPORT)</string>
+    <string name="ps_payload_url">URL to payload</string>
+    
 </resources>

@@ -13,7 +13,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ip_address"
+            android:text="@string/ps_ip_address"
             android:padding="4dp" />
 
         <EditText
@@ -24,7 +24,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/port"
+            android:text="@string/ps_port"
             android:padding="4dp" />
 
         <EditText
@@ -49,7 +49,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ulr"
+            android:text="@string/ps_payload_url"
             android:padding="4dp" />
 
         <EditText

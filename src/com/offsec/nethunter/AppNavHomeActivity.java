@@ -202,7 +202,9 @@ public class AppNavHomeActivity extends FragmentActivity
 
 
     public String readConfigFile(String configFilePath) {
-        File sdcard = Environment.getExternalStorageDirectory();
+        
+    	
+    	File sdcard = Environment.getExternalStorageDirectory();
         File file = new File(sdcard, configFilePath);
         StringBuilder text = new StringBuilder();
         try {
@@ -215,6 +217,8 @@ public class AppNavHomeActivity extends FragmentActivity
             br.close();
         } catch (IOException e) {
             Log.e("Nethunter", "exception", e);
+        	Logger Logger = new Logger();
+        	Logger.appendLog(e.getMessage());
         }
         return text.toString();
     }
@@ -232,6 +236,8 @@ public class AppNavHomeActivity extends FragmentActivity
             return true;
         } catch (Exception e) {
             showMessage(e.getMessage());
+            Logger Logger = new Logger();
+        	Logger.appendLog(e.getMessage());
             return false;
         }
     }

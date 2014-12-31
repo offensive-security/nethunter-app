@@ -59,14 +59,14 @@ public class KaliLauncherFragment extends Fragment {
             }
         }, rootView);
         /**
-         * Shutdown Kali chroot
+         * Update Kali chroot
          */
-        addClickListener(R.id.button_stop_kali, new View.OnClickListener() {
+        addClickListener(R.id.update_kali_chroot, new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent =
                         new Intent("jackpal.androidterm.RUN_SCRIPT");
                 intent.addCategory(Intent.CATEGORY_DEFAULT);
-                intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c killkali");
+                intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c bootkali update");
                 startActivity(intent);
             }
         }, rootView);

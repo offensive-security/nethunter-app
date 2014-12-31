@@ -111,6 +111,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".AppNavHomeActivity" />
         </activity-alias>
+        <!--
         <activity-alias
             android:targetActivity=".AppNavHomeActivity"
             android:name=".HostapdActivity"
@@ -124,7 +125,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".AppNavHomeActivity" />
         </activity-alias>
-
+		-->
         <activity-alias
             android:targetActivity=".AppNavHomeActivity"
             android:name=".IptablesActivity"
