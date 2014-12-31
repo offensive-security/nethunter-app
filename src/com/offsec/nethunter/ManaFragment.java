@@ -42,8 +42,6 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
     private Integer selectedScriptIndex = 0;
     final CharSequence[] scripts = {"mana-nat-full", "mana-nat-simple", "mana-nat-simple-bdf", "mana-noupstream", "mana-noupstream-eap"};
 
-    //String configFilePath = "files/hostapd-karma.conf";
-    //String configFilePath = "/etc/mana-toolkit/hostapd-karma.conf";
     String configFilePath = "/data/local/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
 
     private static final String ARG_SECTION_NUMBER = "section_number";
@@ -261,14 +259,8 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
 
 
     public static class HostapdFragment extends Fragment {
-
-        //private String configFilePath = "/data/local/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
-        //private String configFilePath = "files/hostapd-karma.conf";
-    	//private String configFilePath = "/etc/mana-toolkit/hostapd-karma.conf";
     	private String configFilePath = "/data/local/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
         
-
-
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
