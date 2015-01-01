@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
 
@@ -389,6 +390,10 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
                                  Bundle savedInstanceState) {
             final View rootView = inflater.inflate(R.layout.source_short, container, false);
 
+            String description = getResources().getString (R.string.mana_dhcpd);
+            TextView desc = (TextView) rootView.findViewById(R.id.description);	
+            desc.setText(description);
+            
             File sdcard = Environment.getExternalStorageDirectory();
             File file = new File(sdcard, configFilePath);
             StringBuilder text = new StringBuilder();
@@ -438,7 +443,10 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
-
+            String description = getResources().getString (R.string.mana_dnsspoof);
+            TextView desc = (TextView) rootView.findViewById(R.id.description);	
+            desc.setText(description);
+            
             ShellExecuter exe = new ShellExecuter();
             String text = exe.Executer("cat " + configFilePath);
             EditText source = (EditText) rootView.findViewById(R.id.source);
@@ -469,6 +477,10 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
+            String description = getResources().getString (R.string.mana_nat_full);
+            TextView desc = (TextView) rootView.findViewById(R.id.description);	
+            desc.setText(description);
+            
             ShellExecuter exe = new ShellExecuter();
             String text = exe.Executer("cat " + configFilePath);
             EditText source = (EditText) rootView.findViewById(R.id.source);
@@ -498,6 +510,11 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
+            
+            String description = getResources().getString (R.string.mana_nat_simple);
+            TextView desc = (TextView) rootView.findViewById(R.id.description);	
+            desc.setText(description);
+            
             ShellExecuter exe = new ShellExecuter();
             String text = exe.Executer("cat " + configFilePath);
             EditText source = (EditText) rootView.findViewById(R.id.source);
@@ -528,6 +545,11 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
+            
+            String description = getResources().getString (R.string.mana_noupstream);
+            TextView desc = (TextView) rootView.findViewById(R.id.description);	
+            desc.setText(description);
+            
             ShellExecuter exe = new ShellExecuter();
             String text = exe.Executer("cat " + configFilePath);
             EditText source = (EditText) rootView.findViewById(R.id.source);
@@ -558,6 +580,11 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
+            
+            String description = getResources().getString (R.string.mana_noupstream_eap);
+            TextView desc = (TextView) rootView.findViewById(R.id.description);	
+            desc.setText(description);
+            
             ShellExecuter exe = new ShellExecuter();
             String text = exe.Executer("cat " + configFilePath);
             EditText source = (EditText) rootView.findViewById(R.id.source);
@@ -589,6 +616,11 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
+            
+            String description = getResources().getString (R.string.mana_nat_simple_bdf);
+            TextView desc = (TextView) rootView.findViewById(R.id.description);	
+            desc.setText(description);
+            
             ShellExecuter exe = new ShellExecuter();
             String text = exe.Executer("cat " + configFilePath);
             EditText source = (EditText) rootView.findViewById(R.id.source);
