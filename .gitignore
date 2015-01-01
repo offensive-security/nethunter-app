@@ -49,3 +49,4 @@ nethunter-app.iml
 
 # PDT-specific
 .buildpath
+/lint.xml
