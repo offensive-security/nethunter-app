@@ -21,6 +21,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="4dp"
+            android:layout_gravity="center_horizontal|center" 
+            android:gravity="center"
             android:text="@string/dnsmasq_description" />
 
 

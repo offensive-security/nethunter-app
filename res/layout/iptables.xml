@@ -20,10 +20,11 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center" 
+            android:gravity="center"
             android:text="@string/iptables_description"
             android:padding="4dp" />
 
-       
         <EditText
             android:id="@+id/source"
             android:layout_width="fill_parent"

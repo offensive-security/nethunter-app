@@ -14,10 +14,9 @@
     <string name="kali_services_description">Various Kali network services can be started and stopped via the buttons in this part of the interface.</string>
 
     <string name="hid_label">HID Keyboard Attack</string>
-    <string name="hid_description">This attack turns your device and its OTG USB cable into a pre-programmed keyboard, able to type any given commands. Previously, only "Teensy" type devices were able to do this…but no longer!</string>
-    <string name="hid_configuration">Configuration:</string>
-    <string name="hid_conf_description">The default config should work as-is; just configure your commands, IPs, or ports. The PowerSploit URL option should point back to the Nexus device IP or some other webserver that is hosting the PowerShell payload. If you choose to use the built-in Apache server on NetHunter, don\'t forget to start the Apache server before you initiate the attack. If the attack becomes non-responsive, simply use the "Reset USB" button to freshen up the USB stack.</string>
-
+    <string name="hid_powersploit_description">This attack turns your device and its OTG USB cable into a pre-programmed keyboard, able to type any given commands. Previously, only "Teensy" type devices were able to do this…but no longer!</string>
+    <string name="hid_windows_cmd_description">This attack turns your device and its OTG USB cable into a pre-programmed keyboard, able to type any given commands. Previously, only "Teensy" type devices were able to do this…but no longer!</string>
+    
     <string name="hid_admin_select">Please select</string>
     <string-array name="hid_admin_options">
         <item>win7</item>
