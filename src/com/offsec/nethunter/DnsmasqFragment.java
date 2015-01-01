@@ -179,16 +179,16 @@ public class DnsmasqFragment extends Fragment {
             a++;
             if (a.equals(1)) {
                 if (matcherAddress.group(0).startsWith("#")) {
-                    source = source.replace(matcherAddress.group(0), "#address" + address1.getText().toString());
+                    source = source.replace(matcherAddress.group(0), "#address=" + address1.getText().toString());
                 } else {
-                    source = source.replace(matcherAddress.group(0), "address" + address1.getText().toString());
+                    source = source.replace(matcherAddress.group(0), "address=" + address1.getText().toString());
                 }
             }
             if (a.equals(2)) {
                 if (matcherAddress.group(0).startsWith("#")) {
-                    source = source.replace(matcherAddress.group(0), "#address" + address2.getText().toString());
+                    source = source.replace(matcherAddress.group(0), "#address=" + address2.getText().toString());
                 } else {
-                    source = source.replace(matcherAddress.group(0), "address" + address2.getText().toString());
+                    source = source.replace(matcherAddress.group(0), "address=" + address2.getText().toString());
                 }
             }
         }
@@ -203,10 +203,10 @@ public class DnsmasqFragment extends Fragment {
         while (matcherDhcpOption.find()) {
             a++;
             if (a.equals(1)) {
-                source = source.replace(matcherDhcpOption.group(0), "dhcp-option" + dhcpOption1.getText().toString());
+                source = source.replace(matcherDhcpOption.group(0), "dhcp-option=" + dhcpOption1.getText().toString());
             }
             if (a.equals(2)) {
-                source = source.replace(matcherDhcpOption.group(0), "dhcp-option" + dhcpOption2.getText().toString());
+                source = source.replace(matcherDhcpOption.group(0), "dhcp-option=" + dhcpOption2.getText().toString());
             }
         }
         Boolean r = ((AppNavHomeActivity) getActivity()).updateConfigFile(configFilePath, source);

@@ -131,15 +131,15 @@ public class AppNavHomeActivity extends FragmentActivity
                     .addToBackStack(null)
                     .commit();
 
+//        } else if (position == 7) {
+//
+//            fragmentManager
+//                    .beginTransaction()
+//                    .replace(R.id.container, HostapdFragment.newInstance(position))
+//                    .addToBackStack(null)
+//                    .commit();
+
         } else if (position == 7) {
-
-            fragmentManager
-                    .beginTransaction()
-                    .replace(R.id.container, HostapdFragment.newInstance(position))
-                    .addToBackStack(null)
-                    .commit();
-
-        } else if (position == 8) {
 
             fragmentManager
                     .beginTransaction()
