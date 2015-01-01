@@ -14,8 +14,8 @@
     <string name="kali_services_description">Various Kali network services can be started and stopped via the buttons in this part of the interface.</string>
 
     <string name="hid_label">HID Keyboard Attack</string>
-    <string name="hid_powersploit_description">This attack turns your device and its OTG USB cable into a pre-programmed keyboard, able to type any given commands. Previously, only "Teensy" type devices were able to do this…but no longer!</string>
-    <string name="hid_windows_cmd_description">This attack turns your device and its OTG USB cable into a pre-programmed keyboard, able to type any given commands. Previously, only "Teensy" type devices were able to do this…but no longer!</string>
+    <string name="hid_powersploit_description">The Powersploit payload provides you a choice of reverse meterpreter HTTP/S payloads. "URL to payload" should be a URL accessible to the victim machine where the larger payload is downloaded to.</string>
+    <string name="hid_windows_cmd_description">This Windows CMD payload allows you to enter raw commands to a Windows command prompt. Hitting the list menu will allow you to choose keyboard layout or UAC bypass options. </string>
     
     <string name="hid_admin_select">Please select</string>
     <string-array name="hid_admin_options">
@@ -32,14 +32,14 @@
     <string name="mana_headline">Evil Access Point</string>
     <string name="mana_description">This is the configuration page for MANA, an evil access point implementation by Sensepost. The various MITM logs get written to the /var/lib/mana-toolkit directory in the Kali chroot..</string>
 
-	<string name="mana_hostapd">Some nice placeholder</string>
-	<string name="mana_dhcpd">Some nice placeholder</string>
-	<string name="mana_dnsspoof">Some nice placeholder</string>
-	<string name="mana_nat_full">Some nice placeholder</string>
-	<string name="mana_nat_simple">Some nice placeholder</string>
-	<string name="mana_nat_simple_bdf">Some nice placeholder</string>
-	<string name="mana_noupstream">Some nice placeholder</string>
-	<string name="mana_noupstream_eap">Some nice placeholder</string>
+	<string name="mana_hostapd">The hostapd configuration file used by Mana.</string>
+	<string name="mana_dhcpd">The dhcpd configuration file used by Mana.</string>
+	<string name="mana_dnsspoof">The dnsspoof configuration file used by Mana.</string>
+	<string name="mana_nat_full">The Mana script that does full NAT & SSL interception.</string>
+	<string name="mana_nat_simple">The Mana script that does full NAT only.</string>
+	<string name="mana_nat_simple_bdf">The Mana script that does full NAT & BDFProxy HTTP routing to port 8080.</string>
+	<string name="mana_noupstream">The Mana no-upstream run script.</string>
+	<string name="mana_noupstream_eap">The Mana no-upstream EAP run script.</string>
 
     <string name="dnsmasq_label">Dnsmasq Service</string>
     <string name="dnsmasq_headline">Dnsmasq Config</string>
