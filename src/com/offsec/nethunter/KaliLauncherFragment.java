@@ -82,6 +82,19 @@ public class KaliLauncherFragment extends Fragment {
                 startActivity(intent);
             }
         }, rootView);
+        
+        /**
+         * Turn off external wifi
+         */
+        addClickListener(R.id.turn_off_external_wifi, new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent =
+                        new Intent("jackpal.androidterm.RUN_SCRIPT");
+                intent.addCategory(Intent.CATEGORY_DEFAULT);
+                intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c bootkali wifi-disable");
+                startActivity(intent);
+            }
+        }, rootView);
         return rootView;
     }
 
