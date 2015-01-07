@@ -95,6 +95,18 @@ public class KaliLauncherFragment extends Fragment {
                 startActivity(intent);
             }
         }, rootView);
+        /**
+         * Shutdown Kali
+         */
+        addClickListener(R.id.shutdown_kali, new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent =
+                        new Intent("jackpal.androidterm.RUN_SCRIPT");
+                intent.addCategory(Intent.CATEGORY_DEFAULT);
+                intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c killkali");
+                startActivity(intent);
+            }
+        }, rootView);
         return rootView;
     }
 
