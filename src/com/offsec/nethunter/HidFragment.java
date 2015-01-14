@@ -14,8 +14,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 //import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
@@ -41,12 +44,9 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
 
     TabsPagerAdapter TabsPagerAdapter;
     ViewPager mViewPager;
+    SharedPreferences sharedpreferences;
 
-
-    private Integer selectedPlatformIndex = 0;
-    final CharSequence[] platforms = {"No UAC Bypass", "Windows 7", "Windows 8"};
-    
-    private Integer selectedLanguageIndex = 0;
+    final CharSequence[] platforms = {"No UAC Bypass", "Windows 7", "Windows 8"};    
     final CharSequence[] languages = {"American English", "Belgian", "British English", "Danish", "French", "German", "Italian", "Norwegian", "Portugese", "Russian", "Spanish", "Swedish"};
     private static final String configFilePath = "/data/local/kali-armhf/var/www/payload";
 
@@ -85,6 +85,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
             }
         });
         setHasOptionsMenu(true);
+        sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
         return rootView;
     }
 
@@ -131,8 +132,9 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
     }
 
     private void start() {
-        String lang;
-        switch (selectedLanguageIndex) {
+        int keyboardLayoutIndex = sharedpreferences.getInt("HIDKeyboardLayoutIndex", 0);
+    	String lang;
+        switch (keyboardLayoutIndex) {
             case 1:  lang = "be";
                      break;
             case 2:  lang = "uk";
@@ -159,10 +161,11 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
                      break;
         }
     	
-    	String[] command = new String[1];
+        int UACBypassIndex = sharedpreferences.getInt("UACBypassIndex", 0);
+        String[] command = new String[1];
         int pageNum = mViewPager.getCurrentItem();
         if (pageNum == 0) {
-            switch (selectedPlatformIndex) {
+            switch (UACBypassIndex) {
                 case 0:
                     command[0] = "su -c bootkali start-rev-met --" + lang;
                     break;
@@ -174,7 +177,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
                     break;
             }
         } else if (pageNum == 1) {
-            switch (selectedPlatformIndex) {
+            switch (UACBypassIndex) {
                 case 0:
                     command[0] = "su -c bootkali hid-cmd --" + lang;
                     break;
@@ -201,7 +204,8 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
 
     public void openDialog() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+    	int UACBypassIndex = sharedpreferences.getInt("UACBypassIndex", 0);
+    	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("UAC Bypass:");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
@@ -210,11 +214,13 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
             }
         });
 
-        builder.setSingleChoiceItems(platforms, selectedPlatformIndex, new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(platforms, UACBypassIndex, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                selectedPlatformIndex = which;
+                Editor editor = sharedpreferences.edit();
+                editor.putInt("UACBypassIndex", which);
+                editor.commit();
             }
         });
         builder.show();
@@ -222,20 +228,25 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
     
     public void openLanguageDialog() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        int	keyboardLayoutIndex = sharedpreferences.getInt("HIDKeyboardLayoutIndex", 0);
+        
+    	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Keyboard Layout:");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
+            
             }
         });
 
-        builder.setSingleChoiceItems(languages, selectedLanguageIndex, new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(languages, keyboardLayoutIndex, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                selectedLanguageIndex = which;
+                Editor editor = sharedpreferences.edit();
+                editor.putInt("HIDKeyboardLayoutIndex", which);
+                editor.commit();
             }
         });
         builder.show();
