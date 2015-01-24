@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 //import android.app.Fragment;
 import android.support.v4.app.Fragment;
@@ -20,11 +21,15 @@ import android.widget.EditText;
 
 public class BadusbFragment extends Fragment {
 
-    private String configFilePath = "files/startbadusb.sh";
+    private String configFilePath;
     private static final String ARG_SECTION_NUMBER = "section_number";
 
     public BadusbFragment() {
-
+    	if (Build.VERSION.SDK_INT >= 21) {
+    		configFilePath = "files/startbadusb-lollipop.sh";
+        } else {
+        	configFilePath = "files/startbadusb-kitkat.sh";
+        }
     }
     public static BadusbFragment newInstance(int sectionNumber) {
         BadusbFragment fragment = new BadusbFragment();
@@ -111,14 +116,24 @@ public class BadusbFragment extends Fragment {
     
     public void start() {
         ShellExecuter exe = new ShellExecuter();
-        String[] command = {"start-badusb &> /sdcard/htdocs/badusb.log &"};
+        String[] command = new String[1];
+        if (Build.VERSION.SDK_INT >= 21) {
+        	command[0] = "start-badusb-lollipop &> /sdcard/files/badusb.log &";
+        } else {
+        	command[0] = "start-badusb-kitkat &> /sdcard/files/badusb.log &";
+        }
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("BadUSB attack started!");
     }
 
     public void stop() {
         ShellExecuter exe = new ShellExecuter();
-        String[] command = {"stop-badusb"};
+        String[] command = new String[1];
+        if (Build.VERSION.SDK_INT >= 21) {
+        	command[0] = "stop-badusb-lollipop";
+        } else {
+        	command[0] = "stop-badusb-kitkat";
+        }
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("BadUSB attack stopped!");
     }

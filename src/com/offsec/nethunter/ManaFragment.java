@@ -16,6 +16,7 @@ import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
@@ -128,24 +129,35 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
         builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String command;
+                String[] command = new String[1];
                 switch (selectedScriptIndex) {
                     case 0:
-                        command = "su -c bootkali mana-full start";
+                    	if (Build.VERSION.SDK_INT >= 21) {
+                    		command[0] = "su -c bootkali mana-full-lollipop start";
+                    	} else {
+                    		command[0] = "su -c bootkali mana-full-kitkat start";
+                    	}
                         break;
                     case 1:
-                        command = "su -c bootkali mana-simple start";
+                    	if (Build.VERSION.SDK_INT >= 21) {
+                    		command[0] = "su -c bootkali mana-simple-lollipop start";
+                    	} else {
+                    		command[0] = "su -c bootkali mana-simple-kitkat start";
+                    	}
                         break;
                     case 2:
-                    	command = "su -c bootkali mana-bdf start";
+                    	if (Build.VERSION.SDK_INT >= 21) {
+                    		command[0] = "su -c bootkali mana-bdf-lollipop start";
+                    	} else {
+                    		command[0] = "su -c bootkali mana-bdf-kitkat start";
+                    	}
                         break;
                     default:
                         ((AppNavHomeActivity) getActivity()).showMessage("Invalid script!");
                         return;
                 }
-                String[] commands = {command};
                 ShellExecuter exe = new ShellExecuter();
-                exe.RunAsRoot(commands);
+                exe.RunAsRoot(command);
                 ((AppNavHomeActivity) getActivity()).showMessage("Attack executed!");
             }
         });
@@ -167,7 +179,12 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
 
     private void stopMana() {
         ShellExecuter exe = new ShellExecuter();
-        String[] command = {"su -c bootkali mana stop"};
+        String[] command = new String[1];
+        if (Build.VERSION.SDK_INT >= 21) {
+        	command[0] = "su -c bootkali mana-lollipop stop";
+        } else {
+        	command[0] = "su -c bootkali mana-kitkat stop";
+        }
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("Mana Stopped");
     }
