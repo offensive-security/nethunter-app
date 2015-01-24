@@ -1,6 +1,8 @@
 package com.offsec.nethunter;
 
 
+import java.util.List;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
@@ -9,11 +11,13 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,9 +27,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
-
-import java.util.List;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -319,18 +320,23 @@ public class SideMenu extends Fragment {
         List<ResolveInfo> infos = pm.queryIntentActivities(intent, 0);
 
         final int count = infos.size();
-        String[] activityNames = new String[count];
-        String[] activityActions = new String[count];
-
+        int total = count;
+        if (Build.VERSION.SDK_INT >= 21) {
+        	total = count-1;
+        }
+        String[] activityNames = new String[total];
+        String[] activityActions = new String[total];
         for (int i = 0; i < count; i++) {
             final ResolveInfo info = infos.get(i);
             final CharSequence labelSeq = info.loadLabel(pm);
-            String label = labelSeq != null ? labelSeq.toString() : info.activityInfo.name;
-            activityNames[i] = label;
-            activityActions[i] = info.activityInfo.name;
-
+            if (labelSeq.toString().equals("Iptables Configuration") && Build.VERSION.SDK_INT >= 21) {
+            	
+            } else {
+            	String label = labelSeq != null ? labelSeq.toString() : info.activityInfo.name;
+            	activityNames[i] = label;
+                activityActions[i] = info.activityInfo.name;
+            }
         }
-
         return new String[][]{activityNames, activityActions};
     }
 
