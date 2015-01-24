@@ -41,7 +41,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
     ViewPager mViewPager;
 
     private Integer selectedScriptIndex = 0;
-    final CharSequence[] scripts = {"mana-nat-full", "mana-nat-simple", "mana-nat-simple-bdf", "mana-noupstream", "mana-noupstream-eap"};
+    final CharSequence[] scripts = {"mana-nat-full", "mana-nat-simple", "mana-nat-simple-bdf", "bdfproxy.cfg", "mana-noupstream", "mana-noupstream-eap"};
 
     String configFilePath = "/data/local/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
 
@@ -228,7 +228,9 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
                     return new ManaNatSimpleFragment();
                 case 5:
                 	return new ManaStartNatSimpleBdfFragment();
-                case 6:    
+                case 6:
+                    return new BdfProxyConfigFragment();
+                case 7:
                 	return new ManaStartNoUpstreamFragment();
                 default:
                 	return new ManaStartNoUpstreamEapFragment();
@@ -251,6 +253,8 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
                 case 5:
                 	return "mana-nat-simple-bdf";
                 case 6:
+                    return "bdfproxy.cfg";
+                case 7:
                 	return "mana-nouopstream";
                 default:
                 	return "mana-noupstream-eap";   	
@@ -606,7 +610,42 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
             return rootView;
         }
     }
-    
+    public static class BdfProxyConfigFragment extends Fragment {
+
+        private String configFilePath = "/data/local/kali-armhf/etc/bdfproxy/bdfproxy.cfg";
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.source_short, container, false);
+
+            String description = getResources().getString (R.string.bdfproxy_cfg);
+            TextView desc = (TextView) rootView.findViewById(R.id.description);
+            desc.setText(description);
+
+            ShellExecuter exe = new ShellExecuter();
+            String text = exe.Executer("cat " + configFilePath);
+            EditText source = (EditText) rootView.findViewById(R.id.source);
+            source.setText(text);
+
+            Button button = (Button) rootView.findViewById(R.id.update);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    EditText source = (EditText) getView().findViewById(R.id.source);
+                    String newSource = source.getText().toString();
+
+                    ShellExecuter exe = new ShellExecuter();
+                    String[] command = {"sh", "-c", "cat <<'EOF' > " + configFilePath + "\n" + newSource + "\nEOF"};
+                    exe.RunAsRoot(command);
+                    ((AppNavHomeActivity) getActivity()).showMessage("Source updated");
+                }
+            });
+            return rootView;
+        }
+    }
+
+
     public static class ManaStartNatSimpleBdfFragment extends Fragment {
 
         private String configFilePath = "/data/local/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-simple-bdf.sh";
