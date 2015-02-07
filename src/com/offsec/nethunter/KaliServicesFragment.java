@@ -186,6 +186,9 @@ class SwichLoader extends BaseAdapter {
         vH.sw.setChecked(false);
         // check it
 
+        if (position>=curstats.length) {
+            return convertView;
+        }
         if (curstats[position].equals("1")) {
             vH.sw.setChecked(true);
             vH.sw.setTextColor(mContext.getResources().getColor(R.color.blue));
