@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 public class KaliLauncherFragment extends Fragment {
     /**
@@ -39,11 +40,15 @@ public class KaliLauncherFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.kali_launcher, container, false);
         addClickListener(R.id.button_start_kali, new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent =
-                        new Intent("jackpal.androidterm.RUN_SCRIPT");
-                intent.addCategory(Intent.CATEGORY_DEFAULT);
-                intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c bootkali");
-                startActivity(intent);
+                try {
+                    Intent intent =
+	                        new Intent("jackpal.androidterm.RUN_SCRIPT");
+                    intent.addCategory(Intent.CATEGORY_DEFAULT);
+                    intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c bootkali");
+                    startActivity(intent);
+	            } catch (Exception e) {
+                    Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
+                }
             }
         }, rootView);
         /**
@@ -51,11 +56,15 @@ public class KaliLauncherFragment extends Fragment {
          */
         addClickListener(R.id.button_start_kalimenu, new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent =
-                        new Intent("jackpal.androidterm.RUN_SCRIPT");
-                intent.addCategory(Intent.CATEGORY_DEFAULT);
-                intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c bootkali kalimenu");
-                startActivity(intent);
+                try {
+                    Intent intent =
+                            new Intent("jackpal.androidterm.RUN_SCRIPT");
+                    intent.addCategory(Intent.CATEGORY_DEFAULT);
+                    intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c bootkali kalimenu");
+                    startActivity(intent);
+                } catch (Exception e) {
+                    Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
+                }
             }
         }, rootView);
         /**
@@ -63,11 +72,15 @@ public class KaliLauncherFragment extends Fragment {
          */
         addClickListener(R.id.update_kali_chroot, new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent =
-                        new Intent("jackpal.androidterm.RUN_SCRIPT");
-                intent.addCategory(Intent.CATEGORY_DEFAULT);
-                intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c bootkali update");
-                startActivity(intent);
+                try {
+                    Intent intent =
+                            new Intent("jackpal.androidterm.RUN_SCRIPT");
+                    intent.addCategory(Intent.CATEGORY_DEFAULT);
+                    intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c bootkali update");
+                    startActivity(intent);
+                } catch (Exception e) {
+                    Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
+                }
             }
         }, rootView);
         /**
@@ -75,11 +88,15 @@ public class KaliLauncherFragment extends Fragment {
          */
         addClickListener(R.id.button_launch_wifite, new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent =
-                        new Intent("jackpal.androidterm.RUN_SCRIPT");
-                intent.addCategory(Intent.CATEGORY_DEFAULT);
-                intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c bootkali wifite");
-                startActivity(intent);
+                try {
+                    Intent intent =
+                            new Intent("jackpal.androidterm.RUN_SCRIPT");
+                    intent.addCategory(Intent.CATEGORY_DEFAULT);
+                    intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c bootkali wifite");
+                    startActivity(intent);
+                } catch (Exception e) {
+                    Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
+                }
             }
         }, rootView);
         
@@ -88,11 +105,15 @@ public class KaliLauncherFragment extends Fragment {
          */
         addClickListener(R.id.turn_off_external_wifi, new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent =
-                        new Intent("jackpal.androidterm.RUN_SCRIPT");
-                intent.addCategory(Intent.CATEGORY_DEFAULT);
-                intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c bootkali wifi-disable");
-                startActivity(intent);
+                try {
+                    Intent intent =
+                            new Intent("jackpal.androidterm.RUN_SCRIPT");
+                    intent.addCategory(Intent.CATEGORY_DEFAULT);
+                    intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c bootkali wifi-disable");
+                    startActivity(intent);
+                } catch (Exception e) {
+                    Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
+                }
             }
         }, rootView);
         /**
@@ -100,11 +121,15 @@ public class KaliLauncherFragment extends Fragment {
          */
         addClickListener(R.id.shutdown_kali, new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent =
-                        new Intent("jackpal.androidterm.RUN_SCRIPT");
-                intent.addCategory(Intent.CATEGORY_DEFAULT);
-                intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c killkali");
-                startActivity(intent);
+                try {
+                    Intent intent =
+                            new Intent("jackpal.androidterm.RUN_SCRIPT");
+                    intent.addCategory(Intent.CATEGORY_DEFAULT);
+                    intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c killkali");
+                    startActivity(intent);
+                } catch (Exception e) {
+                    Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
+                }
             }
         }, rootView);
         return rootView;

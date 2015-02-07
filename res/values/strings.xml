@@ -122,5 +122,7 @@
     <string name="ps_ip_address">IP Address (LHOST)</string>
     <string name="ps_port">Port (LPORT)</string>
     <string name="ps_payload_url">URL to payload</string>
+
+    <string name="toast_install_terminal">Error launching intent. Install Android Terminal!</string>
     
 </resources>
