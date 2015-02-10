@@ -15,5 +15,12 @@
         	android:layout_height="wrap_content"
         	android:padding="16dp"
         />
+        
+        <Button
+            	android:id="@+id/refresh"
+            	android:layout_width="wrap_content"
+            	android:layout_height="wrap_content"
+            	android:layout_weight="1"
+            	android:text="@string/refresh" />
     </LinearLayout>
 </ScrollView>

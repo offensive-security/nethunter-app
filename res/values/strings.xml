@@ -53,6 +53,8 @@
 	<string name="duckhunter_label">Duck Hunter</string>
 	<string name="select_language">Language</string>
 	<string name="convert">Convert</string>
+	<string name="refresh">Refresh</string>
+	<string name="duck_hunter_reference">This is some nice reference page</string>
 	
 	
 

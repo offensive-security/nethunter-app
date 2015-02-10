@@ -75,7 +75,10 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
         mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                getActivity().invalidateOptionsMenu();
+                if (position == 1) {
+                	
+                }
+            	getActivity().invalidateOptionsMenu();
             }
         });
         setHasOptionsMenu(true);
@@ -172,8 +175,10 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
             switch (i) {
                 case 0:
                     return new DuckHunterConvertFragment();
+                case 1:
+                	return new DuckHunterExecuteFragment();
                 default:
-                    return new DuckHunterExecuteFragment();
+                    return new DuckHunterReferenceFragment();
             }
         }
 
@@ -184,7 +189,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
 
         @Override
@@ -192,6 +197,8 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
             switch (position) {
                 case 1:
                     return "Execute";
+                case 2:
+                	return "Reference";
                 default:
                     return "Convert";
             }
@@ -284,11 +291,6 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
             });
             return rootView;
         }
-
-        @Override
-        public void onResume() {
-            super.onResume();
-        }
     } //end of class
 
 
@@ -306,7 +308,36 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
         	ShellExecuter exe = new ShellExecuter(); 
             String text = exe.Executer("cat " + configFilePath);
             source.setText(text);
+            
+            final Button buttonUpdate = (Button) rootView.findViewById(R.id.refresh);
+            buttonUpdate.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                	TextView source = (TextView) getView().findViewById(R.id.source);
+                	ShellExecuter exe = new ShellExecuter(); 
+                    String text = exe.Executer("cat " + configFilePath);
+                    source.setText(text);
+                }
+            });
             return rootView;
+            
+        }
+        
+        public void onResume() {
+            super.onResume(); 
+        }
+    }
+    
+    public static class DuckHunterReferenceFragment extends Fragment {
+
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            
+        	
+        	View rootView = inflater.inflate(R.layout.duck_hunter_reference, container, false);
+            return rootView;
+            
         }
     }
 }
