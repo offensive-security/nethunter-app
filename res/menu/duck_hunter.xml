@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item
+        android:id="@+id/chooseLanguage"
+        android:title="@string/select_language"
+        android:showAsAction="never" />
+    <item
+        android:id="@+id/start_service"
+        android:title="@string/execute_attack"
+        android:showAsAction="never" />
+</menu>

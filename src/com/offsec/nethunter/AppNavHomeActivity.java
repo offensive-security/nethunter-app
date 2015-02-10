@@ -138,14 +138,21 @@ public class AppNavHomeActivity extends FragmentActivity
 //                    .replace(R.id.container, HostapdFragment.newInstance(position))
 //                    .addToBackStack(null)
 //                    .commit();
-
         } else if (position == 7) {
 
             fragmentManager
                     .beginTransaction()
-                    .replace(R.id.container, IptablesFragment.newInstance(position))
+                    .replace(R.id.container, DuckHunterFragment.newInstance(position))
                     .addToBackStack(null)
-                    .commit();
+                    .commit();    
+
+//        } else if (position == 7) {
+//
+//           fragmentManager
+//                    .beginTransaction()
+//                    .replace(R.id.container, IptablesFragment.newInstance(position))
+//                    .addToBackStack(null)
+//                    .commit();
 
         } else {
             // Start activity as usually // REMOVE THIS SOON no needed

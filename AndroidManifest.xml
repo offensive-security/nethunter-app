@@ -111,6 +111,20 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".AppNavHomeActivity" />
         </activity-alias>
+        <activity-alias
+            android:targetActivity=".AppNavHomeActivity"
+            android:name=".duckHunterFragment"
+            android:label="@string/duckhunter_label"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.SAMPLE_CODE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".AppNavHomeActivity" />
+        </activity-alias>
+        
         <!--
         <activity-alias
             android:targetActivity=".AppNavHomeActivity"

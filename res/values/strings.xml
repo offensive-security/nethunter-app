@@ -50,6 +50,11 @@
     <string name="hostapd_headline">Hostapd Config</string>
     <string name="hostapd_description">hostapd is a user space daemon for wireless access point and authentication servers. You can use hostapd to easily create a wireless access point using these configuration options:</string>
 
+	<string name="duckhunter_label">Duck Hunter</string>
+	<string name="select_language">Language</string>
+	<string name="convert">Convert</string>
+	
+	
 
     <string name="iptables_label">Iptables Configuration</string>
     <string name="iptables_headline">Iptables Setup Config</string>
