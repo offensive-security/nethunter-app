@@ -196,7 +196,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 1:
-                    return "Execute";
+                    return "Preview";
                 case 2:
                 	return "Reference";
                 default:
