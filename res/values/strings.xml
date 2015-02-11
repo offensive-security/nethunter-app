@@ -54,14 +54,40 @@
 	<string name="select_language">Language</string>
 	<string name="convert">Convert</string>
 	<string name="refresh">Refresh</string>
-	<string name="duck_hunter_reference">This is some nice reference page</string>
-	
-	
+	<string name="duck_hunter_reference">
+    Convert Ducky Script to Nethunter shell script\n\n
+    Input Text\n\n
+    &#8226; STRING Example text string\n\n
+    Keyboard Keys\n\n
+    &#8226; CONTROL or CTRL\n
+    &#8226; DELETE or DEL\n
+    &#8226; COMMAND or WINDOWS\n
+    &#8226; SHIFT\n
+    &#8226; MENU\n
+    &#8226; APP\n
+    &#8226; ESCAPE or ESC\n
+    &#8226; END\n
+    &#8226; SPACE\n
+    &#8226; TAB\n
+    &#8226; PRINTSCREEN\n
+    &#8226; ENTER\n
+    &#8226; UP\n
+    &#8226; DOWN\n
+    &#8226; LEFT\n
+    &#8226; RIGHT\n
+    &#8226; F1-F10\n
+    &#8226; CAPSLOCK\n\n
+    Keys can also be combined:\n CTRL ALT DEL\n\n
+    Load Spotlight in OSX:\n COMMAND SPACE\n\n
+    Windows run:\n GUI r\n\n
+    To sleep for one second we pass:\n DELAY 1000\n\n\n
+    Project by byt3bl33d3r and Binkybear\n
+    https://github.com/byt3bl33d3r/duckhunter.git
+	</string>
 
     <string name="iptables_label">Iptables Configuration</string>
     <string name="iptables_headline">Iptables Setup Config</string>
     <string name="iptables_description">Easily set up NAT or use iptables rules to route traffic.</string>
-
 
     <string name="payload_select">Please select</string>
     <string-array name="payloads">

@@ -10,15 +10,14 @@
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:orientation="vertical">
-        
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/duck_hunter_reference"
-            android:layout_gravity="center_horizontal|center" 
+            android:layout_gravity="center_horizontal|center"
             android:gravity="center"
             android:textSize="22sp"
             android:padding="4dp" />
     </LinearLayout>
 </ScrollView>
-
