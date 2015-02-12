@@ -111,11 +111,18 @@ public class AppNavHomeActivity extends FragmentActivity
 
             fragmentManager
                     .beginTransaction()
+                    .replace(R.id.container, DuckHunterFragment.newInstance(position))
+                    .addToBackStack(null)
+                    .commit();
+        } else if (position == 5) {
+
+            fragmentManager
+                    .beginTransaction()
                     .replace(R.id.container, BadusbFragment.newInstance(position))
                     .addToBackStack(null)
                     .commit();
 
-        } else if (position == 5) {
+        } else if (position == 6) {
 
             fragmentManager
                     .beginTransaction()
@@ -123,7 +130,7 @@ public class AppNavHomeActivity extends FragmentActivity
                     .addToBackStack(null)
                     .commit();
 
-        } else if (position == 6) {
+        } else if (position == 7) {
 
             fragmentManager
                     .beginTransaction()
@@ -137,14 +144,7 @@ public class AppNavHomeActivity extends FragmentActivity
 //                    .beginTransaction()
 //                    .replace(R.id.container, HostapdFragment.newInstance(position))
 //                    .addToBackStack(null)
-//                    .commit();
-        } else if (position == 7) {
-
-            fragmentManager
-                    .beginTransaction()
-                    .replace(R.id.container, DuckHunterFragment.newInstance(position))
-                    .addToBackStack(null)
-                    .commit();    
+//                    .commit();    
 
         } else if (position == 8) {
            fragmentManager

@@ -10,7 +10,6 @@ import java.io.OutputStreamWriter;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-//import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,7 +19,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
-//import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -32,7 +30,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -99,11 +96,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
             menu.findItem(R.id.duckConvertUpdate).setVisible(true);
             menu.findItem(R.id.duckConvertConvert).setVisible(true);
         } else {
-            if (pageNum == 2) {
-            	menu.findItem(R.id.duckPreviewRefresh).setVisible(false);
-            } else {
-            	menu.findItem(R.id.duckPreviewRefresh).setVisible(true);
-            }
+        	menu.findItem(R.id.duckPreviewRefresh).setVisible(true);
             menu.findItem(R.id.duckConvertUpdate).setVisible(false);
             menu.findItem(R.id.duckConvertConvert).setVisible(false);
         }
@@ -113,8 +106,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        	case R.id.duckConvertUpdate:
-        			
+        	case R.id.duckConvertUpdate:	
         		try {
                     File sdcard = Environment.getExternalStorageDirectory();
                     File myFile = new File(sdcard, DuckHunterConvertFragment.configFilePath);
@@ -241,12 +233,10 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
         @Override
         public Fragment getItem(int i) {
             switch (i) {
-                case 0:
-                    return new DuckHunterConvertFragment();
                 case 1:
                 	return new DuckHunterPreviewFragment();
                 default:
-                    return new DuckHunterReferenceFragment();
+                	return new DuckHunterConvertFragment();
             }
         }
 
@@ -257,7 +247,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
         @Override
         public int getCount() {
-            return 3;
+            return 2;
         }
 
         @Override
@@ -265,8 +255,6 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
             switch (position) {
                 case 1:
                     return "Preview";
-                case 2:
-                	return "Reference";
                 default:
                     return "Convert";
             }
@@ -282,7 +270,10 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                                  Bundle savedInstanceState) {
             
         	View rootView = inflater.inflate(R.layout.duck_hunter_convert, container, false);
-
+        	
+        	TextView t2 = (TextView) rootView.findViewById(R.id.reference_text);
+        	t2.setMovementMethod(LinkMovementMethod.getInstance());
+        	
             EditText source = (EditText) rootView.findViewById(R.id.editSource);
             File sdcard = Environment.getExternalStorageDirectory();
             File file = new File(sdcard, configFilePath);
@@ -298,9 +289,10 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
             } catch (IOException e) {
                 Log.e("Nethunter", "exception", e);
             }
-            source.setText(text);            
+            source.setText(text);      
             return rootView;
         }
+        
     } //end of class
 
 
@@ -310,16 +302,20 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     	public static String configFileFilename = "duckout.sh";
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            
-        	
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         	View rootView = inflater.inflate(R.layout.duck_hunter_preview, container, false);
-        	TextView source = (TextView) rootView.findViewById(R.id.source);
-        
+        	TextView source = (TextView) rootView.findViewById(R.id.source);        
             source.setText(readFileForPreview());
             return rootView;
-            
+        }
+        
+        @Override
+        public void setUserVisibleHint(boolean isVisibleToUser) {
+        	super.setUserVisibleHint(isVisibleToUser);
+        	if (isVisibleToUser) { 
+        	  
+        	} 
         }
         
         public void onResume() {
@@ -342,20 +338,6 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                 Log.e("Nethunter", "exception", e);
             }
             return text.toString();
-        }
-    }
-    
-    public static class DuckHunterReferenceFragment extends Fragment {
-
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-        	View rootView = inflater.inflate(R.layout.duck_hunter_reference, container, false);
-        	TextView t2 = (TextView) rootView.findViewById(R.id.reference_text);
-        	t2.setMovementMethod(LinkMovementMethod.getInstance());
-            return rootView;
-            
         }
     }
 }
