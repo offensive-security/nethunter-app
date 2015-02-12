@@ -215,7 +215,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
             
         	View rootView = inflater.inflate(R.layout.duck_hunter_convert, container, false);
 
-            EditText source = (EditText) rootView.findViewById(R.id.source);
+            EditText source = (EditText) rootView.findViewById(R.id.editSource);
             File sdcard = Environment.getExternalStorageDirectory();
             File file = new File(sdcard, configFilePath);
             StringBuilder text = new StringBuilder();
@@ -241,7 +241,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                         myFile.createNewFile();
                         FileOutputStream fOut = new FileOutputStream(myFile);
                         OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-                        EditText source = (EditText) getActivity().findViewById(R.id.source);
+                        EditText source = (EditText) getActivity().findViewById(R.id.editSource);
                         myOutWriter.append(source.getText());
                         myOutWriter.close();
                         fOut.close();
