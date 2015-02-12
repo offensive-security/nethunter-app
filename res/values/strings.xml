@@ -54,6 +54,14 @@
 	<string name="select_language">Language</string>
 	<string name="convert">Convert</string>
 	<string name="refresh">Refresh</string>
+	
+	<string name="duckConvertUpdate">Update</string>
+	<string name="duckConvertConvert">Convert</string>
+	<string name="duckPreviewRefresh">Refresh</string>
+	
+	
+	
+	<string name="duck_hunter_reference_headline"> blablabla .... blablabla ..... If you would like to generate some ducky scripts, you can do so at the <a href="http://www.ducktoolkit.com/Home.jsp">Ducky Toolkit</a> site. bla ...bla...bla</string>
 	<string name="duck_hunter_reference">
     Convert Ducky Script to Nethunter shell script\n\n
     Input Text\n\n

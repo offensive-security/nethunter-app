@@ -24,13 +24,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
@@ -91,15 +91,85 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.duck_hunter, menu);
     }
-
-
+    
     public void onPrepareOptionsMenu(Menu menu) {
-        
+        int pageNum = mViewPager.getCurrentItem();
+        if (pageNum == 0) {
+            menu.findItem(R.id.duckPreviewRefresh).setVisible(false);
+            menu.findItem(R.id.duckConvertUpdate).setVisible(true);
+            menu.findItem(R.id.duckConvertConvert).setVisible(true);
+        } else {
+            if (pageNum == 2) {
+            	menu.findItem(R.id.duckPreviewRefresh).setVisible(false);
+            } else {
+            	menu.findItem(R.id.duckPreviewRefresh).setVisible(true);
+            }
+            menu.findItem(R.id.duckConvertUpdate).setVisible(false);
+            menu.findItem(R.id.duckConvertConvert).setVisible(false);
+        }
+        getActivity().invalidateOptionsMenu();
     }
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.start_service:
+        	case R.id.duckConvertUpdate:
+        			
+        		try {
+                    File sdcard = Environment.getExternalStorageDirectory();
+                    File myFile = new File(sdcard, DuckHunterConvertFragment.configFilePath);
+                    myFile.createNewFile();
+                    FileOutputStream fOut = new FileOutputStream(myFile);
+                    OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+                    EditText source = (EditText) getActivity().findViewById(R.id.editSource);
+                    myOutWriter.append(source.getText());
+                    myOutWriter.close();
+                    fOut.close();
+                    ((AppNavHomeActivity) getActivity()).showMessage("Source updated");
+                } catch (Exception e) {
+                    ((AppNavHomeActivity) getActivity()).showMessage(e.getMessage());
+                }
+        		return true;
+        	case R.id.duckConvertConvert:
+        		int keyboardLayoutIndex = sharedpreferences.getInt("DuckHunterLanguageIndex", 0);
+            	String lang;
+                switch (keyboardLayoutIndex) {
+                    case 1:  lang = "fr";
+                             break;
+                    case 2:  lang = "de";
+                             break;
+                    case 3:  lang = "es";
+                             break;
+                    case 4:  lang = "sv";
+                    		 break;
+                    case 5:  lang = "it";
+                             break;
+                    case 6:  lang = "uk";
+                             break;
+                    case 7:  lang = "ru";
+                             break;
+                    case 8:  lang = "dk";
+                             break;
+                    case 9:  lang = "no";
+                             break;
+                    case 10:  lang = "pt";
+                             break;
+                    case 11:  lang = "be";
+                                break;
+                    default: lang = "us";
+                             break;
+                }
+            	String[] command = new String[1];
+            	command[0] = "su -c bootkali duck-hunt-convert " + lang + " /sdcard/" + DuckHunterConvertFragment.configFilePath + " /opt/" + DuckHunterPreviewFragment.configFileFilename;
+            	ShellExecuter exe = new ShellExecuter(); 
+            	exe.RunAsRoot(command);
+            	((AppNavHomeActivity) getActivity()).showMessage("converting started");
+        		return true;
+			case R.id.duckPreviewRefresh:
+				TextView source = (TextView) getView().findViewById(R.id.source);
+            	source.setText(DuckHunterPreviewFragment.readFileForPreview());
+				return true;
+        	case R.id.start_service:
                 start();
                 return true;
             case R.id.chooseLanguage:
@@ -161,8 +231,6 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
     }
 
-
-    //public static class TabsPagerAdapter extends FragmentPagerAdapter {
     public static class TabsPagerAdapter extends FragmentStatePagerAdapter {
 
 
@@ -176,7 +244,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                 case 0:
                     return new DuckHunterConvertFragment();
                 case 1:
-                	return new DuckHunterExecuteFragment();
+                	return new DuckHunterPreviewFragment();
                 default:
                     return new DuckHunterReferenceFragment();
             }
@@ -207,7 +275,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
     public static class DuckHunterConvertFragment extends Fragment {
 
-        private String configFilePath = "files/modules/duckconvert.txt";
+        public static String configFilePath = "files/modules/duckconvert.txt";
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -230,100 +298,50 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
             } catch (IOException e) {
                 Log.e("Nethunter", "exception", e);
             }
-            source.setText(text);
-
-            final Button buttonUpdate = (Button) rootView.findViewById(R.id.update);
-            buttonUpdate.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    try {
-                        File sdcard = Environment.getExternalStorageDirectory();
-                        File myFile = new File(sdcard, configFilePath);
-                        myFile.createNewFile();
-                        FileOutputStream fOut = new FileOutputStream(myFile);
-                        OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-                        EditText source = (EditText) getActivity().findViewById(R.id.editSource);
-                        myOutWriter.append(source.getText());
-                        myOutWriter.close();
-                        fOut.close();
-                        ((AppNavHomeActivity) getActivity()).showMessage("Source updated");
-                    } catch (Exception e) {
-                        ((AppNavHomeActivity) getActivity()).showMessage(e.getMessage());
-                    }
-                }
-            });
-            final Button buttonConvert = (Button) rootView.findViewById(R.id.convert);
-            buttonConvert.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                	int keyboardLayoutIndex = sharedpreferences.getInt("DuckHunterLanguageIndex", 0);
-                	String lang;
-                    switch (keyboardLayoutIndex) {
-                        case 1:  lang = "fr";
-                                 break;
-                        case 2:  lang = "de";
-                                 break;
-                        case 3:  lang = "es";
-                                 break;
-                        case 4:  lang = "sv";
-                        		 break;
-                        case 5:  lang = "it";
-                                 break;
-                        case 6:  lang = "uk";
-                                 break;
-                        case 7:  lang = "ru";
-                                 break;
-                        case 8:  lang = "dk";
-                                 break;
-                        case 9:  lang = "no";
-                                 break;
-                        case 10:  lang = "pt";
-                                 break;
-                        case 11:  lang = "be";
-                                    break;
-                        default: lang = "us";
-                                 break;
-                    }
-                	String[] command = new String[1];
-                	command[0] = "su -c bootkali duck-hunt-convert " + lang + " /sdcard/files/modules/duckconvert.txt /opt/duckout.sh";
-                	ShellExecuter exe = new ShellExecuter(); 
-                	exe.RunAsRoot(command);
-                	((AppNavHomeActivity) getActivity()).showMessage("Convert started");
-                }
-            });
+            source.setText(text);            
             return rootView;
         }
     } //end of class
 
 
-    public static class DuckHunterExecuteFragment extends Fragment {
+    public static class DuckHunterPreviewFragment extends Fragment {
 
-        private String configFilePath = "/data/local/kali-armhf/opt/duckout.sh";
+        public static String configFilePath = "/data/local/kali-armhf/opt/";
+    	public static String configFileFilename = "duckout.sh";
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             
         	
-        	View rootView = inflater.inflate(R.layout.duck_hunter_execute, container, false);
+        	View rootView = inflater.inflate(R.layout.duck_hunter_preview, container, false);
         	TextView source = (TextView) rootView.findViewById(R.id.source);
-        	ShellExecuter exe = new ShellExecuter(); 
-            String text = exe.Executer("cat " + configFilePath);
-            source.setText(text);
-            
-            final Button buttonUpdate = (Button) rootView.findViewById(R.id.refresh);
-            buttonUpdate.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                	TextView source = (TextView) getView().findViewById(R.id.source);
-                	ShellExecuter exe = new ShellExecuter(); 
-                    String text = exe.Executer("cat " + configFilePath);
-                    source.setText(text);
-                }
-            });
+        
+            source.setText(readFileForPreview());
             return rootView;
             
         }
         
         public void onResume() {
             super.onResume(); 
+        }
+        
+        public static String readFileForPreview()
+        {
+        	File file = new File(configFilePath, configFileFilename);
+            StringBuilder text = new StringBuilder();
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    text.append(line);
+                    text.append('\n');
+                }
+                br.close();
+            } catch (IOException e) {
+                Log.e("Nethunter", "exception", e);
+            }
+            return text.toString();
         }
     }
     
@@ -333,9 +351,9 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            
-        	
         	View rootView = inflater.inflate(R.layout.duck_hunter_reference, container, false);
+        	TextView t2 = (TextView) rootView.findViewById(R.id.reference_text);
+        	t2.setMovementMethod(LinkMovementMethod.getInstance());
             return rootView;
             
         }

@@ -1,4 +1,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+	
+	<item
+        android:id="@+id/duckConvertUpdate"
+        android:icon="@drawable/ic_action_save"
+        android:title="@string/duckConvertUpdate"
+        android:showAsAction="ifRoom|withText"  />
+        
+    <item
+        android:id="@+id/duckConvertConvert"
+        android:icon="@drawable/ic_action_play"
+        android:title="@string/duckConvertConvert"
+        android:showAsAction="ifRoom|withText"  />
+            
+	<item
+        android:id="@+id/duckPreviewRefresh"
+        android:icon="@drawable/ic_action_refresh"
+        android:title="@string/duckPreviewRefresh"
+        android:showAsAction="ifRoom|withText"  />
+        
 	<item
         android:id="@+id/chooseLanguage"
         android:title="@string/select_language"
