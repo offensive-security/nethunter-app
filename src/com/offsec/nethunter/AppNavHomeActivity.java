@@ -1,17 +1,6 @@
 package com.offsec.nethunter;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-
 import android.app.ActionBar;
-//import android.app.Fragment;
-//import android.app.FragmentManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,12 +8,23 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+
+//import android.app.Fragment;
+//import android.app.FragmentManager;
 
 public class AppNavHomeActivity extends FragmentActivity
         implements SideMenu.NavigationDrawerCallbacks {
@@ -189,7 +189,7 @@ public class AppNavHomeActivity extends FragmentActivity
         //FragmentManager fragmentManager = getFragmentManager();
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (mNavigationDrawerFragment.isDrawerOpen()) {
-            mNavigationDrawerFragment.closeDrawner();
+            mNavigationDrawerFragment.closeDrawer();
         }
         if (fragmentManager.getBackStackEntryCount() <= 1) {
             finish();
