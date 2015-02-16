@@ -1,14 +1,14 @@
 package com.offsec.nethunter;
 
 import android.app.Activity;
-//import android.app.Fragment;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -16,6 +16,11 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
+//import android.app.Fragment;
 
 public class NetHunterFragment extends Fragment {
 
@@ -51,10 +56,17 @@ public class NetHunterFragment extends Fragment {
         String intf = getInterfaces();
         EditText interfaces = (EditText) rootView.findViewById(R.id.editText1);
         EditText ip = (EditText) rootView.findViewById(R.id.editText2);
+        TextView buildInfo1 = (TextView) rootView.findViewById(R.id.buildinfo1);
+        TextView buildInfo2 = (TextView) rootView.findViewById(R.id.buildinfo2);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd KK:mm:ss a zzz",
+                Locale.US);
 
         interfaces.setText(intf);
         interfaces.setFocusable(false);
         ip.setFocusable(false);
+        buildInfo1.setText("Version: " + BuildConfig.VERSION_NAME);
+        buildInfo2.setText("Built by " + BuildConfig.BUILD_NAME + " at " + sdf.format(BuildConfig.BUILD_TIME));
         addClickListener(R.id.button1, new View.OnClickListener() {
             public void onClick(View v) {
                 getExternalIp();

@@ -24,7 +24,22 @@
             android:gravity="center"
             android:textSize="22sp"
             android:padding="4dp" />
-
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/buildinfo1"
+            android:layout_gravity="center_horizontal|center"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:paddingTop="4dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/buildinfo2"
+            android:layout_gravity="center_horizontal|center"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:paddingBottom="4dp" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
