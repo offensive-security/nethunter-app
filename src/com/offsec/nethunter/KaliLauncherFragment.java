@@ -1,14 +1,16 @@
 package com.offsec.nethunter;
 
 import android.app.Activity;
-//import android.app.Fragment;
-import android.support.v4.app.Fragment;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+//import android.app.Fragment;
 
 public class KaliLauncherFragment extends Fragment {
     /**
@@ -26,6 +28,7 @@ public class KaliLauncherFragment extends Fragment {
     public KaliLauncherFragment() {
 
     }
+
     public static KaliLauncherFragment newInstance(int sectionNumber) {
         KaliLauncherFragment fragment = new KaliLauncherFragment();
         Bundle args = new Bundle();
@@ -33,6 +36,7 @@ public class KaliLauncherFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -42,12 +46,13 @@ public class KaliLauncherFragment extends Fragment {
             public void onClick(View v) {
                 try {
                     Intent intent =
-	                        new Intent("jackpal.androidterm.RUN_SCRIPT");
+                            new Intent("jackpal.androidterm.RUN_SCRIPT");
                     intent.addCategory(Intent.CATEGORY_DEFAULT);
                     intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c bootkali");
                     startActivity(intent);
-	            } catch (Exception e) {
+                } catch (Exception e) {
                     Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
+                    getTerminalApp();
                 }
             }
         }, rootView);
@@ -64,6 +69,7 @@ public class KaliLauncherFragment extends Fragment {
                     startActivity(intent);
                 } catch (Exception e) {
                     Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
+                    getTerminalApp();
                 }
             }
         }, rootView);
@@ -80,6 +86,7 @@ public class KaliLauncherFragment extends Fragment {
                     startActivity(intent);
                 } catch (Exception e) {
                     Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
+                    getTerminalApp();
                 }
             }
         }, rootView);
@@ -96,10 +103,11 @@ public class KaliLauncherFragment extends Fragment {
                     startActivity(intent);
                 } catch (Exception e) {
                     Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
+                    getTerminalApp();
                 }
             }
         }, rootView);
-        
+
         /**
          * Turn off external wifi
          */
@@ -113,6 +121,7 @@ public class KaliLauncherFragment extends Fragment {
                     startActivity(intent);
                 } catch (Exception e) {
                     Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
+                    getTerminalApp();
                 }
             }
         }, rootView);
@@ -127,12 +136,21 @@ public class KaliLauncherFragment extends Fragment {
                     intent.addCategory(Intent.CATEGORY_DEFAULT);
                     intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c killkali");
                     startActivity(intent);
-                } catch (Exception e) {
+                } catch (android.content.ActivityNotFoundException anfe) {
                     Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
+                    getTerminalApp();
                 }
             }
         }, rootView);
         return rootView;
+    }
+
+    public void getTerminalApp() {
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=jackpal.androidterm")));
+        } catch (android.content.ActivityNotFoundException anfe2) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=jackpal.androidterm")));
+        }
     }
 
     @Override

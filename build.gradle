@@ -1,0 +1,99 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.1.0-rc3'
+    }
+}
+
+apply plugin: 'com.android.application'
+
+def getDate() {
+    return Calendar.getInstance().getTimeInMillis().toString()
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:21.0.3'
+    compile fileTree(dir: 'libs', include: '*.jar')
+}
+
+android {
+
+    compileSdkVersion 21
+    buildToolsVersion '21.1.2'
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 21
+        versionCode 1
+        versionName "1.0"
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            resources.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            renderscript.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+        }
+
+    }
+
+    signingConfigs {
+
+        debug {
+            storeFile file(System.getenv("HOME") + "/.android/debug.keystore")
+        }
+
+        /* note:  To build a signed version of nethunter:
+        1. Put your keystore in ~/.android/release-keystore and set up a key "nethunter"
+        2. set KEYSTORE_PASSWORD and KEY_PASSWORD environment variables before running gradle.  this
+           can be done easily by adding them to .bashrc
+        (or change the below values, hard-coding or whatever...)
+        3. Don't forget to create a proguard.cfg file.  You can find a sample one in the sdk or
+           point to it directly.
+        */
+        release {
+            storePassword System.getenv("KEYSTORE_PASSWORD")
+            storeFile file(System.getenv("HOME") + "/.android/release.keystore")
+            keyAlias "nethunter"
+            keyPassword System.getenv("KEY_PASSWORD")
+
+        }
+    }
+
+
+    buildTypes {
+
+        debug {
+            buildConfigField "java.util.Date", "BUILD_TIME", "new java.util.Date(" + getDate() + "L)"
+            buildConfigField "String", "BUILD_NAME", "\"" + System.getenv("USER") + "\"";
+        }
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            shrinkResources true
+            proguardFile file('proguard.cfg')
+            debuggable false
+            jniDebuggable false
+            zipAlignEnabled true
+            buildConfigField "java.util.Date", "BUILD_TIME", "new java.util.Date(" + getDate() + "L)"
+            buildConfigField "String", "BUILD_NAME", "\"" + System.getenv("USER") + "\"";
+        }
+    }
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}

@@ -11,6 +11,9 @@ import java.io.OutputStream;
 
 
 public class ShellExecuter {
+
+    final static String TAG = "ShellExecutor";
+
     public ShellExecuter() {
 
     }
@@ -109,9 +112,9 @@ public class ShellExecuter {
             process.waitFor();
             process.destroy();
         } catch (IOException e) {
-            Log.d("An IOException was caught: ", e.getMessage());
+            Log.d(TAG, "An IOException was caught: " + e.getMessage());
         } catch (InterruptedException ex) {
-            Log.d("An InterruptedException was caught: ", ex.getMessage());
+            Log.d(TAG, "An InterruptedException was caught: " + ex.getMessage());
         }
         return output;
     }

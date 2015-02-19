@@ -1,8 +1,6 @@
 package com.offsec.nethunter;
 
 
-import java.util.List;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
@@ -17,7 +15,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,6 +24,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import java.util.List;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -132,7 +131,7 @@ public class SideMenu extends Fragment {
         return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mFragmentContainerView);
     }
 
-    public void closeDrawner() {
+    public void closeDrawer() {
         mDrawerLayout.closeDrawer(mFragmentContainerView);
     }
 
@@ -329,9 +328,7 @@ public class SideMenu extends Fragment {
         for (int i = 0; i < count; i++) {
             final ResolveInfo info = infos.get(i);
             final CharSequence labelSeq = info.loadLabel(pm);
-            if (labelSeq.toString().equals("Iptables Configuration") && Build.VERSION.SDK_INT >= 21) {
-            	
-            } else {
+            if (!labelSeq.toString().equals("Iptables Configuration") || Build.VERSION.SDK_INT < 21) {
             	String label = labelSeq != null ? labelSeq.toString() : info.activityInfo.name;
             	activityNames[i] = label;
                 activityActions[i] = info.activityInfo.name;

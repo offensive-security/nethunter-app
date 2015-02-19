@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
-    android:versionCode="1"
-    android:versionName="1"
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.offsec.nethunter">
 
@@ -9,10 +7,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="jackpal.androidterm.permission.RUN_SCRIPT" />
-
-    <uses-sdk
-        android:minSdkVersion="19"
-        android:targetSdkVersion="21" />
 
     <application
         android:allowBackup="true"
