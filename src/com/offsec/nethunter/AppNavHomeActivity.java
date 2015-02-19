@@ -29,6 +29,16 @@ import java.io.OutputStreamWriter;
 public class AppNavHomeActivity extends FragmentActivity
         implements SideMenu.NavigationDrawerCallbacks {
 
+    public final static int NETHUNTER_FRAGMENT = 0;
+    public final static int KALILAUNCHER_FRAGMENT = 1;
+    public final static int KALISERVICES_FRAGMENT = 2;
+    public final static int HIDE_FRAGMENT = 3;
+    public final static int DUCKHUNTER_FRAGMENT = 4;
+    public final static int BADUSB_FRAGMENT = 5;
+    public final static int MANA_FRAGMENT = 6;
+    public final static int DNSMASQ_FRAGMENT = 7;
+    public final static int IPTABLES_FRAGMENT = 8;
+
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -48,9 +58,9 @@ public class AppNavHomeActivity extends FragmentActivity
 
         setContentView(R.layout.base_layout);
         //set kali wallpaper as background
-        String imageInSD = Environment.getExternalStorageDirectory().getAbsolutePath() +"/kali-nh/wallpaper/kali-nh-2183x1200.png";
+        String imageInSD = Environment.getExternalStorageDirectory().getAbsolutePath() + "/kali-nh/wallpaper/kali-nh-2183x1200.png";
         Bitmap bitmap = BitmapFactory.decodeFile(imageInSD);
-        ImageView myImageView = (ImageView)findViewById(R.id.bgHome);
+        ImageView myImageView = (ImageView) findViewById(R.id.bgHome);
         myImageView.setImageBitmap(bitmap);
 
 
@@ -79,85 +89,76 @@ public class AppNavHomeActivity extends FragmentActivity
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        if (position == 0) {
-            fragmentManager
-                    .beginTransaction()
-                    .replace(R.id.container, NetHunterFragment.newInstance(position))
-                    .addToBackStack(null)
-                    .commit();
-        } else if (position == 1) {
-
-            fragmentManager
-                    .beginTransaction()
-                    .replace(R.id.container, KaliLauncherFragment.newInstance(position))
-                    .addToBackStack(null)
-                    .commit();
-        } else if (position == 2) {
-
-            fragmentManager
-                    .beginTransaction()
-                    .replace(R.id.container, KaliServicesFragment.newInstance(position))
-                    .addToBackStack(null)
-                    .commit();
-
-        } else if (position == 3) {
-
-            fragmentManager
-                    .beginTransaction()
-                    .replace(R.id.container, HidFragment.newInstance(position))
-                    .addToBackStack(null)
-                    .commit();
-        } else if (position == 4) {
-
-            fragmentManager
-                    .beginTransaction()
-                    .replace(R.id.container, DuckHunterFragment.newInstance(position))
-                    .addToBackStack(null)
-                    .commit();
-        } else if (position == 5) {
-
-            fragmentManager
-                    .beginTransaction()
-                    .replace(R.id.container, BadusbFragment.newInstance(position))
-                    .addToBackStack(null)
-                    .commit();
-
-        } else if (position == 6) {
-
-            fragmentManager
-                    .beginTransaction()
-                    .replace(R.id.container, ManaFragment.newInstance(position))
-                    .addToBackStack(null)
-                    .commit();
-
-        } else if (position == 7) {
-
-            fragmentManager
-                    .beginTransaction()
-                    .replace(R.id.container, DnsmasqFragment.newInstance(position))
-                    .addToBackStack(null)
-                    .commit();
-
-//        } else if (position == 7) {
-//
-//            fragmentManager
-//                    .beginTransaction()
-//                    .replace(R.id.container, HostapdFragment.newInstance(position))
-//                    .addToBackStack(null)
-//                    .commit();    
-
-        } else if (position == 8) {
-           fragmentManager
-                    .beginTransaction()
-                    .replace(R.id.container, IptablesFragment.newInstance(position))
-                    .addToBackStack(null)
-                    .commit();
-
-        } else {
-            // Start activity as usually // REMOVE THIS SOON no needed
-            Intent target = new Intent();
-            target.setClassName(getApplicationContext(), activity);
-            startActivity(target);
+        switch (position) {
+            case NETHUNTER_FRAGMENT:
+                fragmentManager
+                        .beginTransaction()
+                        .replace(R.id.container, NetHunterFragment.newInstance(position))
+                        .addToBackStack(null)
+                        .commit();
+                break;
+            case KALILAUNCHER_FRAGMENT:
+                fragmentManager
+                        .beginTransaction()
+                        .replace(R.id.container, KaliLauncherFragment.newInstance(position))
+                        .addToBackStack(null)
+                        .commit();
+                break;
+            case KALISERVICES_FRAGMENT:
+                fragmentManager
+                        .beginTransaction()
+                        .replace(R.id.container, KaliServicesFragment.newInstance(position))
+                        .addToBackStack(null)
+                        .commit();
+                break;
+            case HIDE_FRAGMENT:
+                fragmentManager
+                        .beginTransaction()
+                        .replace(R.id.container, HidFragment.newInstance(position))
+                        .addToBackStack(null)
+                        .commit();
+                break;
+            case DUCKHUNTER_FRAGMENT:
+                fragmentManager
+                        .beginTransaction()
+                        .replace(R.id.container, DuckHunterFragment.newInstance(position))
+                        .addToBackStack(null)
+                        .commit();
+                break;
+            case BADUSB_FRAGMENT:
+                fragmentManager
+                        .beginTransaction()
+                        .replace(R.id.container, BadusbFragment.newInstance(position))
+                        .addToBackStack(null)
+                        .commit();
+                break;
+            case MANA_FRAGMENT:
+                fragmentManager
+                        .beginTransaction()
+                        .replace(R.id.container, ManaFragment.newInstance(position))
+                        .addToBackStack(null)
+                        .commit();
+                break;
+            case DNSMASQ_FRAGMENT:
+                fragmentManager
+                        .beginTransaction()
+                        .replace(R.id.container, DnsmasqFragment.newInstance(position))
+                        .addToBackStack(null)
+                        .commit();
+                break;
+            case IPTABLES_FRAGMENT:
+                fragmentManager
+                        .beginTransaction()
+                        .replace(R.id.container, IptablesFragment.newInstance(position))
+                        .addToBackStack(null)
+                        .commit();
+                break;
+            default:
+                // Start activity as usually // REMOVE THIS SOON no needed
+                Intent target = new Intent();
+                target.setClassName(getApplicationContext(), activity);
+                startActivity(target);
+                break;
         }
     }
 
@@ -179,8 +180,6 @@ public class AppNavHomeActivity extends FragmentActivity
         restoreActionBar();
         return super.onCreateOptionsMenu(menu);
     }
-
-
 
 
     @Override
@@ -208,9 +207,9 @@ public class AppNavHomeActivity extends FragmentActivity
 
 
     public String readConfigFile(String configFilePath) {
-        
-    	
-    	File sdcard = Environment.getExternalStorageDirectory();
+
+
+        File sdcard = Environment.getExternalStorageDirectory();
         File file = new File(sdcard, configFilePath);
         StringBuilder text = new StringBuilder();
         try {
@@ -223,8 +222,8 @@ public class AppNavHomeActivity extends FragmentActivity
             br.close();
         } catch (IOException e) {
             Log.e("Nethunter", "exception", e);
-        	Logger Logger = new Logger();
-        	Logger.appendLog(e.getMessage());
+            Logger Logger = new Logger();
+            Logger.appendLog(e.getMessage());
         }
         return text.toString();
     }
@@ -243,7 +242,7 @@ public class AppNavHomeActivity extends FragmentActivity
         } catch (Exception e) {
             showMessage(e.getMessage());
             Logger Logger = new Logger();
-        	Logger.appendLog(e.getMessage());
+            Logger.appendLog(e.getMessage());
             return false;
         }
     }
