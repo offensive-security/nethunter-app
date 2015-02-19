@@ -20,8 +20,6 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_CERTIFICATE := platform
-
 #
 # Since NH uses the BuildConfig.java that is built via gradle, and since AOSP's
 # build system doesn't create Buildconfig.java, we have to do it manually here
@@ -43,7 +41,7 @@ $(LOCAL_SRC_PATH)/$(LOCAL_BUILDCONFIG_CLASS): FORCE
 	echo "/**" > $(LOCAL_SRC_PATH)/$(LOCAL_BUILDCONFIG_CLASS)
 	echo "* Automatically generated file. DO NOT MODIFY" >> $(LOCAL_SRC_PATH)/$(LOCAL_BUILDCONFIG_CLASS)
 	echo "*/" >> $(LOCAL_SRC_PATH)/$(LOCAL_BUILDCONFIG_CLASS)
-	echo "package com.offsec.nethunter;" >> $(LOCAL_SRC_PATH)/$(LOCAL_BUILDCONFIG_CLASS)
+	echo "package "$(BC_APPLICATION_ID)";" >> $(LOCAL_SRC_PATH)/$(LOCAL_BUILDCONFIG_CLASS)
 	echo "public final class BuildConfig {" >> $(LOCAL_SRC_PATH)/$(LOCAL_BUILDCONFIG_CLASS)
 	echo "  public static final boolean DEBUG = "$(BC_DEBUG_STATUS)";" >> $(LOCAL_SRC_PATH)/$(LOCAL_BUILDCONFIG_CLASS)
 	echo "  public static final String APPLICATION_ID = \""$(BC_APPLICATION_ID)"\";" >> $(LOCAL_SRC_PATH)/$(LOCAL_BUILDCONFIG_CLASS)
