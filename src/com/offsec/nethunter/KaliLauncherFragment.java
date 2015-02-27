@@ -65,7 +65,7 @@ public class KaliLauncherFragment extends Fragment {
                     Intent intent =
                             new Intent("jackpal.androidterm.RUN_SCRIPT");
                     intent.addCategory(Intent.CATEGORY_DEFAULT);
-                    intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c bootkali kalimenu");
+                    intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c 'bootkali kalimenu'");
                     startActivity(intent);
                 } catch (Exception e) {
                     Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
@@ -82,7 +82,7 @@ public class KaliLauncherFragment extends Fragment {
                     Intent intent =
                             new Intent("jackpal.androidterm.RUN_SCRIPT");
                     intent.addCategory(Intent.CATEGORY_DEFAULT);
-                    intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c bootkali update");
+                    intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c 'bootkali update'");
                     startActivity(intent);
                 } catch (Exception e) {
                     Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
@@ -99,7 +99,7 @@ public class KaliLauncherFragment extends Fragment {
                     Intent intent =
                             new Intent("jackpal.androidterm.RUN_SCRIPT");
                     intent.addCategory(Intent.CATEGORY_DEFAULT);
-                    intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c bootkali wifite");
+                    intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c 'bootkali wifite'");
                     startActivity(intent);
                 } catch (Exception e) {
                     Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
@@ -117,7 +117,7 @@ public class KaliLauncherFragment extends Fragment {
                     Intent intent =
                             new Intent("jackpal.androidterm.RUN_SCRIPT");
                     intent.addCategory(Intent.CATEGORY_DEFAULT);
-                    intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c bootkali wifi-disable");
+                    intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c 'bootkali wifi-disable'");
                     startActivity(intent);
                 } catch (Exception e) {
                     Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();

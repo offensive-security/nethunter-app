@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,14 +31,14 @@ public class KaliServicesFragment extends Fragment {
 
                 // name, check  cmd, start cmd, stop cmd, state
 
-                {"SSH", "sh /system/xbin/check-kalissh", "su -c bootkali ssh start", "su -c bootkali ssh stop"},
-                {"Dnsmasq", "sh /system/xbin/check-kalidnsmq", "su -c bootkali dnsmasq start", "su -c bootkali dnsmasq stop"},
-                {"Hostapd", "sh /system/xbin/check-kalihostapd", "su -c bootkali hostapd start", "su -c bootkali hostapd stop"},
-                {"OpenVPN", "sh /system/xbin/check-kalivpn", "su -c bootkali openvpn start", "su -c bootkali openvpn stop"},
-                {"Apache", "sh /system/xbin/check-kaliapache", "su -c bootkali apache start", "su -c bootkali apache stop"},
-                {"Metasploit", "sh /system/xbin/check-kalimetasploit", "su -c bootkali msf start", "su -c bootkali msf stop"},
-                //{"DHCP", "sh /system/xbin/check-kalidhcp","su -c bootkali dhcp start","su -c bootkali dhcp stop"},
-                {"BeEF Framework", "sh /system/xbin/check-kalibeef-xss","su -c bootkali beef-xss start","su -c bootkali beef-xss stop"},
+                {"SSH", "sh /system/xbin/check-kalissh", "su -c 'bootkali ssh start'", "su -c 'bootkali ssh stop'"},
+                {"Dnsmasq", "sh /system/xbin/check-kalidnsmq", "su -c 'bootkali dnsmasq start'", "su -c 'bootkali dnsmasq stop'"},
+                {"Hostapd", "sh /system/xbin/check-kalihostapd", "su -c 'bootkali hostapd start'", "su -c 'bootkali hostapd stop'"},
+                {"OpenVPN", "sh /system/xbin/check-kalivpn", "su -c 'bootkali openvpn start'", "su -c 'bootkali openvpn stop'"},
+                {"Apache", "sh /system/xbin/check-kaliapache", "su -c 'bootkali apache start'", "su -c 'bootkali apache stop'"},
+                {"Metasploit", "sh /system/xbin/check-kalimetasploit", "su -c 'bootkali msf start'", "su -c 'bootkali msf stop'"},
+                //{"DHCP", "sh /system/xbin/check-kalidhcp","su -c 'bootkali dhcp start'","su -c 'bootkali dhcp stop'"},
+                {"BeEF Framework", "sh /system/xbin/check-kalibeef-xss","su -c 'bootkali beef-xss start'","su -c 'bootkali beef-xss stop'"},
                 //{"Fruity WiFi", "sh /system/xbin/check-fruity-wifi","su -c start-fruity-wifi","su -c  stop-fruity-wifi"}
                 // the stop script isnt working well, doing a raw cmd instead to stop vnc
                 // {"VNC", "sh /system/xbin/check-kalivnc", "bootkali\nvncserver", "bootkali\nkill $(ps aux | grep 'Xtightvnc' | awk '{print $2}');CT=0;for x in $(ps aux | grep 'Xtightvnc' | awk '{print $2}'); do CT=$[$CT +1];tightvncserver -kill :$CT; done;rm /root/.vnc/*.log;rm -r /tmp/.X*"},
@@ -167,13 +166,13 @@ class SwichLoader extends BaseAdapter {
 
             // set up the ViewHolder
             vH = new ViewHolderItem();
-            // get the reference of swicht and the text view
+            // get the reference of switch and the text view
             vH.sw = (Switch) convertView.findViewById(R.id.switch1);
             vH.swholder = (TextView) convertView.findViewById(R.id.switchHolder);
             convertView.setTag(vH);
             //System.out.println ("created row");
         } else {
-            // recicle the items in the list is allready exists
+            // recycle the items in the list is already exists
             vH = (ViewHolderItem) convertView.getTag();
 
 
