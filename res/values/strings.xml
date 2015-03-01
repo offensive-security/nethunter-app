@@ -133,4 +133,25 @@
     <string name="toast_install_terminal">Error launching intent. Install Android Terminal!</string>
     <string name="descriptiontext" />
 
+    <string name="macchanger_description">Change the MAC of any device interface.\n\nIt can be randomly generated or manually typed. \n\nThe MAC must contain 6 pair of combinations using the charset: [0-9|A-F|a-f] something like:\n\n 00:11:22:ab:cd:ef </string>
+    <string name="interface_select">Pick a device interface:</string>
+    <string name="macchanger_select">Select macchanger mode:</string>
+    <string name="macchanger_label">Macchanger</string>
+    <string name="saved_mac">Load MAC</string>
+    <string name="load_saved_mac">Load saved MAC</string>
+    <string name="save_mac">Save current MAC</string>
+    <string name="reset_mac">Reset wlan0 MAC address</string>
+    <string name="wlan0ResetInfo">This will reset the wlan0 MAC to his original state.\n\nAfter the reset the phone will be rebooted.\n\n This is useful if the wifi is stuck with a incompatible MAC address.</string>
+    <string-array name="macchanger_opts">
+        <item>Random MAC</item>
+        <item>Custom MAC</item>
+    </string-array>
+    <string-array name="interface_opts">
+        <item>wlan0 (Internal wireless card)</item>
+        <item>wlan1 (External wireless USB)</item>
+        <item>rmnet0 (3G)</item>
+        <item>eth0 (Ethernet)</item>
+        <item>rndis0 (USB > Ethernet)</item>
+        <item>usb0 (USB > Ethernet for the Nexus7 2013 when tethering | badusb)</item>
+    </string-array>
 </resources>
