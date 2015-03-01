@@ -21,7 +21,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 
 //import android.app.Fragment;
 //import android.app.FragmentManager;
@@ -38,6 +41,22 @@ public class AppNavHomeActivity extends FragmentActivity
     public final static int MANA_FRAGMENT = 6;
     public final static int DNSMASQ_FRAGMENT = 7;
     public final static int IPTABLES_FRAGMENT = 8;
+
+    public final static String TAG = "AppNavHomeActivity";
+
+    // these must be UTF-8 text-based scripts.  They go in the /assets folder and will be copied
+    // to the app's cache area.  Don't make thisstatic or final because it changes below (is reused)
+    private String[] SCRIPTS = {"bootkali", "check-kaliapache", "check-kalibeef-xss",
+            "check-kalidhcp", "check-kalidnsmq", "check-kalihostapd", "check-kalimetasploit",
+            "check-kalissh", "check-kalivnc", "check-kalivpn", "iptables-flush", "killkali",
+            "start-apache", "start-badusb-kitkat", "start-badusb-lollipop", "start-beef-xss",
+            "start-dhcp", "start-dnsmasq", "start-hid-cmd", "start-hid-cmd-elevated-win7",
+            "start-hid-cmd-elevated-win8", "start-hostapd", "start-iptables", "start-msf",
+            "start-openvpn", "start-rev-met", "start-rev-met-elevated-win7",
+            "start-rev-met-elevated-win8", "start-ssh", "start-update", "start-vpn", "start-web",
+            "start-wifite", "stop-apache", "stop-badusb-kitkat", "stop-badusb-lollipop",
+            "stop-beef-xss", "stop-dhcp", "stop-dnsmasq", "stop-hostapd", "stop-msf",
+            "stop-openvpn", "stop-ssh", "stop-vpn", "stop-web"};
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -64,7 +83,7 @@ public class AppNavHomeActivity extends FragmentActivity
         myImageView.setImageBitmap(bitmap);
 
 
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // detail for android 5 devices
             getWindow().setStatusBarColor(getResources().getColor(R.color.darkTitle));
         }
@@ -80,6 +99,82 @@ public class AppNavHomeActivity extends FragmentActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        // copy script files, but off the main UI thread
+        final Runnable r = new Runnable() {
+            public void run() {
+                int index = 0;
+                for (String script : SCRIPTS) {
+                    setupScript(script, "700", index);
+                    index++;
+                }
+                ShellExecuter exe = new ShellExecuter();
+                exe.RunAsRoot(SCRIPTS);
+            }
+        };
+        Thread t = new Thread(r);
+        t.start();
+
+        // now make sure the sdcard has the needed /files directory
+        File dir = new File(Environment.getExternalStorageDirectory() + "/files");
+        try {
+            if (!dir.exists()) {
+                Log.d(TAG, "Couldn't find sdcard/files/ directory.  Making it....");
+                if (dir.mkdir()) {
+                    Log.d(TAG, "Made needed directory!");
+                } else {
+                    Log.d(TAG, "Failed making directory.  Is the sdcard mounted and available?!");
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "ERROR verifying/creating /files directory on sdcard!", e);
+        }
+    }
+
+    private boolean setupScript(final String scriptName, final String permissions, final int index) {
+
+        // This copies shell script files from /assets/ in the source to the app cache.  It also
+        // sets their permission.  It's a boolean in case we need to wait for success/failure.
+
+        // Update these files EVERY restart of app just in case it gets updated by a new apk with
+        // changed scripts...
+
+        // thanks to the discussion at:
+        // http://stackoverflow.com/questions/8474821/how-to-get-the-android-path-string-to-a-file-on-assets-folder
+        // which suggested they have to be copied to cache to be run from the shell.
+
+        // Note-- this is run in a separate thread on EVERY start of the app so that updates to scripts are
+        // always installed w/new versions of the app.  Also, in case the user did a clear app data from Settings.
+
+        try {
+            // first read the script file line-by-line
+            InputStream is = getApplicationContext().getAssets().open(scriptName);
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            try {
+                while ((line = br.readLine()) != null) {
+                    sb.append(line).append('\n');
+                }
+            } catch (Exception e) {
+                Log.d(TAG, "Error reading script file.  Is this a plaintext UTF-8 multi-line script?");
+            }
+            is.close();
+            br.close();
+            // next, write the string out to the file in the cache folder
+            File f = new File(getCacheDir().toString() + '/' + scriptName);
+            FileOutputStream fos = new FileOutputStream(f);
+            fos.write(sb.toString().getBytes(Charset.forName("UTF-8")));
+            fos.close();
+            // and finally, build a queue of permission commands by replacing the filename of the
+            // each SCRIPTS[] value with the matching permission command.  This lets us avoid calling
+            // su -c for every time we want to chmod.  Instead we do it in one call at the end.
+            SCRIPTS[index] = "chmod " + permissions + " " + f.toString();
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to copy: " + scriptName, e);
+            return false;
+        }
+        return true;
     }
 
     @Override
