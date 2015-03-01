@@ -4,6 +4,8 @@
     package="com.offsec.nethunter">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="jackpal.androidterm.permission.RUN_SCRIPT" />
@@ -105,7 +107,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".AppNavHomeActivity" />
         </activity-alias>
-		<activity-alias
+        <activity-alias
             android:targetActivity=".AppNavHomeActivity"
             android:name=".DnsmasqActivity"
             android:label="@string/dnsmasq_label"
@@ -118,6 +120,20 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".AppNavHomeActivity" />
         </activity-alias>
+		<activity-alias
+            android:targetActivity=".AppNavHomeActivity"
+            android:name=".MacchangerFragment"
+            android:label="@string/macchanger_label"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.SAMPLE_CODE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".AppNavHomeActivity" />
+        </activity-alias>
+
         <!--
         <activity-alias
             android:targetActivity=".AppNavHomeActivity"
@@ -155,6 +171,5 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".EditSourceActivity" />
         </activity>
-
     </application>
 </manifest>

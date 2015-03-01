@@ -40,7 +40,8 @@ public class AppNavHomeActivity extends FragmentActivity
     public final static int BADUSB_FRAGMENT = 5;
     public final static int MANA_FRAGMENT = 6;
     public final static int DNSMASQ_FRAGMENT = 7;
-    public final static int IPTABLES_FRAGMENT = 8;
+    public final static int MACCHANGER_FRAGMENT = 8;
+    public final static int IPTABLES_FRAGMENT = 9;
 
     public final static String TAG = "AppNavHomeActivity";
 
@@ -245,6 +246,13 @@ public class AppNavHomeActivity extends FragmentActivity
                 fragmentManager
                         .beginTransaction()
                         .replace(R.id.container, IptablesFragment.newInstance(position))
+                        .addToBackStack(null)
+                        .commit();
+                break;
+            case MACCHANGER_FRAGMENT:
+                fragmentManager
+                        .beginTransaction()
+                        .replace(R.id.container, MacchangerFragment.newInstance(position))
                         .addToBackStack(null)
                         .commit();
                 break;
