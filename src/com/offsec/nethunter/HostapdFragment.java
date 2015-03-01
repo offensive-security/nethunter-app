@@ -1,12 +1,8 @@
 package com.offsec.nethunter;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-//import android.app.Fragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,10 +13,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+//import android.app.Fragment;
+
 public class HostapdFragment extends Fragment {
 
     private String configFilePath = "files/hostapd.conf";
     private static final String ARG_SECTION_NUMBER = "section_number";
+    private String cacheDir;
 
     public HostapdFragment() {
 
@@ -54,6 +56,9 @@ public class HostapdFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
+        if (isAdded()) {
+            cacheDir = getActivity().getCacheDir().toString();
+        }
     }
 
     @Override
@@ -89,21 +94,21 @@ public class HostapdFragment extends Fragment {
 
     public void startHostapd() {
         ShellExecuter exe = new ShellExecuter();
-        String[] command = {"su -c bootkali hostapd start"};
+        String[] command = {"su -c '" + cacheDir + "/bootkali hostapd start'"};
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("Hostapd started!");
     }
 
     public void stopHostapd() {
         ShellExecuter exe = new ShellExecuter();
-        String[] command = {"su -c bootkali hostapd stop"};
+        String[] command = {"su -c '" + cacheDir + "/bootkali hostapd stop'"};
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("Hostapd stopped!");
     }
 
     private void loadOptions(final View rootView) {
         String text = ((AppNavHomeActivity) getActivity()).readConfigFile(configFilePath);
-	        /*
+            /*
 	         * Interface
 	         */
         EditText ifc = (EditText) rootView.findViewById(R.id.ifc);

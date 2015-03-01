@@ -45,6 +45,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     final static CharSequence[] languages = {"American English", "French", "German", "Spanish", "Swedish", "Italian", "British English", "Russian", "Danish", "Norwegian", "Portugese", "Belgian"};
 
     private static final String ARG_SECTION_NUMBER = "section_number";
+    private String cacheDir = "";
 
     public DuckHunterFragment() {
 
@@ -61,6 +62,10 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
+
+        if (isAdded()) {
+             cacheDir = getActivity().getCacheDir().toString();
+        }
     }
 
     @Override
@@ -155,7 +160,9 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                         break;
                 }
                 String[] command = new String[1];
-                command[0] = "su -c bootkali duck-hunt-convert " + lang + " /sdcard/" + DuckHunterConvertFragment.configFilePath + " /opt/" + DuckHunterPreviewFragment.configFileFilename;
+                command[0] = "su -c '" + cacheDir + "/bootkali duck-hunt-convert " + lang +
+                        " /sdcard/" + DuckHunterConvertFragment.configFilePath + " /opt/" +
+                        DuckHunterPreviewFragment.configFileFilename + "'";
                 ShellExecuter exe = new ShellExecuter();
                 exe.RunAsRoot(command);
                 ((AppNavHomeActivity) getActivity()).showMessage("converting started");
@@ -177,7 +184,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
     private void start() {
         String[] command = new String[1];
-        command[0] = "su -c bootkali duck-hunt-run /opt/duckout.sh";
+        command[0] = "su -c '" + cacheDir + "/bootkali duck-hunt-run /opt/duckout.sh'";
         ShellExecuter exe = new ShellExecuter();
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("Attack started");
@@ -205,7 +212,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
             public void onClick(DialogInterface dialog, int which) {
                 Editor editor = sharedpreferences.edit();
                 editor.putInt("DuckHunterLanguageIndex", which);
-                editor.commit();
+                editor.apply();
             }
         });
         builder.show();

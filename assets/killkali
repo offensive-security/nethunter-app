@@ -1,0 +1,48 @@
+#!/system/bin/sh
+
+if [ -x /system/xbin/busybox ]; then
+   busybox=/system/xbin/busybox
+elif [ -x /data/local/bin/busybox ]; then
+      busybox=/data/local/bin/busybox
+elif [ -x /system/bin/busybox ]; then
+   busybox=/system/bin/busybox
+else
+   echo "Busybox not found!  Install it, dummy!";
+   log "Busybox not found!  Install it, dummy!";
+   exit;
+fi
+
+export bin=/system/bin
+export mnt=/data/local/kali-armhf
+PRESERVED_PATH=$PATH
+export PATH=/usr/bin:/usr/sbin:/bin:/usr/local/bin:/usr/local/sbin:$PATH
+export TERM=linux
+export HOME=/root
+export LOGNAME=root
+unset LD_PRELOAD
+
+# set shmmax to 128mb to free memory#
+
+$busybox sysctl -w kernel.shmmax=134217728
+
+echo "Shutting down SSH Server"
+$busybox chmod 666 /dev/null
+
+$busybox chroot $mnt /etc/init.d/ssh stop
+
+echo "Shutting down Postgresql"
+$busybox chroot $mnt /etc/init.d/postgresql stop
+
+#unmount everything
+
+echo "Removing all Kali mounts"
+$busybox umount $mnt/dev/pts
+echo "unmounted pts"
+$busybox umount $mnt/dev
+echo "unmounted dev"
+$busybox umount $mnt/proc
+echo "unmounted proc"
+$busybox umount $mnt/sys
+echo "unmounted sys"
+
+export PATH=$PRESERVED_PATH
