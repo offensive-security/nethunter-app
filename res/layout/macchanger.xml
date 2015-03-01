@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/scrollView">
+    android:layout_height="match_parent">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <TextView
+            android:id="@+id/macchanger_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/macchanger_description"
             android:layout_gravity="center_horizontal|center"
             android:gravity="center"
             android:padding="4dp"
-            android:id="@+id/macchanger_description" />
+            android:text="@string/macchanger_description"
+            android:textColor="@color/highlighted_text_material_dark" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/interface_select"
+            android:layout_marginTop="8dp"
             android:padding="4dp"
-            android:textSize="18sp"
-            android:layout_marginTop="8dp"/>
+            android:text="@string/interface_select"
+            android:textSize="18sp" />
 
         <Spinner
             android:id="@+id/interface_opts"
@@ -34,166 +35,185 @@
             android:layout_height="wrap_content"
             android:entries="@array/interface_opts"
             android:prompt="@string/interface_select"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <View
             android:layout_width="fill_parent"
             android:layout_height="1dp"
-            android:background="#ffffff"
+            android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"/>
+            android:background="#ffffff" />
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:id="@+id/cmLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/cmLayout"
             android:focusable="true"
-            android:focusableInTouchMode="true">
+            android:focusableInTouchMode="true"
+            android:orientation="horizontal">
 
             <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Current MAC: "
-            android:id="@+id/macHint"
-                android:layout_marginTop="8dp"/>
-            <EditText
+                android:id="@+id/macHint"
                 android:layout_width="wrap_content"
-                android:hint="CURRENT MAC"
-                android:maxLength="17"
-                android:layout_marginTop="8dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/currentmac"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
                 android:id="@+id/currMac"
-               />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="@string/currentmac"
+                android:maxLength="17"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp" />
 
             <ImageButton
+                android:id="@+id/reloadMAC"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/reloadMAC"
-                android:src="@drawable/ic_action_refresh"
-                android:layout_marginLeft="5dp"/>
+                android:layout_marginStart="5dp"
+                android:contentDescription="@string/reloadMAC"
+                android:src="@drawable/ic_action_refresh" />
 
         </LinearLayout>
-
-
-
-
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/macchanger_select"
+            android:layout_marginTop="8dp"
             android:padding="4dp"
-            android:textSize="18sp"
-            android:layout_marginTop="8dp"/>
+            android:text="@string/macchanger_select"
+            android:textSize="18sp" />
 
         <Spinner
             android:id="@+id/macchanger_opts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:entries="@array/macchanger_opts"
-            android:textSize="18sp"
-            android:prompt="@string/macchanger_select" />
+            android:prompt="@string/macchanger_select"
+            android:textSize="18sp" />
 
         <View
             android:layout_width="fill_parent"
             android:layout_height="1dp"
-            android:background="#ffffff"
+            android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"/>
+            android:background="#ffffff" />
 
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:id="@+id/mac_lay1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="8dp"
-            android:weightSum="1"
-            android:id="@+id/mac_lay1" >
+            android:orientation="horizontal"
+            android:weightSum="1">
 
 
             <EditText
+                android:id="@+id/mac1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="XX"
-                android:maxLength="2"
-                android:id="@+id/mac1" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=":"
-                android:id="@+id/dummy1" />
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="XX"
-                android:maxLength="2"
-                android:id="@+id/mac2" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=":"
-                android:id="@+id/dummy2" />
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="XX"
-                android:maxLength="2"
-                android:id="@+id/mac3" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=":"
-                android:id="@+id/dummy3" />
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/mac4"
-                android:hint="XX"
+                android:digits="0123456789ABCDEF"
+                android:hint="@string/TwoMACDigits"
+                android:inputType="textNoSuggestions|textCapCharacters"
                 android:maxLength="2" />
+
             <TextView
+                android:id="@+id/dummy1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=":"
-                android:id="@+id/dummy4" />
+                android:text="@string/macSeparator" />
+
             <EditText
+                android:id="@+id/mac2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="XX"
-                android:maxLength="2"
-                android:id="@+id/mac5" />
+                android:digits="0123456789ABCDEF"
+                android:hint="@string/TwoMACDigits"
+                android:inputType="textNoSuggestions|textCapCharacters"
+                android:maxLength="2" />
+
             <TextView
+                android:id="@+id/dummy2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=":"
-                android:id="@+id/dummy5" />
+                android:text="@string/macSeparator" />
+
             <EditText
+                android:id="@+id/mac3"
                 android:layout_width="wrap_content"
-                android:hint="XX"
-                android:maxLength="2"
                 android:layout_height="wrap_content"
-                android:id="@+id/mac6" />
-            </LinearLayout>
+                android:digits="0123456789ABCDEF"
+                android:hint="@string/TwoMACDigits"
+                android:inputType="textNoSuggestions|textCapCharacters"
+                android:maxLength="2" />
+
+            <TextView
+                android:id="@+id/dummy3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/macSeparator" />
+
+            <EditText
+                android:id="@+id/mac4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:digits="0123456789ABCDEF"
+                android:hint="@string/TwoMACDigits"
+                android:inputType="textNoSuggestions|textCapCharacters"
+                android:maxLength="2" />
+
+            <TextView
+                android:id="@+id/dummy4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/macSeparator" />
+
+            <EditText
+                android:id="@+id/mac5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:digits="0123456789ABCDEF"
+                android:hint="@string/TwoMACDigits"
+                android:inputType="textNoSuggestions|textCapCharacters"
+                android:maxLength="2" />
+
+            <TextView
+                android:id="@+id/dummy5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/macSeparator" />
+
+            <EditText
+                android:id="@+id/mac6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:digits="0123456789ABCDEF"
+                android:hint="@string/TwoMACDigits"
+                android:inputType="textNoSuggestions|textCapCharacters"
+                android:maxLength="2" />
+        </LinearLayout>
 
 
         <Button
+            android:id="@+id/set_mac_button"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Change MAC"
-            android:id="@+id/set_mac_button"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            android:text="@string/changeMAC" />
 
         <TextView
+            android:id="@+id/macResult"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:id="@+id/macResult"
-            android:layout_gravity="center_horizontal" />
-
+            android:layout_gravity="center_horizontal"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/highlighted_text_material_dark" />
 
     </LinearLayout>
 </ScrollView>
