@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">NetHunter Android</string>
-    <string name="app_nav_home_label">NetHunter Home</string>
+    <string name="app_nav_home_label">NetHunter</string>
 
 
 	<string name="hometitle">Kali Linux NetHunter</string>
