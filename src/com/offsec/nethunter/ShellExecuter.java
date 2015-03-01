@@ -27,7 +27,7 @@ public class ShellExecuter {
             BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
-                output.append(line).append("\n");
+                output.append(line).append('\n');
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -44,7 +44,7 @@ public class ShellExecuter {
             BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
-                output.append(line).append("\n");
+                output.append(line).append('\n');
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,7 +57,7 @@ public class ShellExecuter {
             Process process = Runtime.getRuntime().exec("su");
             DataOutputStream os = new DataOutputStream(process.getOutputStream());
             for (String tmpmd : command) {
-                os.writeBytes(tmpmd + "\n");
+                os.writeBytes(tmpmd + '\n');
             }
             os.writeBytes("exit\n");
             os.flush();
@@ -94,7 +94,7 @@ public class ShellExecuter {
             InputStream stderr = process.getErrorStream();
             InputStream stdout = process.getInputStream();
 
-            stdin.write((command + "\n").getBytes());
+            stdin.write((command + '\n').getBytes());
             stdin.write(("exit\n").getBytes());
             stdin.flush();
             stdin.close();
