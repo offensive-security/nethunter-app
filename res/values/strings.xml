@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">NetHunter Android</string>
+    <string name="app_name">NetHunter</string>
     <string name="app_nav_home_label">NetHunter</string>
 
 
@@ -148,6 +148,7 @@
     <string name="reloadMAC">Reload MAC</string>
     <string name="randomMAC">Random MAC</string>
     <string name="customMAC">Custom MAC</string>
+    <string name="autorunningscripts">Nethunter: auto-running startup scripts</string>
     <string-array name="macchanger_opts">
         <item>Random MAC</item>
         <item>Custom MAC</item>

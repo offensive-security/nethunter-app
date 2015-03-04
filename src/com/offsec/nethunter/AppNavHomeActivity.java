@@ -57,7 +57,7 @@ public class AppNavHomeActivity extends FragmentActivity
             "start-rev-met-elevated-win8", "start-ssh", "start-update", "start-vpn", "start-web",
             "start-wifite", "stop-apache", "stop-badusb-kitkat", "stop-badusb-lollipop",
             "stop-beef-xss", "stop-dhcp", "stop-dnsmasq", "stop-hostapd", "stop-msf",
-            "stop-openvpn", "stop-ssh", "stop-vpn", "stop-web"};
+            "stop-openvpn", "stop-ssh", "stop-vpn", "stop-web", "etc/init.d/50userinit"};
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -116,19 +116,26 @@ public class AppNavHomeActivity extends FragmentActivity
         Thread t = new Thread(r);
         t.start();
 
+        createDirIfNeeded(Environment.getExternalStorageDirectory() + "/files");
+        createDirIfNeeded(getCacheDir() + "/etc/init.d");
+
+    }
+
+    private void createDirIfNeeded(String path) {
+
         // now make sure the sdcard has the needed /files directory
-        File dir = new File(Environment.getExternalStorageDirectory() + "/files");
+        File dir = new File(path);
         try {
             if (!dir.exists()) {
-                Log.d(TAG, "Couldn't find sdcard/files/ directory.  Making it....");
-                if (dir.mkdir()) {
+                Log.d(TAG, "Couldn't find " + path + " directory.  Making it....");
+                if (dir.mkdirs()) {
                     Log.d(TAG, "Made needed directory!");
                 } else {
-                    Log.d(TAG, "Failed making directory.  Is the sdcard mounted and available?!");
+                    Log.d(TAG, "Failed making directory.");
                 }
             }
         } catch (Exception e) {
-            Log.e(TAG, "ERROR verifying/creating /files directory on sdcard!", e);
+            Log.e(TAG, "ERROR verifying/creating " + path + " directory on sdcard!", e);
         }
     }
 
