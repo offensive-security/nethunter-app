@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.offsec.nethunter">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="jackpal.androidterm.permission.RUN_SCRIPT" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
-        android:label="@string/app_name"
         android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
         android:theme="@style/AppTheme">
 
         <activity
             android:name=".AppNavHomeActivity"
-            android:label="@string/app_name"
-            android:configChanges="orientation|keyboardHidden|screenSize|keyboard">
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
+            android:label="@string/app_name">
             <intent-filter android:label="@string/app_nav_home_label">
                 <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.SAMPLE_CODE" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-
         <activity-alias
             android:name=".KaliLauncherActivity"
-            android:targetActivity=".AppNavHomeActivity"
-            android:label="@string/KaliLauncherLabel">
+            android:label="@string/KaliLauncherLabel"
+            android:targetActivity=".AppNavHomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.SAMPLE_CODE" />
@@ -41,9 +41,9 @@
         </activity-alias>
 
         <activity-alias
-            android:targetActivity=".AppNavHomeActivity"
             android:name=".KaliServicesActivity"
-            android:label="@string/kali_services_label">
+            android:label="@string/kali_services_label"
+            android:targetActivity=".AppNavHomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.SAMPLE_CODE" />
@@ -55,8 +55,8 @@
 
         <activity-alias
             android:name=".HidActivity"
-            android:targetActivity=".AppNavHomeActivity"
-            android:label="@string/hid_label">
+            android:label="@string/hid_label"
+            android:targetActivity=".AppNavHomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.SAMPLE_CODE" />
@@ -66,9 +66,9 @@
                 android:value=".AppNavHomeActivity" />
         </activity-alias>
         <activity-alias
-            android:targetActivity=".AppNavHomeActivity"
             android:name=".duckHunterFragment"
             android:label="@string/duckhunter_label"
+            android:targetActivity=".AppNavHomeActivity"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -79,10 +79,10 @@
                 android:value=".AppNavHomeActivity" />
         </activity-alias>
 
-		<activity-alias
-            android:targetActivity=".AppNavHomeActivity"
+        <activity-alias
             android:name=".BadusbActivity"
             android:label="@string/badusb_label"
+            android:targetActivity=".AppNavHomeActivity"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -93,9 +93,9 @@
                 android:value=".AppNavHomeActivity" />
         </activity-alias>
         <activity-alias
-            android:targetActivity=".AppNavHomeActivity"
             android:name=".ManaActivity"
             android:label="@string/mana_label"
+            android:targetActivity=".AppNavHomeActivity"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -105,10 +105,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".AppNavHomeActivity" />
         </activity-alias>
-		<activity-alias
-            android:targetActivity=".AppNavHomeActivity"
+        <activity-alias
             android:name=".DnsmasqActivity"
             android:label="@string/dnsmasq_label"
+            android:targetActivity=".AppNavHomeActivity"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -118,11 +118,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".AppNavHomeActivity" />
         </activity-alias>
-        <!--
         <activity-alias
+            android:name=".MacchangerFragment"
+            android:label="@string/macchanger_label"
             android:targetActivity=".AppNavHomeActivity"
-            android:name=".HostapdActivity"
-            android:label="@string/hostapd_label"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -132,11 +131,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".AppNavHomeActivity" />
         </activity-alias>
-		-->
         <activity-alias
-            android:targetActivity=".AppNavHomeActivity"
             android:name=".IptablesActivity"
             android:label="@string/iptables_label"
+            android:targetActivity=".AppNavHomeActivity"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -149,12 +147,23 @@
 
         <activity
             android:name=".EditSourceActivity"
-            android:windowSoftInputMode="stateHidden"
-            android:label="Edit Source">
+            android:label="Edit Source"
+            android:windowSoftInputMode="stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".EditSourceActivity" />
         </activity>
+
+        <receiver android:name=".BootCompletedReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".RunAtBootService"
+            android:exported="false"
+            android:process = ":runAtBoot"/>
 
     </application>
 </manifest>

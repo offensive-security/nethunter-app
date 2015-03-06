@@ -1,16 +1,8 @@
 package com.offsec.nethunter;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Environment;
-//import android.app.Fragment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,10 +14,20 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+
+//import android.app.Fragment;
+
 
 public class IptablesFragment extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
+    private String cacheDir;
 
     public IptablesFragment() {
 
@@ -89,6 +91,9 @@ public class IptablesFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
+        if (isAdded()) {
+            cacheDir = getActivity().getCacheDir().toString();
+        }
     }
 
     @Override
@@ -113,7 +118,7 @@ public class IptablesFragment extends Fragment {
 
     public void runIptables() {
         ShellExecuter exe = new ShellExecuter();
-        String[] command = {"su -c bootkali iptables"};
+        String[] command = {"su -c '" + cacheDir + "/bootkali iptables'"};
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("Iptables started");
     }

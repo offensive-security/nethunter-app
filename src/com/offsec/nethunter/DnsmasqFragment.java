@@ -1,13 +1,8 @@
 package com.offsec.nethunter;
 
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-//import android.app.Fragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,10 +13,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+//import android.app.Fragment;
+
 public class DnsmasqFragment extends Fragment {
 
     private String configFilePath = "files/dnsmasq.conf";
     private static final String ARG_SECTION_NUMBER = "section_number";
+    private String cacheDir;
 
     
     public DnsmasqFragment() {
@@ -54,6 +56,9 @@ public class DnsmasqFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
+        if (isAdded()) {
+            cacheDir = getActivity().getCacheDir().toString();
+        }
     }
     
     @Override
@@ -219,14 +224,14 @@ public class DnsmasqFragment extends Fragment {
 
     public void start() {
         ShellExecuter exe = new ShellExecuter();
-        String[] command = {"su -c bootkali dnsmasq start"};
+        String[] command = {"su -c '" + cacheDir + "/bootkali dnsmasq start'"};
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("Dnsmasq started!");
     }
 
     public void stop() {
         ShellExecuter exe = new ShellExecuter();
-        String[] command = {"su -c bootkali dnsmasq stop"};
+        String[] command = {"su -c '" + cacheDir + "/bootkali dnsmasq stop'"};
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("Dnsmasq stopped!");
     }

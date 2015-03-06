@@ -1,18 +1,8 @@
 package com.offsec.nethunter;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-//import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,7 +11,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
-//import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -36,7 +25,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+//import android.app.Fragment;
+//import android.support.v4.app.FragmentActivity;
+
+public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
     TabsPagerAdapter tabsPagerAdapter;
     ViewPager mViewPager;
@@ -47,11 +48,13 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
     String configFilePath = "/data/local/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
 
     private static final String ARG_SECTION_NUMBER = "section_number";
+    private String cacheDir;
 
 
     public ManaFragment() {
 
     }
+
     public static ManaFragment newInstance(int sectionNumber) {
         ManaFragment fragment = new ManaFragment();
         Bundle args = new Bundle();
@@ -80,10 +83,14 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
         setHasOptionsMenu(true);
         return rootView;
     }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
+        if (isAdded()) {
+            cacheDir = getActivity().getCacheDir().toString();
+        }
     }
 
 
@@ -102,6 +109,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
         }
         getActivity().invalidateOptionsMenu();
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
@@ -132,25 +140,25 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
                 String[] command = new String[1];
                 switch (selectedScriptIndex) {
                     case 0:
-                    	if (Build.VERSION.SDK_INT >= 21) {
-                    		command[0] = "su -c bootkali mana-full-lollipop start";
-                    	} else {
-                    		command[0] = "su -c bootkali mana-full-kitkat start";
-                    	}
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            command[0] = "su -c '" + cacheDir + "/bootkali mana-full-lollipop start'";
+                        } else {
+                            command[0] = "su -c '" + cacheDir + "/bootkali mana-full-kitkat start'";
+                        }
                         break;
                     case 1:
-                    	if (Build.VERSION.SDK_INT >= 21) {
-                    		command[0] = "su -c bootkali mana-simple-lollipop start";
-                    	} else {
-                    		command[0] = "su -c bootkali mana-simple-kitkat start";
-                    	}
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            command[0] = "su -c '" + cacheDir + "/bootkali mana-simple-lollipop start'";
+                        } else {
+                            command[0] = "su -c '" + cacheDir + "/bootkali mana-simple-kitkat start'";
+                        }
                         break;
                     case 2:
-                    	if (Build.VERSION.SDK_INT >= 21) {
-                    		command[0] = "su -c bootkali mana-bdf-lollipop start";
-                    	} else {
-                    		command[0] = "su -c bootkali mana-bdf-kitkat start";
-                    	}
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            command[0] = "su -c '" + cacheDir + "/bootkali mana-bdf-lollipop start'";
+                        } else {
+                            command[0] = "su -c '" + cacheDir + "/bootkali mana-bdf-kitkat start'";
+                        }
                         break;
                     default:
                         ((AppNavHomeActivity) getActivity()).showMessage("Invalid script!");
@@ -180,10 +188,10 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
     private void stopMana() {
         ShellExecuter exe = new ShellExecuter();
         String[] command = new String[1];
-        if (Build.VERSION.SDK_INT >= 21) {
-        	command[0] = "su -c bootkali mana-lollipop stop";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            command[0] = "su -c '" + cacheDir + "/bootkali mana-lollipop stop'";
         } else {
-        	command[0] = "su -c bootkali mana-kitkat stop";
+            command[0] = "su -c '" + cacheDir + "/bootkali mana-kitkat stop'";
         }
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("Mana Stopped");
@@ -203,7 +211,6 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
 
     }
-
 
 
     //	 public static class TabsPagerAdapter extends FragmentPagerAdapter {
@@ -240,7 +247,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
                 case 5:
                     return new BdfProxyConfigFragment();
                 default:
-                	return new ManaStartNatSimpleBdfFragment();
+                    return new ManaStartNatSimpleBdfFragment();
             }
         }
 
@@ -260,15 +267,15 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
                 case 5:
                     return "bdfproxy.cfg";
                 default:
-                	return "mana-nat-simple-bdf";   	
+                    return "mana-nat-simple-bdf";
             }
         }
     } //end class
 
 
     public static class HostapdFragment extends Fragment {
-    	private String configFilePath = "/data/local/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
-        
+        private String configFilePath = "/data/local/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -280,9 +287,9 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                	ShellExecuter exe = new ShellExecuter();
+                    ShellExecuter exe = new ShellExecuter();
                     String source = exe.Executer("cat " + configFilePath);
-                	
+
                     EditText ifc = (EditText) getView().findViewById(R.id.ifc);
                     EditText bssid = (EditText) getView().findViewById(R.id.bssid);
                     EditText ssid = (EditText) getView().findViewById(R.id.ssid);
@@ -296,7 +303,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
                     source = source.replaceAll("(?m)^channel=(.*)$", "channel=" + channel.getText().toString());
                     source = source.replaceAll("(?m)^enable_karma=(.*)$", "enable_karma=" + enableKarma.getText().toString());
                     source = source.replaceAll("(?m)^karma_loud=(.*)$", "karma_loud=" + karmaLoud.getText().toString());
-                    
+
                     String[] command = {"sh", "-c", "cat <<'EOF' > " + configFilePath + "\n" + source + "\nEOF"};
                     exe.RunAsRoot(command);
                     ((AppNavHomeActivity) getActivity()).showMessage("Options updated!");
@@ -306,8 +313,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
         }
 
 
-        public void loadOptions(View rootView)
-        {
+        public void loadOptions(View rootView) {
             ShellExecuter exe = new ShellExecuter();
             String text = exe.Executer("cat " + configFilePath);
             /*
@@ -323,7 +329,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
             }
 
 	            /*
-	             * bssid
+                 * bssid
 	             */
             EditText bssid = (EditText) rootView.findViewById(R.id.bssid);
             String regExpatbssid = "^bssid=(.*)$";
@@ -397,10 +403,10 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
                                  Bundle savedInstanceState) {
             final View rootView = inflater.inflate(R.layout.source_short, container, false);
 
-            String description = getResources().getString (R.string.mana_dhcpd);
-            TextView desc = (TextView) rootView.findViewById(R.id.description);	
+            String description = getResources().getString(R.string.mana_dhcpd);
+            TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
-            
+
             File sdcard = Environment.getExternalStorageDirectory();
             File file = new File(sdcard, configFilePath);
             StringBuilder text = new StringBuilder();
@@ -450,10 +456,10 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
-            String description = getResources().getString (R.string.mana_dnsspoof);
-            TextView desc = (TextView) rootView.findViewById(R.id.description);	
+            String description = getResources().getString(R.string.mana_dnsspoof);
+            TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
-            
+
             ShellExecuter exe = new ShellExecuter();
             String text = exe.Executer("cat " + configFilePath);
             EditText source = (EditText) rootView.findViewById(R.id.source);
@@ -484,10 +490,10 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
-            String description = getResources().getString (R.string.mana_nat_full);
-            TextView desc = (TextView) rootView.findViewById(R.id.description);	
+            String description = getResources().getString(R.string.mana_nat_full);
+            TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
-            
+
             ShellExecuter exe = new ShellExecuter();
             String text = exe.Executer("cat " + configFilePath);
             EditText source = (EditText) rootView.findViewById(R.id.source);
@@ -517,11 +523,11 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
-            
-            String description = getResources().getString (R.string.mana_nat_simple);
-            TextView desc = (TextView) rootView.findViewById(R.id.description);	
+
+            String description = getResources().getString(R.string.mana_nat_simple);
+            TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
-            
+
             ShellExecuter exe = new ShellExecuter();
             String text = exe.Executer("cat " + configFilePath);
             EditText source = (EditText) rootView.findViewById(R.id.source);
@@ -553,7 +559,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
 
-            String description = getResources().getString (R.string.bdfproxy_cfg);
+            String description = getResources().getString(R.string.bdfproxy_cfg);
             TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
 
@@ -578,20 +584,21 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
             return rootView;
         }
     }
+
     public static class ManaStartNatSimpleBdfFragment extends Fragment {
 
         private String configFilePath = "/data/local/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-simple-bdf.sh";
-        
+
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
-            
-            String description = getResources().getString (R.string.mana_nat_simple_bdf);
-            TextView desc = (TextView) rootView.findViewById(R.id.description);	
+
+            String description = getResources().getString(R.string.mana_nat_simple_bdf);
+            TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
-            
+
             ShellExecuter exe = new ShellExecuter();
             String text = exe.Executer("cat " + configFilePath);
             EditText source = (EditText) rootView.findViewById(R.id.source);

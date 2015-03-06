@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Light" parent="@android:style/Theme.Light" />
+    <style name="Theme.Nethunter" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- customize the color palette -->
+        <item name="colorPrimary">@color/material_blue_grey_800</item>
+        <item name="colorPrimaryDark">@color/material_blue_grey_950</item>
+        <item name="colorAccent">@color/accent_material_light</item>
+    </style>
 
-    <style name="Theme.Dialog" parent="@android:style/Theme.Dialog" />
+    <style name="Theme.Dialog" parent="Theme.Dialog" />
+
 </resources>
+

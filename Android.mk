@@ -60,7 +60,16 @@ LOCAL_SRC_FILES := \
   $(call all-java-files-under, src) \
   $(LOCAL_BUILDCONFIG_CLASS)
 
-LOCAL_STATIC_JAVA_LIBRARIES := android-support-v4
+LOCAL_STATIC_JAVA_LIBRARIES := \
+       android-support-v4 \
+       android-support-v7-appcompat \
+       android-support-v13
+
+LOCAL_RESOURCE_DIR += prebuilts/sdk/current/support/v7/appcompat/res \
+       $(LOCAL_PATH)/res
+
+LOCAL_AAPT_FLAGS := --auto-add-overlay
+LOCAL_AAPT_FLAGS += --extra-packages android.support.v7.appcompat
 
 LOCAL_CERTIFICATE := platform
 LOCAL_PRIVILEGED_MODULE := true

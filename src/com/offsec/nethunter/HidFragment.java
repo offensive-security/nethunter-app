@@ -1,18 +1,8 @@
 package com.offsec.nethunter;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-//import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,7 +13,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
-//import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -40,6 +29,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+//import android.app.Fragment;
+//import android.support.v4.app.FragmentActivity;
+
 public class HidFragment extends Fragment implements ActionBar.TabListener 	{
 
     TabsPagerAdapter TabsPagerAdapter;
@@ -51,7 +52,8 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
     private static final String configFilePath = "/data/local/kali-armhf/var/www/payload";
 
     private static final String ARG_SECTION_NUMBER = "section_number";
-
+    private String cacheDir;
+    
     public HidFragment() {
 
     }
@@ -67,6 +69,9 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
+        if (isAdded()) {
+            cacheDir = getActivity().getCacheDir().toString();
+        }
     }
 
     @Override
@@ -167,25 +172,25 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
         if (pageNum == 0) {
             switch (UACBypassIndex) {
                 case 0:
-                    command[0] = "su -c bootkali start-rev-met --" + lang;
+                    command[0] = "su -c '" + cacheDir + "/bootkali start-rev-met --" + lang + "'";
                     break;
                 case 1:
-                    command[0] = "su -c bootkali start-rev-met-elevated-win7 --" + lang;
+                    command[0] = "su -c '" + cacheDir + "/bootkali start-rev-met-elevated-win7 --" + lang + "'";
                     break;
                 default:
-                    command[0] = "su -c bootkali start-rev-met-elevated-win8 --" + lang;
+                    command[0] = "su -c '" + cacheDir + "/bootkali start-rev-met-elevated-win8 --" + lang + "'";
                     break;
             }
         } else if (pageNum == 1) {
             switch (UACBypassIndex) {
                 case 0:
-                    command[0] = "su -c bootkali hid-cmd --" + lang;
+                    command[0] = "su -c '" + cacheDir + "/bootkali hid-cmd --" + lang + "'";
                     break;
                 case 1:
-                    command[0] = "su -c bootkali hid-cmd-elevated-win7 --" + lang;
+                    command[0] = "su -c '" + cacheDir + "/bootkali hid-cmd-elevated-win7 --" + lang + "'";
                     break;
                 default:
-                    command[0] = "su -c bootkali hid-cmd-elevated-win8 --" + lang;
+                    command[0] = "su -c '" + cacheDir + "/bootkali hid-cmd-elevated-win8 --" + lang + "'";
                     break;
             }
         }

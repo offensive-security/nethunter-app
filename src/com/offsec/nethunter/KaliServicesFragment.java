@@ -22,28 +22,11 @@ public class KaliServicesFragment extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
     boolean updateStatuses = false;
 
-
-
-
-
     public KaliServicesFragment() {
-        KaliServices = new String[][]{
 
-                // name, check  cmd, start cmd, stop cmd, state
-
-                {"SSH", "sh /system/xbin/check-kalissh", "su -c 'bootkali ssh start'", "su -c 'bootkali ssh stop'"},
-                {"Dnsmasq", "sh /system/xbin/check-kalidnsmq", "su -c 'bootkali dnsmasq start'", "su -c 'bootkali dnsmasq stop'"},
-                {"Hostapd", "sh /system/xbin/check-kalihostapd", "su -c 'bootkali hostapd start'", "su -c 'bootkali hostapd stop'"},
-                {"OpenVPN", "sh /system/xbin/check-kalivpn", "su -c 'bootkali openvpn start'", "su -c 'bootkali openvpn stop'"},
-                {"Apache", "sh /system/xbin/check-kaliapache", "su -c 'bootkali apache start'", "su -c 'bootkali apache stop'"},
-                {"Metasploit", "sh /system/xbin/check-kalimetasploit", "su -c 'bootkali msf start'", "su -c 'bootkali msf stop'"},
-                //{"DHCP", "sh /system/xbin/check-kalidhcp","su -c 'bootkali dhcp start'","su -c 'bootkali dhcp stop'"},
-                {"BeEF Framework", "sh /system/xbin/check-kalibeef-xss","su -c 'bootkali beef-xss start'","su -c 'bootkali beef-xss stop'"},
-                //{"Fruity WiFi", "sh /system/xbin/check-fruity-wifi","su -c start-fruity-wifi","su -c  stop-fruity-wifi"}
-                // the stop script isnt working well, doing a raw cmd instead to stop vnc
-                // {"VNC", "sh /system/xbin/check-kalivnc", "bootkali\nvncserver", "bootkali\nkill $(ps aux | grep 'Xtightvnc' | awk '{print $2}');CT=0;for x in $(ps aux | grep 'Xtightvnc' | awk '{print $2}'); do CT=$[$CT +1];tightvncserver -kill :$CT; done;rm /root/.vnc/*.log;rm -r /tmp/.X*"},
-        };
     }
+
+
     /**
      * Returns a new instance of this fragment for the given section
      * number.
@@ -67,6 +50,27 @@ public class KaliServicesFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
+
+        if (isAdded()) {
+            String cacheDir = getActivity().getCacheDir().toString();
+
+            KaliServices = new String[][]{
+
+                    // name, check  cmd, start cmd, stop cmd, state
+
+                    {"SSH", "sh " + cacheDir + "/check-kalissh", "su -c '" + cacheDir + "/bootkali ssh start'", "su -c '" + cacheDir + "/bootkali ssh stop'"},
+                    {"Dnsmasq", "sh " + cacheDir + "/check-kalidnsmq", "su -c '" + cacheDir + "/bootkali dnsmasq start'", "su -c '" + cacheDir + "/bootkali dnsmasq stop'"},
+                    {"Hostapd", "sh " + cacheDir + "/check-kalihostapd", "su -c '" + cacheDir + "/bootkali hostapd start'", "su -c '" + cacheDir + "/bootkali hostapd stop'"},
+                    {"OpenVPN", "sh " + cacheDir + "/check-kalivpn", "su -c '" + cacheDir + "/bootkali openvpn start'", "su -c '" + cacheDir + "/bootkali openvpn stop'"},
+                    {"Apache", "sh " + cacheDir + "/check-kaliapache", "su -c '" + cacheDir + "/bootkali apache start'", "su -c '" + cacheDir + "/bootkali apache stop'"},
+                    {"Metasploit", "sh " + cacheDir + "/check-kalimetasploit", "su -c '" + cacheDir + "/bootkali msf start'", "su -c '" + cacheDir + "/bootkali msf stop'"},
+                    //{"DHCP", "sh " + cacheDir + "/check-kalidhcp","su -c '" + cachedir + "/bootkali dhcp start'","su -c '" + cachedir + "/bootkali dhcp stop'"},
+                    {"BeEF Framework", "sh " + cacheDir + "/check-kalibeef-xss", "su -c '" + cacheDir + "/bootkali beef-xss start'", "su -c '" + cacheDir + "/bootkali beef-xss stop'"},
+                    //{"Fruity WiFi", "sh " + cacheDir + "/check-fruity-wifi","su -c start-fruity-wifi","su -c  stop-fruity-wifi"}
+                    // the stop script isnt working well, doing a raw cmd instead to stop vnc
+                    // {"VNC", "sh " + cacheDir + "/check-kalivnc", "" + cachedir + "/bootkali\nvncserver", "" + cachedir + "/bootkali\nkill $(ps aux | grep 'Xtightvnc' | awk '{print $2}');CT=0;for x in $(ps aux | grep 'Xtightvnc' | awk '{print $2}'); do CT=$[$CT +1];tightvncserver -kill :$CT; done;rm /root/.vnc/*.log;rm -r /tmp/.X*"},
+            };
+        }
     }
     
     public void onResume()
