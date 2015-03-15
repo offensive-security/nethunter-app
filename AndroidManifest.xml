@@ -154,14 +154,14 @@
                 android:value=".EditSourceActivity" />
         </activity>
 
-        <receiver android:name=".BootCompletedReceiver">
+        <receiver android:name=".receiver.BootCompletedReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
         <service
-            android:name=".RunAtBootService"
+            android:name=".service.RunAtBootService"
             android:exported="false"
             android:process = ":runAtBoot"/>
 

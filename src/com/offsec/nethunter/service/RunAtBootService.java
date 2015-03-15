@@ -1,10 +1,13 @@
-package com.offsec.nethunter;
+package com.offsec.nethunter.service;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.offsec.nethunter.R;
+import com.offsec.nethunter.ShellExecuter;
 
 import java.io.File;
 
