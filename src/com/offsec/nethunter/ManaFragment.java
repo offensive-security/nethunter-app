@@ -45,11 +45,10 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
     private Integer selectedScriptIndex = 0;
     final CharSequence[] scripts = {"mana-nat-full", "mana-nat-simple", "mana-nat-simple-bdf"};
 
-    String configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
-
     private static final String ARG_SECTION_NUMBER = "section_number";
     private String fileDir;
 
+    String configFilePath;
 
     public ManaFragment() {
 
@@ -93,6 +92,12 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
         }
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
+
+        super.onActivityCreated(savedInstanceState);
+    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -274,7 +279,15 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
 
     public static class HostapdFragment extends Fragment {
-        private String configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
+
+        private String configFilePath;
+
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+            configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
+
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -339,7 +352,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                 String bssidVal = matcherBssid.group(1);
                 bssid.setText(bssidVal);
             }
-	            /*
+                /*
 	             * ssid
 	             */
             EditText ssid = (EditText) rootView.findViewById(R.id.ssid);
@@ -450,7 +463,14 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
     public static class DnsspoofFragment extends Fragment {
 
-        private String configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/etc/mana-toolkit/dnsspoof.conf";
+        private String configFilePath;
+
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            String configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/etc/mana-toolkit/dnsspoof.conf";
+
+            super.onActivityCreated(savedInstanceState);
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -484,7 +504,13 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
     public static class ManaNatFullFragment extends Fragment {
 
-        private String configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-full-mod.sh";
+        private String configFilePath;
+
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            String configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-full-mod.sh";
+            super.onActivityCreated(savedInstanceState);
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -517,7 +543,14 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
     public static class ManaNatSimpleFragment extends Fragment {
 
-        private String configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-simple.sh";
+        private String configFilePath;
+
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+             String configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-simple.sh";
+
+            super.onActivityCreated(savedInstanceState);
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -552,7 +585,13 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
     public static class BdfProxyConfigFragment extends Fragment {
 
-        private String configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/etc/bdfproxy/bdfproxy.cfg";
+        private String configFilePath;
+
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/etc/bdfproxy/bdfproxy.cfg";
+            super.onActivityCreated(savedInstanceState);
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -587,8 +626,14 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
     public static class ManaStartNatSimpleBdfFragment extends Fragment {
 
-        private String configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-simple-bdf.sh";
+        private String configFilePath;
 
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-simple-bdf.sh";
+
+            super.onActivityCreated(savedInstanceState);
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
