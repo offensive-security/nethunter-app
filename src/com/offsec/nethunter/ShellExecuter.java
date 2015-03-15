@@ -66,19 +66,34 @@ public class ShellExecuter {
         }
     }
 
-    public String RunAsRootOutput2(String command) {
+    public String RunAsRootWithException(String command) throws RuntimeException {
         try {
+            String output = "";
+            String line;
+            Process process = Runtime.getRuntime().exec("su");
+            OutputStream stdin = process.getOutputStream();
+            InputStream stderr = process.getErrorStream();
+            InputStream stdout = process.getInputStream();
 
-            Process process;
-            process = Runtime.getRuntime().exec("su\n" + command);
-            BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            stdin.write((command + '\n').getBytes());
+            stdin.write(("exit\n").getBytes());
+            stdin.flush();
+            stdin.close();
 
-            String str = "";
-            String s;
-            while ((s = stdInput.readLine()) != null) {
-                str += s;
+            BufferedReader br = new BufferedReader(new InputStreamReader(stdout));
+            while ((line = br.readLine()) != null) {
+                output = output + line;
             }
-            return str;
+            br.close();
+            br = new BufferedReader(new InputStreamReader(stderr));
+            while ((line = br.readLine()) != null) {
+                Log.e("Shell Error:", line);
+                throw new RuntimeException();
+            }
+            br.close();
+            process.waitFor();
+            process.destroy();
+            return output;
 
         } catch (Exception ex) {
             throw new RuntimeException(ex);

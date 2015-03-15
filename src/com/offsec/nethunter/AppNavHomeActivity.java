@@ -41,7 +41,8 @@ public class AppNavHomeActivity extends FragmentActivity
     public final static int MANA_FRAGMENT = 6;
     public final static int DNSMASQ_FRAGMENT = 7;
     public final static int MACCHANGER_FRAGMENT = 8;
-    public final static int IPTABLES_FRAGMENT = 9;
+    public final static int CREATECHROOT_FRAGMENT = 9;
+    public final static int IPTABLES_FRAGMENT = 10;
 
     public final static String TAG = "AppNavHomeActivity";
 
@@ -261,6 +262,13 @@ public class AppNavHomeActivity extends FragmentActivity
                 fragmentManager
                         .beginTransaction()
                         .replace(R.id.container, MacchangerFragment.newInstance(position))
+                        .addToBackStack(null)
+                        .commit();
+                break;
+            case CREATECHROOT_FRAGMENT:
+                fragmentManager
+                        .beginTransaction()
+                        .replace(R.id.container, CreateChrootFragment.newInstance(position))
                         .addToBackStack(null)
                         .commit();
                 break;

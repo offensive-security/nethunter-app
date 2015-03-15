@@ -23,7 +23,7 @@ if [ "$perm" != "0" ];then echo "ROOT NOT DETECTED! Type: su or install SuperSU 
 #########  EXPORT #########
 #$busybox mount -o rw,remount /system
 export bin=/system/bin
-export mnt=/data/local/kali-armhf
+export mnt=/data/data/com.offsec.nethunter/files/chroot/kali-armhf
 PRESERVED_PATH=$PATH
 export PATH=/usr/bin:/usr/sbin:/bin:/usr/local/bin:/usr/local/sbin:$PATH
 export TERM=linux
@@ -33,8 +33,8 @@ unset LD_PRELOAD
 
 ######### SET DNS ########
 
-rm -f /data/local/kali-armhf/etc/resolv.conf # remove dns entries
-touch /data/local/kali-armhf/etc/resolv.conf # create empty resolv.conf
+rm -f /data/data/com.offsec.nethunter/files/chroot/kali-armhf/etc/resolv.conf # remove dns entries
+touch /data/data/com.offsec.nethunter/files/chroot/kali-armhf/etc/resolv.conf # create empty resolv.conf
 
 for i in 1 2 3 4; do
    if [[  -z $(getprop net.dns${i}) ]]; then
@@ -42,13 +42,13 @@ for i in 1 2 3 4; do
       break
    else
       # add local/device dns server first
-      echo "nameserver $(getprop net.dns${i})" >> /data/local/kali-armhf/etc/resolv.conf
+      echo "nameserver $(getprop net.dns${i})" >> /data/data/com.offsec.nethunter/files/chroot/kali-armhf/etc/resolv.conf
    fi
 done
 
 # lastly add two default dns entries
-echo "nameserver 208.67.222.222" >> /data/local/kali-armhf/etc/resolv.conf
-echo "nameserver 208.67.220.220" >> /data/local/kali-armhf/etc/resolv.conf
+echo "nameserver 208.67.222.222" >> /data/data/com.offsec.nethunter/files/chroot/kali-armhf/etc/resolv.conf
+echo "nameserver 208.67.220.220" >> /data/data/com.offsec.nethunter/files/chroot/kali-armhf/etc/resolv.conf
 
 #########  MOUNT #########
 
@@ -240,10 +240,10 @@ else
          $busybox chroot $mnt chmod 755 $4
       fi
       if [ "$1" == "duck-hunt-run" ]; then
-         if [ ! -f /data/local/kali-armhf$2 ]; then
+         if [ ! -f /data/data/com.offsec.nethunter/files/chroot/kali-armhf$2 ]; then
             echo "File not found"
          else
-            echo "File /data/local/kali-armhf$2 found"
+            echo "File /data/data/com.offsec.nethunter/files/chroot/kali-armhf$2 found"
             $busybox chroot $mnt $2
          fi
       fi

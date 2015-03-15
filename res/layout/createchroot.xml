@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Create the Kali chroot"
+        android:id="@+id/textView"
+        android:layout_gravity="center_horizontal"
+        android:padding="16sp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Install Chroot"
+        android:id="@+id/installButton"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Status:"
+        android:id="@+id/textView2"
+        android:paddingLeft="16sp"
+        android:paddingTop="16sp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView2"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/statusText"
+            android:padding="16sp"
+            android:background="@android:color/black"
+            android:textColor="@android:color/holo_green_light"
+            android:fontFamily="monospace" />
+    </ScrollView>
+
+    <TextView
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Warning:  Uninstalling the Nethunter app will remove the chroot completely."
+        android:id="@+id/warningText"
+        android:padding="16sp"
+        android:layout_weight="0.74"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>

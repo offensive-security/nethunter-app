@@ -45,7 +45,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
     private Integer selectedScriptIndex = 0;
     final CharSequence[] scripts = {"mana-nat-full", "mana-nat-simple", "mana-nat-simple-bdf"};
 
-    String configFilePath = "/data/local/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
+    String configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     private String fileDir;
@@ -274,7 +274,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
 
     public static class HostapdFragment extends Fragment {
-        private String configFilePath = "/data/local/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
+        private String configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -450,7 +450,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
     public static class DnsspoofFragment extends Fragment {
 
-        private String configFilePath = "/data/local/kali-armhf/etc/mana-toolkit/dnsspoof.conf";
+        private String configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/etc/mana-toolkit/dnsspoof.conf";
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -484,7 +484,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
     public static class ManaNatFullFragment extends Fragment {
 
-        private String configFilePath = "/data/local/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-full-mod.sh";
+        private String configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-full-mod.sh";
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -517,7 +517,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
     public static class ManaNatSimpleFragment extends Fragment {
 
-        private String configFilePath = "/data/local/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-simple.sh";
+        private String configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-simple.sh";
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -552,7 +552,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
     public static class BdfProxyConfigFragment extends Fragment {
 
-        private String configFilePath = "/data/local/kali-armhf/etc/bdfproxy/bdfproxy.cfg";
+        private String configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/etc/bdfproxy/bdfproxy.cfg";
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -587,7 +587,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
     public static class ManaStartNatSimpleBdfFragment extends Fragment {
 
-        private String configFilePath = "/data/local/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-simple-bdf.sh";
+        private String configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-simple-bdf.sh";
 
 
         @Override

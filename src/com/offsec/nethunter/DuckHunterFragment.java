@@ -428,7 +428,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
     public static class DuckHunterPreviewFragment extends Fragment{
 
-        public static String configFilePath = "/data/local/kali-armhf/opt/";
+        public static String configFilePath = "/data/data/com.offsec.nethunter/files/cache/kali-armhf/opt/";
         public static String configFileFilename = "duckout.sh";
 
         @Override

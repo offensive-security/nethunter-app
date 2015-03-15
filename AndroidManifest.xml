@@ -9,6 +9,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="jackpal.androidterm.permission.RUN_SCRIPT" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
 
     <application
         android:allowBackup="true"
@@ -22,6 +24,7 @@
             android:label="@string/app_name">
             <intent-filter android:label="@string/app_nav_home_label">
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.SAMPLE_CODE" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -132,6 +135,19 @@
                 android:value=".AppNavHomeActivity" />
         </activity-alias>
         <activity-alias
+            android:name=".CreateChrootFragment"
+            android:label="@string/createchroot_label"
+            android:targetActivity=".AppNavHomeActivity"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.SAMPLE_CODE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".AppNavHomeActivity" />
+        </activity-alias>
+        <activity-alias
             android:name=".IptablesActivity"
             android:label="@string/iptables_label"
             android:targetActivity=".AppNavHomeActivity"
@@ -144,6 +160,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".AppNavHomeActivity" />
         </activity-alias>
+
 
         <activity
             android:name=".EditSourceActivity"
@@ -163,7 +180,7 @@
         <service
             android:name=".service.RunAtBootService"
             android:exported="false"
-            android:process = ":runAtBoot"/>
+            android:process=":runAtBoot" />
 
     </application>
 </manifest>
