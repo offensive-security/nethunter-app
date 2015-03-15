@@ -9,8 +9,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.File;
+import java.util.GregorianCalendar;
 
 /**
  * Created by fattire on 3/14/15.
@@ -32,13 +34,12 @@ import java.io.File;
  * * better UI (it locks up currently when untarring/zipping file...)
  * * Add "are you sure" dialog before wiping/reinstalling
  * *  Handle situations where user opens this fragment multiple times or
- *   quits during download or re-opens during download, etc.  that may
- *   mean making this part of its own activity or whatever...
+ * quits during download or re-opens during download, etc.  that may
+ * mean making this part of its own activity or whatever...
  * * Move strings to string resources.
  * * Clean up and make it betterer
  * * Figure why "/storage/emulated/0" -> "/storage/emulated/legacy" replacement is necessary
- *   on some devices
- *
+ * on some devices
  */
 
 
@@ -47,11 +48,12 @@ public class CreateChrootFragment extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final String ARCH = System.getProperty("os.arch");
+    private static final String TAG = "CreateChroot";
 
     /* put chroot info here */
 
     private static final String FILENAME = "kalifs.tar.xz";
-    private static final String URI = "https:/path/to/kali/chroot/" + FILENAME;
+    private static final String URI = "https://path/to/kali/chroot/" + FILENAME;
     private static final String SHA = "PUT SHA HERE"; // not yet implemented
 
     String zipFilePath;
@@ -112,7 +114,6 @@ public class CreateChrootFragment extends Fragment {
         } else if (ARCH.contains("x86")) {
             dir = "kali-i386";  // etc
         }
-
         checkForExistingChroot();
         super.onActivityCreated(savedInstanceState);
     }
@@ -136,16 +137,8 @@ public class CreateChrootFragment extends Fragment {
         installButton.setEnabled(false);
         File file = new File(chrootPath + dir);
         if (file.exists()) {
-            // ideally, throw up an are you sure dialog
-            Handler handler = new Handler();
-            Runnable r = new Runnable() {
-                @Override
-                public void run() {
-                    statusLog("Existing chroot found.  Deleting it.");
-                    statusLog(x.RunAsRootOutput("rm -rf '" + chrootPath + dir + '\''));
-                }
-            };
-            handler.post(r);
+            statusLog("Existing chroot found.  Deleting it.");
+            statusLog(x.RunAsRootOutput("rm -rf '" + chrootPath + dir + '\''));
         }
         if (!startZipDownload()) {
             installButton.setEnabled(true);
@@ -160,6 +153,7 @@ public class CreateChrootFragment extends Fragment {
 
     private boolean startZipDownload() {
 
+        Log.d(TAG, "starting ~70MB download... Once it downloads, BE REALLY PATIENT as the UI will lock up until we fix this.");
         File checkFile = new File(zipFilePath);
         if (checkFile.exists()) {
             statusLog(zipFilePath + " exists already.");
@@ -182,6 +176,7 @@ public class CreateChrootFragment extends Fragment {
             return false;
         }
         dm = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+        removeExistingDownloadOperations();
         Uri uri = Uri.parse(URI);
         DownloadManager.Request r = new DownloadManager.Request(uri);
         r.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
@@ -212,7 +207,7 @@ public class CreateChrootFragment extends Fragment {
             statusLog("Download failed.  Check your network connection and external storage and try again.");
             installButton.setEnabled(true);
         }
-
+        dm.remove(downloadRef);
     }
 
     private void inflateZip() {
@@ -221,27 +216,20 @@ public class CreateChrootFragment extends Fragment {
         try {
             x.RunAsRootWithException("ls '" + zipFilePath + '\'');
         } catch (RuntimeException ex) { // file not found
-            statusLog("Changing zipfilepat");
             zipFilePath = zipFilePath.replace("/storage/emulated/0", "/storage/emulated/legacy");
         }
 
         if (checkFileIntegrity(zipFilePath)) {
             statusLog("Extracting to chroot.  Standby...");
-            Handler handler = new Handler();
-            Runnable r = new Runnable() {
-                @Override
-                public void run() {
-                    statusLog(x.RunAsRootOutput("mkdir -p " + getActivity().getFilesDir() + "/chroot"));
-                    statusLog(x.RunAsRootOutput("busybox xz -d '" + zipFilePath + '\''));
-                    statusLog(x.RunAsRootOutput("busybox tar xvf '" + zipFilePath.substring(0, zipFilePath.lastIndexOf('.')) +
-                            "' -C '" + chrootPath + "'"));
-                    statusLog("\n\nIf there are no errors above, We're all done.  If there are errors, that's a problem.");
-                    installButton.setEnabled(true);
-                    statusLog("\n\nFinal check:  is the directory there...");
-                    checkForExistingChroot();
-                }
-            };
-            handler.post(r);
+
+            statusLog(x.RunAsRootOutput("mkdir -p " + getActivity().getFilesDir() + "/chroot"));
+            statusLog(x.RunAsRootOutput("busybox xz -d '" + zipFilePath + '\''));
+            statusLog(x.RunAsRootOutput("busybox tar xf '" + zipFilePath.substring(0, zipFilePath.lastIndexOf('.')) +
+                    "' -C '" + chrootPath + "'"));
+            statusLog("\n\nWe're all done.  If there are errors, that's a problem.");
+            installButton.setEnabled(true);
+            statusLog("\n\nFinal check:  is the directory there...?");
+            checkForExistingChroot();
         }
     }
 
@@ -251,7 +239,27 @@ public class CreateChrootFragment extends Fragment {
     }
 
     private void statusLog(String status) {
+        GregorianCalendar cal = new GregorianCalendar();
+        String ts = String.valueOf(cal.get(GregorianCalendar.MONTH)) + '/' +
+                String.valueOf(cal.get(GregorianCalendar.DAY_OF_MONTH)) + '/' +
+                String.valueOf(cal.get(GregorianCalendar.YEAR)) + ' ' +
+                String.valueOf(cal.get(GregorianCalendar.HOUR_OF_DAY)) + ':' +
+                String.valueOf(cal.get(GregorianCalendar.MINUTE)) + ':' +
+                String.valueOf(cal.get(GregorianCalendar.SECOND)) + '.' +
+                String.valueOf(cal.get(GregorianCalendar.MILLISECOND)) + " - ";
+        statusText.append(Html.fromHtml("<font color=\"#EDA04F\">" + ts + "</font>"));
         statusText.append(status + '\n');
+    }
+
+    private void removeExistingDownloadOperations() {
+        int status;
+
+        DownloadManager.Query q = new DownloadManager.Query();
+        Cursor c = dm.query(q);
+        if (c.moveToFirst()) {
+            status = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_ID));
+            dm.remove(status);
+        }
     }
 
 }
