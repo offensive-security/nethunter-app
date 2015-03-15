@@ -39,7 +39,7 @@ public class RunAtBootService extends Service {
 
         // this duplicates the functionality of the userinit service, formerly in init.rc
         // These scripts will start up after the system is booted.
-        // Put scripts in cacheDir/etc/init.d/ and set execute permission.  Scripts should
+        // Put scripts in fileDir/etc/init.d/ and set execute permission.  Scripts should
         // start with a number and include a hashbang such as #!/system/bin/sh as the first line.
 
         File busybox = new File("/system/xbin/busybox");
@@ -49,12 +49,13 @@ public class RunAtBootService extends Service {
                 busybox = new File("/system/bin/busybox");
                 if (!busybox.exists()) {
                     Log.d(TAG, "Busybox not found.");
+                    Toast.makeText(getBaseContext(), getString(R.string.toastForNoBusybox), Toast.LENGTH_SHORT).show();
                     return false;
                 }
             }
         }
         ShellExecuter exe = new ShellExecuter();
-        String[] runner = {busybox.getAbsolutePath() + " run-parts " + getCacheDir() + "/etc/init.d"};
+        String[] runner = {busybox.getAbsolutePath() + " run-parts " + getFilesDir() + "/etc/init.d"};
         Log.d(TAG, "executing: " + runner[0]);
         Toast.makeText(getBaseContext(), getString(R.string.autorunningscripts), Toast.LENGTH_SHORT).show();
         exe.RunAsRoot(runner);

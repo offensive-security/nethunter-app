@@ -23,12 +23,13 @@ public class DnsmasqFragment extends Fragment {
 
     private String configFilePath = "files/dnsmasq.conf";
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private String cacheDir;
+    private String fileDir;
 
-    
+
     public DnsmasqFragment() {
 
     }
+
     public static DnsmasqFragment newInstance(int sectionNumber) {
         DnsmasqFragment fragment = new DnsmasqFragment();
         Bundle args = new Bundle();
@@ -36,31 +37,32 @@ public class DnsmasqFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.dnsmasq, container, false);
         loadOptions(rootView);
-        
+
         final Button button = (Button) rootView.findViewById(R.id.updateOptions);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	updateOptions(v);
-            }    
+                updateOptions(v);
+            }
         });
         setHasOptionsMenu(true);
         return rootView;
     }
-    
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
         if (isAdded()) {
-            cacheDir = getActivity().getCacheDir().toString();
+            fileDir = getActivity().getFilesDir().toString() + "/scripts";
         }
     }
-    
+
     @Override
     public void onResume() {
         super.onResume();
@@ -69,10 +71,10 @@ public class DnsmasqFragment extends Fragment {
 
 
     private void loadOptions(final View rootView) {
-    	String text = ((AppNavHomeActivity) getActivity()).readConfigFile(configFilePath);
+        String text = ((AppNavHomeActivity) getActivity()).readConfigFile(configFilePath);
 
         /*
-		* Addresses
+        * Addresses
 		*/
         EditText address1 = (EditText) rootView.findViewById(R.id.address1);
         EditText address2 = (EditText) rootView.findViewById(R.id.address2);
@@ -156,7 +158,7 @@ public class DnsmasqFragment extends Fragment {
                 stop();
                 return true;
             case R.id.source_button:
-            	Intent i = new Intent(getActivity(), EditSourceActivity.class);
+                Intent i = new Intent(getActivity(), EditSourceActivity.class);
                 i.putExtra("path", configFilePath);
                 getActivity().startActivity(i);
                 return true;
@@ -216,22 +218,22 @@ public class DnsmasqFragment extends Fragment {
         }
         Boolean r = ((AppNavHomeActivity) getActivity()).updateConfigFile(configFilePath, source);
         if (r) {
-        	((AppNavHomeActivity) getActivity()).showMessage("Options updated!");
+            ((AppNavHomeActivity) getActivity()).showMessage("Options updated!");
         } else {
-        	((AppNavHomeActivity) getActivity()).showMessage("Options not updated!");
+            ((AppNavHomeActivity) getActivity()).showMessage("Options not updated!");
         }
     }
 
     public void start() {
         ShellExecuter exe = new ShellExecuter();
-        String[] command = {"su -c '" + cacheDir + "/bootkali dnsmasq start'"};
+        String[] command = {"su -c '" + fileDir + "/bootkali dnsmasq start'"};
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("Dnsmasq started!");
     }
 
     public void stop() {
         ShellExecuter exe = new ShellExecuter();
-        String[] command = {"su -c '" + cacheDir + "/bootkali dnsmasq stop'"};
+        String[] command = {"su -c '" + fileDir + "/bootkali dnsmasq stop'"};
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("Dnsmasq stopped!");
     }

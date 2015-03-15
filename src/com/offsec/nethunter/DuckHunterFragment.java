@@ -45,11 +45,12 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     final static CharSequence[] languages = {"American English", "French", "German", "Spanish", "Swedish", "Italian", "British English", "Russian", "Danish", "Norwegian", "Portugese", "Belgian"};
 
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private String cacheDir = "";
+    private String fileDir = "";
 
     public DuckHunterFragment() {
 
     }
+
     public static DuckHunterFragment newInstance(int sectionNumber) {
         DuckHunterFragment fragment = new DuckHunterFragment();
         Bundle args = new Bundle();
@@ -64,7 +65,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
         ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
 
         if (isAdded()) {
-             cacheDir = getActivity().getCacheDir().toString();
+            fileDir = getActivity().getFilesDir().toString() + "/scripts";
         }
     }
 
@@ -134,33 +135,45 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                 int keyboardLayoutIndex = sharedpreferences.getInt("DuckHunterLanguageIndex", 0);
                 String lang;
                 switch (keyboardLayoutIndex) {
-                    case 1:  lang = "fr";
+                    case 1:
+                        lang = "fr";
                         break;
-                    case 2:  lang = "de";
+                    case 2:
+                        lang = "de";
                         break;
-                    case 3:  lang = "es";
+                    case 3:
+                        lang = "es";
                         break;
-                    case 4:  lang = "sv";
+                    case 4:
+                        lang = "sv";
                         break;
-                    case 5:  lang = "it";
+                    case 5:
+                        lang = "it";
                         break;
-                    case 6:  lang = "uk";
+                    case 6:
+                        lang = "uk";
                         break;
-                    case 7:  lang = "ru";
+                    case 7:
+                        lang = "ru";
                         break;
-                    case 8:  lang = "dk";
+                    case 8:
+                        lang = "dk";
                         break;
-                    case 9:  lang = "no";
+                    case 9:
+                        lang = "no";
                         break;
-                    case 10:  lang = "pt";
+                    case 10:
+                        lang = "pt";
                         break;
-                    case 11:  lang = "be";
+                    case 11:
+                        lang = "be";
                         break;
-                    default: lang = "us";
+                    default:
+                        lang = "us";
                         break;
                 }
                 String[] command = new String[1];
-                command[0] = "su -c '" + cacheDir + "/bootkali duck-hunt-convert " + lang +
+                command[0] = "su -c '" + fileDir + "/bootkali duck-hunt-convert " + lang +
                         " /sdcard/" + DuckHunterConvertFragment.configFilePath + " /opt/" +
                         DuckHunterPreviewFragment.configFileFilename + "'";
                 ShellExecuter exe = new ShellExecuter();
@@ -184,17 +197,15 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
     private void start() {
         String[] command = new String[1];
-        command[0] = "su -c '" + cacheDir + "/bootkali duck-hunt-run /opt/duckout.sh'";
+        command[0] = "su -c '" + fileDir + "/bootkali duck-hunt-run /opt/duckout.sh'";
         ShellExecuter exe = new ShellExecuter();
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("Attack started");
     }
 
-
-
     public void openLanguageDialog() {
 
-        int	keyboardLayoutIndex = sharedpreferences.getInt("DuckHunterLanguageIndex", 0);
+        int keyboardLayoutIndex = sharedpreferences.getInt("DuckHunterLanguageIndex", 0);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Language:");
@@ -443,8 +454,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
             super.onResume();
         }
 
-        public static String readFileForPreview()
-        {
+        public static String readFileForPreview() {
             File file = new File(configFilePath, configFileFilename);
             StringBuilder text = new StringBuilder();
             try {

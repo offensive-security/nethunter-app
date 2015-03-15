@@ -151,6 +151,7 @@
     <string name="randomMAC">Random MAC</string>
     <string name="customMAC">Custom MAC</string>
     <string name="autorunningscripts">Nethunter: auto-running startup scripts</string>
+    <string name="toastForNoBusybox">Uh oh!  Nethunter can\'t find busybox!</string>
     <string-array name="macchanger_opts">
         <item>Random MAC</item>
         <item>Custom MAC</item>

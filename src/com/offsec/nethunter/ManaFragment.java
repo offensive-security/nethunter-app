@@ -48,7 +48,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
     String configFilePath = "/data/local/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
 
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private String cacheDir;
+    private String fileDir;
 
 
     public ManaFragment() {
@@ -89,7 +89,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
         super.onAttach(activity);
         ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
         if (isAdded()) {
-            cacheDir = getActivity().getCacheDir().toString();
+            fileDir = getActivity().getFilesDir().toString() + "/scripts";
         }
     }
 
@@ -141,23 +141,23 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                 switch (selectedScriptIndex) {
                     case 0:
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            command[0] = "su -c '" + cacheDir + "/bootkali mana-full-lollipop start'";
+                            command[0] = "su -c '" + fileDir + "/bootkali mana-full-lollipop start'";
                         } else {
-                            command[0] = "su -c '" + cacheDir + "/bootkali mana-full-kitkat start'";
+                            command[0] = "su -c '" + fileDir + "/bootkali mana-full-kitkat start'";
                         }
                         break;
                     case 1:
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            command[0] = "su -c '" + cacheDir + "/bootkali mana-simple-lollipop start'";
+                            command[0] = "su -c '" + fileDir + "/bootkali mana-simple-lollipop start'";
                         } else {
-                            command[0] = "su -c '" + cacheDir + "/bootkali mana-simple-kitkat start'";
+                            command[0] = "su -c '" + fileDir + "/bootkali mana-simple-kitkat start'";
                         }
                         break;
                     case 2:
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            command[0] = "su -c '" + cacheDir + "/bootkali mana-bdf-lollipop start'";
+                            command[0] = "su -c '" + fileDir + "/bootkali mana-bdf-lollipop start'";
                         } else {
-                            command[0] = "su -c '" + cacheDir + "/bootkali mana-bdf-kitkat start'";
+                            command[0] = "su -c '" + fileDir + "/bootkali mana-bdf-kitkat start'";
                         }
                         break;
                     default:
@@ -189,9 +189,9 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
         ShellExecuter exe = new ShellExecuter();
         String[] command = new String[1];
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            command[0] = "su -c '" + cacheDir + "/bootkali mana-lollipop stop'";
+            command[0] = "su -c '" + fileDir + "/bootkali mana-lollipop stop'";
         } else {
-            command[0] = "su -c '" + cacheDir + "/bootkali mana-kitkat stop'";
+            command[0] = "su -c '" + fileDir + "/bootkali mana-kitkat stop'";
         }
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("Mana Stopped");
