@@ -49,7 +49,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
 
     final CharSequence[] platforms = {"No UAC Bypass", "Windows 7", "Windows 8"};    
     final CharSequence[] languages = {"American English", "Belgian", "British English", "Danish", "French", "German", "Italian", "Norwegian", "Portugese", "Russian", "Spanish", "Swedish"};
-    private static final String configFilePath = "/data/local/kali-armhf/var/www/payload";
+    private final String configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/var/www/payload";
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     private String fileDir;
@@ -314,7 +314,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
 
     public static class PowerSploitFragment extends Fragment implements OnClickListener {
 
-        private String configFilePath = "/data/local/kali-armhf/var/www/payload";
+        private String configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/var/www/payload";
         private String configFileUrlPath = "files/powersploit-url";
 
         @Override

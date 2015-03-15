@@ -131,7 +131,7 @@
     <string name="toast_install_terminal">Error launching intent. Install Android Terminal!</string>
     <string name="descriptiontext" />
 
-    <string name="macchanger_description">Change the MAC of any network interface.\n\nIt can be randomly generated or manually typed. \n\nThe MAC must contain 6 pair of combinations using the charset: [0-9|A-F|a-f] something like:\n\n 00:11:22:ab:cd:ef </string>
+    <string name="macchanger_description">Change the MAC of any network interface.\n\nIt can be randomly generated or manually typed. \n\nThe MAC must contain 6 pair of combinations using the charset: [0–9|A-F|a-f] something like:\n\n 00:11:22:ab:cd:ef </string>
     <string name="interface_select">Pick an interface:</string>
     <string name="macchanger_select">Select macchanger mode:</string>
     <string name="macchanger_label">Macchanger</string>
@@ -162,4 +162,5 @@
         <item>rndis0 (USB > Ethernet)</item>
         <item>usb0 (USB > Ethernet for the Nexus7 2013 when tethering | badusb)</item>
     </string-array>
+    <string name="createchroot_label">Kali chroot</string>
 </resources>
