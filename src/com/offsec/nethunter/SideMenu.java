@@ -320,7 +320,7 @@ public class SideMenu extends Fragment {
 
         final int count = infos.size();
         int total = count;
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
         	total = count-1;
         }
         String[] activityNames = new String[total];
@@ -328,7 +328,7 @@ public class SideMenu extends Fragment {
         for (int i = 0; i < count; i++) {
             final ResolveInfo info = infos.get(i);
             final CharSequence labelSeq = info.loadLabel(pm);
-            if (!labelSeq.toString().equals("Iptables Configuration") || Build.VERSION.SDK_INT < 21) {
+            if (!labelSeq.toString().equals("Iptables Configuration") || Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             	String label = labelSeq != null ? labelSeq.toString() : info.activityInfo.name;
             	activityNames[i] = label;
                 activityActions[i] = info.activityInfo.name;
