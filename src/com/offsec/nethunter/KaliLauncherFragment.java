@@ -49,7 +49,7 @@ public class KaliLauncherFragment extends Fragment {
                     Intent intent =
                             new Intent("jackpal.androidterm.RUN_SCRIPT");
                     intent.addCategory(Intent.CATEGORY_DEFAULT);
-                    intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c '" + getActivity().getCacheDir() + "/bootkali'");
+                    intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c '" + getActivity().getFilesDir() + "/scripts/bootkali'");
                     startActivity(intent);
                 } catch (Exception e) {
                     Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
@@ -66,7 +66,7 @@ public class KaliLauncherFragment extends Fragment {
                     Intent intent =
                             new Intent("jackpal.androidterm.RUN_SCRIPT");
                     intent.addCategory(Intent.CATEGORY_DEFAULT);
-                    intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c '" + getActivity().getCacheDir() + "/bootkali kalimenu'");
+                    intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c '" + getActivity().getFilesDir() + "/scripts/bootkali kalimenu'");
                     startActivity(intent);
                 } catch (Exception e) {
                     Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
@@ -83,7 +83,7 @@ public class KaliLauncherFragment extends Fragment {
                     Intent intent =
                             new Intent("jackpal.androidterm.RUN_SCRIPT");
                     intent.addCategory(Intent.CATEGORY_DEFAULT);
-                    intent.putExtra("jackpal.androidterm.iInitialCommand",  "su -c '" + getActivity().getCacheDir() +  "/bootkali update'");
+                    intent.putExtra("jackpal.androidterm.iInitialCommand",  "su -c '" + getActivity().getFilesDir() +  "/scripts/bootkali update'");
                     startActivity(intent);
                 } catch (Exception e) {
                     Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
@@ -100,7 +100,7 @@ public class KaliLauncherFragment extends Fragment {
                     Intent intent =
                             new Intent("jackpal.androidterm.RUN_SCRIPT");
                     intent.addCategory(Intent.CATEGORY_DEFAULT);
-                    intent.putExtra("jackpal.androidterm.iInitialCommand",  "su -c '" + getActivity().getCacheDir() +  "/bootkali wifite'");
+                    intent.putExtra("jackpal.androidterm.iInitialCommand",  "su -c '" + getActivity().getFilesDir() +  "/scripts/bootkali wifite'");
                     startActivity(intent);
                 } catch (Exception e) {
                     Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
@@ -118,7 +118,7 @@ public class KaliLauncherFragment extends Fragment {
                     Intent intent =
                             new Intent("jackpal.androidterm.RUN_SCRIPT");
                     intent.addCategory(Intent.CATEGORY_DEFAULT);
-                    intent.putExtra("jackpal.androidterm.iInitialCommand",  "su -c '" + getActivity().getCacheDir() + "/bootkali wifi-disable'");
+                    intent.putExtra("jackpal.androidterm.iInitialCommand",  "su -c '" + getActivity().getFilesDir() + "/scripts/bootkali wifi-disable'");
                     startActivity(intent);
                 } catch (Exception e) {
                     Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
@@ -135,7 +135,7 @@ public class KaliLauncherFragment extends Fragment {
                     Intent intent =
                             new Intent("jackpal.androidterm.RUN_SCRIPT");
                     intent.addCategory(Intent.CATEGORY_DEFAULT);
-                    intent.putExtra("jackpal.androidterm.iInitialCommand",  "su -c '" + getActivity().getCacheDir() + "/killkali'");
+                    intent.putExtra("jackpal.androidterm.iInitialCommand",  "su -c '" + getActivity().getFilesDir() + "/scripts/killkali'");
                     startActivity(intent);
                 } catch (android.content.ActivityNotFoundException anfe) {
                     Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();

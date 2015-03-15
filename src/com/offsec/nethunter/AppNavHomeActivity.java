@@ -46,7 +46,7 @@ public class AppNavHomeActivity extends FragmentActivity
     public final static String TAG = "AppNavHomeActivity";
 
     // these must be UTF-8 text-based scripts.  They go in the /assets folder and will be copied
-    // to the app's cache area.  Don't make thisstatic or final because it changes below (is reused)
+    // to the app's private file area.  Don't make thisstatic or final because it changes below (is reused)
     private String[] SCRIPTS = {"bootkali", "check-kaliapache", "check-kalibeef-xss",
             "check-kalidhcp", "check-kalidnsmq", "check-kalihostapd", "check-kalimetasploit",
             "check-kalissh", "check-kalivnc", "check-kalivpn", "iptables-flush", "killkali",
@@ -116,8 +116,9 @@ public class AppNavHomeActivity extends FragmentActivity
         Thread t = new Thread(r);
         t.start();
 
+        createDirIfNeeded(getFilesDir()+ "/scripts");
         createDirIfNeeded(Environment.getExternalStorageDirectory() + "/files");
-        createDirIfNeeded(getCacheDir() + "/etc/init.d");
+        createDirIfNeeded(getFilesDir() + "/etc/init.d");
 
     }
 
@@ -169,8 +170,8 @@ public class AppNavHomeActivity extends FragmentActivity
             }
             is.close();
             br.close();
-            // next, write the string out to the file in the cache folder
-            File f = new File(getCacheDir().toString() + '/' + scriptName);
+            // next, write the string out to the file in the files folder
+            File f = new File(getFilesDir().toString() + "/scripts/" + scriptName);
             FileOutputStream fos = new FileOutputStream(f);
             fos.write(sb.toString().getBytes(Charset.forName("UTF-8")));
             fos.close();

@@ -27,7 +27,7 @@ import java.io.OutputStreamWriter;
 public class IptablesFragment extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private String cacheDir;
+    private String fileDir;
 
     public IptablesFragment() {
 
@@ -92,7 +92,7 @@ public class IptablesFragment extends Fragment {
         super.onAttach(activity);
         ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
         if (isAdded()) {
-            cacheDir = getActivity().getCacheDir().toString();
+            fileDir = getActivity().getFilesDir().toString() + "/scripts";
         }
     }
 
@@ -118,7 +118,7 @@ public class IptablesFragment extends Fragment {
 
     public void runIptables() {
         ShellExecuter exe = new ShellExecuter();
-        String[] command = {"su -c '" + cacheDir + "/bootkali iptables'"};
+        String[] command = {"su -c '" + fileDir + "/bootkali iptables'"};
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("Iptables started");
     }

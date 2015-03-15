@@ -52,7 +52,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
     private static final String configFilePath = "/data/local/kali-armhf/var/www/payload";
 
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private String cacheDir;
+    private String fileDir;
     
     public HidFragment() {
 
@@ -70,7 +70,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
         super.onAttach(activity);
         ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
         if (isAdded()) {
-            cacheDir = getActivity().getCacheDir().toString();
+            fileDir = getActivity().getFilesDir().toString() + "/scripts";
         }
     }
 
@@ -172,25 +172,25 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
         if (pageNum == 0) {
             switch (UACBypassIndex) {
                 case 0:
-                    command[0] = "su -c '" + cacheDir + "/bootkali start-rev-met --" + lang + "'";
+                    command[0] = "su -c '" + fileDir + "/bootkali start-rev-met --" + lang + "'";
                     break;
                 case 1:
-                    command[0] = "su -c '" + cacheDir + "/bootkali start-rev-met-elevated-win7 --" + lang + "'";
+                    command[0] = "su -c '" + fileDir + "/bootkali start-rev-met-elevated-win7 --" + lang + "'";
                     break;
                 default:
-                    command[0] = "su -c '" + cacheDir + "/bootkali start-rev-met-elevated-win8 --" + lang + "'";
+                    command[0] = "su -c '" + fileDir + "/bootkali start-rev-met-elevated-win8 --" + lang + "'";
                     break;
             }
         } else if (pageNum == 1) {
             switch (UACBypassIndex) {
                 case 0:
-                    command[0] = "su -c '" + cacheDir + "/bootkali hid-cmd --" + lang + "'";
+                    command[0] = "su -c '" + fileDir + "/bootkali hid-cmd --" + lang + "'";
                     break;
                 case 1:
-                    command[0] = "su -c '" + cacheDir + "/bootkali hid-cmd-elevated-win7 --" + lang + "'";
+                    command[0] = "su -c '" + fileDir + "/bootkali hid-cmd-elevated-win7 --" + lang + "'";
                     break;
                 default:
-                    command[0] = "su -c '" + cacheDir + "/bootkali hid-cmd-elevated-win8 --" + lang + "'";
+                    command[0] = "su -c '" + fileDir + "/bootkali hid-cmd-elevated-win8 --" + lang + "'";
                     break;
             }
         }

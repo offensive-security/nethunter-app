@@ -33,7 +33,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-public class DuckHunterFragment extends Fragment implements ActionBar.TabListener 	{
+public class DuckHunterFragment extends Fragment implements ActionBar.TabListener {
 
     TabsPagerAdapter TabsPagerAdapter;
     ViewPager mViewPager;
@@ -42,13 +42,14 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     final static CharSequence[] languages = {"American English", "French", "German", "Spanish", "Swedish", "Italian", "British English", "Russian", "Danish", "Norwegian", "Portugese", "Belgian"};
 
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private String cacheDir = "";
+    private String fileDir = "";
 
     public DuckHunterFragment() {
 
     }
+
     public static DuckHunterFragment newInstance(int sectionNumber) {
-    	DuckHunterFragment fragment = new DuckHunterFragment();
+        DuckHunterFragment fragment = new DuckHunterFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
@@ -61,7 +62,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
         ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
 
         if (isAdded()) {
-             cacheDir = getActivity().getCacheDir().toString();
+            fileDir = getActivity().getFilesDir().toString() + "/scripts";
         }
     }
 
@@ -78,9 +79,9 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
             @Override
             public void onPageSelected(int position) {
                 if (position == 1) {
-                	
+
                 }
-            	getActivity().invalidateOptionsMenu();
+                getActivity().invalidateOptionsMenu();
             }
         });
         setHasOptionsMenu(true);
@@ -93,7 +94,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.duck_hunter, menu);
     }
-    
+
     public void onPrepareOptionsMenu(Menu menu) {
         int pageNum = mViewPager.getCurrentItem();
         if (pageNum == 0) {
@@ -101,18 +102,18 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
             menu.findItem(R.id.duckConvertUpdate).setVisible(true);
             menu.findItem(R.id.duckConvertConvert).setVisible(true);
         } else {
-        	menu.findItem(R.id.duckPreviewRefresh).setVisible(true);
+            menu.findItem(R.id.duckPreviewRefresh).setVisible(true);
             menu.findItem(R.id.duckConvertUpdate).setVisible(false);
             menu.findItem(R.id.duckConvertConvert).setVisible(false);
         }
         getActivity().invalidateOptionsMenu();
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        	case R.id.duckConvertUpdate:	
-        		try {
+            case R.id.duckConvertUpdate:
+                try {
                     File sdcard = Environment.getExternalStorageDirectory();
                     File myFile = new File(sdcard, DuckHunterConvertFragment.configFilePath);
                     myFile.createNewFile();
@@ -126,49 +127,61 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                 } catch (Exception e) {
                     ((AppNavHomeActivity) getActivity()).showMessage(e.getMessage());
                 }
-        		return true;
-        	case R.id.duckConvertConvert:
-        		int keyboardLayoutIndex = sharedpreferences.getInt("DuckHunterLanguageIndex", 0);
-            	String lang;
+                return true;
+            case R.id.duckConvertConvert:
+                int keyboardLayoutIndex = sharedpreferences.getInt("DuckHunterLanguageIndex", 0);
+                String lang;
                 switch (keyboardLayoutIndex) {
-                    case 1:  lang = "fr";
-                             break;
-                    case 2:  lang = "de";
-                             break;
-                    case 3:  lang = "es";
-                             break;
-                    case 4:  lang = "sv";
-                    		 break;
-                    case 5:  lang = "it";
-                             break;
-                    case 6:  lang = "uk";
-                             break;
-                    case 7:  lang = "ru";
-                             break;
-                    case 8:  lang = "dk";
-                             break;
-                    case 9:  lang = "no";
-                             break;
-                    case 10:  lang = "pt";
-                             break;
-                    case 11:  lang = "be";
-                                break;
-                    default: lang = "us";
-                             break;
+                    case 1:
+                        lang = "fr";
+                        break;
+                    case 2:
+                        lang = "de";
+                        break;
+                    case 3:
+                        lang = "es";
+                        break;
+                    case 4:
+                        lang = "sv";
+                        break;
+                    case 5:
+                        lang = "it";
+                        break;
+                    case 6:
+                        lang = "uk";
+                        break;
+                    case 7:
+                        lang = "ru";
+                        break;
+                    case 8:
+                        lang = "dk";
+                        break;
+                    case 9:
+                        lang = "no";
+                        break;
+                    case 10:
+                        lang = "pt";
+                        break;
+                    case 11:
+                        lang = "be";
+                        break;
+                    default:
+                        lang = "us";
+                        break;
                 }
-            	String[] command = new String[1];
-                command[0] = "su -c '" + cacheDir + "/bootkali duck-hunt-convert " + lang +
+                String[] command = new String[1];
+                command[0] = "su -c '" + fileDir + "/bootkali duck-hunt-convert " + lang +
                         " /sdcard/" + DuckHunterConvertFragment.configFilePath + " /opt/" +
                         DuckHunterPreviewFragment.configFileFilename + "'";
-            	ShellExecuter exe = new ShellExecuter(); 
-            	exe.RunAsRoot(command);
-            	((AppNavHomeActivity) getActivity()).showMessage("converting started");
-        		return true;
-			case R.id.duckPreviewRefresh:
-				TextView source = (TextView) getView().findViewById(R.id.source);
-            	source.setText(DuckHunterPreviewFragment.readFileForPreview());
-				return true;
-        	case R.id.start_service:
+                ShellExecuter exe = new ShellExecuter();
+                exe.RunAsRoot(command);
+                ((AppNavHomeActivity) getActivity()).showMessage("converting started");
+                return true;
+            case R.id.duckPreviewRefresh:
+                TextView source = (TextView) getView().findViewById(R.id.source);
+                source.setText(DuckHunterPreviewFragment.readFileForPreview());
+                return true;
+            case R.id.start_service:
                 start();
                 return true;
             case R.id.chooseLanguage:
@@ -181,25 +194,24 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
     private void start() {
         String[] command = new String[1];
-        command[0] = "su -c '" + cacheDir + "/bootkali duck-hunt-run /opt/duckout.sh'";
+        command[0] = "su -c '" + fileDir + "/bootkali duck-hunt-run /opt/duckout.sh'";
         ShellExecuter exe = new ShellExecuter();
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("Attack started");
     }
 
-    
-    
+
     public void openLanguageDialog() {
 
-        int	keyboardLayoutIndex = sharedpreferences.getInt("DuckHunterLanguageIndex", 0);
-        
-    	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        int keyboardLayoutIndex = sharedpreferences.getInt("DuckHunterLanguageIndex", 0);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Language:");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-            
+
             }
         });
 
@@ -241,9 +253,9 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
         public Fragment getItem(int i) {
             switch (i) {
                 case 1:
-                	return new DuckHunterPreviewFragment();
+                    return new DuckHunterPreviewFragment();
                 default:
-                	return new DuckHunterConvertFragment();
+                    return new DuckHunterConvertFragment();
             }
         }
 
@@ -275,12 +287,12 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            
-        	View rootView = inflater.inflate(R.layout.duck_hunter_convert, container, false);
-        	
-        	TextView t2 = (TextView) rootView.findViewById(R.id.reference_text);
-        	t2.setMovementMethod(LinkMovementMethod.getInstance());
-        	
+
+            View rootView = inflater.inflate(R.layout.duck_hunter_convert, container, false);
+
+            TextView t2 = (TextView) rootView.findViewById(R.id.reference_text);
+            t2.setMovementMethod(LinkMovementMethod.getInstance());
+
             EditText source = (EditText) rootView.findViewById(R.id.editSource);
             File sdcard = Environment.getExternalStorageDirectory();
             File file = new File(sdcard, configFilePath);
@@ -296,42 +308,41 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
             } catch (IOException e) {
                 Log.e("Nethunter", "exception", e);
             }
-            source.setText(text);      
+            source.setText(text);
             return rootView;
         }
-        
+
     } //end of class
 
 
     public static class DuckHunterPreviewFragment extends Fragment {
 
         public static String configFilePath = "/data/local/kali-armhf/opt/";
-    	public static String configFileFilename = "duckout.sh";
+        public static String configFileFilename = "duckout.sh";
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        	View rootView = inflater.inflate(R.layout.duck_hunter_preview, container, false);
-        	TextView source = (TextView) rootView.findViewById(R.id.source);        
+            View rootView = inflater.inflate(R.layout.duck_hunter_preview, container, false);
+            TextView source = (TextView) rootView.findViewById(R.id.source);
             source.setText(readFileForPreview());
             return rootView;
         }
-        
+
         @Override
         public void setUserVisibleHint(boolean isVisibleToUser) {
-        	super.setUserVisibleHint(isVisibleToUser);
-        	if (isVisibleToUser) { 
-        	  
-        	} 
+            super.setUserVisibleHint(isVisibleToUser);
+            if (isVisibleToUser) {
+
+            }
         }
-        
+
         public void onResume() {
-            super.onResume(); 
+            super.onResume();
         }
-        
-        public static String readFileForPreview()
-        {
-        	File file = new File(configFilePath, configFileFilename);
+
+        public static String readFileForPreview() {
+            File file = new File(configFilePath, configFileFilename);
             StringBuilder text = new StringBuilder();
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file));
