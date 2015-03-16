@@ -1,16 +1,19 @@
 package com.offsec.nethunter;
 
 import android.app.DownloadManager;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,6 +67,7 @@ public class CreateChrootFragment extends Fragment {
     BroadcastReceiver onDLFinished;
     String dir;
     final ShellExecuter x = new ShellExecuter();
+    ProgressDialog pd;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -124,7 +128,6 @@ public class CreateChrootFragment extends Fragment {
         chrootPath = getActivity().getFilesDir() + "/chroot/";
         statusLog("checking in chroot: " + chrootPath);
         File file = new File(chrootPath + dir + "/");
-        statusLog(chrootPath + dir);
 
         final ShellExecuter exe = new ShellExecuter();
         String command = "if [ -d " + chrootPath + dir + " ];then echo 1; fi"; //check the dir existence
@@ -153,12 +156,11 @@ public class CreateChrootFragment extends Fragment {
         if (_res.equals("1")) {
             statusLog("Deleting existing chroot...");
             removeChroot();
-            installButton.setEnabled(true);
-            installButton.setText("Install chroot");
+            checkForExistingChroot();
         } else // no chroot.  need to enable it.
-        if (!startZipDownload()) {
-            installButton.setEnabled(true);
-        }
+            if (!startZipDownload()) {
+                installButton.setEnabled(true);
+            }
     }
 
     /* Checks if external storage is available for read and write */
@@ -185,7 +187,7 @@ public class CreateChrootFragment extends Fragment {
                 }
             }
         }
-        statusLog("Starting download...");
+        statusLog("Starting download.  Standby...");
         if (!isExternalStorageWritable()) {
             statusLog("Nowhere to write to.  Make sure you have your external storage mounted and available.");
             return false;
@@ -237,136 +239,25 @@ public class CreateChrootFragment extends Fragment {
         if (checkFileIntegrity(zipFilePath)) {
             statusLog("Extracting to chroot.  Standby...");
             // all In bg
-            createDir();
+            pd = new ProgressDialog(getActivity());
+            pd.setTitle("Extracting...");
+            pd.setMessage("The chroot is being unxz'd and untarred.  Depending on the speed of your device, this could take a few minutes.  If it goes more than 1/2 hour, panic.");
+            pd.show();
+            UnziptarTask mytask = new UnziptarTask();
+            mytask.execute();
+
 
         }
     }
 
     private void removeChroot() {
+
+        statusLog("Deleting Dirs...");
         new Thread(new Runnable() {
             public void run() {
-
-                try {
-                    statusLog("Deleting Dirs...");
-                    x.RunAsRootOutput("rm -rf '" + chrootPath + dir + '\'');
-
-                    statusText.post(new Runnable() {
-                        public void run() {
-                            statusLog("chroot delete ==> successful");
-
-
-                        }
-                    });
-
-                } catch (Exception e) {
-                    statusText.post(new Runnable() {
-                        public void run() {
-                            statusLog("ERROR deleting DIR");
-                        }
-                    });
-                }
+                x.RunAsRootOutput("rm -rf '" + chrootPath + dir + '\'');
             }
         }).start();
-
-
-    }
-
-    private void createDir() {
-        new Thread(new Runnable() {
-            public void run() {
-
-                try {
-
-                    statusLog("Creating Dirs...");
-                    x.RunAsRootOutput("mkdir -p " + getActivity().getFilesDir() + "/chroot");
-
-
-                    statusText.post(new Runnable() {
-                        public void run() {
-
-                            statusLog("DIR CREATED");
-                            //go to unxz
-                            unXZ();
-                        }
-                    });
-
-                } catch (final Exception e) {
-                    statusText.post(new Runnable() {
-                        public void run() {
-                            statusLog("ERROR CREATING DIR" + e);
-                        }
-                    });
-                }
-            }
-        }).start();
-
-
-    }
-
-    private void unXZ() {
-
-        new Thread(new Runnable() {
-            public void run() {
-
-                try {
-
-                    statusLog("1st UNPACK ==> .xz > .tar");
-                    x.RunAsRootOutput("busybox xz -d '" + zipFilePath + '\'');
-
-                    statusText.post(new Runnable() {
-                        public void run() {
-
-                            statusLog("unxz done");
-                            // lets untar
-                            unTAR();
-                        }
-                    });
-
-                } catch (final Exception e) {
-                    statusText.post(new Runnable() {
-                        public void run() {
-                            statusLog("ERROR IN BUSYBOX XZ" + e);
-                        }
-                    });
-                }
-            }
-        }).start();
-
-
-    }
-
-    private void unTAR() {
-
-        new Thread(new Runnable() {
-            public void run() {
-
-                try {
-
-                    statusLog("2nd UNPACK ==> .tar > fs");
-                    x.RunAsRootOutput("busybox tar xf '" + zipFilePath.substring(0, zipFilePath.lastIndexOf('.')) + "' -C '" + chrootPath + "'");
-
-                    statusText.post(new Runnable() {
-                        public void run() {
-
-                            statusLog("untar done");
-                            statusLog("We're all done.  If there are errors, that's a problem.");
-                            installButton.setEnabled(true);
-                            statusLog("Final check:  is the directory there...?");
-                            checkForExistingChroot();
-                        }
-                    });
-
-
-                } catch (final Exception e) {
-                    statusText.post(new Runnable() {
-                        public void run() {
-                            statusLog("ERROR IN BUSIBOX TAR xf" + e);
-                        }
-                    });
-                }
-            }
-        }).start();
-
 
     }
 
@@ -396,6 +287,40 @@ public class CreateChrootFragment extends Fragment {
         if (c.moveToFirst()) {
             status = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_ID));
             dm.remove(status);
+        }
+    }
+
+
+    public class UnziptarTask extends AsyncTask<Void, Void, Boolean> {
+
+        @Override
+        protected void onPreExecute() {
+            statusLog("UNZIPPING & UNTARRING...");
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... Void) {
+            try {
+                // remove previous tar if it exists.
+                x.RunAsRootWithException("rm -f '" + zipFilePath.substring(0, zipFilePath.lastIndexOf('.')) + '\'');
+                x.RunAsRootWithException("busybox xz -d '" + zipFilePath + '\'');
+                x.RunAsRootWithException("busybox tar xf '" + zipFilePath.substring(0, zipFilePath.lastIndexOf('.')) + "' -C '" + chrootPath + "'");
+            } catch (RuntimeException e) {
+                Log.d(TAG, "Error: ", e);
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result) {
+                statusLog("UNZIPPING & UNTARRING DONE!");
+            } else {
+                statusLog("There was an error :(");
+            }
+            pd.dismiss();
         }
     }
 
