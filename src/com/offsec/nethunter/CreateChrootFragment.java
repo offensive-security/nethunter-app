@@ -11,13 +11,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
 
 import java.io.File;
 import java.util.GregorianCalendar;
@@ -25,11 +23,11 @@ import java.util.GregorianCalendar;
 /**
  * Created by fattire on 3/14/15.
  * This is GPLv2'd.
- *
+ * <p/>
  * This was quickly thrown together:
- *
+ * <p/>
  * TO DO:
- *
+ * <p/>
  * * Actually verify SHA of downloaded chroot file
  * * Non-arm arch support
  * * better UI (it locks up currently when untarring/zipping file...)
@@ -55,7 +53,7 @@ public class CreateChrootFragment extends Fragment {
 
     private static final String FILENAME = "kalifs.tar.xz";
     private static final String URI = "http://3bollcdn.com/nethunter/chroot/" + FILENAME;
-  //  private static final String SHA = "PUT SHA HERE"; // not yet implemented
+    //  private static final String SHA = "PUT SHA HERE"; // not yet implemented
 
     String zipFilePath;
     private long downloadRef;
@@ -124,19 +122,19 @@ public class CreateChrootFragment extends Fragment {
         // does chroot directory exist?
 
         chrootPath = getActivity().getFilesDir() + "/chroot/";
-        statusLog("checking inn chroot: " + chrootPath);
+        statusLog("checking in chroot: " + chrootPath);
         File file = new File(chrootPath + dir + "/");
         statusLog(chrootPath + dir);
 
         final ShellExecuter exe = new ShellExecuter();
-        String command = "if [ -d "+chrootPath + dir+" ];then echo 1; fi"; //check the dir existence
+        String command = "if [ -d " + chrootPath + dir + " ];then echo 1; fi"; //check the dir existence
         final String _res;
 
         _res = exe.RunAsRootOutput(command);
 
         if (_res.equals("1")) {
             statusLog("An existing Kali chroot directory was found!");
-            installButton.setText("Wipe and reinstall chroot");
+            installButton.setText("Wipe Chroot");
         } else {
             statusLog("No Kali chroot directory was found.");
             file.mkdir();
@@ -147,15 +145,17 @@ public class CreateChrootFragment extends Fragment {
     private void onButtonHit() {
         installButton.setEnabled(false);
 
-        String command = "if [ -d "+chrootPath + dir+" ];then echo 1; fi"; //check the dir existence
+        String command = "if [ -d " + chrootPath + dir + " ];then echo 1; fi"; //check the dir existence
         final String _res;
 
         _res = x.RunAsRootOutput(command);
 
         if (_res.equals("1")) {
-            statusLog("Existing chroot found.  Deleting it.");
+            statusLog("Deleting existing chroot...");
             removeChroot();
-        }
+            installButton.setEnabled(true);
+            installButton.setText("Install chroot");
+        } else // no chroot.  need to enable it.
         if (!startZipDownload()) {
             installButton.setEnabled(true);
         }
@@ -169,7 +169,6 @@ public class CreateChrootFragment extends Fragment {
 
     private boolean startZipDownload() {
 
-        Log.d(TAG, "starting ~70MB download... Once it downloads, BE REALLY PATIENT as the UI will lock up until we fix this.");
         File checkFile = new File(zipFilePath);
         if (checkFile.exists()) {
             statusLog(zipFilePath + " exists already.");
@@ -243,7 +242,7 @@ public class CreateChrootFragment extends Fragment {
         }
     }
 
-    private void removeChroot(){
+    private void removeChroot() {
         new Thread(new Runnable() {
             public void run() {
 
@@ -270,9 +269,9 @@ public class CreateChrootFragment extends Fragment {
         }).start();
 
 
-
     }
-    private void createDir(){
+
+    private void createDir() {
         new Thread(new Runnable() {
             public void run() {
 
@@ -291,10 +290,10 @@ public class CreateChrootFragment extends Fragment {
                         }
                     });
 
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     statusText.post(new Runnable() {
                         public void run() {
-                            statusLog("ERROR CREATING DIR");
+                            statusLog("ERROR CREATING DIR" + e);
                         }
                     });
                 }
@@ -302,9 +301,9 @@ public class CreateChrootFragment extends Fragment {
         }).start();
 
 
-
     }
-    private void unXZ(){
+
+    private void unXZ() {
 
         new Thread(new Runnable() {
             public void run() {
@@ -323,10 +322,10 @@ public class CreateChrootFragment extends Fragment {
                         }
                     });
 
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     statusText.post(new Runnable() {
                         public void run() {
-                            statusLog("ERROR IN BUSIBOX XZ");
+                            statusLog("ERROR IN BUSYBOX XZ" + e);
                         }
                     });
                 }
@@ -335,7 +334,8 @@ public class CreateChrootFragment extends Fragment {
 
 
     }
-    private void unTAR(){
+
+    private void unTAR() {
 
         new Thread(new Runnable() {
             public void run() {
@@ -357,10 +357,10 @@ public class CreateChrootFragment extends Fragment {
                     });
 
 
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     statusText.post(new Runnable() {
                         public void run() {
-                            statusLog("ERROR IN BUSIBOX TAR xf");
+                            statusLog("ERROR IN BUSIBOX TAR xf" + e);
                         }
                     });
                 }
@@ -369,6 +369,7 @@ public class CreateChrootFragment extends Fragment {
 
 
     }
+
     private boolean checkFileIntegrity(String path) {
         statusLog("TO DO:  Check file integrity.");
         return true;
