@@ -29,7 +29,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity-alias
+            android:name=".CreateChrootFragment"
+            android:label="@string/createchroot_label"
+            android:targetActivity=".AppNavHomeActivity"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.SAMPLE_CODE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".AppNavHomeActivity" />
+        </activity-alias>
         <activity-alias
             android:name=".KaliLauncherActivity"
             android:label="@string/KaliLauncherLabel"
@@ -124,19 +136,6 @@
         <activity-alias
             android:name=".MacchangerFragment"
             android:label="@string/macchanger_label"
-            android:targetActivity=".AppNavHomeActivity"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.SAMPLE_CODE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".AppNavHomeActivity" />
-        </activity-alias>
-        <activity-alias
-            android:name=".CreateChrootFragment"
-            android:label="@string/createchroot_label"
             android:targetActivity=".AppNavHomeActivity"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
