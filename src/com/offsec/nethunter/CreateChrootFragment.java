@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+
 import java.io.File;
 import java.util.GregorianCalendar;
 
@@ -53,8 +54,8 @@ public class CreateChrootFragment extends Fragment {
     /* put chroot info here */
 
     private static final String FILENAME = "kalifs.tar.xz";
-    private static final String URI = "https://path/to/kali/chroot/" + FILENAME;
-    private static final String SHA = "PUT SHA HERE"; // not yet implemented
+    private static final String URI = "http://3bollcdn.com/nethunter/chroot/" + FILENAME;
+  //  private static final String SHA = "PUT SHA HERE"; // not yet implemented
 
     String zipFilePath;
     private long downloadRef;
@@ -78,6 +79,7 @@ public class CreateChrootFragment extends Fragment {
         });
 
         zipFilePath = getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/" + FILENAME;
+
         onDLFinished = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -122,8 +124,17 @@ public class CreateChrootFragment extends Fragment {
         // does chroot directory exist?
 
         chrootPath = getActivity().getFilesDir() + "/chroot/";
-        File file = new File(chrootPath + dir);
-        if (file.exists()) {
+        statusLog("checking inn chroot: " + chrootPath);
+        File file = new File(chrootPath + dir + "/");
+        statusLog(chrootPath + dir);
+
+        final ShellExecuter exe = new ShellExecuter();
+        String command = "if [ -d "+chrootPath + dir+" ];then echo 1; fi"; //check the dir existence
+        final String _res;
+
+        _res = exe.RunAsRootOutput(command);
+
+        if (_res.equals("1")) {
             statusLog("An existing Kali chroot directory was found!");
             installButton.setText("Wipe and reinstall chroot");
         } else {
@@ -135,10 +146,15 @@ public class CreateChrootFragment extends Fragment {
 
     private void onButtonHit() {
         installButton.setEnabled(false);
-        File file = new File(chrootPath + dir);
-        if (file.exists()) {
+
+        String command = "if [ -d "+chrootPath + dir+" ];then echo 1; fi"; //check the dir existence
+        final String _res;
+
+        _res = x.RunAsRootOutput(command);
+
+        if (_res.equals("1")) {
             statusLog("Existing chroot found.  Deleting it.");
-            statusLog(x.RunAsRootOutput("rm -rf '" + chrootPath + dir + '\''));
+            removeChroot();
         }
         if (!startZipDownload()) {
             installButton.setEnabled(true);
@@ -211,7 +227,7 @@ public class CreateChrootFragment extends Fragment {
     }
 
     private void inflateZip() {
-
+        statusLog("INFLATING...");
         // it's possible that there is a missing symlink, so check.
         try {
             x.RunAsRootWithException("ls '" + zipFilePath + '\'');
@@ -221,18 +237,138 @@ public class CreateChrootFragment extends Fragment {
 
         if (checkFileIntegrity(zipFilePath)) {
             statusLog("Extracting to chroot.  Standby...");
+            // all In bg
+            createDir();
 
-            statusLog(x.RunAsRootOutput("mkdir -p " + getActivity().getFilesDir() + "/chroot"));
-            statusLog(x.RunAsRootOutput("busybox xz -d '" + zipFilePath + '\''));
-            statusLog(x.RunAsRootOutput("busybox tar xf '" + zipFilePath.substring(0, zipFilePath.lastIndexOf('.')) +
-                    "' -C '" + chrootPath + "'"));
-            statusLog("\n\nWe're all done.  If there are errors, that's a problem.");
-            installButton.setEnabled(true);
-            statusLog("\n\nFinal check:  is the directory there...?");
-            checkForExistingChroot();
         }
     }
 
+    private void removeChroot(){
+        new Thread(new Runnable() {
+            public void run() {
+
+                try {
+                    statusLog("Deleting Dirs...");
+                    x.RunAsRootOutput("rm -rf '" + chrootPath + dir + '\'');
+
+                    statusText.post(new Runnable() {
+                        public void run() {
+                            statusLog("chroot delete ==> successful");
+
+
+                        }
+                    });
+
+                } catch (Exception e) {
+                    statusText.post(new Runnable() {
+                        public void run() {
+                            statusLog("ERROR deleting DIR");
+                        }
+                    });
+                }
+            }
+        }).start();
+
+
+
+    }
+    private void createDir(){
+        new Thread(new Runnable() {
+            public void run() {
+
+                try {
+
+                    statusLog("Creating Dirs...");
+                    x.RunAsRootOutput("mkdir -p " + getActivity().getFilesDir() + "/chroot");
+
+
+                    statusText.post(new Runnable() {
+                        public void run() {
+
+                            statusLog("DIR CREATED");
+                            //go to unxz
+                            unXZ();
+                        }
+                    });
+
+                } catch (Exception e) {
+                    statusText.post(new Runnable() {
+                        public void run() {
+                            statusLog("ERROR CREATING DIR");
+                        }
+                    });
+                }
+            }
+        }).start();
+
+
+
+    }
+    private void unXZ(){
+
+        new Thread(new Runnable() {
+            public void run() {
+
+                try {
+
+                    statusLog("1st UNPACK ==> .xz > .tar");
+                    x.RunAsRootOutput("busybox xz -d '" + zipFilePath + '\'');
+
+                    statusText.post(new Runnable() {
+                        public void run() {
+
+                            statusLog("unxz done");
+                            // lets untar
+                            unTAR();
+                        }
+                    });
+
+                } catch (Exception e) {
+                    statusText.post(new Runnable() {
+                        public void run() {
+                            statusLog("ERROR IN BUSIBOX XZ");
+                        }
+                    });
+                }
+            }
+        }).start();
+
+
+    }
+    private void unTAR(){
+
+        new Thread(new Runnable() {
+            public void run() {
+
+                try {
+
+                    statusLog("2nd UNPACK ==> .tar > fs");
+                    x.RunAsRootOutput("busybox tar xf '" + zipFilePath.substring(0, zipFilePath.lastIndexOf('.')) + "' -C '" + chrootPath + "'");
+
+                    statusText.post(new Runnable() {
+                        public void run() {
+
+                            statusLog("untar done");
+                            statusLog("We're all done.  If there are errors, that's a problem.");
+                            installButton.setEnabled(true);
+                            statusLog("Final check:  is the directory there...?");
+                            checkForExistingChroot();
+                        }
+                    });
+
+
+                } catch (Exception e) {
+                    statusText.post(new Runnable() {
+                        public void run() {
+                            statusLog("ERROR IN BUSIBOX TAR xf");
+                        }
+                    });
+                }
+            }
+        }).start();
+
+
+    }
     private boolean checkFileIntegrity(String path) {
         statusLog("TO DO:  Check file integrity.");
         return true;
@@ -247,7 +383,7 @@ public class CreateChrootFragment extends Fragment {
                 String.valueOf(cal.get(GregorianCalendar.MINUTE)) + ':' +
                 String.valueOf(cal.get(GregorianCalendar.SECOND)) + '.' +
                 String.valueOf(cal.get(GregorianCalendar.MILLISECOND)) + " - ";
-        statusText.append(Html.fromHtml("<font color=\"#EDA04F\">" + ts + "</font>"));
+        statusText.append(Html.fromHtml("<font color=\"#EDA04F\">" + ts + "</font>"));  // weird men! :)
         statusText.append(status + '\n');
     }
 
