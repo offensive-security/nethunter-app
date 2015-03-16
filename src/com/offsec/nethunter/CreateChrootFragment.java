@@ -1,9 +1,11 @@
 package com.offsec.nethunter;
 
+import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
@@ -80,7 +82,7 @@ public class CreateChrootFragment extends Fragment {
             }
         });
 
-        zipFilePath = getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/" + FILENAME;
+        zipFilePath = getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/" + FILENAME;
 
         onDLFinished = new BroadcastReceiver() {
             @Override
@@ -124,24 +126,28 @@ public class CreateChrootFragment extends Fragment {
 
     private void checkForExistingChroot() {
         // does chroot directory exist?
+        if (getActivity() != null) {
+            chrootPath = getActivity().getFilesDir() + "/chroot/";
+            statusLog("checking in chroot: " + chrootPath);
+            File file = new File(chrootPath + dir + "/");
 
-        chrootPath = getActivity().getFilesDir() + "/chroot/";
-        statusLog("checking in chroot: " + chrootPath);
-        File file = new File(chrootPath + dir + "/");
+            final ShellExecuter exe = new ShellExecuter();
+            String command = "if [ -d " + chrootPath + dir + " ];then echo 1; fi"; //check the dir existence
+            final String _res;
 
-        final ShellExecuter exe = new ShellExecuter();
-        String command = "if [ -d " + chrootPath + dir + " ];then echo 1; fi"; //check the dir existence
-        final String _res;
+            _res = exe.RunAsRootOutput(command);
 
-        _res = exe.RunAsRootOutput(command);
+            if (_res.equals("1")) {
+                statusLog("An existing Kali chroot directory was found!");
+                installButton.setText("Wipe chroot");
+                installButton.setEnabled(true);
+            } else {
+                statusLog("No Kali chroot directory was found.");
+                file.mkdir();
+                installButton.setText("Install chroot");
+                installButton.setEnabled(true);
 
-        if (_res.equals("1")) {
-            statusLog("An existing Kali chroot directory was found!");
-            installButton.setText("Wipe Chroot");
-        } else {
-            statusLog("No Kali chroot directory was found.");
-            file.mkdir();
-            installButton.setText("Install chroot");
+            }
         }
     }
 
@@ -154,13 +160,39 @@ public class CreateChrootFragment extends Fragment {
         _res = x.RunAsRootOutput(command);
 
         if (_res.equals("1")) {
-            statusLog("Deleting existing chroot...");
-            removeChroot();
-            checkForExistingChroot();
-        } else // no chroot.  need to enable it.
+            // the chroot is there.
+            AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+            adb.setTitle("Really remove the chroot?");
+            adb.setMessage("There's no going back.  You lose everything in your chroot.  Forever-ever.");
+            adb.setPositiveButton("Remove", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    reallyWipeRoot();
+                }
+            });
+            adb.setNegativeButton("Forget it", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    installButton.setEnabled(true);
+                }
+            });
+            AlertDialog ad = adb.create();
+            ad.show();
+        } else {// no chroot.  need to enable it.
             if (!startZipDownload()) {
                 installButton.setEnabled(true);
             }
+        }
+    }
+
+    private void reallyWipeRoot() {
+        installButton.setEnabled(false);
+        pd = new ProgressDialog(getActivity());
+        pd.setTitle("Wiping chroot");
+        pd.setMessage("Killing the chroot.  No regrets!");
+        pd.show();
+        RmChrootTask rct = new RmChrootTask();
+        rct.execute();
     }
 
     /* Checks if external storage is available for read and write */
@@ -201,8 +233,7 @@ public class CreateChrootFragment extends Fragment {
                 .setTitle(FILENAME)
                 .setDescription("Downloading base Kali chroot")
                 .setAllowedOverRoaming(true)
-                .setDestinationInExternalFilesDir(getActivity(), Environment.DIRECTORY_DOWNLOADS, FILENAME);
-
+                .setDestinationUri(Uri.parse("file://" + zipFilePath + ".partial"));
         downloadRef = dm.enqueue(r);
         return true;
     }
@@ -219,7 +250,6 @@ public class CreateChrootFragment extends Fragment {
         if (status == DownloadManager.STATUS_SUCCESSFUL) {
             statusLog("Download completed successfully.");
             inflateZip();
-            installButton.setEnabled(true);
         } else {
             statusLog("Download failed.  Check your network connection and external storage and try again.");
             installButton.setEnabled(true);
@@ -231,9 +261,14 @@ public class CreateChrootFragment extends Fragment {
         statusLog("INFLATING...");
         // it's possible that there is a missing symlink, so check.
         try {
-            x.RunAsRootWithException("ls '" + zipFilePath + '\'');
+            x.RunAsRootWithException("mv " + zipFilePath + ".partial " + zipFilePath);
         } catch (RuntimeException ex) { // file not found
             zipFilePath = zipFilePath.replace("/storage/emulated/0", "/storage/emulated/legacy");
+            try {
+                x.RunAsRootWithException("mv " + zipFilePath + ".partial " + zipFilePath);
+            } catch (RuntimeException e) {
+                statusLog("ERROR: couldn't find downloaded file. " + e);
+            }
         }
 
         if (checkFileIntegrity(zipFilePath)) {
@@ -241,24 +276,11 @@ public class CreateChrootFragment extends Fragment {
             // all In bg
             pd = new ProgressDialog(getActivity());
             pd.setTitle("Extracting...");
-            pd.setMessage("The chroot is being unxz'd and untarred.  Depending on the speed of your device, this could take a few minutes.  If it goes more than 1/2 hour, panic.");
+            pd.setMessage("The chroot is being extracted.  This could take a bit.  If it goes more than 15 minutes, please panic.");
             pd.show();
             UnziptarTask mytask = new UnziptarTask();
             mytask.execute();
-
-
         }
-    }
-
-    private void removeChroot() {
-
-        statusLog("Deleting Dirs...");
-        new Thread(new Runnable() {
-            public void run() {
-                x.RunAsRootOutput("rm -rf '" + chrootPath + dir + '\'');
-            }
-        }).start();
-
     }
 
     private boolean checkFileIntegrity(String path) {
@@ -290,6 +312,45 @@ public class CreateChrootFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+
+   /* --------------------------------------- asynctasks -------------------- */
+
+
+    public class RmChrootTask extends AsyncTask<Void, Void, Boolean> {
+        @Override
+        protected void onPreExecute() {
+            statusLog("removing Chroot...");
+            super.onPreExecute();
+        }
+
+
+        @Override
+        protected Boolean doInBackground(Void... Void) {
+            try {
+                x.RunAsRootOutput("rm -rf '" + chrootPath + dir + '\'');
+            } catch (RuntimeException e) {
+                Log.d(TAG, "Error: ", e);
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result) {
+                statusLog("Chroot removed.");
+            } else {
+                statusLog("There was an error :(");
+            }
+            pd.dismiss();
+            checkForExistingChroot();
+        }
+    }
 
     public class UnziptarTask extends AsyncTask<Void, Void, Boolean> {
 
@@ -302,10 +363,8 @@ public class CreateChrootFragment extends Fragment {
         @Override
         protected Boolean doInBackground(Void... Void) {
             try {
-                // remove previous tar if it exists.
-                x.RunAsRootWithException("rm -f '" + zipFilePath.substring(0, zipFilePath.lastIndexOf('.')) + '\'');
-                x.RunAsRootWithException("busybox xz -d '" + zipFilePath + '\'');
-                x.RunAsRootWithException("busybox tar xf '" + zipFilePath.substring(0, zipFilePath.lastIndexOf('.')) + "' -C '" + chrootPath + "'");
+                x.RunAsRootWithException("busybox xz -df '" + zipFilePath + "';" +
+                        "busybox tar xf '" + zipFilePath.substring(0, zipFilePath.lastIndexOf('.')) + "' -C '" + chrootPath + "'");
             } catch (RuntimeException e) {
                 Log.d(TAG, "Error: ", e);
                 return false;
@@ -321,6 +380,7 @@ public class CreateChrootFragment extends Fragment {
                 statusLog("There was an error :(");
             }
             pd.dismiss();
+            checkForExistingChroot();
         }
     }
 

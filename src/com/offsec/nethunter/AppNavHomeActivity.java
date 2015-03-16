@@ -33,15 +33,15 @@ public class AppNavHomeActivity extends FragmentActivity
         implements SideMenu.NavigationDrawerCallbacks {
 
     public final static int NETHUNTER_FRAGMENT = 0;
-    public final static int KALILAUNCHER_FRAGMENT = 1;
-    public final static int KALISERVICES_FRAGMENT = 2;
-    public final static int HIDE_FRAGMENT = 3;
-    public final static int DUCKHUNTER_FRAGMENT = 4;
-    public final static int BADUSB_FRAGMENT = 5;
-    public final static int MANA_FRAGMENT = 6;
-    public final static int DNSMASQ_FRAGMENT = 7;
-    public final static int MACCHANGER_FRAGMENT = 8;
-    public final static int CREATECHROOT_FRAGMENT = 9;
+    public final static int CREATECHROOT_FRAGMENT = 1;
+    public final static int KALILAUNCHER_FRAGMENT = 2;
+    public final static int KALISERVICES_FRAGMENT = 3;
+    public final static int HIDE_FRAGMENT = 4;
+    public final static int DUCKHUNTER_FRAGMENT = 5;
+    public final static int BADUSB_FRAGMENT = 6;
+    public final static int MANA_FRAGMENT = 7;
+    public final static int DNSMASQ_FRAGMENT = 8;
+    public final static int MACCHANGER_FRAGMENT = 9;
     public final static int IPTABLES_FRAGMENT = 10;
 
     public final static String TAG = "AppNavHomeActivity";
