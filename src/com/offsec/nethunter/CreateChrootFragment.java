@@ -129,19 +129,18 @@ public class CreateChrootFragment extends Fragment {
         if (getActivity() != null) {
             chrootPath = getActivity().getFilesDir() + "/chroot/";
             statusLog("checking in chroot: " + chrootPath);
-            File file = new File(chrootPath + dir + "/");
 
-            final ShellExecuter exe = new ShellExecuter();
             String command = "if [ -d " + chrootPath + dir + " ];then echo 1; fi"; //check the dir existence
             final String _res;
 
-            _res = exe.RunAsRootOutput(command);
+            _res = x.RunAsRootOutput(command);
 
             if (_res.equals("1")) {
                 statusLog("An existing Kali chroot directory was found!");
                 installButton.setText("Wipe chroot");
                 installButton.setEnabled(true);
             } else {
+                File file = new File(chrootPath + "/");
                 statusLog("No Kali chroot directory was found.");
                 file.mkdir();
                 installButton.setText("Install chroot");
@@ -153,7 +152,6 @@ public class CreateChrootFragment extends Fragment {
 
     private void onButtonHit() {
         installButton.setEnabled(false);
-
         String command = "if [ -d " + chrootPath + dir + " ];then echo 1; fi"; //check the dir existence
         final String _res;
 
@@ -163,7 +161,7 @@ public class CreateChrootFragment extends Fragment {
             // the chroot is there.
             AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
             adb.setTitle("Really remove the chroot?");
-            adb.setMessage("There's no going back.  You lose everything in your chroot.  Forever-ever.");
+            adb.setMessage("There's no going back.  You lose everything in your chroot.  Forever-ever.\n\nNOTE:  RIGHT NOW THIS IS HIGHLY DISCOURAGED UNTIL SOME BUGS ARE FIXED.  BE SURE YOU HAVE FULLY UNMOUNTED THE CHROOT AND FULLY QUIT ALL PROCESSES!  REBOOT TO DO THIS... OR BADNESS MAY RESULT!");
             adb.setPositiveButton("Remove", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -177,6 +175,7 @@ public class CreateChrootFragment extends Fragment {
                 }
             });
             AlertDialog ad = adb.create();
+            ad.setCancelable(false);
             ad.show();
         } else {// no chroot.  need to enable it.
             if (!startZipDownload()) {
@@ -190,6 +189,7 @@ public class CreateChrootFragment extends Fragment {
         pd = new ProgressDialog(getActivity());
         pd.setTitle("Wiping chroot");
         pd.setMessage("Killing the chroot.  No regrets!");
+        pd.setCancelable(false);
         pd.show();
         RmChrootTask rct = new RmChrootTask();
         rct.execute();
@@ -204,9 +204,11 @@ public class CreateChrootFragment extends Fragment {
     private boolean startZipDownload() {
 
         File checkFile = new File(zipFilePath);
-        if (checkFile.exists()) {
+        File otherFile = new File(zipFilePath.replace("/storage/emulated/0", "/storage/emulated/legacy"));
+        if (checkFile.exists() || otherFile.exists()) {
+
             statusLog(zipFilePath + " exists already.");
-            if (checkFileIntegrity(zipFilePath)) {
+            if (checkFileIntegrity(zipFilePath) || checkFileIntegrity(zipFilePath.replace("/storage/emulated/0", "/storage/emulated/legacy"))) {
                 statusLog("The file looks good, so no need to re-download it.");
                 inflateZip();
                 return true;
@@ -249,6 +251,17 @@ public class CreateChrootFragment extends Fragment {
         }
         if (status == DownloadManager.STATUS_SUCCESSFUL) {
             statusLog("Download completed successfully.");
+            // remove the partial...
+            try {
+                x.RunAsRootWithException("mv " + zipFilePath + ".partial " + zipFilePath);
+            } catch (RuntimeException ex) { // file not found
+                zipFilePath = zipFilePath.replace("/storage/emulated/0", "/storage/emulated/legacy");
+                try {
+                    x.RunAsRootWithException("mv " + zipFilePath + ".partial " + zipFilePath);
+                } catch (RuntimeException e) {
+                    statusLog("ERROR: couldn't find downloaded file. " + e);
+                }
+            }
             inflateZip();
         } else {
             statusLog("Download failed.  Check your network connection and external storage and try again.");
@@ -259,13 +272,14 @@ public class CreateChrootFragment extends Fragment {
 
     private void inflateZip() {
         statusLog("INFLATING...");
-        // it's possible that there is a missing symlink, so check.
+
+        // look for bad path again...
         try {
-            x.RunAsRootWithException("mv " + zipFilePath + ".partial " + zipFilePath);
+            x.RunAsRootWithException("ls " + zipFilePath);
         } catch (RuntimeException ex) { // file not found
             zipFilePath = zipFilePath.replace("/storage/emulated/0", "/storage/emulated/legacy");
             try {
-                x.RunAsRootWithException("mv " + zipFilePath + ".partial " + zipFilePath);
+                x.RunAsRootWithException("ls " + zipFilePath);
             } catch (RuntimeException e) {
                 statusLog("ERROR: couldn't find downloaded file. " + e);
             }
@@ -276,6 +290,7 @@ public class CreateChrootFragment extends Fragment {
             // all In bg
             pd = new ProgressDialog(getActivity());
             pd.setTitle("Extracting...");
+            pd.setCancelable(false);
             pd.setMessage("The chroot is being extracted.  This could take a bit.  If it goes more than 15 minutes, please panic.");
             pd.show();
             UnziptarTask mytask = new UnziptarTask();
@@ -332,7 +347,8 @@ public class CreateChrootFragment extends Fragment {
         @Override
         protected Boolean doInBackground(Void... Void) {
             try {
-                x.RunAsRootOutput("rm -rf '" + chrootPath + dir + '\'');
+                Log.d(TAG, " # rm -rf " + chrootPath + dir);
+                x.RunAsRootOutput("su -c '" + getActivity().getFilesDir().toString() + "/scripts/killkali'");
             } catch (RuntimeException e) {
                 Log.d(TAG, "Error: ", e);
                 return false;
