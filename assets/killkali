@@ -44,5 +44,8 @@ $busybox umount $mnt/proc
 echo "unmounted proc"
 $busybox umount $mnt/sys
 echo "unmounted sys"
-
+$busybox umount $mnt/system
+echo "unmounted system"
+$busybox umount $mnt/sdcard
+echo "unmounted sys"
 export PATH=$PRESERVED_PATH
