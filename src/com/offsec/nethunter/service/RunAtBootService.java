@@ -36,20 +36,22 @@ public class RunAtBootService extends Service {
         Log.d(TAG, "SO HERE WE GO");
         // check for DELETE_CHROOT_TAG pref
         if(DELETE_CHROOT_TAG.equals(sharedpreferences.getString("DELETE_CHROOT_TAG", DELETE_CHROOT_TAG))){
-            // DELETE IS IN THE QUEUE -->  CHECK IF WE ARE UNMOUNTED
-            String command = "if [ cat '/proc/mounts' | grep -lq 'kali' ];then echo 1; fi"; //check cmd
+            // DELETE IS IN THE QUEUE -->  CHECK IF WE ARE UNMOUNTED BY COUNTING REFERENCES TO "KALI"
+            // IN /proc/mounts
+            String command = "if [ $(grep kali /proc/mounts -c) -ne 0 ];then echo 1; fi"; //check cmd
             final String _res;
 
             _res = x.RunAsRootOutput(command);
 
             if (_res.equals("1")) {
-                Toast.makeText(getBaseContext(), "Kali is mounted,  chroot NOT DELETED. REBOOT THE DEVICE AGAIN", Toast.LENGTH_LONG).show();
+                Toast.makeText(getBaseContext(), getString(R.string.toastchrootmountedwarning), Toast.LENGTH_LONG).show();
             } else{
                 Log.d(TAG, "SHOULD DELETE!!!!!!");
+                Toast.makeText(getBaseContext(), getString(R.string.toastdeletingchroot), Toast.LENGTH_LONG).show();
                 x.RunAsRootOutput("su -c 'rm -rf " + getFilesDir() + "/chroot/*'");
-                Toast.makeText(getBaseContext(), "The CHROOT has been DELETED", Toast.LENGTH_LONG).show();
+                Toast.makeText(getBaseContext(), getString(R.string.toastdeletedchroot), Toast.LENGTH_LONG).show();
                 // remove the sp so we dont remove it again on next boot
-                sharedpreferences.edit().remove(DELETE_CHROOT_TAG).commit();
+                sharedpreferences.edit().remove(DELETE_CHROOT_TAG).apply();
             }
         } else {
             if (userinit()) {

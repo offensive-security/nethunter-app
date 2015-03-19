@@ -26,7 +26,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.GregorianCalendar;
 
 /**
@@ -137,7 +137,7 @@ public class CreateChrootFragment extends Fragment {
         // does chroot directory exist?
         if (getActivity() != null) {
             chrootPath = getActivity().getFilesDir() + "/chroot/";
-            statusLog("checking in chroot: " + chrootPath);
+            statusLog(getActivity().getString(R.string.checkingforchroot) + chrootPath);
 
             String command = "if [ -d " + chrootPath + dir + " ];then echo 1; fi"; //check the dir existence
             final String _res;
@@ -145,14 +145,14 @@ public class CreateChrootFragment extends Fragment {
             _res = x.RunAsRootOutput(command);
 
             if (_res.equals("1")) {
-                statusLog("An existing Kali chroot directory was found!");
-                installButton.setText("Wipe chroot");
+                statusLog(getActivity().getString(R.string.existingchrootfound));
+                installButton.setText(getActivity().getResources().getString(R.string.removekalichrootbutton));
                 installButton.setEnabled(true);
             } else {
                 File file = new File(chrootPath + "/");
-                statusLog("No Kali chroot directory was found.");
+                statusLog(getActivity().getString(R.string.nokalichrootfound));
                 file.mkdir();
-                installButton.setText("Install chroot");
+                installButton.setText(getActivity().getResources().getString(R.string.installkalichrootbutton));
                 installButton.setEnabled(true);
 
             }
@@ -169,15 +169,15 @@ public class CreateChrootFragment extends Fragment {
         if (_res.equals("1")) {
             // the chroot is there.
             AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-            adb.setTitle("Really remove the chroot?");
-            adb.setMessage("There's no going back.  You lose everything in your chroot.  Forever-ever.\n\nNOTE:  RIGHT NOW THIS IS HIGHLY DISCOURAGED UNTIL SOME BUGS ARE FIXED.  BE SURE YOU HAVE FULLY UNMOUNTED THE CHROOT AND FULLY QUIT ALL PROCESSES!  REBOOT TO DO THIS... OR BADNESS MAY RESULT!");
-            adb.setPositiveButton("Remove", new DialogInterface.OnClickListener() {
+            adb.setTitle(getActivity().getString(R.string.reallyremovechroot));
+            adb.setMessage(getActivity().getString(R.string.nogoingback));
+            adb.setPositiveButton(getActivity().getString(R.string.rebootbutton), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     reallyWipeRoot();
                 }
             });
-            adb.setNegativeButton("Forget it", new DialogInterface.OnClickListener() {
+            adb.setNegativeButton(getActivity().getString(R.string.chickenoutbutton), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     installButton.setEnabled(true);
@@ -197,8 +197,8 @@ public class CreateChrootFragment extends Fragment {
     private void reallyWipeRoot() {
         installButton.setEnabled(false);
         pd = new ProgressDialog(getActivity());
-        pd.setTitle("Rebooting the device...");
-        pd.setMessage("To preserve the phone integrity, the chroot will be removed after the reboot");
+        pd.setTitle(getActivity().getString(R.string.rebootingdialogtitle));
+        pd.setMessage(getActivity().getString(R.string.rebootingdialogbody));
         pd.setCancelable(false);
         pd.show();
         Log.d(TAG, " PREFERENCE SET: " + DELETE_CHROOT_TAG);
@@ -211,7 +211,6 @@ public class CreateChrootFragment extends Fragment {
                         public void run() {
                             Log.i("tag", "This'll run 4s later");
                             x.RunAsRootOutput("reboot");
-
                         }
                     }, 4000);
 
@@ -232,24 +231,24 @@ public class CreateChrootFragment extends Fragment {
         File otherFile = new File(zipFilePath.replace("/storage/emulated/0", "/storage/emulated/legacy"));
         if (checkFile.exists() || otherFile.exists()) {
 
-            statusLog(zipFilePath + " exists already.");
+            statusLog(zipFilePath + getActivity().getString(R.string.existsalready));
             if (checkFileIntegrity(zipFilePath) || checkFileIntegrity(zipFilePath.replace("/storage/emulated/0", "/storage/emulated/legacy"))) {
-                statusLog("The file looks good, so no need to re-download it.");
+                statusLog(getActivity().getString(R.string.filelooksgood));
                 inflateZip();
                 return true;
             } else {
-                statusLog("Deleting to make room for download...");
+                statusLog(getActivity().getString(R.string.deletingforroom));
                 if (checkFile.delete()) {
-                    statusLog("Old file deleted.");
+                    statusLog(getActivity().getString(R.string.oldfiledeleted));
                 } else {
-                    statusLog("Problem deleting old file.  Just sayin'.");
+                    statusLog(getActivity().getString(R.string.problemdeletingoldfile));
                 }
             }
         }
-        statusLog("Starting download.  Standby...");
+        statusLog(getActivity().getString(R.string.startingdownload));
 
         if (!isExternalStorageWritable()) {
-            statusLog("Nowhere to write to.  Make sure you have your external storage mounted and available.");
+            statusLog(getActivity().getString(R.string.unwritablestorageerror));
             return false;
         }
         dm = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
@@ -260,7 +259,7 @@ public class CreateChrootFragment extends Fragment {
         r.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
                 .setAllowedOverMetered(true)
                 .setTitle(FILENAME)
-                .setDescription("Downloading base Kali chroot")
+                .setDescription(getActivity().getString(R.string.downloadingdescription))
                 .setAllowedOverRoaming(true)
                 .setDestinationUri(Uri.parse("file://" + zipFilePath + ".partial"));
 
@@ -286,7 +285,7 @@ public class CreateChrootFragment extends Fragment {
             // everything ok so we dont longer need the fileobserver
             fileObserver.stopWatching();
             pd.dismiss();
-            statusLog("Download completed successfully.");
+            statusLog(getActivity().getString(R.string.downloadsuccessful));
             // remove the partial...
             try {
                 x.RunAsRootWithException("mv " + zipFilePath + ".partial " + zipFilePath);
@@ -295,19 +294,19 @@ public class CreateChrootFragment extends Fragment {
                 try {
                     x.RunAsRootWithException("mv " + zipFilePath + ".partial " + zipFilePath);
                 } catch (RuntimeException e) {
-                    statusLog("ERROR: couldn't find downloaded file. " + e);
+                    statusLog(getActivity().getString(R.string.downloaderrormissingfile) + e);
                 }
             }
             inflateZip();
         } else {
-            statusLog("Download failed.  Check your network connection and external storage and try again.");
+            statusLog(getActivity().getString(R.string.downloadfailedtryagain));
             installButton.setEnabled(true);
         }
         dm.remove(downloadRef);
     }
 
     private void inflateZip() {
-        statusLog("INFLATING...");
+        statusLog(getActivity().getString(R.string.inflating));
 
         // look for bad path again...
         try {
@@ -317,17 +316,17 @@ public class CreateChrootFragment extends Fragment {
             try {
                 x.RunAsRootWithException("ls " + zipFilePath);
             } catch (RuntimeException e) {
-                statusLog("ERROR: couldn't find downloaded file. " + e);
+                statusLog(getActivity().getString(R.string.couldntfindfile) + e);
             }
         }
 
         if (checkFileIntegrity(zipFilePath)) {
-            statusLog("Extracting to chroot.  Standby...");
+            statusLog(getActivity().getString(R.string.extractinglogtext));
             // all In bg
             pd = new ProgressDialog(getActivity());
-            pd.setTitle("Extracting...");
+            pd.setTitle(getActivity().getString(R.string.extractingdialogtitle));
             pd.setCancelable(false);
-            pd.setMessage("The chroot is being extracted.  This could take a bit.  If it goes more than 15 minutes, please panic.");
+            pd.setMessage(getActivity().getString(R.string.extractingdialogmessage));
             pd.show();
             UnziptarTask mytask = new UnziptarTask();
             mytask.execute();
@@ -335,14 +334,14 @@ public class CreateChrootFragment extends Fragment {
     }
 
     private boolean checkFileIntegrity(String path) {
-        statusLog("TO DO:  Check file integrity.");
+        //TO DO:  Check file integrity.
         return true;
     }
 
     private void statusLog(String status) {
         GregorianCalendar cal = new GregorianCalendar();
         // quick & shorter formatter
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
+        DateFormat dateFormat = DateFormat.getDateTimeInstance();
         String ts = dateFormat.format(cal.getTime());
         statusText.append(Html.fromHtml("<font color=\"#EDA04F\">" + ts + " - </font>"));
         statusText.append(status + '\n');
@@ -377,7 +376,7 @@ public class CreateChrootFragment extends Fragment {
 
         @Override
         protected void onPreExecute() {
-            statusLog("UNZIPPING & UNTARRING...");
+            statusLog(getActivity().getString(R.string.unzippinganduntarring));
             super.onPreExecute();
         }
 
@@ -396,9 +395,9 @@ public class CreateChrootFragment extends Fragment {
         @Override
         protected void onPostExecute(Boolean result) {
             if (result) {
-                statusLog("UNZIPPING & UNTARRING DONE!");
+                statusLog(getActivity().getString(R.string.unzippinguntarringdone));
             } else {
-                statusLog("There was an error :(");
+                statusLog(getActivity().getString(R.string.therewasanerror));
             }
             pd.dismiss();
             checkForExistingChroot();
@@ -413,10 +412,10 @@ public class CreateChrootFragment extends Fragment {
         public DownloadsObserver(String path) {
             super(path, flags);
             pd = new ProgressDialog(getActivity());
-            pd.setTitle("Downloading chroot...");
+            pd.setTitle(getActivity().getString(R.string.downloadingchroot));
             pd.setCancelable(false);
             pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            pd.setMessage("The chroot is being downloaded.  This could take a while...");
+            pd.setMessage(getActivity().getString(R.string.downloadingstandby));
             pd.show();
         }
 

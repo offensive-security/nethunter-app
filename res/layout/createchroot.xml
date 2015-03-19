@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Create the Kali chroot"
+        android:text="@string/createthechroot"
         android:id="@+id/textView"
         android:layout_gravity="center_horizontal"
         android:padding="16sp" />
@@ -17,7 +17,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Install Chroot"
+        android:text="@string/installkalichrootbutton"
         android:id="@+id/installButton"
         android:layout_gravity="center_horizontal" />
 
@@ -49,7 +49,7 @@
 
     <TextView
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Warning:  Uninstalling the Nethunter app will remove the chroot completely."
+        android:text="@string/uninstallchrootwarning"
         android:id="@+id/warningText"
         android:padding="16sp"
         android:layout_weight="0.74"
