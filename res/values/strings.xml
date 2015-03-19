@@ -163,4 +163,44 @@
         <item>usb0 (USB > Ethernet for the Nexus7 2013 when tethering | badusb)</item>
     </string-array>
     <string name="createchroot_label">Kali chroot</string>
+
+    <!-- chroot stuff -->
+    <string name="uninstallchrootwarning">Warning: Uninstalling the Nethunter app <u>without FIRST removing the chroot</u> will result in an incomplete removal of the app.</string>
+    <string name="createthechroot">Create the Kali chroot</string>
+    <string name="installkalichrootbutton">Install Kali Chroot</string>
+    <string name="removekalichrootbutton">Remove Kali Chroot</string>
+    <string name="existingchrootfound">An existing Kali chroot directory was found!</string>
+    <string name="nokalichrootfound">No Kali chroot directory was found.</string>
+    <string name="reallyremovechroot">Really remove the chroot?</string>
+    <string name="nogoingback">There\'s no going back.  You lose everything in your chroot.  Forever-ever.\n\nNOTE:  To fully ensure the chroot is not mounted and no processes are using it, THE DEVICE WILL NOW BE REBOOTED, then the chroot will be deleted.</string>
+    <string name="rebootbutton">Reboot and remove chroot</string>
+    <string name="chickenoutbutton">Forget it</string>
+    <string name="rebootingdialogtitle">Rebooting the device...</string>
+    <string name="rebootingdialogbody">The device is being restarted. (No complaining.  You were just told this would happen!)</string>
+    <string name="filelooksgood">The file looks good, so no need to re-download it.</string>
+    <string name="deletingforroom">Deleting to make room for download...</string>
+    <string name="oldfiledeleted">Old file deleted.</string>
+    <string name="problemdeletingoldfile">Problem deleting old file.  Just sayin\'.</string>
+    <string name="startingdownload">Starting download.  Standby...</string>
+    <string name="unwritablestorageerror">Nowhere to write to.  Make sure you have your external storage mounted and available.</string>
+    <string name="downloadingdescription">Downloading base Kali chroot</string>
+    <string name="downloadsuccessful">Download completed successfully.</string>
+    <string name="downloaderrormissingfile">"ERROR: couldn't find downloaded file. "</string>
+    <string name="downloadfailedtryagain">Download failed.  Check your network connection and external storage and try again.</string>
+    <string name="extractinglogtext">Extracting to chroot.  Standby...</string>
+    <string name="extractingdialogtitle">Extracting...</string>
+    <string name="extractingdialogmessage">The chroot is being extracted.  This could take a bit.  If it goes more than 15 minutes, please panic.</string>
+    <string name="existsalready">" exists already."</string>
+    <string name="checkingforchroot">"Checking for chroot at "</string>
+    <string name="toastchrootmountedwarning">Kali chroot is mounted and NOT deleted.  Reboot again to remove!!</string>
+    <string name="toastdeletingchroot">Deleting Kali chroot...</string>
+    <string name="toastdeletedchroot">Kali chroot has been deleted.</string>
+    <string name="downloadingchroot">Downloading chroot...</string>
+    <string name="downloadingstandby">The chroot is being downloaded.  This could take a while...</string>
+    <string name="unzippinguntarringdone">Unzipping &amp; untarring done.</string>
+    <string name="unzippinganduntarring">Unzipping and untarring....</string>
+    <string name="therewasanerror">There was an error :(</string>
+    <string name="inflating">Inflating...</string>
+    <string name="couldntfindfile">"ERROR: couldn't find downloaded file. "</string>
+
 </resources>
