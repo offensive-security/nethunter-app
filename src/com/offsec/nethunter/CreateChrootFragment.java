@@ -8,13 +8,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.FileObserver;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +26,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 
 /**
@@ -53,7 +57,7 @@ public class CreateChrootFragment extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final String ARCH = System.getProperty("os.arch");
     private static final String TAG = "CreateChroot";
-
+    public static final String DELETE_CHROOT_TAG = "DELETE_CHROOT_TAG";
     /* put chroot info here */
 
     private static final String FILENAME = "kalifs.tar.xz";
@@ -70,20 +74,24 @@ public class CreateChrootFragment extends Fragment {
     String dir;
     final ShellExecuter x = new ShellExecuter();
     ProgressDialog pd;
+    FileObserver fileObserver;
+    String filesPath;
+    SharedPreferences sharedpreferences;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.createchroot, container, false);
         statusText = (TextView) rootView.findViewById(R.id.statusText);
+        statusText.setMovementMethod(new ScrollingMovementMethod());
         installButton = (Button) rootView.findViewById(R.id.installButton);
         installButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 onButtonHit();
             }
         });
-
-        zipFilePath = getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/" + FILENAME;
-
+        sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
+        filesPath= getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+        zipFilePath = filesPath+ "/" + FILENAME;
         onDLFinished = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -92,6 +100,7 @@ public class CreateChrootFragment extends Fragment {
                 }
             }
         };
+
 
         getActivity().registerReceiver(onDLFinished,
                 new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
@@ -177,7 +186,8 @@ public class CreateChrootFragment extends Fragment {
             AlertDialog ad = adb.create();
             ad.setCancelable(false);
             ad.show();
-        } else {// no chroot.  need to enable it.
+        } else {
+            // no chroot.  need to enable it.
             if (!startZipDownload()) {
                 installButton.setEnabled(true);
             }
@@ -187,12 +197,27 @@ public class CreateChrootFragment extends Fragment {
     private void reallyWipeRoot() {
         installButton.setEnabled(false);
         pd = new ProgressDialog(getActivity());
-        pd.setTitle("Wiping chroot");
-        pd.setMessage("Killing the chroot.  No regrets!");
+        pd.setTitle("Rebooting the device...");
+        pd.setMessage("To preserve the phone integrity, the chroot will be removed after the reboot");
         pd.setCancelable(false);
         pd.show();
-        RmChrootTask rct = new RmChrootTask();
-        rct.execute();
+        Log.d(TAG, " PREFERENCE SET: " + DELETE_CHROOT_TAG);
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putString("DELETE_CHROOT_TAG", DELETE_CHROOT_TAG);  // the full text so we can compare later
+        editor.apply();
+        try {
+            new android.os.Handler().postDelayed(
+                    new Runnable() {
+                        public void run() {
+                            Log.i("tag", "This'll run 4s later");
+                            x.RunAsRootOutput("reboot");
+
+                        }
+                    }, 4000);
+
+        } catch (RuntimeException e) {
+            Log.d(TAG, "Error: ", e);
+        }
     }
 
     /* Checks if external storage is available for read and write */
@@ -222,6 +247,7 @@ public class CreateChrootFragment extends Fragment {
             }
         }
         statusLog("Starting download.  Standby...");
+
         if (!isExternalStorageWritable()) {
             statusLog("Nowhere to write to.  Make sure you have your external storage mounted and available.");
             return false;
@@ -229,6 +255,7 @@ public class CreateChrootFragment extends Fragment {
         dm = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
         removeExistingDownloadOperations();
         Uri uri = Uri.parse(URI);
+
         DownloadManager.Request r = new DownloadManager.Request(uri);
         r.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
                 .setAllowedOverMetered(true)
@@ -236,7 +263,11 @@ public class CreateChrootFragment extends Fragment {
                 .setDescription("Downloading base Kali chroot")
                 .setAllowedOverRoaming(true)
                 .setDestinationUri(Uri.parse("file://" + zipFilePath + ".partial"));
+
         downloadRef = dm.enqueue(r);
+        // start watching download progress
+        fileObserver = new DownloadsObserver(filesPath);
+        fileObserver.startWatching();
         return true;
     }
 
@@ -249,7 +280,12 @@ public class CreateChrootFragment extends Fragment {
         if (c.moveToFirst()) {
             status = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS));
         }
+        // close the cursor
+        c.close();
         if (status == DownloadManager.STATUS_SUCCESSFUL) {
+            // everything ok so we dont longer need the fileobserver
+            fileObserver.stopWatching();
+            pd.dismiss();
             statusLog("Download completed successfully.");
             // remove the partial...
             try {
@@ -305,14 +341,10 @@ public class CreateChrootFragment extends Fragment {
 
     private void statusLog(String status) {
         GregorianCalendar cal = new GregorianCalendar();
-        String ts = String.valueOf(cal.get(GregorianCalendar.MONTH)) + '/' +
-                String.valueOf(cal.get(GregorianCalendar.DAY_OF_MONTH)) + '/' +
-                String.valueOf(cal.get(GregorianCalendar.YEAR)) + ' ' +
-                String.valueOf(cal.get(GregorianCalendar.HOUR_OF_DAY)) + ':' +
-                String.valueOf(cal.get(GregorianCalendar.MINUTE)) + ':' +
-                String.valueOf(cal.get(GregorianCalendar.SECOND)) + '.' +
-                String.valueOf(cal.get(GregorianCalendar.MILLISECOND)) + " - ";
-        statusText.append(Html.fromHtml("<font color=\"#EDA04F\">" + ts + "</font>"));  // weird men! :)
+        // quick & shorter formatter
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
+        String ts = dateFormat.format(cal.getTime());
+        statusText.append(Html.fromHtml("<font color=\"#EDA04F\">" + ts + " - </font>"));
         statusText.append(status + '\n');
     }
 
@@ -324,7 +356,10 @@ public class CreateChrootFragment extends Fragment {
         if (c.moveToFirst()) {
             status = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_ID));
             dm.remove(status);
+
         }
+        // close the cursor
+        c.close();
     }
 
     @Override
@@ -336,37 +371,7 @@ public class CreateChrootFragment extends Fragment {
    /* --------------------------------------- asynctasks -------------------- */
 
 
-    public class RmChrootTask extends AsyncTask<Void, Void, Boolean> {
-        @Override
-        protected void onPreExecute() {
-            statusLog("removing Chroot...");
-            super.onPreExecute();
-        }
 
-
-        @Override
-        protected Boolean doInBackground(Void... Void) {
-            try {
-                Log.d(TAG, " # rm -rf " + chrootPath + dir);
-                x.RunAsRootOutput("su -c '" + getActivity().getFilesDir().toString() + "/scripts/killkali'");
-            } catch (RuntimeException e) {
-                Log.d(TAG, "Error: ", e);
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            if (result) {
-                statusLog("Chroot removed.");
-            } else {
-                statusLog("There was an error :(");
-            }
-            pd.dismiss();
-            checkForExistingChroot();
-        }
-    }
 
     public class UnziptarTask extends AsyncTask<Void, Void, Boolean> {
 
@@ -399,6 +404,48 @@ public class CreateChrootFragment extends Fragment {
             checkForExistingChroot();
         }
     }
+    public class DownloadsObserver extends FileObserver {
 
+        int upc = 0;
+        double last_progress = 0;
+        private static final int flags = FileObserver.MODIFY;
+
+        public DownloadsObserver(String path) {
+            super(path, flags);
+            pd = new ProgressDialog(getActivity());
+            pd.setTitle("Downloading chroot...");
+            pd.setCancelable(false);
+            pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            pd.setMessage("The chroot is being downloaded.  This could take a while...");
+            pd.show();
+        }
+
+        @Override
+        public void onEvent(int event, String path) {
+            upc = upc + 1;
+
+            if (!path.equals("") && event == FileObserver.MODIFY) {
+                DownloadManager.Query q = new DownloadManager.Query();
+                q.setFilterById(downloadRef);
+                Cursor c = dm.query(q);
+                if (c.moveToFirst()) {
+                    int sizeIndex = c.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES);
+                    int downloadedIndex = c.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR);
+                    long size = c.getInt(sizeIndex);
+                    long downloaded = c.getInt(downloadedIndex);
+                    double progress = 0.0;
+
+                    if (size != -1){ progress = Math.round(downloaded*100.0/size);}
+                    // this ev is launched each ~2ms,only update the progress if is a 'big one' > 1% (also de downloadProgres doesnt support doubles)
+                    if(last_progress < progress) {
+                        last_progress = progress;
+                        pd.setProgress((int) progress);
+                    }
+                }
+                c.close();
+
+            }
+        }
+    }
 }
 

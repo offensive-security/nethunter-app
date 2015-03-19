@@ -1,8 +1,11 @@
 package com.offsec.nethunter.service;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -14,19 +17,45 @@ import java.io.File;
 public class RunAtBootService extends Service {
 
     public static final String TAG = "NH: RunAtBootService";
+    public static final String DELETE_CHROOT_TAG = "DELETE_CHROOT_TAG";
+    final ShellExecuter x = new ShellExecuter();
+    SharedPreferences sharedpreferences;
 
     public RunAtBootService() {
+
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Context ctx = getApplicationContext();
+        sharedpreferences = PreferenceManager.getDefaultSharedPreferences(ctx);
         // NOTE:  If the Nethunter app has not yet been run (to install these files), this won't do
         // anything.  For that reason it may be wise to do a full install of the files at boot as
         // well, but that doesn't happen now.  Easy to add, but merits some discussion if script
         // updates should be done at boot, at every app start (current practice), etc.
+        Log.d(TAG, "SO HERE WE GO");
+        // check for DELETE_CHROOT_TAG pref
+        if(DELETE_CHROOT_TAG.equals(sharedpreferences.getString("DELETE_CHROOT_TAG", DELETE_CHROOT_TAG))){
+            // DELETE IS IN THE QUEUE -->  CHECK IF WE ARE UNMOUNTED
+            String command = "if [ cat '/proc/mounts' | grep -lq 'kali' ];then echo 1; fi"; //check cmd
+            final String _res;
 
-        if (userinit()) {
-            Log.d(TAG, "ran scripts successfully.");
+            _res = x.RunAsRootOutput(command);
+
+            if (_res.equals("1")) {
+                Toast.makeText(getBaseContext(), "Kali is mounted,  chroot NOT DELETED. REBOOT THE DEVICE AGAIN", Toast.LENGTH_LONG).show();
+            } else{
+                Log.d(TAG, "SHOULD DELETE!!!!!!");
+                x.RunAsRootOutput("su -c 'rm -rf " + getFilesDir() + "/chroot/*'");
+                Toast.makeText(getBaseContext(), "The CHROOT has been DELETED", Toast.LENGTH_LONG).show();
+                // remove the sp so we dont remove it again on next boot
+                sharedpreferences.edit().remove(DELETE_CHROOT_TAG).commit();
+            }
+        } else {
+            if (userinit()) {
+                Log.d(TAG, "ran scripts successfully.");
+            }
+
         }
         // put change MAC addresses here.
         stopSelf();
