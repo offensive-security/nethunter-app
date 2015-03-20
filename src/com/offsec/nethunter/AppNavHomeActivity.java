@@ -117,9 +117,8 @@ public class AppNavHomeActivity extends FragmentActivity
         Thread t = new Thread(r);
         t.start();
 
-        createDirIfNeeded(getFilesDir()+ "/scripts");
         createDirIfNeeded(Environment.getExternalStorageDirectory() + "/files");
-        createDirIfNeeded(getFilesDir() + "/etc/init.d");
+        createDirIfNeeded(getFilesDir() + "/scripts/etc/init.d");
 
     }
 

@@ -9,10 +9,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/createthechroot"
+        android:text="@string/thechroottitle"
         android:id="@+id/textView"
         android:layout_gravity="center_horizontal"
         android:padding="16sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/aboutchroot"
+        android:id="@+id/textView3"
+        android:paddingLeft="16sp"
+        android:paddingRight="16sp"
+        android:paddingBottom="16sp" />
 
     <Button
         android:layout_width="wrap_content"
