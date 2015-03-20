@@ -25,7 +25,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.util.GregorianCalendar;
 
@@ -62,7 +69,9 @@ public class CreateChrootFragment extends Fragment {
 
     private static final String FILENAME = "kalifs.tar.xz";
     private static final String URI = "http://3bollcdn.com/nethunter/chroot/" + FILENAME;
-    //  private static final String SHA = "PUT SHA HERE"; // not yet implemented
+    private static final String SHA512 =
+            "4f520cb67283e82579eeeb8d50d3f87380d9d149631d67501e3a5bfa17c20a67db7092252" +
+                    "bb7ace8fe30c86c89cdd27f152e074ed836d493281e7ac78c1b2db3";
 
     String zipFilePath;
     private long downloadRef;
@@ -90,8 +99,8 @@ public class CreateChrootFragment extends Fragment {
             }
         });
         sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
-        filesPath= getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
-        zipFilePath = filesPath+ "/" + FILENAME;
+        filesPath = getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+        zipFilePath = filesPath + "/" + FILENAME;
         onDLFinished = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -203,8 +212,8 @@ public class CreateChrootFragment extends Fragment {
         pd.show();
         Log.d(TAG, " PREFERENCE SET: " + DELETE_CHROOT_TAG);
         SharedPreferences.Editor editor = sharedpreferences.edit();
-        editor.putString("DELETE_CHROOT_TAG", DELETE_CHROOT_TAG);  // the full text so we can compare later
-        editor.apply();
+        editor.putString(DELETE_CHROOT_TAG, DELETE_CHROOT_TAG);  // the full text so we can compare later
+        editor.commit(); // don't use apply() or it may not save
         try {
             new android.os.Handler().postDelayed(
                     new Runnable() {
@@ -330,12 +339,43 @@ public class CreateChrootFragment extends Fragment {
             pd.show();
             UnziptarTask mytask = new UnziptarTask();
             mytask.execute();
+        } else {
+            statusLog(getActivity().getString(R.string.downloadfailscheck));
+            checkForExistingChroot();
         }
     }
 
     private boolean checkFileIntegrity(String path) {
-        //TO DO:  Check file integrity.
-        return true;
+
+        File theFile = new File(path);
+        byte[] bytes = new byte[(int) theFile.length()];
+        DataInputStream dis;
+        MessageDigest md;
+        try {
+            dis = new DataInputStream(new FileInputStream(theFile));
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, "Error:  Can't find " + zipFilePath, e);
+            return false;
+        }
+        try {
+            dis.readFully(bytes);
+        } catch (NullPointerException | IOException e) {
+            Log.e(TAG, "Error reading " + zipFilePath, e);
+            return false;
+        }
+        try {
+            md = MessageDigest.getInstance("SHA-512");
+        } catch (NoSuchAlgorithmException e) {
+            Log.e(TAG, "For some reason, no SHA512 found on this device.", e);
+            return false;
+        }
+        md.reset();
+
+        // k, now check the sha.  Thanks to discussion regarding formatting at:
+        // http://stackoverflow.com/questions/7166129/how-can-i-calculate-the-sha-256-hash-of-a-string-in-android
+        byte[] result = md.digest(bytes);
+        return String.format("%0" + (result.length * 2) + "X", new BigInteger(1, result)).
+                equalsIgnoreCase(SHA512);
     }
 
     private void statusLog(String status) {
@@ -370,8 +410,6 @@ public class CreateChrootFragment extends Fragment {
    /* --------------------------------------- asynctasks -------------------- */
 
 
-
-
     public class UnziptarTask extends AsyncTask<Void, Void, Boolean> {
 
         @Override
@@ -403,6 +441,7 @@ public class CreateChrootFragment extends Fragment {
             checkForExistingChroot();
         }
     }
+
     public class DownloadsObserver extends FileObserver {
 
         int upc = 0;
@@ -434,9 +473,11 @@ public class CreateChrootFragment extends Fragment {
                     long downloaded = c.getInt(downloadedIndex);
                     double progress = 0.0;
 
-                    if (size != -1){ progress = Math.round(downloaded*100.0/size);}
+                    if (size != -1) {
+                        progress = Math.round(downloaded * 100.0 / size);
+                    }
                     // this ev is launched each ~2ms,only update the progress if is a 'big one' > 1% (also de downloadProgres doesnt support doubles)
-                    if(last_progress < progress) {
+                    if (last_progress < progress) {
                         last_progress = progress;
                         pd.setProgress((int) progress);
                     }
