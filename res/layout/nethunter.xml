@@ -10,20 +10,22 @@
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:orientation="vertical">
-        <ImageView 
-   			android:id="@+id/test_image"
-   			android:src="@drawable/offsec_logo_2"
-			android:layout_width="match_parent"
-   			android:layout_height="match_parent" 
-   			 android:scaleType="fitCenter" />
+
+        <ImageView
+            android:id="@+id/test_image"
+            android:src="@drawable/offsec_logo_2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/hometitle"
-            android:layout_gravity="center_horizontal|center" 
+            android:layout_gravity="center_horizontal|center"
             android:gravity="center"
-            android:textSize="22sp"
-            android:padding="4dp" />
+            android:textSize="22sp" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -32,6 +34,7 @@
             android:gravity="center"
             android:textSize="12sp"
             android:paddingTop="4dp" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -40,53 +43,93 @@
             android:gravity="center"
             android:textSize="12sp"
             android:paddingBottom="4dp" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/nethunter_description"
-            android:layout_gravity="center_horizontal|center" 
+            android:layout_gravity="center_horizontal|center"
             android:gravity="center"
-            android:padding="4dp" />
+            android:padding="16sp"
+            android:paddingTop="16sp" />
+
+        <GridLayout
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:rowCount="2"
+            android:columnCount="2"
+            android:layout_margin="16sp">
+
+            <TextView
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nethunter_current_interfaces"
+                android:textSize="18sp"
+                android:id="@+id/current_interfaces"
+                android:layout_row="0"
+                android:layout_column="0" />
+
+            <TextView
+                android:id="@+id/editText1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:typeface="monospace"
+                android:textSize="12sp"
+                android:layout_row="1"
+                android:layout_column="0"
+                android:paddingTop="8sp"></TextView>
+
+            <TextView
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nethunter_external_ip"
+                android:textSize="18sp"
+                android:layout_row="0"
+                android:layout_column="1"
+                android:id="@+id/external_address"
+                android:layout_gravity="end" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_column="1"
+                android:layout_row="1"
+                android:layout_gravity="end">
+
+                <TextView
+                    android:id="@+id/editText2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:typeface="monospace"
+                    android:textSize="12sp"
+                    android:layout_gravity="end"
+                    android:paddingTop="8sp"
+                    android:text="@string/unknown"
+                    android:singleLine="true" />
+
+                <Button
+                    android:id="@+id/button1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/get_external_ip" />
+            </LinearLayout>
+
+        </GridLayout>
 
         <TextView
-            android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/nethunter_current_interfaces"
-            android:textSize="18sp"
-            android:padding="4dp" />
-
-        <EditText
-            android:id="@+id/editText1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="none">
-        </EditText>
-
-        <TextView
-            android:textStyle="bold"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/nethunter_external_ip"
-            android:textSize="18sp"
-            android:padding="4dp"
-            />
-
-        <EditText
-            android:id="@+id/editText2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="none"
-            />
-
-        <Button
-            android:id="@+id/button1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/get_external_ip"
-            />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/nhwarning"
+            android:id="@+id/textView4"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/highlighted_text_material_dark" />
     </LinearLayout>
 </ScrollView>
 
