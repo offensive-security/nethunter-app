@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import org.apache.http.HttpEntity;
@@ -54,8 +53,8 @@ public class NetHunterFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.nethunter, container, false);
 
         String intf = getInterfaces();
-        EditText interfaces = (EditText) rootView.findViewById(R.id.editText1);
-        EditText ip = (EditText) rootView.findViewById(R.id.editText2);
+        TextView interfaces = (TextView) rootView.findViewById(R.id.editText1);
+        TextView ip = (TextView) rootView.findViewById(R.id.editText2);
         TextView buildInfo1 = (TextView) rootView.findViewById(R.id.buildinfo1);
         TextView buildInfo2 = (TextView) rootView.findViewById(R.id.buildinfo2);
 
@@ -90,7 +89,7 @@ public class NetHunterFragment extends Fragment {
 
     private void getExternalIp() {
 
-        final EditText ip = (EditText) getActivity().findViewById(R.id.editText2);
+        final TextView ip = (TextView) getActivity().findViewById(R.id.editText2);
         ip.setText("Please wait...");
 
         new Thread(new Runnable() {

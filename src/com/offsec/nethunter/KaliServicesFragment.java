@@ -52,23 +52,23 @@ public class KaliServicesFragment extends Fragment {
         ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
 
         if (isAdded()) {
-            String cacheDir = getActivity().getCacheDir().toString();
+            String fileDir = getActivity().getFilesDir().toString() + "/scripts";
 
             KaliServices = new String[][]{
 
                     // name, check  cmd, start cmd, stop cmd, state
 
-                    {"SSH", "sh " + cacheDir + "/check-kalissh", "su -c '" + cacheDir + "/bootkali ssh start'", "su -c '" + cacheDir + "/bootkali ssh stop'"},
-                    {"Dnsmasq", "sh " + cacheDir + "/check-kalidnsmq", "su -c '" + cacheDir + "/bootkali dnsmasq start'", "su -c '" + cacheDir + "/bootkali dnsmasq stop'"},
-                    {"Hostapd", "sh " + cacheDir + "/check-kalihostapd", "su -c '" + cacheDir + "/bootkali hostapd start'", "su -c '" + cacheDir + "/bootkali hostapd stop'"},
-                    {"OpenVPN", "sh " + cacheDir + "/check-kalivpn", "su -c '" + cacheDir + "/bootkali openvpn start'", "su -c '" + cacheDir + "/bootkali openvpn stop'"},
-                    {"Apache", "sh " + cacheDir + "/check-kaliapache", "su -c '" + cacheDir + "/bootkali apache start'", "su -c '" + cacheDir + "/bootkali apache stop'"},
-                    {"Metasploit", "sh " + cacheDir + "/check-kalimetasploit", "su -c '" + cacheDir + "/bootkali msf start'", "su -c '" + cacheDir + "/bootkali msf stop'"},
-                    //{"DHCP", "sh " + cacheDir + "/check-kalidhcp","su -c '" + cachedir + "/bootkali dhcp start'","su -c '" + cachedir + "/bootkali dhcp stop'"},
-                    {"BeEF Framework", "sh " + cacheDir + "/check-kalibeef-xss", "su -c '" + cacheDir + "/bootkali beef-xss start'", "su -c '" + cacheDir + "/bootkali beef-xss stop'"},
-                    //{"Fruity WiFi", "sh " + cacheDir + "/check-fruity-wifi","su -c start-fruity-wifi","su -c  stop-fruity-wifi"}
+                    {"SSH", "sh " + fileDir + "/check-kalissh", "su -c '" + fileDir + "/bootkali ssh start'", "su -c '" + fileDir + "/bootkali ssh stop'"},
+                    {"Dnsmasq", "sh " + fileDir + "/check-kalidnsmq", "su -c '" + fileDir + "/bootkali dnsmasq start'", "su -c '" + fileDir + "/bootkali dnsmasq stop'"},
+                    {"Hostapd", "sh " + fileDir + "/check-kalihostapd", "su -c '" + fileDir + "/bootkali hostapd start'", "su -c '" + fileDir + "/bootkali hostapd stop'"},
+                    {"OpenVPN", "sh " + fileDir + "/check-kalivpn", "su -c '" + fileDir + "/bootkali openvpn start'", "su -c '" + fileDir + "/bootkali openvpn stop'"},
+                    {"Apache", "sh " + fileDir + "/check-kaliapache", "su -c '" + fileDir + "/bootkali apache start'", "su -c '" + fileDir + "/bootkali apache stop'"},
+                    {"Metasploit", "sh " + fileDir + "/check-kalimetasploit", "su -c '" + fileDir + "/bootkali msf start'", "su -c '" + fileDir + "/bootkali msf stop'"},
+                    //{"DHCP", "sh " + fileDir + "/check-kalidhcp","su -c '" + cachedir + "/bootkali dhcp start'","su -c '" + cachedir + "/bootkali dhcp stop'"},
+                    {"BeEF Framework", "sh " + fileDir + "/check-kalibeef-xss", "su -c '" + fileDir + "/bootkali beef-xss start'", "su -c '" + fileDir + "/bootkali beef-xss stop'"},
+                    //{"Fruity WiFi", "sh " + fileDir + "/check-fruity-wifi","su -c start-fruity-wifi","su -c  stop-fruity-wifi"}
                     // the stop script isnt working well, doing a raw cmd instead to stop vnc
-                    // {"VNC", "sh " + cacheDir + "/check-kalivnc", "" + cachedir + "/bootkali\nvncserver", "" + cachedir + "/bootkali\nkill $(ps aux | grep 'Xtightvnc' | awk '{print $2}');CT=0;for x in $(ps aux | grep 'Xtightvnc' | awk '{print $2}'); do CT=$[$CT +1];tightvncserver -kill :$CT; done;rm /root/.vnc/*.log;rm -r /tmp/.X*"},
+                    // {"VNC", "sh " + fileDir + "/check-kalivnc", "" + cachedir + "/bootkali\nvncserver", "" + cachedir + "/bootkali\nkill $(ps aux | grep 'Xtightvnc' | awk '{print $2}');CT=0;for x in $(ps aux | grep 'Xtightvnc' | awk '{print $2}'); do CT=$[$CT +1];tightvncserver -kill :$CT; done;rm /root/.vnc/*.log;rm -r /tmp/.X*"},
             };
         }
     }

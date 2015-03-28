@@ -22,7 +22,7 @@ public class HostapdFragment extends Fragment {
 
     private String configFilePath = "files/hostapd.conf";
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private String cacheDir;
+    private String fileDir;
 
     public HostapdFragment() {
 
@@ -57,7 +57,7 @@ public class HostapdFragment extends Fragment {
         super.onAttach(activity);
         ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
         if (isAdded()) {
-            cacheDir = getActivity().getCacheDir().toString();
+            fileDir = getActivity().getFilesDir().toString() + "/scripts";
         }
     }
 
@@ -94,14 +94,14 @@ public class HostapdFragment extends Fragment {
 
     public void startHostapd() {
         ShellExecuter exe = new ShellExecuter();
-        String[] command = {"su -c '" + cacheDir + "/bootkali hostapd start'"};
+        String[] command = {"su -c '" + fileDir + "/bootkali hostapd start'"};
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("Hostapd started!");
     }
 
     public void stopHostapd() {
         ShellExecuter exe = new ShellExecuter();
-        String[] command = {"su -c '" + cacheDir + "/bootkali hostapd stop'"};
+        String[] command = {"su -c '" + fileDir + "/bootkali hostapd stop'"};
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("Hostapd stopped!");
     }
@@ -109,7 +109,7 @@ public class HostapdFragment extends Fragment {
     private void loadOptions(final View rootView) {
         String text = ((AppNavHomeActivity) getActivity()).readConfigFile(configFilePath);
             /*
-	         * Interface
+             * Interface
 	         */
         EditText ifc = (EditText) rootView.findViewById(R.id.ifc);
         String regExpatInterface = "^interface=(.*)$";

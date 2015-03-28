@@ -49,10 +49,10 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
 
     final CharSequence[] platforms = {"No UAC Bypass", "Windows 7", "Windows 8"};    
     final CharSequence[] languages = {"American English", "Belgian", "British English", "Danish", "French", "German", "Italian", "Norwegian", "Portugese", "Russian", "Spanish", "Swedish"};
-    private static final String configFilePath = "/data/local/kali-armhf/var/www/payload";
+    private String configFilePath;
 
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private String cacheDir;
+    private String fileDir;
     
     public HidFragment() {
 
@@ -66,11 +66,17 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/var/www/payload";
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
         if (isAdded()) {
-            cacheDir = getActivity().getCacheDir().toString();
+            fileDir = getActivity().getFilesDir().toString() + "/scripts";
         }
     }
 
@@ -172,25 +178,25 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
         if (pageNum == 0) {
             switch (UACBypassIndex) {
                 case 0:
-                    command[0] = "su -c '" + cacheDir + "/bootkali start-rev-met --" + lang + "'";
+                    command[0] = "su -c '" + fileDir + "/bootkali start-rev-met --" + lang + "'";
                     break;
                 case 1:
-                    command[0] = "su -c '" + cacheDir + "/bootkali start-rev-met-elevated-win7 --" + lang + "'";
+                    command[0] = "su -c '" + fileDir + "/bootkali start-rev-met-elevated-win7 --" + lang + "'";
                     break;
                 default:
-                    command[0] = "su -c '" + cacheDir + "/bootkali start-rev-met-elevated-win8 --" + lang + "'";
+                    command[0] = "su -c '" + fileDir + "/bootkali start-rev-met-elevated-win8 --" + lang + "'";
                     break;
             }
         } else if (pageNum == 1) {
             switch (UACBypassIndex) {
                 case 0:
-                    command[0] = "su -c '" + cacheDir + "/bootkali hid-cmd --" + lang + "'";
+                    command[0] = "su -c '" + fileDir + "/bootkali hid-cmd --" + lang + "'";
                     break;
                 case 1:
-                    command[0] = "su -c '" + cacheDir + "/bootkali hid-cmd-elevated-win7 --" + lang + "'";
+                    command[0] = "su -c '" + fileDir + "/bootkali hid-cmd-elevated-win7 --" + lang + "'";
                     break;
                 default:
-                    command[0] = "su -c '" + cacheDir + "/bootkali hid-cmd-elevated-win8 --" + lang + "'";
+                    command[0] = "su -c '" + fileDir + "/bootkali hid-cmd-elevated-win8 --" + lang + "'";
                     break;
             }
         }
@@ -314,8 +320,15 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
 
     public static class PowerSploitFragment extends Fragment implements OnClickListener {
 
-        private String configFilePath = "/data/local/kali-armhf/var/www/payload";
+        private String configFilePath;
         private String configFileUrlPath = "files/powersploit-url";
+
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/var/www/payload";
+
+            super.onActivityCreated(savedInstanceState);
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -459,13 +472,12 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
 
     public static class WindowsCmdFragment extends Fragment implements OnClickListener {
 
-        private String configFilePath = "files/hid-cmd.conf";
+        private String configFilePath;
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.hid_windows_cmd, container, false);
-            EditText source = (EditText) rootView.findViewById(R.id.windowsCmdSource);
+        public void onActivityCreated(Bundle savedInstanceState) {
+            configFilePath = "files/hid-cmd.conf";
+            EditText source = (EditText)getActivity().findViewById(R.id.windowsCmdSource);
             File sdcard = Environment.getExternalStorageDirectory();
             File file = new File(sdcard, configFilePath);
             StringBuilder text = new StringBuilder();
@@ -481,7 +493,13 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
                 Log.e("Nethunter", "exception", e);
             }
             source.setText(text);
+            super.onActivityCreated(savedInstanceState);
+        }
 
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.hid_windows_cmd, container, false);
             Button b = (Button) rootView.findViewById(R.id.windowsCmdUpdate);
             b.setOnClickListener(this);
             return rootView;

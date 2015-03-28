@@ -33,20 +33,21 @@ public class AppNavHomeActivity extends FragmentActivity
         implements SideMenu.NavigationDrawerCallbacks {
 
     public final static int NETHUNTER_FRAGMENT = 0;
-    public final static int KALILAUNCHER_FRAGMENT = 1;
-    public final static int KALISERVICES_FRAGMENT = 2;
-    public final static int HIDE_FRAGMENT = 3;
-    public final static int DUCKHUNTER_FRAGMENT = 4;
-    public final static int BADUSB_FRAGMENT = 5;
-    public final static int MANA_FRAGMENT = 6;
-    public final static int DNSMASQ_FRAGMENT = 7;
-    public final static int MACCHANGER_FRAGMENT = 8;
-    public final static int IPTABLES_FRAGMENT = 9;
+    public final static int CREATECHROOT_FRAGMENT = 1;
+    public final static int KALILAUNCHER_FRAGMENT = 2;
+    public final static int KALISERVICES_FRAGMENT = 3;
+    public final static int HIDE_FRAGMENT = 4;
+    public final static int DUCKHUNTER_FRAGMENT = 5;
+    public final static int BADUSB_FRAGMENT = 6;
+    public final static int MANA_FRAGMENT = 7;
+    public final static int DNSMASQ_FRAGMENT = 8;
+    public final static int MACCHANGER_FRAGMENT = 9;
+    public final static int IPTABLES_FRAGMENT = 10;
 
     public final static String TAG = "AppNavHomeActivity";
 
     // these must be UTF-8 text-based scripts.  They go in the /assets folder and will be copied
-    // to the app's cache area.  Don't make thisstatic or final because it changes below (is reused)
+    // to the app's private file area.  Don't make thisstatic or final because it changes below (is reused)
     private String[] SCRIPTS = {"bootkali", "check-kaliapache", "check-kalibeef-xss",
             "check-kalidhcp", "check-kalidnsmq", "check-kalihostapd", "check-kalimetasploit",
             "check-kalissh", "check-kalivnc", "check-kalivpn", "iptables-flush", "killkali",
@@ -117,7 +118,7 @@ public class AppNavHomeActivity extends FragmentActivity
         t.start();
 
         createDirIfNeeded(Environment.getExternalStorageDirectory() + "/files");
-        createDirIfNeeded(getCacheDir() + "/etc/init.d");
+        createDirIfNeeded(getFilesDir() + "/scripts/etc/init.d");
 
     }
 
@@ -169,8 +170,8 @@ public class AppNavHomeActivity extends FragmentActivity
             }
             is.close();
             br.close();
-            // next, write the string out to the file in the cache folder
-            File f = new File(getCacheDir().toString() + '/' + scriptName);
+            // next, write the string out to the file in the files folder
+            File f = new File(getFilesDir().toString() + "/scripts/" + scriptName);
             FileOutputStream fos = new FileOutputStream(f);
             fos.write(sb.toString().getBytes(Charset.forName("UTF-8")));
             fos.close();
@@ -260,6 +261,13 @@ public class AppNavHomeActivity extends FragmentActivity
                 fragmentManager
                         .beginTransaction()
                         .replace(R.id.container, MacchangerFragment.newInstance(position))
+                        .addToBackStack(null)
+                        .commit();
+                break;
+            case CREATECHROOT_FRAGMENT:
+                fragmentManager
+                        .beginTransaction()
+                        .replace(R.id.container, CreateChrootFragment.newInstance(position))
                         .addToBackStack(null)
                         .commit();
                 break;

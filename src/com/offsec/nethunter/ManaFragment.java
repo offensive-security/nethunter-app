@@ -45,11 +45,10 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
     private Integer selectedScriptIndex = 0;
     final CharSequence[] scripts = {"mana-nat-full", "mana-nat-simple", "mana-nat-simple-bdf"};
 
-    String configFilePath = "/data/local/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
-
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private String cacheDir;
+    private String fileDir;
 
+    String configFilePath;
 
     public ManaFragment() {
 
@@ -89,10 +88,16 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
         super.onAttach(activity);
         ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
         if (isAdded()) {
-            cacheDir = getActivity().getCacheDir().toString();
+            fileDir = getActivity().getFilesDir().toString() + "/scripts";
         }
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
+
+        super.onActivityCreated(savedInstanceState);
+    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -141,23 +146,23 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                 switch (selectedScriptIndex) {
                     case 0:
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            command[0] = "su -c '" + cacheDir + "/bootkali mana-full-lollipop start'";
+                            command[0] = "su -c '" + fileDir + "/bootkali mana-full-lollipop start'";
                         } else {
-                            command[0] = "su -c '" + cacheDir + "/bootkali mana-full-kitkat start'";
+                            command[0] = "su -c '" + fileDir + "/bootkali mana-full-kitkat start'";
                         }
                         break;
                     case 1:
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            command[0] = "su -c '" + cacheDir + "/bootkali mana-simple-lollipop start'";
+                            command[0] = "su -c '" + fileDir + "/bootkali mana-simple-lollipop start'";
                         } else {
-                            command[0] = "su -c '" + cacheDir + "/bootkali mana-simple-kitkat start'";
+                            command[0] = "su -c '" + fileDir + "/bootkali mana-simple-kitkat start'";
                         }
                         break;
                     case 2:
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            command[0] = "su -c '" + cacheDir + "/bootkali mana-bdf-lollipop start'";
+                            command[0] = "su -c '" + fileDir + "/bootkali mana-bdf-lollipop start'";
                         } else {
-                            command[0] = "su -c '" + cacheDir + "/bootkali mana-bdf-kitkat start'";
+                            command[0] = "su -c '" + fileDir + "/bootkali mana-bdf-kitkat start'";
                         }
                         break;
                     default:
@@ -189,9 +194,9 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
         ShellExecuter exe = new ShellExecuter();
         String[] command = new String[1];
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            command[0] = "su -c '" + cacheDir + "/bootkali mana-lollipop stop'";
+            command[0] = "su -c '" + fileDir + "/bootkali mana-lollipop stop'";
         } else {
-            command[0] = "su -c '" + cacheDir + "/bootkali mana-kitkat stop'";
+            command[0] = "su -c '" + fileDir + "/bootkali mana-kitkat stop'";
         }
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("Mana Stopped");
@@ -274,7 +279,15 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
 
     public static class HostapdFragment extends Fragment {
-        private String configFilePath = "/data/local/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
+
+        private String configFilePath;
+
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+            configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
+
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -339,7 +352,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                 String bssidVal = matcherBssid.group(1);
                 bssid.setText(bssidVal);
             }
-	            /*
+                /*
 	             * ssid
 	             */
             EditText ssid = (EditText) rootView.findViewById(R.id.ssid);
@@ -450,7 +463,14 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
     public static class DnsspoofFragment extends Fragment {
 
-        private String configFilePath = "/data/local/kali-armhf/etc/mana-toolkit/dnsspoof.conf";
+        private String configFilePath;
+
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            String configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/etc/mana-toolkit/dnsspoof.conf";
+
+            super.onActivityCreated(savedInstanceState);
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -484,7 +504,13 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
     public static class ManaNatFullFragment extends Fragment {
 
-        private String configFilePath = "/data/local/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-full-mod.sh";
+        private String configFilePath;
+
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            String configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-full-mod.sh";
+            super.onActivityCreated(savedInstanceState);
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -517,7 +543,14 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
     public static class ManaNatSimpleFragment extends Fragment {
 
-        private String configFilePath = "/data/local/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-simple.sh";
+        private String configFilePath;
+
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+             String configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-simple.sh";
+
+            super.onActivityCreated(savedInstanceState);
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -552,7 +585,13 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
     public static class BdfProxyConfigFragment extends Fragment {
 
-        private String configFilePath = "/data/local/kali-armhf/etc/bdfproxy/bdfproxy.cfg";
+        private String configFilePath;
+
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/etc/bdfproxy/bdfproxy.cfg";
+            super.onActivityCreated(savedInstanceState);
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -587,8 +626,14 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
     public static class ManaStartNatSimpleBdfFragment extends Fragment {
 
-        private String configFilePath = "/data/local/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-simple-bdf.sh";
+        private String configFilePath;
 
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-simple-bdf.sh";
+
+            super.onActivityCreated(savedInstanceState);
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,

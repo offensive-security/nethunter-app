@@ -42,7 +42,7 @@ public class MacchangerFragment extends Fragment {
 
 
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private String cacheDir;
+    private String fileDir;
     public MacchangerFragment() {
 
     }
@@ -60,7 +60,7 @@ public class MacchangerFragment extends Fragment {
         super.onAttach(activity);
         ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
         if (isAdded()) {
-            cacheDir = getActivity().getCacheDir().toString();
+            fileDir = getActivity().getFilesDir().toString() + "/scripts";
         }
     }
 
@@ -205,7 +205,7 @@ public class MacchangerFragment extends Fragment {
                     } else {
                         exe.Executer("su -c 'busybox ifconfig " + selectedDevice + " down'");
 
-                        command = "su -c '" + cacheDir + "/bootkali macchanger random '" + selectedDevice;
+                        command = "su -c '" + fileDir + "/bootkali macchanger random '" + selectedDevice;
                         macResult.setText(exe.Executer(command));
 
                         new android.os.Handler().postDelayed(
@@ -255,7 +255,7 @@ public class MacchangerFragment extends Fragment {
 
                         exe.Executer("su -c busybox ifconfig " + selectedDevice + " down");
 
-                        command = "su -c '" + cacheDir + "/bootkali macchanger_custom " + macsArray[0] + " " + selectedDevice;
+                        command = "su -c '" + fileDir + "/bootkali macchanger_custom " + macsArray[0] + " " + selectedDevice;
                         macResult.setText(exe.RunAsRootOutput(command));
 
                         new android.os.Handler().postDelayed(

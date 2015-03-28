@@ -1,8 +1,10 @@
-package com.offsec.nethunter;
+package com.offsec.nethunter.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+
+import com.offsec.nethunter.service.RunAtBootService;
 
 /**
  * Created by fattire on 2/19/15.
