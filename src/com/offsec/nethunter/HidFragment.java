@@ -537,7 +537,13 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
                     startActivityForResult(intent, PICKFILE_RESULT_CODE);
                     break;
                 case R.id.windowsCmdSave:
-
+					 try {
+                        File sdcard = Environment.getExternalStorageDirectory();
+                        File scriptsDir = new File(sdcard,loadFilePath);
+                        if(!scriptsDir.exists()) scriptsDir.mkdirs();
+                    } catch (Exception e) {
+                        ((AppNavHomeActivity) getActivity()).showMessage(e.getMessage());
+                    }
                     AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
 
                     alert.setTitle("Name");
