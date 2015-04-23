@@ -494,7 +494,11 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
             source.setText(text);
 
             Button b = (Button) rootView.findViewById(R.id.windowsCmdUpdate);
+            Button b1 = (Button) rootView.findViewById(R.id.windowsCmdLoad);
+            Button b2 = (Button) rootView.findViewById(R.id.windowsCmdSave);
             b.setOnClickListener(this);
+            b1.setOnClickListener(this);
+            b2.setOnClickListener(this);
             return rootView;
         }
 
@@ -520,18 +524,66 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
                     }
                     break;
                 case R.id.windowsCmdLoad:
-                    //FIXME Implement browse to a specific file
                     try {
                         File sdcard = Environment.getExternalStorageDirectory();
-                        File myFile = new File(sdcard, loadFilePath);
-                        myFile.createNewFile();
+                        File scriptsDir = new File(sdcard,loadFilePath);
+                        if(!scriptsDir.exists()) scriptsDir.mkdirs();
                     } catch (Exception e) {
                         ((AppNavHomeActivity) getActivity()).showMessage(e.getMessage());
                     }
                     Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                    Uri selectedUri = Uri.parse(Environment.getExternalStorageDirectory() + loadFilePath);
+                    Uri selectedUri = Uri.parse(Environment.getExternalStorageDirectory() +"/"+ loadFilePath);
                     intent.setDataAndType(selectedUri, "file/*");
                     startActivityForResult(intent, PICKFILE_RESULT_CODE);
+                    break;
+                case R.id.windowsCmdSave:
+
+                    AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+
+                    alert.setTitle("Name");
+                    alert.setMessage("Please enter a name for your script.");
+
+                    // Set an EditText view to get user input
+                    final EditText input = new EditText(getActivity());
+                    alert.setView(input);
+
+                    alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            String value = input.getText().toString();
+                            if(value != null && value.length() >0){
+                            //FIXME Save file (ask name)
+                                File sdcard = Environment.getExternalStorageDirectory();
+                                File scriptFile = new File(sdcard + File.separator + loadFilePath + File.separator +  value +".conf");
+                                System.out.println(scriptFile.getAbsolutePath());
+                                if(!scriptFile.exists()){
+                                    try {
+                                        EditText source = (EditText) getView().findViewById(R.id.windowsCmdSource);
+                                        String text = source.getText().toString();
+                                        scriptFile.createNewFile();
+                                        FileOutputStream fOut = new FileOutputStream(scriptFile);
+                                        OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+                                        myOutWriter.append(text);
+                                        myOutWriter.close();
+                                        fOut.close();
+                                        ((AppNavHomeActivity) getActivity()).showMessage("Script saved");
+                                    } catch (Exception e) {
+                                        ((AppNavHomeActivity) getActivity()).showMessage(e.getMessage());
+                                    }
+                                }else{
+                                    ((AppNavHomeActivity) getActivity()).showMessage("File already exists");
+                                }
+                            }else{
+                                ((AppNavHomeActivity) getActivity()).showMessage("Wrong name provided");
+                            }
+                        }
+                    });
+
+                    alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                           ///Do nothing
+                        }
+                        });
+                    alert.show();
                     break;
                 default:
                     ((AppNavHomeActivity) getActivity()).showMessage("Unknown click");
@@ -545,7 +597,6 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
                 case PICKFILE_RESULT_CODE:
                     if (resultCode == Activity.RESULT_OK) {
                         String FilePath = data.getData().getPath();
-                        System.out.println("File to open: " + FilePath);
                         EditText source = (EditText) getView().findViewById(R.id.windowsCmdSource);
                         try {
                             String text = "";

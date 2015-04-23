@@ -46,6 +46,12 @@
                 android:id="@+id/windowsCmdLoad" />
 
             <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/save"
+                android:id="@+id/windowsCmdSave" />
+
+            <Button
                 android:id="@+id/windowsCmdUpdate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
