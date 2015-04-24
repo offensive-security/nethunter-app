@@ -19,6 +19,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
@@ -40,13 +41,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-public class HidFragment extends Fragment implements ActionBar.TabListener 	{
+public class HidFragment extends Fragment implements ActionBar.TabListener {
 
     TabsPagerAdapter TabsPagerAdapter;
     ViewPager mViewPager;
     SharedPreferences sharedpreferences;
 
-    final CharSequence[] platforms = {"No UAC Bypass", "Windows 7", "Windows 8"};    
+    final CharSequence[] platforms = {"No UAC Bypass", "Windows 7", "Windows 8"};
     final CharSequence[] languages = {"American English", "Belgian", "British English", "Danish", "French", "German", "Italian", "Norwegian", "Portugese", "Russian", "Spanish", "Swedish"};
     private static final String configFilePath = "/data/local/kali-armhf/var/www/payload";
 
@@ -55,6 +56,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
     public HidFragment() {
 
     }
+
     public static HidFragment newInstance(int sectionNumber) {
         HidFragment fragment = new HidFragment();
         Bundle args = new Bundle();
@@ -105,6 +107,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
         }
         getActivity().invalidateOptionsMenu();
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -133,34 +136,46 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
 
     private void start() {
         int keyboardLayoutIndex = sharedpreferences.getInt("HIDKeyboardLayoutIndex", 0);
-    	String lang;
+        String lang;
         switch (keyboardLayoutIndex) {
-            case 1:  lang = "be";
-                     break;
-            case 2:  lang = "uk";
-                     break;
-            case 3:  lang = "dk";
-                     break;
-            case 4:  lang = "fr";
-            		 break;
-            case 5:  lang = "de";
-                     break;
-            case 6:  lang = "it";
-                     break;
-            case 7:  lang = "no";
-                     break;
-            case 8:  lang = "pt";
-                     break;
-            case 9:  lang = "ru";
-                     break;
-            case 10:  lang = "es";
-                     break;
-            case 11:  lang = "sv";
-                        break;
-            default: lang = "us";
-                     break;
+            case 1:
+                lang = "be";
+                break;
+            case 2:
+                lang = "uk";
+                break;
+            case 3:
+                lang = "dk";
+                break;
+            case 4:
+                lang = "fr";
+                break;
+            case 5:
+                lang = "de";
+                break;
+            case 6:
+                lang = "it";
+                break;
+            case 7:
+                lang = "no";
+                break;
+            case 8:
+                lang = "pt";
+                break;
+            case 9:
+                lang = "ru";
+                break;
+            case 10:
+                lang = "es";
+                break;
+            case 11:
+                lang = "sv";
+                break;
+            default:
+                lang = "us";
+                break;
         }
-    	
+
         int UACBypassIndex = sharedpreferences.getInt("UACBypassIndex", 0);
         String[] command = new String[1];
         int pageNum = mViewPager.getCurrentItem();
@@ -204,8 +219,8 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
 
     public void openDialog() {
 
-    	int UACBypassIndex = sharedpreferences.getInt("UACBypassIndex", 0);
-    	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        int UACBypassIndex = sharedpreferences.getInt("UACBypassIndex", 0);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("UAC Bypass:");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
@@ -225,18 +240,18 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
         });
         builder.show();
     }
-    
+
     public void openLanguageDialog() {
 
-        int	keyboardLayoutIndex = sharedpreferences.getInt("HIDKeyboardLayoutIndex", 0);
-        
-    	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        int keyboardLayoutIndex = sharedpreferences.getInt("HIDKeyboardLayoutIndex", 0);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Keyboard Layout:");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-            
+
             }
         });
 
@@ -455,6 +470,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
     public static class WindowsCmdFragment extends Fragment implements OnClickListener {
 
         private String configFilePath = "files/hid-cmd.conf";
+        private String loadFilePath = "files/scripts/hid/";
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -478,9 +494,15 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
             source.setText(text);
 
             Button b = (Button) rootView.findViewById(R.id.windowsCmdUpdate);
+            Button b1 = (Button) rootView.findViewById(R.id.windowsCmdLoad);
+            Button b2 = (Button) rootView.findViewById(R.id.windowsCmdSave);
             b.setOnClickListener(this);
+            b1.setOnClickListener(this);
+            b2.setOnClickListener(this);
             return rootView;
         }
+
+        private static final int PICKFILE_RESULT_CODE = 1;
 
         public void onClick(View v) {
             switch (v.getId()) {
@@ -501,10 +523,106 @@ public class HidFragment extends Fragment implements ActionBar.TabListener 	{
                         ((AppNavHomeActivity) getActivity()).showMessage(e.getMessage());
                     }
                     break;
+                case R.id.windowsCmdLoad:
+                    try {
+                        File sdcard = Environment.getExternalStorageDirectory();
+                        File scriptsDir = new File(sdcard,loadFilePath);
+                        if(!scriptsDir.exists()) scriptsDir.mkdirs();
+                    } catch (Exception e) {
+                        ((AppNavHomeActivity) getActivity()).showMessage(e.getMessage());
+                    }
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    Uri selectedUri = Uri.parse(Environment.getExternalStorageDirectory() +"/"+ loadFilePath);
+                    intent.setDataAndType(selectedUri, "file/*");
+                    startActivityForResult(intent, PICKFILE_RESULT_CODE);
+                    break;
+                case R.id.windowsCmdSave:
+					 try {
+                        File sdcard = Environment.getExternalStorageDirectory();
+                        File scriptsDir = new File(sdcard,loadFilePath);
+                        if(!scriptsDir.exists()) scriptsDir.mkdirs();
+                    } catch (Exception e) {
+                        ((AppNavHomeActivity) getActivity()).showMessage(e.getMessage());
+                    }
+                    AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+
+                    alert.setTitle("Name");
+                    alert.setMessage("Please enter a name for your script.");
+
+                    // Set an EditText view to get user input
+                    final EditText input = new EditText(getActivity());
+                    alert.setView(input);
+
+                    alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            String value = input.getText().toString();
+                            if(value != null && value.length() >0){
+                            //FIXME Save file (ask name)
+                                File sdcard = Environment.getExternalStorageDirectory();
+                                File scriptFile = new File(sdcard + File.separator + loadFilePath + File.separator +  value +".conf");
+                                System.out.println(scriptFile.getAbsolutePath());
+                                if(!scriptFile.exists()){
+                                    try {
+                                        EditText source = (EditText) getView().findViewById(R.id.windowsCmdSource);
+                                        String text = source.getText().toString();
+                                        scriptFile.createNewFile();
+                                        FileOutputStream fOut = new FileOutputStream(scriptFile);
+                                        OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+                                        myOutWriter.append(text);
+                                        myOutWriter.close();
+                                        fOut.close();
+                                        ((AppNavHomeActivity) getActivity()).showMessage("Script saved");
+                                    } catch (Exception e) {
+                                        ((AppNavHomeActivity) getActivity()).showMessage(e.getMessage());
+                                    }
+                                }else{
+                                    ((AppNavHomeActivity) getActivity()).showMessage("File already exists");
+                                }
+                            }else{
+                                ((AppNavHomeActivity) getActivity()).showMessage("Wrong name provided");
+                            }
+                        }
+                    });
+
+                    alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                           ///Do nothing
+                        }
+                        });
+                    alert.show();
+                    break;
                 default:
                     ((AppNavHomeActivity) getActivity()).showMessage("Unknown click");
                     break;
             }
         }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            switch (requestCode) {
+                case PICKFILE_RESULT_CODE:
+                    if (resultCode == Activity.RESULT_OK) {
+                        String FilePath = data.getData().getPath();
+                        EditText source = (EditText) getView().findViewById(R.id.windowsCmdSource);
+                        try {
+                            String text = "";
+                            BufferedReader br = new BufferedReader(new FileReader(FilePath));
+                            String line;
+                            while ((line = br.readLine()) != null) {
+                                text += line + '\n';
+                            }
+                            br.close();
+                            source.setText(text);
+                            ((AppNavHomeActivity) getActivity()).showMessage("Script loaded");
+                        } catch (Exception e) {
+                            ((AppNavHomeActivity) getActivity()).showMessage(e.getMessage());
+                        }
+                        break;
+                    }
+                    break;
+
+            }
+        }
     }
 }
+

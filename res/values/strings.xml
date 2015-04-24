@@ -95,6 +95,8 @@
     <string name="close_app">Close Application</string>
 
     <string name="update">Update</string>
+    <string name="load">Load file</string>
+    <string name="save">Save</string>
     <string name="execute">Execute</string>
     <string name="execute_attack">Execute Attack</string>
     
