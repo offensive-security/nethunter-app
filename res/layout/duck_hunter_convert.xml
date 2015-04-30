@@ -29,5 +29,23 @@
             android:inputType="textMultiLine"
             android:layout_marginLeft="1dip"
             android:layout_marginRight="1dip" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/load"
+                android:id="@+id/duckyLoad" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/save"
+                android:id="@+id/duckySave" />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>
