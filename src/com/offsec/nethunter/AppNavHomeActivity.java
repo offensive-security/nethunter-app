@@ -184,18 +184,12 @@ public class AppNavHomeActivity extends FragmentActivity
 
     @Override
     public void onBackPressed() {
-        //Handle back button for fragments && menu
-        //FragmentManager fragmentManager = getFragmentManager();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        if (mNavigationDrawerFragment.isDrawerOpen()) {
-            mNavigationDrawerFragment.closeDrawer();
-        }
-        if (fragmentManager.getBackStackEntryCount() <= 1) {
+ 
             finish();
 
-            return;
-        }
-        super.onBackPressed();
+        
+        
+        
     }
 
     public void showMessage(String message) {
