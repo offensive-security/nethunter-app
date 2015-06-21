@@ -46,7 +46,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     private String fileDir = "";
-
+    private static final String CHROOTDIR_HARDCODED = "/data/data/com.offsec.nethunter/files/chroot/kali-armhf/";
     public DuckHunterFragment() {
 
     }
@@ -428,7 +428,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
     public static class DuckHunterPreviewFragment extends Fragment{
 
-        public static String configFilePath = "/data/data/com.offsec.nethunter/files/cache/kali-armhf/opt/";
+        public static String configFilePath = CHROOTDIR_HARDCODED + "opt/";
         public static String configFileFilename = "duckout.sh";
 
         @Override
