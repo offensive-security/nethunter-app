@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -78,6 +79,7 @@ public class CreateChrootFragment extends Fragment {
     TextView statusText;
     String chrootPath;
     Button installButton;
+    Button updateButton;
     DownloadManager dm;
     BroadcastReceiver onDLFinished;
     String dir;
@@ -96,6 +98,12 @@ public class CreateChrootFragment extends Fragment {
         installButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 onButtonHit();
+            }
+        });
+        updateButton = (Button) rootView.findViewById(R.id.updatechrootbutton);
+        updateButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                onUpdateButtonHit();
             }
         });
         sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
@@ -157,13 +165,14 @@ public class CreateChrootFragment extends Fragment {
                 statusLog(getActivity().getString(R.string.existingchrootfound));
                 installButton.setText(getActivity().getResources().getString(R.string.removekalichrootbutton));
                 installButton.setEnabled(true);
+                updateButton.setVisibility(View.VISIBLE);
             } else {
                 File file = new File(chrootPath + "/");
                 statusLog(getActivity().getString(R.string.nokalichrootfound));
                 file.mkdir();
                 installButton.setText(getActivity().getResources().getString(R.string.installkalichrootbutton));
                 installButton.setEnabled(true);
-
+                updateButton.setVisibility(View.GONE);
             }
         }
     }
@@ -199,6 +208,24 @@ public class CreateChrootFragment extends Fragment {
             // no chroot.  need to enable it.
             if (!startZipDownload()) {
                 installButton.setEnabled(true);
+            }
+        }
+    }
+
+    private void onUpdateButtonHit() {
+
+        try {
+            Intent intent =
+                    new Intent("jackpal.androidterm.RUN_SCRIPT");
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c '" + getActivity().getFilesDir() + "/scripts/bootkali update'");
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=jackpal.androidterm")));
+            } catch (android.content.ActivityNotFoundException anfe2) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=jackpal.androidterm")));
             }
         }
     }

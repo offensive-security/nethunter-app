@@ -210,4 +210,6 @@
 
     <string name="nhwarning">Nethunter installs and uses a standard Kali Linux distribution \"under the hood\".  To support this functionality, Nethunter disables some standard Android security features such as Security Enhanced Linux (selinux).  Kali\'s Linux processes may run with full root privileges and can therefore access system functionality well beyond the normal Android security model.  Consider therefore that this device, as a hybrid, may not be as secure as either standard Kali Linux OR standard Android.</string>
     <string name="unknown">Unknown</string>
+    <string name="UpdateChrootInTerminalAppButtonText">Update Chroot</string>
+    <string name="statusText">Status:</string>
 </resources>
