@@ -24,18 +24,37 @@
         android:paddingRight="16sp"
         android:paddingBottom="16sp" />
 
-    <Button
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/installkalichrootbutton"
-        android:id="@+id/installButton"
-        android:layout_gravity="center_horizontal" />
+        android:paddingLeft="16sp"
+        android:paddingRight="16sp"
+        android:gravity="center_horizontal">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/UpdateChrootInTerminalAppButtonText"
+            android:id="@+id/updatechrootbutton"
+            android:paddingLeft="16sp"
+            android:paddingRight="16sp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/installkalichrootbutton"
+            android:id="@+id/installButton"
+            android:paddingLeft="16sp"
+            android:paddingRight="16sp" />
+
+    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Status:"
+        android:text="@string/statusText"
         android:id="@+id/textView2"
         android:paddingLeft="16sp"
         android:paddingTop="16sp" />
@@ -65,4 +84,5 @@
         android:layout_weight="0.74"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
 </LinearLayout>

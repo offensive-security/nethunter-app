@@ -64,7 +64,7 @@ public class NetHunterFragment extends Fragment {
         interfaces.setText(intf);
         interfaces.setFocusable(false);
         ip.setFocusable(false);
-        buildInfo1.setText("Version: " + BuildConfig.VERSION_NAME);
+        buildInfo1.setText("Version: " + BuildConfig.VERSION_NAME + " (" + android.os.Build.TAGS + ")");
         buildInfo2.setText("Built by " + BuildConfig.BUILD_NAME + " at " + sdf.format(BuildConfig.BUILD_TIME));
         addClickListener(R.id.button1, new View.OnClickListener() {
             public void onClick(View v) {
