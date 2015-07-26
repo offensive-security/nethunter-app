@@ -5,7 +5,12 @@ For example I really like to have nmap -Ss IP/24 as a custom button, so I decide
 You need to add the following lines at the end of bootkali:
 
 if [ "$1" == "custom_cmd" ]; then
-
-LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $busybox chroot $mnt $2 $3 $4 $5 $6 $7 $8 $9 $10
-
+  LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
+	commmand=""
+	while test $# -gt 0
+	do
+	  shift
+	  commmand=${commmand}" "$1
+	done
+	$busybox chroot $mnt $commmand
 fi
