@@ -6,11 +6,11 @@ You need to add the following lines at the end of bootkali:
 
 if [ "$1" == "custom_cmd" ]; then
   LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
-	commmand=""
-	while test $# -gt 0
-	do
-	  shift
-	  commmand=${commmand}" "$1
-	done
-	$busybox chroot $mnt $commmand
+  commmand=""
+  while test $# -gt 0
+  do
+    shift
+    commmand=${commmand}" "$1
+   done
+   $busybox chroot $mnt $commmand
 fi
