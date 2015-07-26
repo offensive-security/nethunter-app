@@ -6,6 +6,6 @@ You need to add the following lines at the end of bootkali:
 
 if [ "$1" == "custom_cmd" ]; then
 
-LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $busybox chroot $mnt $2
+LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $busybox chroot $mnt $2 $3 $4 $5 $6 $7 $8 $9 $10
 
 fi
