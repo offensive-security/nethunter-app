@@ -4,7 +4,7 @@
     <string name="app_nav_home_label">NetHunter Home</string>
 
 
-	<string name="hometitle">Kali Linux NetHunter</string>
+    <string name="hometitle">Kali Linux NetHunter</string>
     <string name="nethunter_label">Nethunter Panel Home</string>
     <string name="nethunter_description">Welcome to Kali Linux NetHunter, by Offensive Security! This application is designed to make it easier to execute attacks and control services. The navigation menu contains links to useful commands, settings, macros, and attack configuration pages. Most configurations work out of the box but some may require some minimal tweaking.</string>
     <string name="nethunter_current_interfaces">Current interfaces</string>
@@ -16,7 +16,7 @@
     <string name="hid_label">HID Keyboard Attack</string>
     <string name="hid_powersploit_description">The Powersploit payload provides you a choice of reverse meterpreter HTTP/S payloads. "URL to payload" should be a URL accessible to the victim machine where the larger payload is downloaded to.</string>
     <string name="hid_windows_cmd_description">This Windows CMD payload allows you to enter raw commands to a Windows command prompt. Hitting the list menu will allow you to choose keyboard layout or UAC bypass options. </string>
-    
+
     <string name="hid_admin_select">Please select</string>
     <string-array name="hid_admin_options">
         <item>win7</item>
@@ -32,15 +32,15 @@
     <string name="mana_headline">Evil Access Point</string>
     <string name="mana_description">This is the configuration page for MANA, an evil access point implementation by Sensepost. The various MITM logs get written to the /var/lib/mana-toolkit directory in the Kali chroot..</string>
 
-	<string name="mana_hostapd">The hostapd configuration file used by Mana.</string>
-	<string name="mana_dhcpd">The dhcpd configuration file used by Mana.</string>
-	<string name="mana_dnsspoof">The dnsspoof configuration file used by Mana.</string>
-	<string name="mana_nat_full">The Mana script that does full NAT &amp; SSL interception.</string>
-	<string name="mana_nat_simple">The Mana script that does full NAT only.</string>
-	<string name="mana_nat_simple_bdf">The Mana script that does full NAT &amp; BDFProxy HTTP routing to port 8080.</string>
+    <string name="mana_hostapd">The hostapd configuration file used by Mana.</string>
+    <string name="mana_dhcpd">The dhcpd configuration file used by Mana.</string>
+    <string name="mana_dnsspoof">The dnsspoof configuration file used by Mana.</string>
+    <string name="mana_nat_full">The Mana script that does full NAT &amp; SSL interception.</string>
+    <string name="mana_nat_simple">The Mana script that does full NAT only.</string>
+    <string name="mana_nat_simple_bdf">The Mana script that does full NAT &amp; BDFProxy HTTP routing to port 8080.</string>
     <string name="bdfproxy_cfg">The configuration file for BDFProxy.</string>
-	<string name="mana_noupstream">The Mana no-upstream run script.</string>
-	<string name="mana_noupstream_eap">The Mana no-upstream EAP run script.</string>
+    <string name="mana_noupstream">The Mana no-upstream run script.</string>
+    <string name="mana_noupstream_eap">The Mana no-upstream EAP run script.</string>
 
     <string name="dnsmasq_label">Dnsmasq Service</string>
     <string name="dnsmasq_headline">Dnsmasq Config</string>
@@ -50,12 +50,12 @@
     <string name="hostapd_headline">Hostapd Config</string>
     <string name="hostapd_description">hostapd is a user space daemon for wireless access point and authentication servers. You can use hostapd to easily create a wireless access point using these configuration options:</string>
 
-	<string name="duckhunter_label">HID Ducky Script Attacks</string>
-	<string name="select_language">Language</string>
-	<string name="duckConvertUpdate">Update</string>
-	<string name="duckConvertConvert">Convert</string>
-	<string name="duckPreviewRefresh">Refresh</string>	
-	<string name="duck_hunter_headline">The DuckHunter script can easily convert "USB Rubber Ducky" scripts into NetHunter HID format.  You can generate preconfigured scripts at the incredibly useful <a href="http://www.ducktoolkit.com/Home.jsp">Ducky Toolkit</a> site, or check out the Rubber Ducky script syntax from the official <a href="https://github.com/hak5darren/USB-Rubber-Ducky/wiki/Duckyscript">README</a></string>
+    <string name="duckhunter_label">HID Ducky Script Attacks</string>
+    <string name="select_language">Language</string>
+    <string name="duckConvertUpdate">Update</string>
+    <string name="duckConvertConvert">Convert</string>
+    <string name="duckPreviewRefresh">Refresh</string>
+    <string name="duck_hunter_headline">The DuckHunter script can easily convert "USB Rubber Ducky" scripts into NetHunter HID format.  You can generate preconfigured scripts at the incredibly useful <a href="http://www.ducktoolkit.com/Home.jsp">Ducky Toolkit</a> site, or check out the Rubber Ducky script syntax from the official <a href="https://github.com/hak5darren/USB-Rubber-Ducky/wiki/Duckyscript">README</a></string>
 
     <string name="iptables_label">Iptables Configuration</string>
     <string name="iptables_headline">Iptables Setup Config</string>
@@ -88,7 +88,10 @@
     <string name="update_kali_chroot">Update Kali chroot</string>
     <string name="turn_off_external_wifi">Turn Off External Wifi</string>
     <string name="shutdown_kali">Unmount Kali</string>
-    
+    <string name="add_button">Add a Button</string>
+
+    <string name="add_lauchner_btn_label">Button label: </string>
+    <string name="add_lauchner_btn_command">Command: </string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -99,7 +102,7 @@
     <string name="save">Save</string>
     <string name="execute">Execute</string>
     <string name="execute_attack">Execute Attack</string>
-    
+
     <string name="stop_mana">Stop mana</string>
     <string name="start_mana">Start mana</string>
     <string name="ip_address">IP address</string>
@@ -125,11 +128,13 @@
     <string name="get_external_ip">Get external IP</string>
     <string name="karma_loud">karma loud</string>
     <string name="dhcp_range">dhcp range</string>
-    
+
     <string name="ps_ip_address">IP Address (LHOST)</string>
     <string name="ps_port">Port (LPORT)</string>
     <string name="ps_payload_url">URL to payload</string>
 
+    <string name="toast_error_launcher">Invalid call of function!</string>
+    <string name="toast_input_error_launcher">Invalid arguments given!</string>
     <string name="toast_install_terminal">Error launching intent. Install Android Terminal!</string>
     <string name="descriptiontext" />
 
