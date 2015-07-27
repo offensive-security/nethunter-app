@@ -11,159 +11,38 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:resizeable="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
 
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:windowSoftInputMode="adjustResize">
 
         <activity
             android:name=".AppNavHomeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Nethunter">
             <intent-filter android:label="@string/app_nav_home_label">
                 <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.SAMPLE_CODE" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
-        <activity-alias
-            android:name=".CreateChrootFragment"
-            android:label="@string/createchroot_label"
-            android:targetActivity=".AppNavHomeActivity"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.SAMPLE_CODE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".AppNavHomeActivity" />
-        </activity-alias>
-        <activity-alias
-            android:name=".KaliLauncherActivity"
-            android:label="@string/KaliLauncherLabel"
-            android:targetActivity=".AppNavHomeActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.SAMPLE_CODE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".AppNavHomeActivity" />
-        </activity-alias>
-
-        <activity-alias
-            android:name=".KaliServicesActivity"
-            android:label="@string/kali_services_label"
-            android:targetActivity=".AppNavHomeActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.SAMPLE_CODE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".AppNavHomeActivity" />
-        </activity-alias>
-
-        <activity-alias
-            android:name=".HidActivity"
-            android:label="@string/hid_label"
-            android:targetActivity=".AppNavHomeActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.SAMPLE_CODE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".AppNavHomeActivity" />
-        </activity-alias>
-        <activity-alias
-            android:name=".duckHunterFragment"
-            android:label="@string/duckhunter_label"
-            android:targetActivity=".AppNavHomeActivity"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.SAMPLE_CODE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".AppNavHomeActivity" />
-        </activity-alias>
-
-        <activity-alias
-            android:name=".BadusbActivity"
-            android:label="@string/badusb_label"
-            android:targetActivity=".AppNavHomeActivity"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.SAMPLE_CODE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".AppNavHomeActivity" />
-        </activity-alias>
-        <activity-alias
-            android:name=".ManaActivity"
-            android:label="@string/mana_label"
-            android:targetActivity=".AppNavHomeActivity"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.SAMPLE_CODE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".AppNavHomeActivity" />
-        </activity-alias>
-        <activity-alias
-            android:name=".DnsmasqActivity"
-            android:label="@string/dnsmasq_label"
-            android:targetActivity=".AppNavHomeActivity"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.SAMPLE_CODE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".AppNavHomeActivity" />
-        </activity-alias>
-        <activity-alias
-            android:name=".MacchangerFragment"
-            android:label="@string/macchanger_label"
-            android:targetActivity=".AppNavHomeActivity"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.SAMPLE_CODE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".AppNavHomeActivity" />
-        </activity-alias>
-        <activity-alias
-            android:name=".IptablesActivity"
-            android:label="@string/iptables_label"
-            android:targetActivity=".AppNavHomeActivity"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.SAMPLE_CODE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".AppNavHomeActivity" />
-        </activity-alias>
-
 
         <activity
             android:name=".EditSourceActivity"
             android:label="Edit Source"
+            android:theme="@style/Theme.Nethunter"
             android:windowSoftInputMode="stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

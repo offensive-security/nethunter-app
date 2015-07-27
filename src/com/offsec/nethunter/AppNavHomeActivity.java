@@ -1,18 +1,24 @@
 package com.offsec.nethunter;
 
-import android.app.ActionBar;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.app.FragmentActivity;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -25,26 +31,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+import java.util.Stack;
 
-//import android.app.Fragment;
-//import android.app.FragmentManager;
-
-public class AppNavHomeActivity extends FragmentActivity
-        implements SideMenu.NavigationDrawerCallbacks {
-
-    public final static int NETHUNTER_FRAGMENT = 0;
-    public final static int CREATECHROOT_FRAGMENT = 1;
-    public final static int KALILAUNCHER_FRAGMENT = 2;
-    public final static int KALISERVICES_FRAGMENT = 3;
-    public final static int HIDE_FRAGMENT = 4;
-    public final static int DUCKHUNTER_FRAGMENT = 5;
-    public final static int BADUSB_FRAGMENT = 6;
-    public final static int MANA_FRAGMENT = 7;
-    public final static int DNSMASQ_FRAGMENT = 8;
-    public final static int MACCHANGER_FRAGMENT = 9;
-    public final static int IPTABLES_FRAGMENT = 10;
+public class AppNavHomeActivity extends AppCompatActivity {
 
     public final static String TAG = "AppNavHomeActivity";
+    public static final String CHROOT_INSTALLED_TAG = "CHROOT_INSTALLED_TAG";
 
     // these must be UTF-8 text-based scripts.  They go in the /assets folder and will be copied
     // to the app's private file area.  Don't make thisstatic or final because it changes below (is reused)
@@ -64,18 +56,15 @@ public class AppNavHomeActivity extends FragmentActivity
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
 
-    private SideMenu mNavigationDrawerFragment;
-    private String[] activityNames;
-
-    /**
-     * Used to store the last screen title. For use in {@link #restoreActionBar()}.
-     */
-    private CharSequence mTitle;
+    private DrawerLayout mDrawerLayout;
+    private NavigationView navigationView;
+    private CharSequence mTitle = "NetHunter";
+    private Stack<String> titles = new Stack<>();
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         setContentView(R.layout.base_layout);
         //set kali wallpaper as background
@@ -84,23 +73,22 @@ public class AppNavHomeActivity extends FragmentActivity
         ImageView myImageView = (ImageView) findViewById(R.id.bgHome);
         myImageView.setImageBitmap(bitmap);
 
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        if (navigationView != null) {
+            setupDrawerContent(navigationView);
+        }
 
+        ActionBar ab = getSupportActionBar();
+        if (ab != null) {
+            ab.setHomeAsUpIndicator(R.drawable.ic_drawer);
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setHomeButtonEnabled(true);
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // detail for android 5 devices
             getWindow().setStatusBarColor(getResources().getColor(R.color.darkTitle));
         }
-
-        mNavigationDrawerFragment = (SideMenu)
-                getFragmentManager().findFragmentById(R.id.navigation_drawer);
-
-        String[][] activitiesInfo = mNavigationDrawerFragment.getMenuInfo();
-        activityNames = activitiesInfo[0];
-        mTitle = getTitle();
-
-        // Set up the drawer.
-        mNavigationDrawerFragment.setUp(
-                R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout));
 
         // copy script files, but off the main UI thread
         final Runnable r = new Runnable() {
@@ -120,6 +108,63 @@ public class AppNavHomeActivity extends FragmentActivity
         createDirIfNeeded(Environment.getExternalStorageDirectory() + "/files");
         createDirIfNeeded(getFilesDir() + "/scripts/etc/init.d");
 
+        // now pop in the default fragment
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container, NetHunterFragment.newInstance(R.id.nethunter_item))
+                .commit();
+
+        // and put the title in the queue for when you need to back through them
+        titles.push(mTitle.toString());
+
+        prefs = getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
+
+        // make sure we check if we have chroot every time we open the drawer, so that
+        // we can disable everything but the Chroot Manager
+        mDrawerLayout.setDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                // might wanna put this in ondrawerslide() above so that things
+                // don't disappear once the drawer is open, but anyhoo...
+                setDrawerOptions();
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+            }
+
+        });
+
+        // if the nav bar hasn't been seen, let's show it
+        if (!prefs.getBoolean("seenNav", false)) {
+            mDrawerLayout.openDrawer(GravityCompat.START);
+            SharedPreferences.Editor ed = prefs.edit();
+            ed.putBoolean("seenNav", true);
+            ed.commit();
+        }
+
+        // pre-set the drawer options
+        setDrawerOptions();
+    }
+
+    /* if the chroot isn't set up, don't show the chroot options */
+
+    private void setDrawerOptions() {
+        Menu menuNav = navigationView.getMenu();
+        if (prefs.getBoolean(CHROOT_INSTALLED_TAG, false)) {
+            menuNav.setGroupEnabled(R.id.chrootDependentGroup, true);
+        } else {
+            menuNav.setGroupEnabled(R.id.chrootDependentGroup, false);
+        }
     }
 
     private void createDirIfNeeded(String path) {
@@ -187,133 +232,131 @@ public class AppNavHomeActivity extends FragmentActivity
     }
 
     @Override
-    public void onNavigationDrawerItemSelected(int position, String activity) {
-        //Log.d("POSI", String.valueOf(position));
-        // This is called from the sidemenu as callback when a item  is clickled
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-
-        switch (position) {
-            case NETHUNTER_FRAGMENT:
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container, NetHunterFragment.newInstance(position))
-                        .addToBackStack(null)
-                        .commit();
-                break;
-            case KALILAUNCHER_FRAGMENT:
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container, KaliLauncherFragment.newInstance(position))
-                        .addToBackStack(null)
-                        .commit();
-                break;
-            case KALISERVICES_FRAGMENT:
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container, KaliServicesFragment.newInstance(position))
-                        .addToBackStack(null)
-                        .commit();
-                break;
-            case HIDE_FRAGMENT:
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container, HidFragment.newInstance(position))
-                        .addToBackStack(null)
-                        .commit();
-                break;
-            case DUCKHUNTER_FRAGMENT:
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container, DuckHunterFragment.newInstance(position))
-                        .addToBackStack(null)
-                        .commit();
-                break;
-            case BADUSB_FRAGMENT:
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container, BadusbFragment.newInstance(position))
-                        .addToBackStack(null)
-                        .commit();
-                break;
-            case MANA_FRAGMENT:
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container, ManaFragment.newInstance(position))
-                        .addToBackStack(null)
-                        .commit();
-                break;
-            case DNSMASQ_FRAGMENT:
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container, DnsmasqFragment.newInstance(position))
-                        .addToBackStack(null)
-                        .commit();
-                break;
-            case IPTABLES_FRAGMENT:
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container, IptablesFragment.newInstance(position))
-                        .addToBackStack(null)
-                        .commit();
-                break;
-            case MACCHANGER_FRAGMENT:
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container, MacchangerFragment.newInstance(position))
-                        .addToBackStack(null)
-                        .commit();
-                break;
-            case CREATECHROOT_FRAGMENT:
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container, CreateChrootFragment.newInstance(position))
-                        .addToBackStack(null)
-                        .commit();
-                break;
-            default:
-                // Start activity as usually // REMOVE THIS SOON no needed
-                Intent target = new Intent();
-                target.setClassName(getApplicationContext(), activity);
-                startActivity(target);
-                break;
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    mDrawerLayout.closeDrawers();
+                } else {
+                    mDrawerLayout.openDrawer(GravityCompat.START);
+                }
+                return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
-    public void onSectionAttached(int position) {
-        // restore title
-        mTitle = activityNames[position];
+    private void setupDrawerContent(NavigationView navigationView) {
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        menuItem.setChecked(true);
+                        mDrawerLayout.closeDrawers();
+                        mTitle = menuItem.getTitle();
+
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        int itemId = menuItem.getItemId();
+                        switch (itemId) {
+                            case R.id.nethunter_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, NetHunterFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.kalilauncher_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, KaliLauncherFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.kaliservices_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, KaliServicesFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.hid_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, HidFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.duckhunter_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, DuckHunterFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.badusb_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, BadusbFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.mana_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, ManaFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.dnsmasq_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, DnsmasqFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.iptables_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, IptablesFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.macchanger_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, MacchangerFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.createchroot_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, CreateChrootFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            default:
+                                // Start activity as usually // REMOVE THIS SOON not needed
+                                Intent target = new Intent();
+                                target.setClassName(getApplicationContext(), "AppNavHomeActivity");
+                                startActivity(target);
+                                break;
+                        }
+                        restoreActionBar();
+                        titles.push(mTitle.toString());
+                        menuItem.setChecked(true);
+                        return true;
+                    }
+                });
     }
+
 
     public void restoreActionBar() {
-        ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(mTitle);
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        restoreActionBar();
-        return super.onCreateOptionsMenu(menu);
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        //Handle back button for fragments && menu
-        //FragmentManager fragmentManager = getFragmentManager();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        if (mNavigationDrawerFragment.isDrawerOpen()) {
-            mNavigationDrawerFragment.closeDrawer();
+        ActionBar ab = getSupportActionBar();
+        if (ab != null) {
+            //  ab.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+            ab.setDisplayShowTitleEnabled(true);
+            ab.setTitle(mTitle);
         }
-        if (fragmentManager.getBackStackEntryCount() <= 1) {
-            finish();
-
-            return;
-        }
-        super.onBackPressed();
     }
 
     public void showMessage(String message) {
@@ -365,6 +408,14 @@ public class AppNavHomeActivity extends FragmentActivity
         }
     }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (titles.size() > 1) {
+            titles.pop();
+            mTitle = titles.peek();
+        }
+        restoreActionBar();
+    }
 }
 

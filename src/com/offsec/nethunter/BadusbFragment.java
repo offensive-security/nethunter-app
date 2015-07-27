@@ -1,13 +1,9 @@
 package com.offsec.nethunter;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-//import android.app.Fragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,6 +14,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+//import android.app.Fragment;
+
 
 public class BadusbFragment extends Fragment {
 
@@ -25,12 +26,13 @@ public class BadusbFragment extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
 
     public BadusbFragment() {
-    	if (Build.VERSION.SDK_INT >= 21) {
-    		configFilePath = "files/startbadusb-lollipop.sh";
+        if (Build.VERSION.SDK_INT >= 21) {
+            configFilePath = "files/startbadusb-lollipop.sh";
         } else {
-        	configFilePath = "files/startbadusb-kitkat.sh";
+            configFilePath = "files/startbadusb-kitkat.sh";
         }
     }
+
     public static BadusbFragment newInstance(int sectionNumber) {
         BadusbFragment fragment = new BadusbFragment();
         Bundle args = new Bundle();
@@ -38,6 +40,7 @@ public class BadusbFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.badusb, container, false);
@@ -56,7 +59,6 @@ public class BadusbFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
     public void onResume() {
@@ -101,7 +103,7 @@ public class BadusbFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
-    
+
     public void updateOptions(View arg0) {
         String source = ((AppNavHomeActivity) getActivity()).readConfigFile(configFilePath);
         EditText ifc = (EditText) getActivity().findViewById(R.id.ifc);
@@ -113,14 +115,14 @@ public class BadusbFragment extends Fragment {
             ((AppNavHomeActivity) getActivity()).showMessage("Options not updated!");
         }
     }
-    
+
     public void start() {
         ShellExecuter exe = new ShellExecuter();
         String[] command = new String[1];
         if (Build.VERSION.SDK_INT >= 21) {
-        	command[0] = "start-badusb-lollipop &> /sdcard/files/badusb.log &";
+            command[0] = "start-badusb-lollipop &> /sdcard/files/badusb.log &";
         } else {
-        	command[0] = "start-badusb-kitkat &> /sdcard/files/badusb.log &";
+            command[0] = "start-badusb-kitkat &> /sdcard/files/badusb.log &";
         }
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("BadUSB attack started!");
@@ -130,9 +132,9 @@ public class BadusbFragment extends Fragment {
         ShellExecuter exe = new ShellExecuter();
         String[] command = new String[1];
         if (Build.VERSION.SDK_INT >= 21) {
-        	command[0] = "stop-badusb-lollipop";
+            command[0] = "stop-badusb-lollipop";
         } else {
-        	command[0] = "stop-badusb-kitkat";
+            command[0] = "stop-badusb-kitkat";
         }
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("BadUSB attack stopped!");

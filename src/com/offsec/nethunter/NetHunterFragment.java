@@ -1,6 +1,5 @@
 package com.offsec.nethunter;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
@@ -73,14 +72,6 @@ public class NetHunterFragment extends Fragment {
         }, rootView);
 
         return rootView;
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-
-        super.onAttach(activity);
-        ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
-
     }
 
     private void addClickListener(int buttonId, View.OnClickListener onClickListener, View rootView) {

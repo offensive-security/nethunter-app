@@ -17,6 +17,7 @@ public class RunAtBootService extends Service {
 
     public static final String TAG = "NH: RunAtBootService";
     public static final String DELETE_CHROOT_TAG = "DELETE_CHROOT_TAG";
+    public static final String CHROOT_INSTALLED_TAG = "CHROOT_INSTALLED_TAG";
     final ShellExecuter x = new ShellExecuter();
     SharedPreferences sharedpreferences;
 
@@ -50,6 +51,8 @@ public class RunAtBootService extends Service {
                 Toast.makeText(getBaseContext(), getString(R.string.toastdeletedchroot), Toast.LENGTH_LONG).show();
                 // remove the sp so we dont remove it again on next boot
                 sharedpreferences.edit().remove(DELETE_CHROOT_TAG).apply();
+                sharedpreferences.edit().remove(CHROOT_INSTALLED_TAG).apply();
+
             }
 
         }

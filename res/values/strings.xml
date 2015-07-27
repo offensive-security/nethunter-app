@@ -170,7 +170,8 @@
     <string name="uninstallchrootwarning">Warning: Uninstalling the Nethunter app <u>without FIRST removing the chroot</u> will result in an <i>incomplete</i> removal of the app.</string>
     <string name="thechroottitle">The Kali chroot</string>
     <string name="installkalichrootbutton">Install Kali Chroot</string>
-    <string name="removekalichrootbutton">Remove Kali Chroot</string>
+    <string name="removekalichrootbutton">Remove Chroot</string>
+    <string name="UpdateChrootInTerminalAppButtonText">Update Chroot</string>
     <string name="existingchrootfound">An existing Kali chroot directory was found!</string>
     <string name="nokalichrootfound">No Kali chroot directory was found.</string>
     <string name="reallyremovechroot">Really remove the chroot?</string>
@@ -210,6 +211,18 @@
 
     <string name="nhwarning">Nethunter installs and uses a standard Kali Linux distribution \"under the hood\".  To support this functionality, Nethunter disables some standard Android security features such as Security Enhanced Linux (selinux).  Kali\'s Linux processes may run with full root privileges and can therefore access system functionality well beyond the normal Android security model.  Consider therefore that this device, as a hybrid, may not be as secure as either standard Kali Linux OR standard Android.</string>
     <string name="unknown">Unknown</string>
-    <string name="UpdateChrootInTerminalAppButtonText">Update Chroot</string>
     <string name="statusText">Status:</string>
+
+    <!-- sidebar menu item titles -->
+    <string name="drawertitlenethunter">Home</string>
+    <string name="drawertitlecreatechroot">Kali Chroot Manager</string>
+    <string name="drawertitlekalilauncher">Kali Launcher</string>
+    <string name="drawertitlekaliservices">Kali Services</string>
+    <string name="drawertitlehid">HID</string>
+    <string name="drawertitleduckhunter">Duckhunter</string>
+    <string name="drawertitlebadusb">Bad USB</string>
+    <string name="drawertitlemana">Mana</string>
+    <string name="drawertitlednsmasq">DNSMasq</string>
+    <string name="drawertitleiptables">IP Tables</string>
+    <string name="drawertitlemacchanger">MAC Changer</string>
 </resources>

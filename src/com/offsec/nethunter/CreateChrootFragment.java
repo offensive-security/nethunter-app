@@ -66,6 +66,8 @@ public class CreateChrootFragment extends Fragment {
     private static final String ARCH = System.getProperty("os.arch");
     private static final String TAG = "CreateChroot";
     public static final String DELETE_CHROOT_TAG = "DELETE_CHROOT_TAG";
+    public static final String CHROOT_INSTALLED_TAG = "CHROOT_INSTALLED_TAG";
+
     /* put chroot info here */
 
     private static final String FILENAME = "kalifs.tar.xz";
@@ -161,11 +163,14 @@ public class CreateChrootFragment extends Fragment {
 
             _res = x.RunAsRootOutput(command);
 
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+
             if (_res.equals("1")) {
                 statusLog(getActivity().getString(R.string.existingchrootfound));
                 installButton.setText(getActivity().getResources().getString(R.string.removekalichrootbutton));
                 installButton.setEnabled(true);
                 updateButton.setVisibility(View.VISIBLE);
+                editor.putBoolean(CHROOT_INSTALLED_TAG, true);
             } else {
                 File file = new File(chrootPath + "/");
                 statusLog(getActivity().getString(R.string.nokalichrootfound));
@@ -173,7 +178,11 @@ public class CreateChrootFragment extends Fragment {
                 installButton.setText(getActivity().getResources().getString(R.string.installkalichrootbutton));
                 installButton.setEnabled(true);
                 updateButton.setVisibility(View.GONE);
+                editor.putBoolean(CHROOT_INSTALLED_TAG, false);
             }
+
+            editor.commit(); // don't use apply() or it may not save
+
         }
     }
 
