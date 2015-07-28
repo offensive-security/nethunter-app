@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group>
+        <item
+            android:id="@+id/nethunter_item"
+            android:icon="@drawable/ic_launcher"
+            android:title="@string/drawertitlenethunter" />
+        <item
+            android:id="@+id/createchroot_item"
+            android:icon="@drawable/ic_launcher"
+            android:title="@string/drawertitlecreatechroot" />
+    </group>
+    <group android:id="@+id/chrootDependentGroup">
+        <item
+            android:id="@+id/kalilauncher_item"
+            android:icon="@drawable/ic_launcher"
+            android:title="@string/drawertitlekalilauncher" />
+        <item
+            android:id="@+id/kaliservices_item"
+            android:icon="@drawable/ic_launcher"
+            android:title="@string/drawertitlekaliservices" />
+        <item
+            android:id="@+id/hid_item"
+            android:icon="@drawable/ic_launcher"
+            android:title="@string/drawertitlehid" />
+        <item
+            android:id="@+id/duckhunter_item"
+            android:icon="@drawable/ic_launcher"
+            android:title="@string/drawertitleduckhunter" />
+        <item
+            android:id="@+id/badusb_item"
+            android:icon="@drawable/ic_launcher"
+            android:title="@string/drawertitlebadusb" />
+        <item
+            android:id="@+id/mana_item"
+            android:icon="@drawable/ic_launcher"
+            android:title="@string/drawertitlemana" />
+        <item
+            android:id="@+id/dnsmasq_item"
+            android:icon="@drawable/ic_launcher"
+            android:title="@string/drawertitlednsmasq" />
+        <item
+            android:id="@+id/macchanger_item"
+            android:icon="@drawable/ic_launcher"
+            android:title="@string/drawertitlemacchanger" />
+        <item
+            android:id="@+id/iptables_item"
+            android:icon="@drawable/ic_launcher"
+            android:title="@string/drawertitleiptables" />
+    </group>
+
+</menu>
