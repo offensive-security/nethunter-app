@@ -73,9 +73,9 @@ public class CreateChrootFragment extends Fragment {
     public static final String CHROOT_INSTALLED_TAG = "CHROOT_INSTALLED_TAG";
 
     /* put chroot info here */
-
     private static final String FILENAME = "kalifs-minimal.tar.xz";
-    private static final String URI = "https://transfer.sh/3Q5PF/" + FILENAME;
+    // TODO: HOST THINGS AT NETHUNTER.COM BEFORE RELEASE.
+    private static final String URI = "http://3bollcdn.com/nethunter/chroot/" + FILENAME;
     private static final String SHA512 =
             "47d7c1d301e02838d440c61917dc50c870cef1315293a36f65fab775ac4" +
                     "f1ad35e9e74de2769b29b11c986b22df031ffb5d0f8da5600b682e21a4ee7a3368a18";
