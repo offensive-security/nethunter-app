@@ -2,8 +2,9 @@
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/scrollView">
+    android:layout_height="wrap_content"
+    android:id="@+id/scrollView"
+    android:fillViewport="true">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -46,9 +47,9 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="@string/nethunter_description"
-            android:layout_gravity="center_horizontal|center"
+            android:layout_gravity="center|center_horizontal"
             android:gravity="center"
             android:padding="16sp"
             android:paddingTop="16sp" />
@@ -79,7 +80,7 @@
                 android:textSize="12sp"
                 android:layout_row="1"
                 android:layout_column="0"
-                android:paddingTop="8sp"></TextView>
+                android:paddingTop="8sp"/>
 
             <TextView
                 android:textStyle="bold"
@@ -123,12 +124,11 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="@string/nhwarning"
             android:id="@+id/textView4"
-            android:layout_gravity="center"
-            android:gravity="center"
+            android:gravity="bottom|center"
             android:textColor="@color/highlighted_text_material_dark" />
     </LinearLayout>
 </ScrollView>

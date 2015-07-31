@@ -22,7 +22,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,13 +70,15 @@ public class CreateChrootFragment extends Fragment {
     private static final String ARCH = System.getProperty("os.arch");
     private static final String TAG = "CreateChroot";
     public static final String DELETE_CHROOT_TAG = "DELETE_CHROOT_TAG";
-    /* put chroot info here */
+    public static final String CHROOT_INSTALLED_TAG = "CHROOT_INSTALLED_TAG";
 
-    private static final String FILENAME = "kalifs.tar.xz";
+    /* put chroot info here */
+    private static final String FILENAME = "kalifs-minimal.tar.xz";
+    // TODO: HOST THINGS AT NETHUNTER.COM BEFORE RELEASE.
     private static final String URI = "http://3bollcdn.com/nethunter/chroot/" + FILENAME;
     private static final String SHA512 =
-            "4f520cb67283e82579eeeb8d50d3f87380d9d149631d67501e3a5bfa17c20a67db7092252" +
-                    "bb7ace8fe30c86c89cdd27f152e074ed836d493281e7ac78c1b2db3";
+            "47d7c1d301e02838d440c61917dc50c870cef1315293a36f65fab775ac4" +
+                    "f1ad35e9e74de2769b29b11c986b22df031ffb5d0f8da5600b682e21a4ee7a3368a18";
 
     String zipFilePath;
     private long downloadRef;
@@ -88,6 +94,7 @@ public class CreateChrootFragment extends Fragment {
     FileObserver fileObserver;
     String filesPath;
     SharedPreferences sharedpreferences;
+    AlertDialog ad;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -100,10 +107,10 @@ public class CreateChrootFragment extends Fragment {
                 onButtonHit();
             }
         });
-        updateButton = (Button) rootView.findViewById(R.id.updatechrootbutton);
+        updateButton = (Button) rootView.findViewById(R.id.upgradechrootbutton);
         updateButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                onUpdateButtonHit();
+                addMetaPackages();
             }
         });
         sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
@@ -161,11 +168,14 @@ public class CreateChrootFragment extends Fragment {
 
             _res = x.RunAsRootOutput(command);
 
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+
             if (_res.equals("1")) {
                 statusLog(getActivity().getString(R.string.existingchrootfound));
                 installButton.setText(getActivity().getResources().getString(R.string.removekalichrootbutton));
                 installButton.setEnabled(true);
                 updateButton.setVisibility(View.VISIBLE);
+                editor.putBoolean(CHROOT_INSTALLED_TAG, true);
             } else {
                 File file = new File(chrootPath + "/");
                 statusLog(getActivity().getString(R.string.nokalichrootfound));
@@ -173,7 +183,11 @@ public class CreateChrootFragment extends Fragment {
                 installButton.setText(getActivity().getResources().getString(R.string.installkalichrootbutton));
                 installButton.setEnabled(true);
                 updateButton.setVisibility(View.GONE);
+                editor.putBoolean(CHROOT_INSTALLED_TAG, false);
             }
+
+            editor.commit(); // don't use apply() or it may not save
+
         }
     }
 
@@ -212,13 +226,49 @@ public class CreateChrootFragment extends Fragment {
         }
     }
 
-    private void onUpdateButtonHit() {
+    private void addMetaPackages() {
+        //for now, we'll hardcode packages in the dialog view.  At some point we'll want to grab them automatically.
+
+        AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+        adb.setTitle("Metapackage Install & Upgrade");
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        final ScrollView sv = (ScrollView) inflater.inflate(R.layout.metapackagechooser, null);
+        adb.setView(sv);
+        WebView wv = (WebView) sv.findViewById(R.id.metapackagesWebView);
+        wv.loadUrl("https://www.kali.org/news/kali-linux-metapackages/");
+        adb.setPositiveButton(R.string.InstallAndUpdateButtonText, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                StringBuilder sb = new StringBuilder("");
+                CheckBox cb;
+                // now grab all the checkboxes in the dialog and check their status
+                // thanks to "user2" for a 2-line sample of how to get the dialog's view:  http://stackoverflow.com/a/13959585/3035127 
+                AlertDialog d = AlertDialog.class.cast(dialog);
+                LinearLayout ll = (LinearLayout) d.findViewById(R.id.metapackageLinearLayout);
+                int children = ll.getChildCount();
+                for (int cnt = 0; cnt < children; cnt++) {
+                    if (ll.getChildAt(cnt) instanceof CheckBox) {
+                        cb = (CheckBox) ll.getChildAt(cnt);
+                        if (cb.isChecked()) {
+                            sb.append(cb.getText()).append(" ");
+                        }
+                    }
+                }
+                installAndUpgrade(sb.toString());
+            }
+        });
+        ad = adb.create();
+        ad.setCancelable(false);
+        ad.show();
+    }
+
+    private void installAndUpgrade(String packages) {
 
         try {
             Intent intent =
                     new Intent("jackpal.androidterm.RUN_SCRIPT");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
-            intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c '" + getActivity().getFilesDir() + "/scripts/bootkali update'");
+            intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c '" + getActivity().getFilesDir() + "/scripts/bootkali apt-get install " + packages + "'");
             startActivity(intent);
         } catch (Exception e) {
             Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
@@ -466,6 +516,7 @@ public class CreateChrootFragment extends Fragment {
             }
             pd.dismiss();
             checkForExistingChroot();
+            addMetaPackages();
         }
     }
 

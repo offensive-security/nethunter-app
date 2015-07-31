@@ -35,8 +35,8 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/UpdateChrootInTerminalAppButtonText"
-            android:id="@+id/updatechrootbutton"
+            android:text="@string/MaintainChrootInTerminal"
+            android:id="@+id/upgradechrootbutton"
             android:paddingLeft="16sp"
             android:paddingRight="16sp" />
 

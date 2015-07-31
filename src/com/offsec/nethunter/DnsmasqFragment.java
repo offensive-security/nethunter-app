@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//import android.app.Fragment;
-
 public class DnsmasqFragment extends Fragment {
 
     private String configFilePath = "files/dnsmasq.conf";
@@ -57,7 +55,6 @@ public class DnsmasqFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
         if (isAdded()) {
             fileDir = getActivity().getFilesDir().toString() + "/scripts";
         }

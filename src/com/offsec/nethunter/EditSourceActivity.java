@@ -1,11 +1,12 @@
 package com.offsec.nethunter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -22,7 +23,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 
-public class EditSourceActivity extends Activity {
+public class EditSourceActivity extends AppCompatActivity {
 
     private String configFilePath = "";
     private Boolean shell = false;
@@ -50,7 +51,10 @@ public class EditSourceActivity extends Activity {
             text = readFile();
         }
         source.setText(text);
-        ActionBarCompat.setDisplayHomeAsUpEnabled(this);
+        ActionBar ab = getSupportActionBar();
+        if (ab != null ) {
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     private String readFile() {

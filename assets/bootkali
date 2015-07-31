@@ -1,4 +1,4 @@
-#!/system/bin/sh
+#!/system/xbin/bash
 
 if [ -x /system/xbin/busybox ]; then
    busybox=/system/xbin/busybox
@@ -303,9 +303,32 @@ else
          $busybox chroot $mnt /usr/bin/macchanger --mac=$2 $3
       fi
 
-		#KALIMENU
+      #KALIMENU
 
-		if [ "$1" == "kalimenu" ]; then
-			$busybox chroot $mnt /usr/bin/kalimenu
-		fi
+      if [ "$1" == "kalimenu" ]; then
+         $busybox chroot $mnt /usr/bin/kalimenu
+      fi
+
+      #APT-GET
+      #Example: bootkali apt-get install "package-name package2"
+      #Packages don't have to be in quotes but it doesn't hurt
+      #Also, you can leave the packages blank and it'll just update/upgrade
+
+      if [ "$1" == "apt-get" ] && [ "$2" == "install" ]; then
+            printf "Here we go!\n\nInstalling any new metapackages and update/upgrading.\n\nNote that you may be asked to interact during the installation of some packages.\n\n"
+            echo -e "\e[32m/usr/bin/apt-get update\e[0m"
+            LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $busybox chroot $mnt /usr/bin/apt-get update
+         if [ -z ${var+x} ] || [ "$3" != "" ]; then
+            echo -e "\e[32m/usr/bin/apt-get -y --force-yes install "$3"\e[0m"
+            LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $busybox chroot $mnt /usr/bin/apt-get -y --force-yes install "$3"
+         fi
+            echo -e "\e[32m/usr/bin/apt-get upgrade\e[0m"
+            LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $busybox chroot $mnt /usr/bin/apt-get upgrade
+            echo -e "\e[32m"
+            printf "\n\nDone!\n\nIf you noticed errors, press the up-arrow key (if your keyboard supports it) to review previously-issued commands.\n"
+            printf "Or type 'exit' and press Enter or press the 'back' key to return to Nethunter.\n\n"
+            printf "If you did encounter errors, re-try the metapackage installation via the 'Maintain Chroot' button in the Chroot Manager.\n\n"
+            printf "You can also use 'Maintain Chroot' to keep your chroot packages up-to-date and to install new metapackages.\n\n"
+            echo -e "\e[0m"
+      fi
 fi

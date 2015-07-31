@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView3"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16sp">
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/metapackagesExplanation"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:id="@+id/metapackageLinearLayout"
+            android:padding="16dp">
+
+            <CheckBox
+                android:id="@+id/kalilinux"
+                android:checked="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="kali-linux" />
+
+            <CheckBox
+                android:id="@+id/kalilinuxall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="kali-linux-all" />
+
+            <CheckBox
+                android:id="@+id/kalilinuxforensic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="kali-linux-forensic" />
+
+            <CheckBox
+                android:id="@+id/kalilinuxfull"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="kali-linux-full" />
+
+            <CheckBox
+                android:id="@+id/kalilinuxgpu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="kali-linux-gpu" />
+
+            <CheckBox
+                android:id="@+id/kalilinuxpwtools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="kali-linux-pwtools" />
+
+            <CheckBox
+                android:id="@+id/kalilinuxrfid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="kali-linux-rfid" />
+
+            <CheckBox
+                android:id="@+id/kalilinuxsdr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="kali-linux-sdr" />
+
+            <CheckBox
+                android:id="@+id/kalilinuxtop10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="kali-linux-top10" />
+
+            <CheckBox
+                android:id="@+id/kalilinuxvoip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="kali-linux-voip" />
+
+            <CheckBox
+                android:id="@+id/kalilinuxweb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="kali-linux-web" />
+
+            <CheckBox
+                android:id="@+id/kalilinuxwireless"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="kali-linux-wireless" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="16sp"
+            android:paddingTop="16sp"
+            android:text="@string/metapackagesAdditionalInfo"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/highlighted_text_material_dark"
+            android:textIsSelectable="false" />
+
+        <WebView
+            android:id="@+id/metapackagesWebView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+</ScrollView>

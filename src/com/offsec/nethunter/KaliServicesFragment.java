@@ -49,7 +49,6 @@ public class KaliServicesFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
 
         if (isAdded()) {
             String fileDir = getActivity().getFilesDir().toString() + "/scripts";

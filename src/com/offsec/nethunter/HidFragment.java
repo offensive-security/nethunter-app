@@ -76,7 +76,6 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
         if (isAdded()) {
             fileDir = getActivity().getFilesDir().toString() + "/scripts";
         }

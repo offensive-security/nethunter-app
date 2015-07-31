@@ -58,7 +58,6 @@ public class MacchangerFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
         if (isAdded()) {
             fileDir = getActivity().getFilesDir().toString() + "/scripts";
         }
