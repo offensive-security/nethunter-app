@@ -212,6 +212,7 @@
     <string name="nhwarning">Nethunter installs and uses a standard Kali Linux distribution \"under the hood\".  To support this functionality, Nethunter disables some standard Android security features such as Security Enhanced Linux (selinux).  Kali\'s Linux processes may run with full root privileges and can therefore access system functionality well beyond the normal Android security model.  Consider therefore that this device, as a hybrid, may not be as secure as either standard Kali Linux OR standard Android.</string>
     <string name="unknown">Unknown</string>
     <string name="statusText">Status:</string>
+    <string name="licenseInfo">Nethunter is licensed under the <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html">GPLv2</a> and source is available at <a href="https://github.com/offensive-security">github.com/offensive-security</a>.  Some icons are licensed from Google, Inc. under <a href="https://creativecommons.org/licenses/by/4.0">CC BY 4.0</a>.</string>
 
     <!-- sidebar menu item titles -->
     <string name="drawertitlenethunter">Home</string>
