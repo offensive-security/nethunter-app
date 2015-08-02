@@ -1,117 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/scrollView"
     android:fillViewport="true">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <ImageView
             android:id="@+id/test_image"
-            android:src="@drawable/offsec_logo_2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"
+            android:src="@drawable/offsec_logo_2" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/hometitle"
             android:layout_gravity="center_horizontal|center"
             android:gravity="center"
+            android:text="@string/hometitle"
             android:textSize="22sp" />
 
         <TextView
+            android:id="@+id/buildinfo1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/buildinfo1"
             android:layout_gravity="center_horizontal|center"
             android:gravity="center"
-            android:textSize="12sp"
-            android:paddingTop="4dp" />
+            android:paddingTop="4dp"
+            android:textSize="12sp" />
 
         <TextView
+            android:id="@+id/buildinfo2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/buildinfo2"
             android:layout_gravity="center_horizontal|center"
             android:gravity="center"
-            android:textSize="12sp"
-            android:paddingBottom="4dp" />
+            android:paddingBottom="4dp"
+            android:textSize="12sp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/nethunter_description"
             android:layout_gravity="center|center_horizontal"
             android:gravity="center"
             android:padding="16sp"
-            android:paddingTop="16sp" />
+            android:paddingTop="16sp"
+            android:text="@string/nethunter_description" />
 
         <GridLayout
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
-            android:rowCount="2"
+            android:layout_margin="16sp"
             android:columnCount="2"
-            android:layout_margin="16sp">
+            android:rowCount="2">
 
             <TextView
-                android:textStyle="bold"
+                android:id="@+id/current_interfaces"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_row="0"
                 android:text="@string/nethunter_current_interfaces"
                 android:textSize="18sp"
-                android:id="@+id/current_interfaces"
-                android:layout_row="0"
-                android:layout_column="0" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/editText1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:inputType="none"
-                android:typeface="monospace"
-                android:textSize="12sp"
-                android:layout_row="1"
                 android:layout_column="0"
-                android:paddingTop="8sp"/>
+                android:layout_row="1"
+                android:inputType="none"
+                android:paddingTop="8sp"
+                android:textSize="12sp"
+                android:typeface="monospace" />
 
             <TextView
-                android:textStyle="bold"
+                android:id="@+id/external_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:layout_gravity="end"
+                android:layout_row="0"
                 android:text="@string/nethunter_external_ip"
                 android:textSize="18sp"
-                android:layout_row="0"
-                android:layout_column="1"
-                android:id="@+id/external_address"
-                android:layout_gravity="end" />
+                android:textStyle="bold" />
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_column="1"
+                android:layout_gravity="end"
                 android:layout_row="1"
-                android:layout_gravity="end">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/editText2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:inputType="none"
-                    android:typeface="monospace"
-                    android:textSize="12sp"
                     android:layout_gravity="end"
+                    android:inputType="none"
                     android:paddingTop="8sp"
+                    android:singleLine="true"
                     android:text="@string/unknown"
-                    android:singleLine="true" />
+                    android:textSize="12sp"
+                    android:typeface="monospace" />
 
                 <Button
                     android:id="@+id/button1"
@@ -123,12 +123,21 @@
         </GridLayout>
 
         <TextView
+            android:id="@+id/licenseInfo"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="@string/nhwarning"
-            android:id="@+id/textView4"
             android:gravity="bottom|center"
+            android:paddingBottom="8dp"
+            android:text="@string/licenseInfo"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:gravity="bottom|center"
+            android:text="@string/nhwarning"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/highlighted_text_material_dark" />
     </LinearLayout>
 </ScrollView>

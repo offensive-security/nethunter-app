@@ -3,6 +3,7 @@ package com.offsec.nethunter;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +57,8 @@ public class NetHunterFragment extends Fragment {
         TextView ip = (TextView) rootView.findViewById(R.id.editText2);
         TextView buildInfo1 = (TextView) rootView.findViewById(R.id.buildinfo1);
         TextView buildInfo2 = (TextView) rootView.findViewById(R.id.buildinfo2);
+        TextView licenseView = (TextView) rootView.findViewById(R.id.licenseInfo);
+        licenseView.setMovementMethod(LinkMovementMethod.getInstance());
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd KK:mm:ss a zzz",
                 Locale.US);

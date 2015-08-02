@@ -212,6 +212,7 @@
     <string name="nhwarning">Nethunter installs and uses a standard Kali Linux distribution \"under the hood\".  To support this functionality, Nethunter disables some standard Android security features such as Security Enhanced Linux (selinux).  Kali\'s Linux processes may run with full root privileges and can therefore access system functionality well beyond the normal Android security model.  Consider therefore that this device, as a hybrid, may not be as secure as either standard Kali Linux OR standard Android.</string>
     <string name="unknown">Unknown</string>
     <string name="statusText">Status:</string>
+    <string name="licenseInfo">Nethunter is licensed under the <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html">GPLv2</a> and source is available at <a href="https://github.com/offensive-security">github.com/offensive-security</a>.  Some icons are licensed from Google, Inc. under <a href="https://creativecommons.org/licenses/by/4.0">CC BY 4.0</a>.</string>
 
     <!-- sidebar menu item titles -->
     <string name="drawertitlenethunter">Home</string>
@@ -226,6 +227,6 @@
     <string name="drawertitleiptables">IP Tables</string>
     <string name="drawertitlemacchanger">MAC Changer</string>
     <string name="InstallAndUpdateButtonText"><![CDATA[Install & Update]]></string>
-    <string name="metapackagesExplanation">Choose some \"metapackages\". The chroot will also be upgraded (via \"apt-get update/upgrade\").\n\nSelecting metapackages you already have installed (or no packages at all) simply update/upgrades without removing anything.\n\nDepending on what metapackages you select, you may be asked to do stuff (such as set passwords for services), so pay attention.</string>
+    <string name="metapackagesExplanation">Choose some \"metapackages\". The chroot will also be upgraded (via \"apt-get update/dist-upgrade\").\n\nSelecting metapackages you already have installed (or no packages at all) simply update/upgrades without removing anything.\n\nDepending on what metapackages you select, you may be asked to do stuff (such as set passwords for services), so pay attention.</string>
     <string name="metapackagesAdditionalInfo">Local storage requirements may be in the 20+ GB range. This installation/update will be performed in a terminal, so watch for issues. When completed, press the back button.</string>
 </resources>
