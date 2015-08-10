@@ -17,7 +17,6 @@
             android:text="@string/metapackagesExplanation"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
-
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
@@ -26,8 +25,15 @@
             android:padding="16dp">
 
             <CheckBox
-                android:id="@+id/kalilinux"
+                android:id="@+id/kalilinuxnethunter"
                 android:checked="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="kali-linux-nethunter" />
+
+
+            <CheckBox
+                android:id="@+id/kalilinux"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="kali-linux" />

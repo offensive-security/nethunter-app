@@ -257,7 +257,7 @@ public class CreateChrootFragment extends Fragment {
             }
         });
         ad = adb.create();
-        ad.setCancelable(false);
+        ad.setCancelable(true);
         ad.show();
     }
 
