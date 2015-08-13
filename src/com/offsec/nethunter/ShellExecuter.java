@@ -100,6 +100,11 @@ public class ShellExecuter {
         }
     }
 
+    public boolean isRootAvailable() {
+        String result = RunAsRootOutput("busybox id -u");
+        return result.matches("0");
+    }
+
     public String RunAsRootOutput(String command) {
         String output = "";
         String line;

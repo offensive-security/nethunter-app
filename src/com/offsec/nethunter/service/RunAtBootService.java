@@ -8,6 +8,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.offsec.nethunter.ChrootManagerFragment;
 import com.offsec.nethunter.R;
 import com.offsec.nethunter.ShellExecuter;
 
@@ -16,8 +17,6 @@ import java.io.File;
 public class RunAtBootService extends Service {
 
     public static final String TAG = "NH: RunAtBootService";
-    public static final String DELETE_CHROOT_TAG = "DELETE_CHROOT_TAG";
-    public static final String CHROOT_INSTALLED_TAG = "CHROOT_INSTALLED_TAG";
     final ShellExecuter x = new ShellExecuter();
     SharedPreferences sharedpreferences;
 
@@ -34,7 +33,7 @@ public class RunAtBootService extends Service {
         // updates should be done at boot, at every app start (current practice), etc.
         Log.d(TAG, "SO HERE WE GO");
         // check for DELETE_CHROOT_TAG pref & make sure default is NO
-        if(DELETE_CHROOT_TAG.equals(sharedpreferences.getString(DELETE_CHROOT_TAG, ""))){
+        if(ChrootManagerFragment.DELETE_CHROOT_TAG.equals(sharedpreferences.getString(ChrootManagerFragment.DELETE_CHROOT_TAG, ""))){
             // DELETE IS IN THE QUEUE -->  CHECK IF WE ARE UNMOUNTED BY COUNTING REFERENCES TO "KALI"
             // IN /proc/mounts
             String command = "if [ $(grep kali /proc/mounts -c) -ne 0 ];then echo 1; fi"; //check cmd
@@ -45,17 +44,35 @@ public class RunAtBootService extends Service {
             if (_res.equals("1")) {
                 Toast.makeText(getBaseContext(), getString(R.string.toastchrootmountedwarning), Toast.LENGTH_LONG).show();
             } else{
-                Log.d(TAG, "SHOULD DELETE!!!!!!");
                 Toast.makeText(getBaseContext(), getString(R.string.toastdeletingchroot), Toast.LENGTH_LONG).show();
                 x.RunAsRootOutput("su -c 'rm -rf " + getFilesDir() + "/chroot/*'");
                 Toast.makeText(getBaseContext(), getString(R.string.toastdeletedchroot), Toast.LENGTH_LONG).show();
                 // remove the sp so we dont remove it again on next boot
-                sharedpreferences.edit().remove(DELETE_CHROOT_TAG).apply();
-                sharedpreferences.edit().remove(CHROOT_INSTALLED_TAG).apply();
+                sharedpreferences.edit().remove(ChrootManagerFragment.DELETE_CHROOT_TAG).apply();
+                sharedpreferences.edit().remove(ChrootManagerFragment.CHROOT_INSTALLED_TAG).apply();
 
             }
 
         }
+
+        if(ChrootManagerFragment.MIGRATE_CHROOT_TAG.equals(sharedpreferences.getString(ChrootManagerFragment.MIGRATE_CHROOT_TAG, ""))) {
+            // CHECK IF WE ARE UNMOUNTED BY COUNTING REFERENCES TO "KALI"
+            // IN /proc/mounts
+            String command = "if [ $(grep kali /proc/mounts -c) -ne 0 ];then echo 1; fi"; //check cmd
+            final String _res;
+
+            _res = x.RunAsRootOutput(command);
+
+            if (_res.equals("1")) {
+                Toast.makeText(getBaseContext(), getString(R.string.toastchrootmountedwarning), Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getBaseContext(), getString(R.string.toastmigratingchroot), Toast.LENGTH_LONG).show();
+                x.RunAsRootOutput("su -c 'mv /data/local/kali-armhf " + getFilesDir() + "/chroot/'");
+                Toast.makeText(getBaseContext(), getString(R.string.toastmigratedchroot), Toast.LENGTH_LONG).show();
+                sharedpreferences.edit().remove(ChrootManagerFragment.MIGRATE_CHROOT_TAG).apply();
+            }
+        }
+
         if (userinit()) {
             Log.d(TAG, "ran scripts successfully.");
         }

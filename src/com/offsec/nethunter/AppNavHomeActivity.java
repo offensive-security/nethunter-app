@@ -1,6 +1,8 @@
 package com.offsec.nethunter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -154,6 +156,32 @@ public class AppNavHomeActivity extends AppCompatActivity {
 
         // pre-set the drawer options
         setDrawerOptions();
+        checkForRoot(); //  gateway check to make sure root's possible & pop up dialog if not
+    }
+
+    public void checkForRoot() {
+        ShellExecuter exe = new ShellExecuter();
+        if (!exe.isRootAvailable()) {
+            AlertDialog.Builder adb = new AlertDialog.Builder(this);
+            adb.setTitle(R.string.rootdialogtitle)
+                    .setMessage(R.string.rootdialogmessage)
+                    .setPositiveButton(R.string.rootdialogposbutton, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                            checkForRoot();
+                        }
+                    })
+                    .setNegativeButton(R.string.rootdialognegbutton, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    });
+            AlertDialog ad = adb.create();
+            ad.setCancelable(false);
+            ad.show();
+        }
     }
 
     /* if the chroot isn't set up, don't show the chroot options */
@@ -330,7 +358,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
                             case R.id.createchroot_item:
                                 fragmentManager
                                         .beginTransaction()
-                                        .replace(R.id.container, CreateChrootFragment.newInstance(itemId))
+                                        .replace(R.id.container, ChrootManagerFragment.newInstance(itemId))
                                         .addToBackStack(null)
                                         .commit();
                                 break;
