@@ -63,12 +63,13 @@ import java.util.GregorianCalendar;
  */
 
 
-public class CreateChrootFragment extends Fragment {
+public class ChrootManagerFragment extends Fragment {
 
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final String ARCH = System.getProperty("os.arch");
     private static final String TAG = "CreateChroot";
+    public static final String MIGRATE_CHROOT_TAG = "MIGRATE_CHROOT_TAG";
     public static final String DELETE_CHROOT_TAG = "DELETE_CHROOT_TAG";
     public static final String CHROOT_INSTALLED_TAG = "CHROOT_INSTALLED_TAG";
 
@@ -78,6 +79,7 @@ public class CreateChrootFragment extends Fragment {
     private static final String SHA512 =
             "47d7c1d301e02838d440c61917dc50c870cef1315293a36f65fab775ac4" +
                     "f1ad35e9e74de2769b29b11c986b22df031ffb5d0f8da5600b682e21a4ee7a3368a18";
+    private static final String OLD_CHROOT_PATH = "/data/local/kali-armhf/";
 
     String zipFilePath;
     private long downloadRef;
@@ -131,8 +133,8 @@ public class CreateChrootFragment extends Fragment {
         return rootView;
     }
 
-    public static CreateChrootFragment newInstance(int sectionNumber) {
-        CreateChrootFragment fragment = new CreateChrootFragment();
+    public static ChrootManagerFragment newInstance(int sectionNumber) {
+        ChrootManagerFragment fragment = new ChrootManagerFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
@@ -152,8 +154,68 @@ public class CreateChrootFragment extends Fragment {
         } else if (ARCH.contains("x86")) {
             dir = "kali-i386";  // etc
         }
+        checkforPreviousChroot();
         checkForExistingChroot();
         super.onActivityCreated(savedInstanceState);
+    }
+
+
+    private void checkforPreviousChroot() {
+        // does old chroot directory exist?
+        if (getActivity() != null) {
+            String oldchrootcheck = "if [ -d " + OLD_CHROOT_PATH + " ];then echo 1; fi";  // look for old chroot
+            String newchrootcheck = "if [ -d " + chrootPath + dir + " ];then echo 1; fi"; //check the dir existence
+
+            final String _res = x.RunAsRootOutput(oldchrootcheck);
+            final String _res2 = x.RunAsRootOutput(newchrootcheck);
+            if (_res.equals("1") && !_res2.equals("1")) {
+                // old chroot but not new one
+                AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+                adb.setTitle("Old chroot found!")
+                        .setMessage("You appear to have an existing chroot from an older version of Nethunter.\n\nMigrating it will require a reboot.\n\nYou can also leave the old chroot alone and just install a new one.  (If you choose this option, make sure you have enough storage for both.)")
+                        .setPositiveButton("Migrate (Reboot)", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                                startMigrateRoot();
+                            }
+                        })
+                        .setNegativeButton("Ignore Existing", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog ad = adb.create();
+                ad.setCancelable(false);
+                ad.show();
+            }
+
+        }
+    }
+
+    private void startMigrateRoot() {
+        installButton.setEnabled(false);
+        pd = new ProgressDialog(getActivity());
+        pd.setTitle(getActivity().getString(R.string.rebootingdialogtitle));
+        pd.setMessage(getActivity().getString(R.string.rebootingdialogbody));
+        pd.setCancelable(false);
+        pd.show();
+        Log.d(TAG, " PREFERENCE SET: " + MIGRATE_CHROOT_TAG);
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putString(MIGRATE_CHROOT_TAG, MIGRATE_CHROOT_TAG);  // the full text so we can compare later
+        editor.commit(); // don't use apply() or it may not save
+        try {
+            new android.os.Handler().postDelayed(
+                    new Runnable() {
+                        public void run() {
+                            Log.i("tag", "This'll run 4s later");
+                            x.RunAsRootOutput("reboot");
+                        }
+                    }, 4000);
+        } catch (RuntimeException e) {
+            Log.d(TAG, "Error: ", e);
+        }
     }
 
     private void checkForExistingChroot() {

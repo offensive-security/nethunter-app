@@ -358,7 +358,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
                             case R.id.createchroot_item:
                                 fragmentManager
                                         .beginTransaction()
-                                        .replace(R.id.container, CreateChrootFragment.newInstance(itemId))
+                                        .replace(R.id.container, ChrootManagerFragment.newInstance(itemId))
                                         .addToBackStack(null)
                                         .commit();
                                 break;

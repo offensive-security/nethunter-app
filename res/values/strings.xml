@@ -196,8 +196,11 @@
     <string name="existsalready">" exists already."</string>
     <string name="checkingforchroot">"Checking for chroot at "</string>
     <string name="toastchrootmountedwarning">Kali chroot is mounted and NOT deleted.  Reboot again to remove!!</string>
+    <string name="toastchrootrenamemountedwarning">Kali chroot is mounted and NOT migrated.  Reboot again to try again!!</string>
     <string name="toastdeletingchroot">Deleting Kali chroot&#8230;</string>
     <string name="toastdeletedchroot">Kali chroot has been deleted.</string>
+    <string name="toastmigratingchroot">Migrating Kali chroot&#8230;</string>
+    <string name="toastmigratedchroot">Kali chroot has been migrated.</string>
     <string name="downloadingchroot">Downloading chroot&#8230;</string>
     <string name="downloadingstandby">The chroot is being downloaded.  This could take a while&#8230;</string>
     <string name="unzippinguntarringdone">Unzipping &amp; untarring done.</string>
