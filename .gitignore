@@ -50,3 +50,6 @@ nethunter-app.iml
 # PDT-specific
 .buildpath
 /lint.xml
+gradle
+gradlew
+gradlew.bat
