@@ -196,7 +196,7 @@
     <string name="existsalready">" exists already."</string>
     <string name="checkingforchroot">"Checking for chroot at "</string>
     <string name="toastchrootmountedwarning">Kali chroot is mounted and NOT deleted.  Reboot again to remove!!</string>
-    <string name="toastchrootrenamemountedwarning">Kali chroot is mounted and NOT migrated.  Reboot again to try again!!</string>
+    <string name="toastchrootrenamemountedwarning">Kali chroot is mounted and NOT yet migrated.  Reboot again to try again!!</string>
     <string name="toastdeletingchroot">Deleting Kali chroot&#8230;</string>
     <string name="toastdeletedchroot">Kali chroot has been deleted.</string>
     <string name="toastmigratingchroot">Migrating Kali chroot&#8230;</string>
@@ -212,7 +212,7 @@
     <string name="aboutchroot">The \"chroot\" is a full installation of Kali Linux that shares processing, networking, storage, and other resources with Android. It resides in your internal app storage area and requires about 400MB for the minimal core installation.</string>
 
 
-    <string name="nhwarning">Nethunter installs and uses a standard Kali Linux distribution \"under the hood\".  To support this functionality, Nethunter disables some standard Android security features such as Security Enhanced Linux (selinux).  Kali\'s Linux processes may run with full root privileges and can therefore access system functionality well beyond the normal Android security model.  Consider therefore that this device, as a hybrid, may not be as secure as either standard Kali Linux OR standard Android.</string>
+    <string name="nhwarning">Nethunter installs and uses a standard Kali Linux distribution \"under the hood\".  To support this functionality, some <u>standard Android security features such as Security Enhanced Linux (selinux) are disabled</u>.  Moreover, Kali\'s Linux processes may run with full root privileges and can therefore access system functionality well beyond the normal Android security model.  Consider therefore that this device, as a hybrid, may not be as secure as either standard Kali Linux OR standard Android, and you are advised not to install or use Nethunter on \"daily driver\" devices or devices which store or access sensitive/private data.</string>
     <string name="unknown">Unknown</string>
     <string name="statusText">Status:</string>
     <string name="licenseInfo">Nethunter is licensed under the <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html">GPLv2</a> and source is available at <a href="https://github.com/offensive-security">github.com/offensive-security</a>.  Some icons are licensed from Google, Inc. under <a href="https://creativecommons.org/licenses/by/4.0">CC BY 4.0</a>.</string>
@@ -232,8 +232,13 @@
     <string name="InstallAndUpdateButtonText"><![CDATA[Install & Update]]></string>
     <string name="metapackagesExplanation">Choose some \"metapackages\". The chroot will also be upgraded (via \"apt-get update/dist-upgrade\").\n\nSelecting metapackages you already have installed (or no packages at all) simply update/upgrades without removing anything.\n\nDepending on what metapackages you select, you may be asked to do stuff (such as set passwords for services), so pay attention.</string>
     <string name="metapackagesAdditionalInfo">Local storage requirements may be in the 20+ GB range. This installation/update will be performed in a terminal, so watch for issues. When completed, press the back button.</string>
-    <string name="rootdialogmessage">Whoopsy daisy!  Nethunter requires elevated administrator (root) privileges.\n\nMake sure root access is available.  Depending on your version of Android, this may require a \"rooting\" procedure to install the <tt>su</tt> binary.\n\nOn CyanogenMod or CM-based Android, you may need to go to your device <b>Settings</b>, and under <b>Developer Options</b>, enable <b>Root access</b> for <b>Apps</b>.\n\nAdditionally, you will need to make sure <tt>busybox</tt> is installed, usually at <tt>/system/xbin/busybox</tt>.</string>
+    <string name="rootdialogmessage">Whoopsy daisy!  Nethunter requires elevated administrator (root) privileges.\n\nMake sure root access is available.  Depending on your version of Android, this may require a \"rooting\" procedure to install the <tt>su</tt> binary.\n\nOn CyanogenMod or CM-based Android, you may need to go to your device <b>Settings</b>, and under <b>Developer Options</b>, enable <b>Root access</b> for <b>Apps</b>.\n\nAdditionally, you will need to make sure <tt>busybox</tt> is installed, usually to <tt>/system/xbin/busybox</tt>.</string>
     <string name="rootdialogtitle">Missing root/busybox</string>
     <string name="rootdialogposbutton">Try again</string>
     <string name="rootdialognegbutton">Quit</string>
+
+    <string name="legacychroottitle">Legacy chroot found!</string>
+    <string name="legacychrootmessage">You appear to already have an existing Kali chroot from an older version of Nethunter.\n\nMigrating it to its new location requires a reboot.\n\nOr, you can leave the old chroot alone and install a new chroot.  If you choose this option, make sure you have enough storage for both.</string>
+    <string name="legacychrootposbutton">Migrate (reboot)</string>
+    <string name="legacychrootnegbutton">Ignore current</string>
 </resources>

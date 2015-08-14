@@ -154,13 +154,13 @@ public class ChrootManagerFragment extends Fragment {
         } else if (ARCH.contains("x86")) {
             dir = "kali-i386";  // etc
         }
-        checkforPreviousChroot();
+        checkforLegacyChroot();
         checkForExistingChroot();
         super.onActivityCreated(savedInstanceState);
     }
 
 
-    private void checkforPreviousChroot() {
+    private void checkforLegacyChroot() {
         // does old chroot directory exist?
         if (getActivity() != null) {
             String oldchrootcheck = "if [ -d " + OLD_CHROOT_PATH + " ];then echo 1; fi";  // look for old chroot
@@ -171,16 +171,16 @@ public class ChrootManagerFragment extends Fragment {
             if (_res.equals("1") && !_res2.equals("1")) {
                 // old chroot but not new one
                 AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-                adb.setTitle("Old chroot found!")
-                        .setMessage("You appear to have an existing chroot from an older version of Nethunter.\n\nMigrating it will require a reboot.\n\nYou can also leave the old chroot alone and just install a new one.  (If you choose this option, make sure you have enough storage for both.)")
-                        .setPositiveButton("Migrate (Reboot)", new DialogInterface.OnClickListener() {
+                adb.setTitle(R.string.legacychroottitle)
+                        .setMessage(R.string.legacychrootmessage)
+                        .setPositiveButton(R.string.legacychrootposbutton, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.cancel();
                                 startMigrateRoot();
                             }
                         })
-                        .setNegativeButton("Ignore Existing", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(R.string.legacychrootnegbutton, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.cancel();
