@@ -77,8 +77,8 @@ public class ChrootManagerFragment extends Fragment {
     private static final String FILENAME = "kalifs-minimal.tar.xz";
     private static final String URI = "http://images.offensive-security.com/" + FILENAME;
     private static final String SHA512 =
-            "47d7c1d301e02838d440c61917dc50c870cef1315293a36f65fab775ac4" +
-                    "f1ad35e9e74de2769b29b11c986b22df031ffb5d0f8da5600b682e21a4ee7a3368a18";
+            "20e41e93ba743fad8774fe2f065a685f586acce90bf02cec570ef83865c1fc90121b89bb" +
+                    "66a32e0c4f2e94e26ef339b549e8b0fa8ad104b5bc12f8251faf1330";
     private static final String OLD_CHROOT_PATH = "/data/local/kali-armhf/";
 
     String zipFilePath;
