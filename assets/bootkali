@@ -1,4 +1,4 @@
-#!/system/xbin/bash
+#!/system/bin/sh
 
 if [ -x /system/xbin/busybox ]; then
    busybox=/system/xbin/busybox

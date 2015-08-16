@@ -601,7 +601,7 @@ public class ChrootManagerFragment extends Fragment {
         public void onEvent(int event, String path) {
             upc = upc + 1;
 
-            if (!path.equals("") && event == FileObserver.MODIFY) {
+            if (path != null && event == FileObserver.MODIFY) {
                 DownloadManager.Query q = new DownloadManager.Query();
                 q.setFilterById(downloadRef);
                 Cursor c = dm.query(q);
