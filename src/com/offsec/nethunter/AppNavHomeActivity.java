@@ -35,6 +35,8 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.Stack;
 
+import eu.chainfire.libsuperuser.Shell;
+
 public class AppNavHomeActivity extends AppCompatActivity {
 
     public final static String TAG = "AppNavHomeActivity";
@@ -160,8 +162,8 @@ public class AppNavHomeActivity extends AppCompatActivity {
     }
 
     public void checkForRoot() {
-        ShellExecuter exe = new ShellExecuter();
-        if (!exe.isRootAvailable()) {
+        Boolean isRootAvailable = Shell.SU.available();
+        if (!isRootAvailable) {
             AlertDialog.Builder adb = new AlertDialog.Builder(this);
             adb.setTitle(R.string.rootdialogtitle)
                     .setMessage(R.string.rootdialogmessage)
