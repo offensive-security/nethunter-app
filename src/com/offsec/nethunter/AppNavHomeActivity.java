@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -68,12 +69,20 @@ public class AppNavHomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.base_layout);
         //set kali wallpaper as background
-        String imageInSD = Environment.getExternalStorageDirectory().getAbsolutePath() + "/kali-nh/wallpaper/kali-nh-2183x1200.png";
-        Bitmap bitmap = BitmapFactory.decodeFile(imageInSD);
+        //String imageInSD = Environment.getExternalStorageDirectory().getAbsolutePath() + "/kali-nh/wallpaper/kali-nh-2183x1200.png";
+        AssetManager assetManager = getAssets();
+        InputStream istr = null;
+        try {
+            istr = assetManager.open("wallpapers/kali-nh-2183x1200.png");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Bitmap bitmap = BitmapFactory.decodeStream(istr);
         ImageView myImageView = (ImageView) findViewById(R.id.bgHome);
         myImageView.setImageBitmap(bitmap);
 
@@ -158,32 +167,45 @@ public class AppNavHomeActivity extends AppCompatActivity {
 
         // pre-set the drawer options
         setDrawerOptions();
-        checkForRoot(); //  gateway check to make sure root's possible & pop up dialog if not
+        checkForRoot(); //  gateway check to make sure root's possible & pop up dialog if not in the bg
     }
 
     public void checkForRoot() {
-        Boolean isRootAvailable = Shell.SU.available();
-        if (!isRootAvailable) {
-            AlertDialog.Builder adb = new AlertDialog.Builder(this);
-            adb.setTitle(R.string.rootdialogtitle)
-                    .setMessage(R.string.rootdialogmessage)
-                    .setPositiveButton(R.string.rootdialogposbutton, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                            checkForRoot();
+
+        new Thread(new Runnable() {
+            public void run() {
+                final Boolean isRootAvailable = Shell.SU.available();
+                mDrawerLayout.post(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (!isRootAvailable) {
+                            AlertDialog.Builder adb = new AlertDialog.Builder(getApplicationContext());
+                            adb.setTitle(R.string.rootdialogtitle)
+                                    .setMessage(R.string.rootdialogmessage)
+                                    .setPositiveButton(R.string.rootdialogposbutton, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel();
+                                            checkForRoot();
+                                        }
+                                    })
+                                    .setNegativeButton(R.string.rootdialognegbutton, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            finish();
+                                        }
+                                    });
+                            AlertDialog ad = adb.create();
+                            ad.setCancelable(false);
+                            ad.show();
                         }
-                    })
-                    .setNegativeButton(R.string.rootdialognegbutton, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
-                    });
-            AlertDialog ad = adb.create();
-            ad.setCancelable(false);
-            ad.show();
-        }
+                    }
+                });
+            }
+        }).start();
+
+
     }
 
     /* if the chroot isn't set up, don't show the chroot options */

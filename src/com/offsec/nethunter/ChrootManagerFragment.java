@@ -108,12 +108,14 @@ public class ChrootManagerFragment extends Fragment {
                 onButtonHit();
             }
         });
+        installButton.setText("Checking...");
         updateButton = (Button) rootView.findViewById(R.id.upgradechrootbutton);
         updateButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 addMetaPackages();
             }
         });
+        updateButton.setVisibility(View.GONE);
         sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
         filesPath = getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
         zipFilePath = filesPath + "/" + FILENAME;
@@ -155,41 +157,60 @@ public class ChrootManagerFragment extends Fragment {
             dir = "kali-i386";  // etc
         }
         checkforLegacyChroot();
-        checkForExistingChroot();
         super.onActivityCreated(savedInstanceState);
     }
 
 
     private void checkforLegacyChroot() {
         // does old chroot directory exist?
-        if (getActivity() != null) {
-            String oldchrootcheck = "if [ -d " + OLD_CHROOT_PATH + " ];then echo 1; fi";  // look for old chroot
-            String newchrootcheck = "if [ -d " + chrootPath + dir + " ];then echo 1; fi"; //check the dir existence
 
-            final String _res = x.RunAsRootOutput(oldchrootcheck);
-            final String _res2 = x.RunAsRootOutput(newchrootcheck);
-            if (_res.equals("1") && !_res2.equals("1")) {
-                // old chroot but not new one
-                AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-                adb.setTitle(R.string.legacychroottitle)
-                        .setMessage(R.string.legacychrootmessage)
-                        .setPositiveButton(R.string.legacychrootposbutton, new DialogInterface.OnClickListener() {
+        if (getActivity() != null) {
+
+            new Thread(new Runnable() {
+
+                public void run() {
+                    String oldchrootcheck = "if [ -d " + OLD_CHROOT_PATH + " ];then echo 1; fi";  // look for old chroot
+                    String newchrootcheck = "if [ -d " + chrootPath + dir + " ];then echo 1; fi"; //check the dir existence
+                    final String _res = x.RunAsRootOutput(oldchrootcheck);
+                    final String _res2 = x.RunAsRootOutput(newchrootcheck);
+                    View mView =  getView();
+                    if (mView != null) {
+                        mView.post(new Runnable() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                                startMigrateRoot();
-                            }
-                        })
-                        .setNegativeButton(R.string.legacychrootnegbutton, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
+                            public void run() {
+                                if (_res.equals("1") && !_res2.equals("1")) {
+                                    // old chroot but not new one
+                                    AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+                                    adb.setTitle(R.string.legacychroottitle)
+                                            .setMessage(R.string.legacychrootmessage)
+                                            .setPositiveButton(R.string.legacychrootposbutton, new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.cancel();
+                                                    startMigrateRoot();
+                                                }
+                                            })
+                                            .setNegativeButton(R.string.legacychrootnegbutton, new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.cancel();
+                                                }
+                                            });
+                                    AlertDialog ad = adb.create();
+                                    ad.setCancelable(false);
+                                    ad.show();
+                                } else {
+                                    checkForExistingChroot();
+                                }
                             }
                         });
-                AlertDialog ad = adb.create();
-                ad.setCancelable(false);
-                ad.show();
-            }
+                    }
+
+                }
+
+            }).start();
+
+
 
         }
     }
@@ -219,35 +240,53 @@ public class ChrootManagerFragment extends Fragment {
     }
 
     private void checkForExistingChroot() {
+
         // does chroot directory exist?
         if (getActivity() != null) {
             chrootPath = getActivity().getFilesDir() + "/chroot/";
             statusLog(getActivity().getString(R.string.checkingforchroot) + chrootPath);
+            new Thread(new Runnable() {
 
-            String command = "if [ -d " + chrootPath + dir + " ];then echo 1; fi"; //check the dir existence
-            final String _res;
+                public void run() {
+                    String command = "if [ -d " + chrootPath + dir + " ];then echo 1; fi"; //check the dir existence
+                    final String _res;
 
-            _res = x.RunAsRootOutput(command);
+                    _res = x.RunAsRootOutput(command);
 
-            SharedPreferences.Editor editor = sharedpreferences.edit();
 
-            if (_res.equals("1")) {
-                statusLog(getActivity().getString(R.string.existingchrootfound));
-                installButton.setText(getActivity().getResources().getString(R.string.removekalichrootbutton));
-                installButton.setEnabled(true);
-                updateButton.setVisibility(View.VISIBLE);
-                editor.putBoolean(CHROOT_INSTALLED_TAG, true);
-            } else {
-                File file = new File(chrootPath + "/");
-                statusLog(getActivity().getString(R.string.nokalichrootfound));
-                file.mkdir();
-                installButton.setText(getActivity().getResources().getString(R.string.installkalichrootbutton));
-                installButton.setEnabled(true);
-                updateButton.setVisibility(View.GONE);
-                editor.putBoolean(CHROOT_INSTALLED_TAG, false);
-            }
 
-            editor.commit(); // don't use apply() or it may not save
+                    installButton.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            SharedPreferences.Editor editor = sharedpreferences.edit();
+
+                            if (_res.equals("1")) {
+                                statusLog(getActivity().getString(R.string.existingchrootfound));
+                                installButton.setText(getActivity().getResources().getString(R.string.removekalichrootbutton));
+                                installButton.setEnabled(true);
+                                updateButton.setVisibility(View.VISIBLE);
+                                editor.putBoolean(CHROOT_INSTALLED_TAG, true);
+                            } else {
+                                File file = new File(chrootPath + "/");
+                                statusLog(getActivity().getString(R.string.nokalichrootfound));
+                                file.mkdir();
+                                installButton.setText(getActivity().getResources().getString(R.string.installkalichrootbutton));
+                                installButton.setEnabled(true);
+                                updateButton.setVisibility(View.GONE);
+                                editor.putBoolean(CHROOT_INSTALLED_TAG, false);
+                            }
+
+                            editor.commit(); // don't use apply() or it may not save
+
+                        }
+                    });
+
+                }
+
+            }).start();
+
+
+
 
         }
     }

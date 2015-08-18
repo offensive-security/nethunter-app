@@ -2,6 +2,7 @@ package com.offsec.nethunter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -57,17 +58,17 @@ public class KaliServicesFragment extends Fragment {
 
                     // name, check  cmd, start cmd, stop cmd, state
 
-                    {"SSH", "sh " + fileDir + "/check-kalissh", "su -c '" + fileDir + "/bootkali ssh start'", "su -c '" + fileDir + "/bootkali ssh stop'"},
-                    {"Dnsmasq", "sh " + fileDir + "/check-kalidnsmq", "su -c '" + fileDir + "/bootkali dnsmasq start'", "su -c '" + fileDir + "/bootkali dnsmasq stop'"},
-                    {"Hostapd", "sh " + fileDir + "/check-kalihostapd", "su -c '" + fileDir + "/bootkali hostapd start'", "su -c '" + fileDir + "/bootkali hostapd stop'"},
-                    {"OpenVPN", "sh " + fileDir + "/check-kalivpn", "su -c '" + fileDir + "/bootkali openvpn start'", "su -c '" + fileDir + "/bootkali openvpn stop'"},
-                    {"Apache", "sh " + fileDir + "/check-kaliapache", "su -c '" + fileDir + "/bootkali apache start'", "su -c '" + fileDir + "/bootkali apache stop'"},
-                    {"Metasploit", "sh " + fileDir + "/check-kalimetasploit", "su -c '" + fileDir + "/bootkali msf start'", "su -c '" + fileDir + "/bootkali msf stop'"},
-                    //{"DHCP", "sh " + fileDir + "/check-kalidhcp","su -c '" + cachedir + "/bootkali dhcp start'","su -c '" + cachedir + "/bootkali dhcp stop'"},
-                    {"BeEF Framework", "sh " + fileDir + "/check-kalibeef-xss", "su -c '" + fileDir + "/bootkali beef-xss start'", "su -c '" + fileDir + "/bootkali beef-xss stop'"},
-                    //{"Fruity WiFi", "sh " + fileDir + "/check-fruity-wifi","su -c start-fruity-wifi","su -c  stop-fruity-wifi"}
+                    {"SSH", fileDir + "/check-kalissh", fileDir + "/bootkali ssh start", fileDir + "/bootkali ssh stop"},
+                    {"Dnsmasq", fileDir + "/check-kalidnsmq", fileDir + "/bootkali dnsmasq start", fileDir + "/bootkali dnsmasq stop"},
+                    {"Hostapd", fileDir + "/check-kalihostapd", fileDir + "/bootkali hostapd start", fileDir + "/bootkali hostapd stop"},
+                    {"OpenVPN", fileDir + "/check-kalivpn", fileDir + "/bootkali openvpn start", fileDir + "/bootkali openvpn stop"},
+                    {"Apache", fileDir + "/check-kaliapache", fileDir + "/bootkali apache start", fileDir + "/bootkali apache stop"},
+                    {"Metasploit", fileDir + "/check-kalimetasploit", fileDir + "/bootkali msf start", fileDir + "/bootkali msf stop"},
+                    //{"DHCP", fileDir + "/check-kalidhcp",cachedir + "/bootkali dhcp start",cachedir + "/bootkali dhcp stop"},
+                    {"BeEF Framework", fileDir + "/check-kalibeef-xss", fileDir + "/bootkali beef-xss start", fileDir + "/bootkali beef-xss stop"},
+                    //{"Fruity WiFi", fileDir + "/check-fruity-wifi","su -c start-fruity-wifi","su -c  stop-fruity-wifi"}
                     // the stop script isnt working well, doing a raw cmd instead to stop vnc
-                    // {"VNC", "sh " + fileDir + "/check-kalivnc", "" + cachedir + "/bootkali\nvncserver", "" + cachedir + "/bootkali\nkill $(ps aux | grep 'Xtightvnc' | awk '{print $2}');CT=0;for x in $(ps aux | grep 'Xtightvnc' | awk '{print $2}'); do CT=$[$CT +1];tightvncserver -kill :$CT; done;rm /root/.vnc/*.log;rm -r /tmp/.X*"},
+                    // {"VNC", fileDir + "/check-kalivnc", "" + cachedir + "/bootkali\nvncserver", "" + cachedir + "/bootkali\nkill $(ps aux | grep 'Xtightvnc' | awk '{print $2}');CT=0;for x in $(ps aux | grep 'Xtightvnc' | awk '{print $2}'); do CT=$[$CT +1];tightvncserver -kill :$CT; done;rm /root/.vnc/*.log;rm -r /tmp/.X*"},
             };
         }
     }
@@ -93,37 +94,26 @@ public class KaliServicesFragment extends Fragment {
 
     private void checkServices(final View rootView) {
 
-    	
     	new Thread(new Runnable() {
+
             public void run() {
+
                 ShellExecuter exe = new ShellExecuter();
-                Logger Logger = new Logger();
-                //int c = 0;
-                //while (updateStatuses) {
-                    try {
-                  //  	if (c > 0) {
-                  // 		Thread.sleep(10000);
-                  //  	} else {
-                  //  		c++;
-                  // 	}
-                        final ListView servicesList = (ListView) rootView.findViewById(R.id.servicesList);
-                        String checkCmd = "";
-                        for (String[] KaliService : KaliServices) {
-                            checkCmd += KaliService[1] + ";";
-                        }
-                        final String outp1 = exe.RunAsRootOutput(checkCmd);
-                        //Logger.appendLog(outp1);
-                        servicesList.post(new Runnable() {
-                            @Override
-                            public void run() {
-                            	servicesList.setAdapter(new SwichLoader(getActivity().getApplicationContext(), outp1, KaliServices));
-                            }
-                        });
-                    } catch (Exception e) {
-                    	Logger.appendLog(e.getMessage());
-                    }
+                final ListView servicesList = (ListView) rootView.findViewById(R.id.servicesList);
+                String checkCmd = "";
+                for (String[] KaliService : KaliServices) {
+                    checkCmd += KaliService[1] + ";";
                 }
-            //}
+                final String outp1 = exe.RunAsRootOutput(checkCmd);
+                servicesList.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        servicesList.setAdapter(new SwichLoader(getActivity().getApplicationContext(), outp1, KaliServices));
+                    }
+                });
+
+            }
+
         }).start();
     }
 }
@@ -135,14 +125,14 @@ public class KaliServicesFragment extends Fragment {
 class SwichLoader extends BaseAdapter {
 
     private Context mContext;
-    private ShellExecuter sExec = new ShellExecuter();
     private String[] curstats;
     private String services[][];
-
+    private ShellExecuter exe = new ShellExecuter();
     public SwichLoader(Context context, String serviceStates, String[][] KaliServices) {
         services = KaliServices;
         mContext = context;
         curstats = serviceStates.split("(?!^)");
+
     }
 
     static class ViewHolderItem {
@@ -209,17 +199,32 @@ class SwichLoader extends BaseAdapter {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    sExec.RunAsRoot(new String[]{services[position][2]});
+                    new Thread(new Runnable() {
+                        public void run() {
+
+                            Logger Logger = new Logger();
+                            exe.RunAsRoot(new String[]{services[position][2]});
+                        }
+
+                    }).start();
                     curstats[position] = "1";
                     finalVH.swholder.setText(services[position][0] + " Service Started");
                     finalVH.sw.setTextColor(mContext.getResources().getColor(R.color.blue));
                     finalVH.swholder.setTextColor(mContext.getResources().getColor(R.color.blue));
+
                 } else {
-                    sExec.RunAsRoot(new String[]{services[position][3]});
+                    new Thread(new Runnable() {
+                        public void run() {
+
+                            exe.RunAsRoot(new String[]{services[position][3]});
+                        }
+
+                    }).start();
                     curstats[position] = "0";
                     finalVH.swholder.setText(services[position][0] + " Service Stopped");
                     finalVH.sw.setTextColor(mContext.getResources().getColor(R.color.clearTitle));
                     finalVH.swholder.setTextColor(mContext.getResources().getColor(R.color.clearText));
+
                 }
             }
         });

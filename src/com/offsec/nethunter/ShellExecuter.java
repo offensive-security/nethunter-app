@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.List;
 
+import eu.chainfire.libsuperuser.Shell;
 
 public class ShellExecuter {
 
@@ -19,15 +21,11 @@ public class ShellExecuter {
     }
 
     public String Executer(String command) {
-        StringBuilder output = new StringBuilder();
-        Process p;
+        StringBuilder output = (new StringBuilder());
         try {
-            p = Runtime.getRuntime().exec(command);
-            p.waitFor();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                output.append(line).append('\n');
+            List<String> shellOut = Shell.SU.run(command);
+            for (String line : shellOut) {
+                output.append(line).append((char)10);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -36,15 +34,11 @@ public class ShellExecuter {
     }
 
     public String Executer(String command[]) {
-        StringBuilder output = new StringBuilder();
-        Process p;
+        StringBuilder output = (new StringBuilder());
         try {
-            p = Runtime.getRuntime().exec(command);
-            p.waitFor();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                output.append(line).append('\n');
+            List<String> shellOut = Shell.SU.run(command);
+            for (String line : shellOut) {
+                output.append(line).append("\n");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -54,14 +48,8 @@ public class ShellExecuter {
 
     public void RunAsRoot(String[] command) {
         try {
-            Process process = Runtime.getRuntime().exec("su");
-            DataOutputStream os = new DataOutputStream(process.getOutputStream());
-            for (String tmpmd : command) {
-                os.writeBytes(tmpmd + '\n');
-            }
-            os.writeBytes("exit\n");
-            os.flush();
-        } catch (IOException e) {
+            Shell.SU.run(command);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -100,38 +88,16 @@ public class ShellExecuter {
         }
     }
 
-
     public String RunAsRootOutput(String command) {
-        String output = "";
-        String line;
+        StringBuilder output = (new StringBuilder());
         try {
-            Process process = Runtime.getRuntime().exec("su");
-            OutputStream stdin = process.getOutputStream();
-            InputStream stderr = process.getErrorStream();
-            InputStream stdout = process.getInputStream();
-
-            stdin.write((command + '\n').getBytes());
-            stdin.write(("exit\n").getBytes());
-            stdin.flush();
-            stdin.close();
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(stdout));
-            while ((line = br.readLine()) != null) {
-                output = output + line;
+            List<String> shellOut = Shell.SU.run(command);
+            for (String line : shellOut) {
+                output.append(line);
             }
-            br.close();
-            br = new BufferedReader(new InputStreamReader(stderr));
-            while ((line = br.readLine()) != null) {
-                Log.e("Shell Error:", line);
-            }
-            br.close();
-            process.waitFor();
-            process.destroy();
-        } catch (IOException e) {
-            Log.d(TAG, "An IOException was caught: " + e.getMessage());
-        } catch (InterruptedException ex) {
-            Log.d(TAG, "An InterruptedException was caught: " + ex.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return output;
+        return output.toString();
     }
 }
