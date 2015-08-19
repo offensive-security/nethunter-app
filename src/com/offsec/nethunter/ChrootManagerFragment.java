@@ -117,7 +117,7 @@ public class ChrootManagerFragment extends Fragment {
         });
         updateButton.setVisibility(View.GONE);
         sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
-        filesPath = getActivity().getExternalFilesDir("/storage/emulated/0/").getAbsolutePath();
+        filesPath = "/storage/emulated/0";
         zipFilePath = filesPath + "/" + FILENAME;
         onDLFinished = new BroadcastReceiver() {
             @Override
@@ -163,8 +163,8 @@ public class ChrootManagerFragment extends Fragment {
 
     private void checkforLegacyChroot() {
         // does old chroot directory exist?
-
         if (getActivity() != null) {
+            final View mView =  getView();
 
             new Thread(new Runnable() {
 
@@ -173,7 +173,7 @@ public class ChrootManagerFragment extends Fragment {
                     String newchrootcheck = "if [ -d " + chrootPath + dir + " ];then echo 1; fi"; //check the dir existence
                     final String _res = x.RunAsRootOutput(oldchrootcheck);
                     final String _res2 = x.RunAsRootOutput(newchrootcheck);
-                    View mView =  getView();
+
                     if (mView != null) {
                         mView.post(new Runnable() {
                             @Override
@@ -249,9 +249,7 @@ public class ChrootManagerFragment extends Fragment {
 
                 public void run() {
                     String command = "if [ -d " + chrootPath + dir + " ];then echo 1; fi"; //check the dir existence
-                    final String _res;
-
-                    _res = x.RunAsRootOutput(command);
+                    final String _res = x.RunAsRootOutput(command);
 
 
 
@@ -413,6 +411,7 @@ public class ChrootManagerFragment extends Fragment {
 
     private boolean startZipDownload() {
 
+
         File checkFile = new File(zipFilePath);
         File otherFile = new File(zipFilePath.replace("/storage/emulated/0", "/storage/emulated/legacy"));
         if (checkFile.exists() || otherFile.exists()) {
@@ -437,6 +436,30 @@ public class ChrootManagerFragment extends Fragment {
             statusLog(getActivity().getString(R.string.unwritablestorageerror));
             return false;
         }
+        final String micmd = "wget "+ URI + " -P " + filesPath;
+
+
+
+        final View mView =  getView();
+        new Thread(new Runnable() {
+            public void run() {
+                Log.d(TAG, "wget STARTING ::: " + micmd);
+                final String res = x.RunAsRootOutput(micmd);
+
+                if (mView != null) {
+                    mView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d(TAG, "wget OUT ::: " + res);
+                            downloadFinished();
+                        }
+                    });
+                }
+            }
+
+        }).start();
+
+        /*
         dm = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
         removeExistingDownloadOperations();
         Uri uri = Uri.parse(URI);
@@ -453,11 +476,12 @@ public class ChrootManagerFragment extends Fragment {
         // start watching download progress
         fileObserver = new DownloadsObserver(filesPath);
         fileObserver.startWatching();
+        */
         return true;
     }
 
     private void downloadFinished() {
-        int status = -1;
+      /*  int status = -1;
         // what happened
         DownloadManager.Query q = new DownloadManager.Query();
         q.setFilterById(downloadRef);
@@ -470,41 +494,63 @@ public class ChrootManagerFragment extends Fragment {
         if (status == DownloadManager.STATUS_SUCCESSFUL) {
             // everything ok so we dont longer need the fileobserver
             fileObserver.stopWatching();
-            pd.dismiss();
-            statusLog(getActivity().getString(R.string.downloadsuccessful));
-            // remove the partial...
-            try {
-                x.RunAsRoot("mv " + zipFilePath + ".partial " + zipFilePath);
-            } catch (RuntimeException ex) { // file not found
-                zipFilePath = zipFilePath.replace("/storage/emulated/0", "/storage/emulated/legacy");
-                try {
-                    x.RunAsRoot("mv " + zipFilePath + ".partial " + zipFilePath);
-                } catch (RuntimeException e) {
-                    statusLog(getActivity().getString(R.string.downloaderrormissingfile) + e);
+            pd.dismiss();*/
+
+            // remove the partial...in the bg
+            final View mView =  getView();
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        x.RunAsRoot("mv " + zipFilePath + ".partial " + zipFilePath);
+                    } catch (RuntimeException ex) { // file not found
+                        zipFilePath = zipFilePath.replace("/storage/emulated/0", "/storage/emulated/legacy");
+                        try {
+                            x.RunAsRoot("mv " + zipFilePath + ".partial " + zipFilePath);
+                        } catch (RuntimeException e) {
+                            statusLog(getActivity().getString(R.string.downloaderrormissingfile) + e);
+                        }
+                    }
+
+                    if (mView != null) {
+                        mView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                statusLog(getActivity().getString(R.string.downloadsuccessful));
+                                inflateZip();
+                            }
+                        });
+                    }
                 }
-            }
-            inflateZip();
-        } else {
+
+            }).start();
+
+        /*} else {
             statusLog(getActivity().getString(R.string.downloadfailedtryagain));
             installButton.setEnabled(true);
         }
-        dm.remove(downloadRef);
+        dm.remove(downloadRef);*/
     }
 
     private void inflateZip() {
         statusLog(getActivity().getString(R.string.inflating));
 
-        // look for bad path again...
-        try {
-            x.RunAsRoot("ls " + zipFilePath);
-        } catch (RuntimeException ex) { // file not found
-            zipFilePath = zipFilePath.replace("/storage/emulated/0", "/storage/emulated/legacy");
-            try {
-                x.RunAsRoot("ls " + zipFilePath);
-            } catch (RuntimeException e) {
-                statusLog(getActivity().getString(R.string.couldntfindfile) + e);
+        // look for bad path again...in the bg
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    x.RunAsRoot("ls " + zipFilePath);
+                } catch (RuntimeException ex) { // file not found
+                    zipFilePath = zipFilePath.replace("/storage/emulated/0", "/storage/emulated/legacy");
+                    try {
+                        x.RunAsRoot("ls " + zipFilePath);
+                    } catch (RuntimeException e) {
+                        statusLog(getActivity().getString(R.string.couldntfindfile) + e);
+                    }
+                }
             }
-        }
+
+        }).start();
+
 
         if (checkFileIntegrity(zipFilePath)) {
             statusLog(getActivity().getString(R.string.extractinglogtext));
