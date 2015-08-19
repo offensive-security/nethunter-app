@@ -201,9 +201,7 @@ class SwichLoader extends BaseAdapter {
                 if (isChecked) {
                     new Thread(new Runnable() {
                         public void run() {
-
-                            Logger Logger = new Logger();
-                            exe.RunAsRoot(new String[]{services[position][2]});
+                            exe.RunAsRoot(services[position][2]);
                         }
 
                     }).start();
@@ -215,8 +213,7 @@ class SwichLoader extends BaseAdapter {
                 } else {
                     new Thread(new Runnable() {
                         public void run() {
-
-                            exe.RunAsRoot(new String[]{services[position][3]});
+                            exe.RunAsRoot(services[position][3]);
                         }
 
                     }).start();

@@ -167,27 +167,28 @@ public class AppNavHomeActivity extends AppCompatActivity {
 
         // pre-set the drawer options
         setDrawerOptions();
-        checkForRoot(); //  gateway check to make sure root's possible & pop up dialog if not in the bg
+        checkForRoot(myImageView); //  gateway check to make sure root's possible & pop up dialog if not in the bg
     }
 
-    public void checkForRoot() {
-
+    public void checkForRoot(final View v) {
+        final AppNavHomeActivity ctx = this;
         new Thread(new Runnable() {
             public void run() {
+
                 final Boolean isRootAvailable = Shell.SU.available();
-                mDrawerLayout.post(new Runnable() {
+                v.post(new Runnable() {
                     @Override
                     public void run() {
 
                         if (!isRootAvailable) {
-                            AlertDialog.Builder adb = new AlertDialog.Builder(getApplicationContext());
+                            AlertDialog.Builder adb = new AlertDialog.Builder(ctx);
                             adb.setTitle(R.string.rootdialogtitle)
                                     .setMessage(R.string.rootdialogmessage)
                                     .setPositiveButton(R.string.rootdialogposbutton, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             dialog.cancel();
-                                            checkForRoot();
+                                            checkForRoot(v);
                                         }
                                     })
                                     .setNegativeButton(R.string.rootdialognegbutton, new DialogInterface.OnClickListener() {
@@ -201,6 +202,8 @@ public class AppNavHomeActivity extends AppCompatActivity {
                             ad.show();
                         }
                     }
+
+
                 });
             }
         }).start();

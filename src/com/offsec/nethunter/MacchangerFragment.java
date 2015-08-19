@@ -25,6 +25,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -301,7 +302,7 @@ public class MacchangerFragment extends Fragment {
             }
         });
         if (!getDeviceName().equals("A0001")) {
-            doInitialSetup();
+            doInitialSetup(rootView);
         }
         return rootView;
     }
@@ -425,32 +426,44 @@ public class MacchangerFragment extends Fragment {
 
     }
 
-    public void doInitialSetup() {
+    public void doInitialSetup(final View rootView) {
+        new Thread(new Runnable() {
 
-        final ShellExecuter exe = new ShellExecuter();
-        String command = "if [ -d /persist/wifi/ ];then echo 1; fi"; //check the dir existence
-        final String _res;
+            public void run() {
 
-        _res = exe.RunAsRootOutput(command);
+                final ShellExecuter exe = new ShellExecuter();
+                final String command = "if [ -d /persist/wifi/ ];then echo 1; fi"; //check the dir existence
+                final String _res = exe.RunAsRootOutput(command);
+                rootView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!_res.equals("1")) {
 
-        if (!_res.equals("1")) {
+                            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                            builder.setTitle("Macchanger Setup:");
+                            builder.setMessage("To make this setup you only need the wifi up and connected to a network.\n\nTHE APP WILL DO THE REST\n\nWe need to create a folder and a file to get the service working well, this also saves a copy of the original mac.\n\nLocation:\n/sdcard/kali-nh/device_mac_backup\n\nAfter this, the device will be rebooted.\n\nThe setup is only needed one time");
+                            builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
 
-            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle("Macchanger Setup:");
-            builder.setMessage("To make this setup you only need the wifi up and connected to a network.\n\nTHE APP WILL DO THE REST\n\nWe need to create a folder and a file to get the service working well, this also saves a copy of the original mac.\n\nLocation:\n/sdcard/kali-nh/device_mac_backup\n\nAfter this, the device will be rebooted.\n\nThe setup is only needed one time");
-            builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
 
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
+                                    makeWifiDir();
 
-                    makeWifiDir();
+                                }
 
-                }
+                            });
+                            builder.show();
 
-            });
-            builder.show();
+                        }
+                    }
+                });
 
-        }
+            }
+
+        }).start();
+
+
+
     }
 
     public void makeWifiDir() {

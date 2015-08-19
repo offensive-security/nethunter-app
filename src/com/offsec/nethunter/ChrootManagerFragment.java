@@ -117,7 +117,7 @@ public class ChrootManagerFragment extends Fragment {
         });
         updateButton.setVisibility(View.GONE);
         sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
-        filesPath = getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+        filesPath = getActivity().getExternalFilesDir("/storage/emulated/0/").getAbsolutePath();
         zipFilePath = filesPath + "/" + FILENAME;
         onDLFinished = new BroadcastReceiver() {
             @Override
@@ -474,11 +474,11 @@ public class ChrootManagerFragment extends Fragment {
             statusLog(getActivity().getString(R.string.downloadsuccessful));
             // remove the partial...
             try {
-                x.RunAsRootWithException("mv " + zipFilePath + ".partial " + zipFilePath);
+                x.RunAsRoot("mv " + zipFilePath + ".partial " + zipFilePath);
             } catch (RuntimeException ex) { // file not found
                 zipFilePath = zipFilePath.replace("/storage/emulated/0", "/storage/emulated/legacy");
                 try {
-                    x.RunAsRootWithException("mv " + zipFilePath + ".partial " + zipFilePath);
+                    x.RunAsRoot("mv " + zipFilePath + ".partial " + zipFilePath);
                 } catch (RuntimeException e) {
                     statusLog(getActivity().getString(R.string.downloaderrormissingfile) + e);
                 }
@@ -496,11 +496,11 @@ public class ChrootManagerFragment extends Fragment {
 
         // look for bad path again...
         try {
-            x.RunAsRootWithException("ls " + zipFilePath);
+            x.RunAsRoot("ls " + zipFilePath);
         } catch (RuntimeException ex) { // file not found
             zipFilePath = zipFilePath.replace("/storage/emulated/0", "/storage/emulated/legacy");
             try {
-                x.RunAsRootWithException("ls " + zipFilePath);
+                x.RunAsRoot("ls " + zipFilePath);
             } catch (RuntimeException e) {
                 statusLog(getActivity().getString(R.string.couldntfindfile) + e);
             }
@@ -598,7 +598,7 @@ public class ChrootManagerFragment extends Fragment {
         @Override
         protected Boolean doInBackground(Void... Void) {
             try {
-                x.RunAsRootWithException("busybox xz -df '" + zipFilePath + "';" +
+                x.RunAsRoot("busybox xz -df '" + zipFilePath + "';" +
                         "busybox tar xf '" + zipFilePath.substring(0, zipFilePath.lastIndexOf('.')) + "' -C '" + chrootPath + "'");
             } catch (RuntimeException e) {
                 Log.d(TAG, "Error: ", e);
