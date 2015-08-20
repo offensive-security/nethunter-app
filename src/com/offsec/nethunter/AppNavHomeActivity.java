@@ -156,34 +156,47 @@ public class AppNavHomeActivity extends AppCompatActivity {
 
         // pre-set the drawer options
         setDrawerOptions();
-        checkForRoot(); //  gateway check to make sure root's possible & pop up dialog if not
+        checkForRoot(myImageView); //  gateway check to make sure root's possible & pop up dialog if not
     }
 
-    public void checkForRoot() {
-        ShellExecuter exe = new ShellExecuter();
-        if (!exe.isRootAvailable()) {
-            AlertDialog.Builder adb = new AlertDialog.Builder(this);
-            adb.setTitle(R.string.rootdialogtitle)
-                    .setMessage(R.string.rootdialogmessage)
-                    .setPositiveButton(R.string.rootdialogposbutton, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                            checkForRoot();
-                        }
-                    })
-                    .setNegativeButton(R.string.rootdialognegbutton, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
-                    });
-            AlertDialog ad = adb.create();
-            ad.setCancelable(false);
-            ad.show();
-        }
-    }
+    public void checkForRoot(final ImageView v) {
+        final AppNavHomeActivity ctx = this;
+        new Thread(new Runnable() {
+            public void run() {
+                ShellExecuter exe = new ShellExecuter();
+                final Boolean isRootAvailable = exe.isRootAvailable();
+                v.post(new Runnable() {
+                    @Override
+                    public void run() {
 
+                        if (!isRootAvailable) {
+                            AlertDialog.Builder adb = new AlertDialog.Builder(ctx);
+                            adb.setTitle(R.string.rootdialogtitle)
+                                    .setMessage(R.string.rootdialogmessage)
+                                    .setPositiveButton(R.string.rootdialogposbutton, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel();
+                                            checkForRoot(v);
+                                        }
+                                    })
+                                    .setNegativeButton(R.string.rootdialognegbutton, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            finish();
+                                        }
+                                    });
+                            AlertDialog ad = adb.create();
+                            ad.setCancelable(false);
+                            ad.show();
+                        }
+                    }
+
+
+                });
+            }
+        }).start();
+    }
     /* if the chroot isn't set up, don't show the chroot options */
 
     private void setDrawerOptions() {

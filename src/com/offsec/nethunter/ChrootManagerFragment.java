@@ -2,6 +2,7 @@ package com.offsec.nethunter;
 
 import android.app.AlertDialog;
 import android.app.DownloadManager;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,7 +16,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.FileObserver;
+import android.os.PowerManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -34,8 +37,13 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigInteger;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
@@ -75,27 +83,26 @@ public class ChrootManagerFragment extends Fragment {
 
     /* put chroot info here */
     private static final String FILENAME = "kalifs-minimal.tar.xz";
-    private static final String URI = "http://images.offensive-security.com/" + FILENAME;
+    // private static final String URI = "http://images.offensive-security.com/" + FILENAME;
+    private static final String URI = "http://3bollcdn.com/nethunter/chroot/" + FILENAME;
     private static final String SHA512 =
             "20e41e93ba743fad8774fe2f065a685f586acce90bf02cec570ef83865c1fc90121b89bb" +
                     "66a32e0c4f2e94e26ef339b549e8b0fa8ad104b5bc12f8251faf1330";
     private static final String OLD_CHROOT_PATH = "/data/local/kali-armhf/";
 
     String zipFilePath;
-    private long downloadRef;
+
     TextView statusText;
     String chrootPath;
     Button installButton;
     Button updateButton;
-    DownloadManager dm;
-    BroadcastReceiver onDLFinished;
     String dir;
     final ShellExecuter x = new ShellExecuter();
     ProgressDialog pd;
-    FileObserver fileObserver;
     String filesPath;
     SharedPreferences sharedpreferences;
     AlertDialog ad;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -108,27 +115,18 @@ public class ChrootManagerFragment extends Fragment {
                 onButtonHit();
             }
         });
+        installButton.setText("Checking...");
         updateButton = (Button) rootView.findViewById(R.id.upgradechrootbutton);
         updateButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 addMetaPackages();
             }
         });
+        updateButton.setVisibility(View.GONE);
         sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
-        filesPath = getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+        filesPath = "/storage/emulated/0";
+        chrootPath = getActivity().getFilesDir() + "/chroot/";
         zipFilePath = filesPath + "/" + FILENAME;
-        onDLFinished = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1) == downloadRef) {
-                    downloadFinished();
-                }
-            }
-        };
-
-
-        getActivity().registerReceiver(onDLFinished,
-                new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
         return rootView;
     }
@@ -155,7 +153,6 @@ public class ChrootManagerFragment extends Fragment {
             dir = "kali-i386";  // etc
         }
         checkforLegacyChroot();
-        checkForExistingChroot();
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -163,33 +160,53 @@ public class ChrootManagerFragment extends Fragment {
     private void checkforLegacyChroot() {
         // does old chroot directory exist?
         if (getActivity() != null) {
-            String oldchrootcheck = "if [ -d " + OLD_CHROOT_PATH + " ];then echo 1; fi";  // look for old chroot
-            String newchrootcheck = "if [ -d " + chrootPath + dir + " ];then echo 1; fi"; //check the dir existence
+            final View mView =  getView();
 
-            final String _res = x.RunAsRootOutput(oldchrootcheck);
-            final String _res2 = x.RunAsRootOutput(newchrootcheck);
-            if (_res.equals("1") && !_res2.equals("1")) {
-                // old chroot but not new one
-                AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-                adb.setTitle(R.string.legacychroottitle)
-                        .setMessage(R.string.legacychrootmessage)
-                        .setPositiveButton(R.string.legacychrootposbutton, new DialogInterface.OnClickListener() {
+            new Thread(new Runnable() {
+
+                public void run() {
+                    String oldchrootcheck = "if [ -d " + OLD_CHROOT_PATH + " ];then echo 1; fi";  // look for old chroot
+                    String newchrootcheck = "if [ -d " + chrootPath + dir + " ];then echo 1; fi"; //check the dir existence
+                    final String _res = x.RunAsRootOutput(oldchrootcheck);
+                    final String _res2 = x.RunAsRootOutput(newchrootcheck);
+
+                    if (mView != null) {
+                        mView.post(new Runnable() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                                startMigrateRoot();
-                            }
-                        })
-                        .setNegativeButton(R.string.legacychrootnegbutton, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
+                            public void run() {
+                                if (_res.equals("1") && !_res2.equals("1")) {
+                                    // old chroot but not new one
+                                    AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+                                    adb.setTitle(R.string.legacychroottitle)
+                                            .setMessage(R.string.legacychrootmessage)
+                                            .setPositiveButton(R.string.legacychrootposbutton, new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.cancel();
+                                                    startMigrateRoot();
+                                                }
+                                            })
+                                            .setNegativeButton(R.string.legacychrootnegbutton, new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.cancel();
+                                                }
+                                            });
+                                    AlertDialog ad = adb.create();
+                                    ad.setCancelable(false);
+                                    ad.show();
+                                } else {
+                                    checkForExistingChroot();
+                                }
                             }
                         });
-                AlertDialog ad = adb.create();
-                ad.setCancelable(false);
-                ad.show();
-            }
+                    }
+
+                }
+
+            }).start();
+
+
 
         }
     }
@@ -209,7 +226,6 @@ public class ChrootManagerFragment extends Fragment {
             new android.os.Handler().postDelayed(
                     new Runnable() {
                         public void run() {
-                            Log.i("tag", "This'll run 4s later");
                             x.RunAsRootOutput("reboot");
                         }
                     }, 4000);
@@ -219,35 +235,50 @@ public class ChrootManagerFragment extends Fragment {
     }
 
     private void checkForExistingChroot() {
+
         // does chroot directory exist?
         if (getActivity() != null) {
-            chrootPath = getActivity().getFilesDir() + "/chroot/";
             statusLog(getActivity().getString(R.string.checkingforchroot) + chrootPath);
+            new Thread(new Runnable() {
 
-            String command = "if [ -d " + chrootPath + dir + " ];then echo 1; fi"; //check the dir existence
-            final String _res;
+                public void run() {
+                    String command = "if [ -d " + chrootPath + dir + " ];then echo 1; fi"; //check the dir existence
+                    final String _res = x.RunAsRootOutput(command);
 
-            _res = x.RunAsRootOutput(command);
 
-            SharedPreferences.Editor editor = sharedpreferences.edit();
 
-            if (_res.equals("1")) {
-                statusLog(getActivity().getString(R.string.existingchrootfound));
-                installButton.setText(getActivity().getResources().getString(R.string.removekalichrootbutton));
-                installButton.setEnabled(true);
-                updateButton.setVisibility(View.VISIBLE);
-                editor.putBoolean(CHROOT_INSTALLED_TAG, true);
-            } else {
-                File file = new File(chrootPath + "/");
-                statusLog(getActivity().getString(R.string.nokalichrootfound));
-                file.mkdir();
-                installButton.setText(getActivity().getResources().getString(R.string.installkalichrootbutton));
-                installButton.setEnabled(true);
-                updateButton.setVisibility(View.GONE);
-                editor.putBoolean(CHROOT_INSTALLED_TAG, false);
-            }
+                    installButton.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            SharedPreferences.Editor editor = sharedpreferences.edit();
 
-            editor.commit(); // don't use apply() or it may not save
+                            if (_res.equals("1")) {
+                                statusLog(getActivity().getString(R.string.existingchrootfound));
+                                installButton.setText(getActivity().getResources().getString(R.string.removekalichrootbutton));
+                                installButton.setEnabled(true);
+                                updateButton.setVisibility(View.VISIBLE);
+                                editor.putBoolean(CHROOT_INSTALLED_TAG, true);
+                            } else {
+                                File file = new File(chrootPath + "/");
+                                statusLog(getActivity().getString(R.string.nokalichrootfound));
+                                file.mkdir();
+                                installButton.setText(getActivity().getResources().getString(R.string.installkalichrootbutton));
+                                installButton.setEnabled(true);
+                                updateButton.setVisibility(View.GONE);
+                                editor.putBoolean(CHROOT_INSTALLED_TAG, false);
+                            }
+
+                            editor.commit(); // don't use apply() or it may not save
+
+                        }
+                    });
+
+                }
+
+            }).start();
+
+
+
 
         }
     }
@@ -303,7 +334,7 @@ public class ChrootManagerFragment extends Fragment {
                 StringBuilder sb = new StringBuilder("");
                 CheckBox cb;
                 // now grab all the checkboxes in the dialog and check their status
-                // thanks to "user2" for a 2-line sample of how to get the dialog's view:  http://stackoverflow.com/a/13959585/3035127 
+                // thanks to "user2" for a 2-line sample of how to get the dialog's view:  http://stackoverflow.com/a/13959585/3035127
                 AlertDialog d = AlertDialog.class.cast(dialog);
                 LinearLayout ll = (LinearLayout) d.findViewById(R.id.metapackageLinearLayout);
                 int children = ll.getChildCount();
@@ -377,114 +408,68 @@ public class ChrootManagerFragment extends Fragment {
         File checkFile = new File(zipFilePath);
         File otherFile = new File(zipFilePath.replace("/storage/emulated/0", "/storage/emulated/legacy"));
         if (checkFile.exists() || otherFile.exists()) {
-
             statusLog(zipFilePath + getActivity().getString(R.string.existsalready));
-            if (checkFileIntegrity(zipFilePath) || checkFileIntegrity(zipFilePath.replace("/storage/emulated/0", "/storage/emulated/legacy"))) {
-                statusLog(getActivity().getString(R.string.filelooksgood));
-                inflateZip();
-                return true;
+            statusLog(getActivity().getString(R.string.deletingforroom));
+            if (checkFile.delete()) {
+                statusLog(getActivity().getString(R.string.oldfiledeleted));
             } else {
-                statusLog(getActivity().getString(R.string.deletingforroom));
-                if (checkFile.delete()) {
-                    statusLog(getActivity().getString(R.string.oldfiledeleted));
-                } else {
-                    statusLog(getActivity().getString(R.string.problemdeletingoldfile));
-                }
+                statusLog(getActivity().getString(R.string.problemdeletingoldfile));
             }
         }
         statusLog(getActivity().getString(R.string.startingdownload));
-
         if (!isExternalStorageWritable()) {
             statusLog(getActivity().getString(R.string.unwritablestorageerror));
             return false;
         }
-        dm = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
-        removeExistingDownloadOperations();
-        Uri uri = Uri.parse(URI);
 
-        DownloadManager.Request r = new DownloadManager.Request(uri);
-        r.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
-                .setAllowedOverMetered(true)
-                .setTitle(FILENAME)
-                .setDescription(getActivity().getString(R.string.downloadingdescription))
-                .setAllowedOverRoaming(true)
-                .setDestinationUri(Uri.parse("file://" + zipFilePath + ".partial"));
-
-        downloadRef = dm.enqueue(r);
-        // start watching download progress
-        fileObserver = new DownloadsObserver(filesPath);
-        fileObserver.startWatching();
+        final DownloadChroot downloadTask = new DownloadChroot(getActivity());
+        downloadTask.execute(URI);
         return true;
     }
 
-    private void downloadFinished() {
-        int status = -1;
-        // what happened
-        DownloadManager.Query q = new DownloadManager.Query();
-        q.setFilterById(downloadRef);
-        Cursor c = dm.query(q);
-        if (c.moveToFirst()) {
-            status = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS));
-        }
-        // close the cursor
-        c.close();
-        if (status == DownloadManager.STATUS_SUCCESSFUL) {
-            // everything ok so we dont longer need the fileobserver
-            fileObserver.stopWatching();
-            pd.dismiss();
-            statusLog(getActivity().getString(R.string.downloadsuccessful));
-            // remove the partial...
-            try {
-                x.RunAsRootWithException("mv " + zipFilePath + ".partial " + zipFilePath);
-            } catch (RuntimeException ex) { // file not found
-                zipFilePath = zipFilePath.replace("/storage/emulated/0", "/storage/emulated/legacy");
-                try {
-                    x.RunAsRootWithException("mv " + zipFilePath + ".partial " + zipFilePath);
-                } catch (RuntimeException e) {
-                    statusLog(getActivity().getString(R.string.downloaderrormissingfile) + e);
-                }
-            }
-            inflateZip();
-        } else {
-            statusLog(getActivity().getString(R.string.downloadfailedtryagain));
-            installButton.setEnabled(true);
-        }
-        dm.remove(downloadRef);
-    }
-
     private void inflateZip() {
-        statusLog(getActivity().getString(R.string.inflating));
+        if (getActivity() != null) {
+            final View mView =  getView();
+            final boolean next = checkFileIntegrity(zipFilePath);
+            new Thread(new Runnable() {
 
-        // look for bad path again...
-        try {
-            x.RunAsRootWithException("ls " + zipFilePath);
-        } catch (RuntimeException ex) { // file not found
-            zipFilePath = zipFilePath.replace("/storage/emulated/0", "/storage/emulated/legacy");
-            try {
-                x.RunAsRootWithException("ls " + zipFilePath);
-            } catch (RuntimeException e) {
-                statusLog(getActivity().getString(R.string.couldntfindfile) + e);
-            }
+                public void run() {
+                    if (mView != null) {
+                        mView.post(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                if (next) {
+                                    statusLog(getActivity().getString(R.string.extractinglogtext));
+                                    // all In bg
+                                    pd = new ProgressDialog(getActivity());
+                                    pd.setTitle(getActivity().getString(R.string.extractingdialogtitle));
+                                    pd.setCancelable(false);
+                                    pd.setMessage(getActivity().getString(R.string.extractingdialogmessage));
+                                    pd.show();
+                                    UnziptarTask mytask = new UnziptarTask();
+                                    mytask.execute();
+                                } else {
+                                    statusLog(getActivity().getString(R.string.downloadfailscheck));
+                                    checkForExistingChroot();
+                                }
+                            }
+                        });
+                    }
+
+                }
+
+            }).start();
+
+
+
         }
 
-        if (checkFileIntegrity(zipFilePath)) {
-            statusLog(getActivity().getString(R.string.extractinglogtext));
-            // all In bg
-            pd = new ProgressDialog(getActivity());
-            pd.setTitle(getActivity().getString(R.string.extractingdialogtitle));
-            pd.setCancelable(false);
-            pd.setMessage(getActivity().getString(R.string.extractingdialogmessage));
-            pd.show();
-            UnziptarTask mytask = new UnziptarTask();
-            mytask.execute();
-        } else {
-            statusLog(getActivity().getString(R.string.downloadfailscheck));
-            checkForExistingChroot();
-        }
     }
 
     private boolean checkFileIntegrity(String path) {
 
+        Log.d(TAG, "INIT checkFileIntegrity ::: " + path);
         File theFile = new File(path);
         byte[] bytes = new byte[(int) theFile.length()];
         DataInputStream dis;
@@ -512,31 +497,40 @@ public class ChrootManagerFragment extends Fragment {
         // k, now check the sha.  Thanks to discussion regarding formatting at:
         // http://stackoverflow.com/questions/7166129/how-can-i-calculate-the-sha-256-hash-of-a-string-in-android
         byte[] result = md.digest(bytes);
-        return String.format("%0" + (result.length * 2) + "X", new BigInteger(1, result)).
-                equalsIgnoreCase(SHA512);
+        String newSum = String.format("%0" + (result.length * 2) + "X", new BigInteger(1, result));
+        Boolean sumpass = newSum.equalsIgnoreCase(SHA512);
+
+        Log.d(TAG, "checkSUM ORIG ::: " + SHA512);
+        Log.d(TAG, "checkSUM NEW  ::: " + newSum);
+        Log.d(TAG, "checkSUM PASS ::: " + sumpass);
+
+        return sumpass;
+
     }
 
-    private void statusLog(String status) {
-        GregorianCalendar cal = new GregorianCalendar();
-        // quick & shorter formatter
-        DateFormat dateFormat = DateFormat.getDateTimeInstance();
-        String ts = dateFormat.format(cal.getTime());
-        statusText.append(Html.fromHtml("<font color=\"#EDA04F\">" + ts + " - </font>"));
-        statusText.append(status + '\n');
-    }
 
-    private void removeExistingDownloadOperations() {
-        int status;
+    private void statusLog(final String status) {
 
-        DownloadManager.Query q = new DownloadManager.Query();
-        Cursor c = dm.query(q);
-        if (c.moveToFirst()) {
-            status = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_ID));
-            dm.remove(status);
+        new Thread(new Runnable() {
+            GregorianCalendar cal = new GregorianCalendar();
+            // quick & shorter formatter
+            DateFormat dateFormat = DateFormat.getDateTimeInstance();
+            String ts = dateFormat.format(cal.getTime());
+            public void run() {
 
-        }
-        // close the cursor
-        c.close();
+                statusText.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        statusText.append(Html.fromHtml("<font color=\"#EDA04F\">" + ts + " - </font>"));
+                        statusText.append(status + '\n');
+                    }
+                });
+            }
+
+
+
+        }).start();
+
     }
 
     @Override
@@ -581,50 +575,131 @@ public class ChrootManagerFragment extends Fragment {
         }
     }
 
-    public class DownloadsObserver extends FileObserver {
+    private class DownloadChroot extends AsyncTask<String, Integer, String> {
 
-        int upc = 0;
-        double last_progress = 0;
-        private static final int flags = FileObserver.MODIFY;
-
-        public DownloadsObserver(String path) {
-            super(path, flags);
-            pd = new ProgressDialog(getActivity());
-            pd.setTitle(getActivity().getString(R.string.downloadingchroot));
-            pd.setCancelable(false);
-            pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            pd.setMessage(getActivity().getString(R.string.downloadingstandby));
-            pd.show();
+        private Context context;
+        private PowerManager.WakeLock mWakeLock;
+        ProgressDialog mProgressDialog;
+        NotificationManager mNotifyManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getActivity());
+        int last_perc = 0;
+        public DownloadChroot(Context context) {
+            this.context = context;
         }
 
         @Override
-        public void onEvent(int event, String path) {
-            upc = upc + 1;
+        protected String doInBackground(String... sUrl) {
+            InputStream input = null;
+            OutputStream output = null;
+            HttpURLConnection connection = null;
+            try {
+                URL url = new URL(sUrl[0]);
+                connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
 
-            if (path != null && event == FileObserver.MODIFY) {
-                DownloadManager.Query q = new DownloadManager.Query();
-                q.setFilterById(downloadRef);
-                Cursor c = dm.query(q);
-                if (c.moveToFirst()) {
-                    int sizeIndex = c.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES);
-                    int downloadedIndex = c.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR);
-                    long size = c.getInt(sizeIndex);
-                    long downloaded = c.getInt(downloadedIndex);
-                    double progress = 0.0;
-
-                    if (size != -1) {
-                        progress = Math.round(downloaded * 100.0 / size);
-                    }
-                    // this ev is launched each ~2ms,only update the progress if is a 'big one' > 1% (also de downloadProgres doesnt support doubles)
-                    if (last_progress < progress) {
-                        last_progress = progress;
-                        pd.setProgress((int) progress);
-                    }
+                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                    return "Server returned HTTP " + connection.getResponseCode()
+                            + " " + connection.getResponseMessage();
                 }
-                c.close();
+                int fileLength = connection.getContentLength();
+                // download the file
+                input = connection.getInputStream();
+                output = new FileOutputStream(zipFilePath);
 
+                byte data[] = new byte[1024];
+                long total = 0;
+                int count;
+                while ((count = input.read(data)) != -1) {
+                    // allow canceling with back button
+                    if (isCancelled()) {
+                        input.close();
+                        return null;
+                    }
+                    total += count;
+                    // publishing the progress....
+                    if (fileLength > 0) // only if total length is known
+                        publishProgress((int) (total * 100 / fileLength));
+                    output.write(data, 0, count);
+                }
+            } catch (Exception e) {
+                return e.toString();
+            } finally {
+                try {
+                    if (output != null)
+                        output.close();
+                    if (input != null)
+                        input.close();
+                } catch (IOException ignored) {
+                }
+
+                if (connection != null)
+                    connection.disconnect();
+            }
+            return null;
+        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+
+
+            mBuilder.setContentTitle("Downloading Chroot")
+                    .setContentText("Starting download...")
+                    .setSmallIcon(R.drawable.ic_action_refresh);
+            // instantiate it within the onCreate method
+            mProgressDialog = new ProgressDialog(getActivity());
+            mProgressDialog.setTitle("Downloading Chroot");
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            mProgressDialog.setCancelable(false);
+
+
+            // take CPU lock to prevent CPU from going off if the user
+            // presses the power button during download
+            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                    getClass().getName());
+            mWakeLock.acquire();
+            mProgressDialog.show();
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... progress) {
+            super.onProgressUpdate(progress);
+            if(progress[0] > last_perc) {
+                last_perc = progress[0];
+                // if we get here, length is known, now set indeterminate to false
+                // Notification
+                mBuilder.setProgress(100, progress[0], false)
+                        .setContentText("So far " + progress[0] + "% downloaded...");
+                mNotifyManager.notify(1, mBuilder.build());
+                // Dialog
+                mProgressDialog.setIndeterminate(false);
+                mProgressDialog.setMax(100);
+                mProgressDialog.setProgress(progress[0]);
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            mWakeLock.release();
+
+            if (result != null) {
+                mProgressDialog.setTitle("ERROR Downloading Chroot.");
+                mBuilder.setContentTitle("ERROR downloading Chroot.")
+                        .setContentText(result)
+                        .setProgress(0, 0, false);
+                mNotifyManager.notify(1, mBuilder.build());
+            } else {
+                mProgressDialog.dismiss();
+                mBuilder.setContentTitle("Chroot download completed.").setContentText("Chroot download completed")
+                        // Removes the progress bar
+                        .setProgress(0, 0, false);
+                mNotifyManager.notify(1, mBuilder.build());
+                inflateZip();
+                mNotifyManager.cancel(1);
             }
         }
     }
 }
-

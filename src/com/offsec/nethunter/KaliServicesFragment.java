@@ -71,59 +71,48 @@ public class KaliServicesFragment extends Fragment {
             };
         }
     }
-    
+
     public void onResume()
     {
-    	super.onResume();
-    	updateStatuses = true;
+        super.onResume();
+        updateStatuses = true;
     }
-    
+
     public void onPause()
     {
-    	super.onPause();
-    	updateStatuses = false;
+        super.onPause();
+        updateStatuses = false;
     }
-    
+
     public void onStop()
     {
-    	super.onStop();
-    	updateStatuses = false;
+        super.onStop();
+        updateStatuses = false;
     }
-    
+
 
     private void checkServices(final View rootView) {
 
-    	
-    	new Thread(new Runnable() {
+        new Thread(new Runnable() {
+
             public void run() {
+
                 ShellExecuter exe = new ShellExecuter();
-                Logger Logger = new Logger();
-                //int c = 0;
-                //while (updateStatuses) {
-                    try {
-                  //  	if (c > 0) {
-                  // 		Thread.sleep(10000);
-                  //  	} else {
-                  //  		c++;
-                  // 	}
-                        final ListView servicesList = (ListView) rootView.findViewById(R.id.servicesList);
-                        String checkCmd = "";
-                        for (String[] KaliService : KaliServices) {
-                            checkCmd += KaliService[1] + ";";
-                        }
-                        final String outp1 = exe.RunAsRootOutput(checkCmd);
-                        //Logger.appendLog(outp1);
-                        servicesList.post(new Runnable() {
-                            @Override
-                            public void run() {
-                            	servicesList.setAdapter(new SwichLoader(getActivity().getApplicationContext(), outp1, KaliServices));
-                            }
-                        });
-                    } catch (Exception e) {
-                    	Logger.appendLog(e.getMessage());
-                    }
+                final ListView servicesList = (ListView) rootView.findViewById(R.id.servicesList);
+                String checkCmd = "";
+                for (String[] KaliService : KaliServices) {
+                    checkCmd += KaliService[1] + ";";
                 }
-            //}
+                final String outp1 = exe.RunAsRootOutput(checkCmd);
+                servicesList.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        servicesList.setAdapter(new SwichLoader(getActivity().getApplicationContext(), outp1, KaliServices));
+                    }
+                });
+
+            }
+
         }).start();
     }
 }
@@ -135,14 +124,14 @@ public class KaliServicesFragment extends Fragment {
 class SwichLoader extends BaseAdapter {
 
     private Context mContext;
-    private ShellExecuter sExec = new ShellExecuter();
     private String[] curstats;
     private String services[][];
-
+    private ShellExecuter exe = new ShellExecuter();
     public SwichLoader(Context context, String serviceStates, String[][] KaliServices) {
         services = KaliServices;
         mContext = context;
         curstats = serviceStates.split("(?!^)");
+
     }
 
     static class ViewHolderItem {
@@ -209,17 +198,29 @@ class SwichLoader extends BaseAdapter {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    sExec.RunAsRoot(new String[]{services[position][2]});
+                    new Thread(new Runnable() {
+                        public void run() {
+                            exe.RunAsRoot(new String[]{services[position][2]});
+                        }
+
+                    }).start();
                     curstats[position] = "1";
                     finalVH.swholder.setText(services[position][0] + " Service Started");
                     finalVH.sw.setTextColor(mContext.getResources().getColor(R.color.blue));
                     finalVH.swholder.setTextColor(mContext.getResources().getColor(R.color.blue));
+
                 } else {
-                    sExec.RunAsRoot(new String[]{services[position][3]});
+                    new Thread(new Runnable() {
+                        public void run() {
+                            exe.RunAsRoot(new String[]{services[position][3]});
+                        }
+
+                    }).start();
                     curstats[position] = "0";
                     finalVH.swholder.setText(services[position][0] + " Service Stopped");
                     finalVH.sw.setTextColor(mContext.getResources().getColor(R.color.clearTitle));
                     finalVH.swholder.setTextColor(mContext.getResources().getColor(R.color.clearText));
+
                 }
             }
         });
@@ -230,7 +231,7 @@ class SwichLoader extends BaseAdapter {
 
         return services[position];
     }
-    
+
     public long getItemId(int position) {
 
         return position;

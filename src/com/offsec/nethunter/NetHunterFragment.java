@@ -52,8 +52,7 @@ public class NetHunterFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.nethunter, container, false);
 
-        String intf = getInterfaces();
-        TextView interfaces = (TextView) rootView.findViewById(R.id.editText1);
+
         TextView ip = (TextView) rootView.findViewById(R.id.editText2);
         TextView buildInfo1 = (TextView) rootView.findViewById(R.id.buildinfo1);
         TextView buildInfo2 = (TextView) rootView.findViewById(R.id.buildinfo2);
@@ -63,9 +62,8 @@ public class NetHunterFragment extends Fragment {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd KK:mm:ss a zzz",
                 Locale.US);
 
-        interfaces.setText(intf);
-        interfaces.setFocusable(false);
         ip.setFocusable(false);
+        getInterfaces(rootView);
         buildInfo1.setText("Version: " + BuildConfig.VERSION_NAME + " (" + android.os.Build.TAGS + ")");
         buildInfo2.setText("Built by " + BuildConfig.BUILD_NAME + " at " + sdf.format(BuildConfig.BUILD_TIME));
         addClickListener(R.id.button1, new View.OnClickListener() {
@@ -134,10 +132,26 @@ public class NetHunterFragment extends Fragment {
         }).start();
     }
 
-    private String getInterfaces() {
-        String command[] = {"sh", "-c", "netcfg |grep UP |grep -v ^lo|awk -F\" \" '{print $1\"\t\" $3}'"};
-        ShellExecuter exe = new ShellExecuter();
-        return exe.Executer(command);
+    private void getInterfaces(View rootView) {
+        final TextView interfaces = (TextView) rootView.findViewById(R.id.editText1);
+        new Thread(new Runnable() {
+            public void run() {
+                interfaces.setText("Please wait...");
+                ShellExecuter exe = new ShellExecuter();
+                String command[] =  {"sh", "-c", "netcfg |grep UP |grep -v ^lo|awk -F\" \" '{print $1\"\t\" $3}'"};
+                final String outp = exe.Executer(command);
+                //Logger.appendLog(outp1);
+                interfaces.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        interfaces.setText(outp);
+                        interfaces.setFocusable(false);
+                    }
+                });
+            }
+        }).start();
+
+
 
     }
 }
