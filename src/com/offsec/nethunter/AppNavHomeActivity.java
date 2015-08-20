@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -70,8 +71,14 @@ public class AppNavHomeActivity extends AppCompatActivity {
 
         setContentView(R.layout.base_layout);
         //set kali wallpaper as background
-        String imageInSD = Environment.getExternalStorageDirectory().getAbsolutePath() + "/kali-nh/wallpaper/kali-nh-2183x1200.png";
-        Bitmap bitmap = BitmapFactory.decodeFile(imageInSD);
+        AssetManager assetManager = getAssets();
+        InputStream istr = null;
+        try {
+            istr = assetManager.open("wallpapers/kali-nh-2183x1200.png");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Bitmap bitmap = BitmapFactory.decodeStream(istr);
         ImageView myImageView = (ImageView) findViewById(R.id.bgHome);
         myImageView.setImageBitmap(bitmap);
 
