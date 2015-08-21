@@ -335,7 +335,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
     public static class PowerSploitFragment extends Fragment implements OnClickListener {
 
         private String configFilePath;
-        private String configFileUrlPath = "files/powersploit-url";
+        private String configFileUrlPath = "/configs/powersploit-url";
 
         @Override
         public void onActivityCreated(Bundle savedInstanceState) {
@@ -363,8 +363,8 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
             switch (v.getId()) {
                 case R.id.powersploitOptionsUpdate:
                     try {
-                        File sdcard = Environment.getExternalStorageDirectory();
-                        File myFile = new File(sdcard, configFileUrlPath);
+                        File appFolder = getActivity().getFilesDir();
+                        File myFile = new File(appFolder, configFileUrlPath);
                         myFile.createNewFile();
 
                         FileOutputStream fOut = new FileOutputStream(myFile);
@@ -414,8 +414,8 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
 
 
         private void loadOptions() {
-            File sdcard = Environment.getExternalStorageDirectory();
-            File file = new File(sdcard, configFileUrlPath);
+            File appFolder = getActivity().getFilesDir();
+            File file = new File(appFolder, configFileUrlPath);
             StringBuilder textUrl = new StringBuilder();
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file));
@@ -491,10 +491,10 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
 
         @Override
         public void onActivityCreated(Bundle savedInstanceState) {
-            configFilePath = "files/hid-cmd.conf";
+            configFilePath = "/configs/hid-cmd.conf";
             EditText source = (EditText)getActivity().findViewById(R.id.windowsCmdSource);
-            File sdcard = Environment.getExternalStorageDirectory();
-            File file = new File(sdcard, configFilePath);
+            File appFolder = getActivity().getFilesDir();
+            File file = new File(appFolder, configFilePath);
             StringBuilder text = new StringBuilder();
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file));
@@ -532,8 +532,8 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
                     EditText source = (EditText) getView().findViewById(R.id.windowsCmdSource);
                     String text = source.getText().toString();
                     try {
-                        File sdcard = Environment.getExternalStorageDirectory();
-                        File myFile = new File(sdcard, configFilePath);
+                        File appFolder = getActivity().getFilesDir();
+                        File myFile = new File(appFolder, configFilePath);
                         myFile.createNewFile();
                         FileOutputStream fOut = new FileOutputStream(myFile);
                         OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);

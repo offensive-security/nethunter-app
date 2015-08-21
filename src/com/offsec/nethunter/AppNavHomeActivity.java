@@ -32,6 +32,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.Stack;
@@ -40,30 +41,15 @@ public class AppNavHomeActivity extends AppCompatActivity {
 
     public final static String TAG = "AppNavHomeActivity";
     public static final String CHROOT_INSTALLED_TAG = "CHROOT_INSTALLED_TAG";
-
-    // these must be UTF-8 text-based scripts.  They go in the /assets folder and will be copied
-    // to the app's private file area.  Don't make thisstatic or final because it changes below (is reused)
-    private String[] SCRIPTS = {"bootkali", "check-kaliapache", "check-kalibeef-xss",
-            "check-kalidhcp", "check-kalidnsmq", "check-kalihostapd", "check-kalimetasploit",
-            "check-kalissh", "check-kalivnc", "check-kalivpn", "iptables-flush", "killkali",
-            "start-apache", "start-badusb-kitkat", "start-badusb-lollipop", "start-beef-xss",
-            "start-dhcp", "start-dnsmasq", "start-hid-cmd", "start-hid-cmd-elevated-win7",
-            "start-hid-cmd-elevated-win8", "start-hostapd", "start-iptables", "start-msf",
-            "start-openvpn", "start-rev-met", "start-rev-met-elevated-win7",
-            "start-rev-met-elevated-win8", "start-ssh", "start-update", "start-vpn", "start-web",
-            "start-wifite", "stop-apache", "stop-badusb-kitkat", "stop-badusb-lollipop",
-            "stop-beef-xss", "stop-dhcp", "stop-dnsmasq", "stop-hostapd", "stop-msf",
-            "stop-openvpn", "stop-ssh", "stop-vpn", "stop-web", "etc/init.d/50userinit"};
-
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
-
     private DrawerLayout mDrawerLayout;
     private NavigationView navigationView;
     private CharSequence mTitle = "NetHunter";
     private Stack<String> titles = new Stack<>();
     private SharedPreferences prefs;
+    String filesPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,17 +57,8 @@ public class AppNavHomeActivity extends AppCompatActivity {
 
         setContentView(R.layout.base_layout);
         //set kali wallpaper as background
-        AssetManager assetManager = getAssets();
-        InputStream istr = null;
-        try {
-            istr = assetManager.open("wallpapers/kali-nh-2183x1200.png");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Bitmap bitmap = BitmapFactory.decodeStream(istr);
-        ImageView myImageView = (ImageView) findViewById(R.id.bgHome);
-        myImageView.setImageBitmap(bitmap);
 
+        filesPath = getFilesDir().toString();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         if (navigationView != null) {
@@ -100,23 +77,30 @@ public class AppNavHomeActivity extends AppCompatActivity {
         }
 
         // copy script files, but off the main UI thread
+        final ImageView myImageView = (ImageView) findViewById(R.id.bgHome);
         final Runnable r = new Runnable() {
             public void run() {
-                int index = 0;
-                for (String script : SCRIPTS) {
-                    setupScript(script, "700", index);
-                    index++;
-                }
+                assetsToFiles(getFilesDir().toString(), ""); // 1:1 copy (recursive) of the assets folder to data/data/...
                 ShellExecuter exe = new ShellExecuter();
-                exe.RunAsRoot(SCRIPTS);
+                exe.RunAsRoot(new String[]{"chmod 700 " + getFilesDir() + "/scripts/*", "chmod 700 " + getFilesDir() + "/etc/init.d/*"});
+
+
+                myImageView.post(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        String imageInSD = filesPath + "/wallpapers/kali-nh-2183x1200.png";
+                        Bitmap bitmap = BitmapFactory.decodeFile(imageInSD);
+
+                        myImageView.setImageBitmap(bitmap);
+                    }
+
+
+                });
             }
         };
         Thread t = new Thread(r);
         t.start();
-
-        createDirIfNeeded(Environment.getExternalStorageDirectory() + "/files");
-        createDirIfNeeded(getFilesDir() + "/scripts/etc/init.d");
-
         // now pop in the default fragment
 
         getSupportFragmentManager()
@@ -213,70 +197,6 @@ public class AppNavHomeActivity extends AppCompatActivity {
         } else {
             menuNav.setGroupEnabled(R.id.chrootDependentGroup, false);
         }
-    }
-
-    private void createDirIfNeeded(String path) {
-
-        // now make sure the sdcard has the needed /files directory
-        File dir = new File(path);
-        try {
-            if (!dir.exists()) {
-                Log.d(TAG, "Couldn't find " + path + " directory.  Making it....");
-                if (dir.mkdirs()) {
-                    Log.d(TAG, "Made needed directory!");
-                } else {
-                    Log.d(TAG, "Failed making directory.");
-                }
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "ERROR verifying/creating " + path + " directory on sdcard!", e);
-        }
-    }
-
-    private boolean setupScript(final String scriptName, final String permissions, final int index) {
-
-        // This copies shell script files from /assets/ in the source to the app cache.  It also
-        // sets their permission.  It's a boolean in case we need to wait for success/failure.
-
-        // Update these files EVERY restart of app just in case it gets updated by a new apk with
-        // changed scripts...
-
-        // thanks to the discussion at:
-        // http://stackoverflow.com/questions/8474821/how-to-get-the-android-path-string-to-a-file-on-assets-folder
-        // which suggested they have to be copied to cache to be run from the shell.
-
-        // Note-- this is run in a separate thread on EVERY start of the app so that updates to scripts are
-        // always installed w/new versions of the app.  Also, in case the user did a clear app data from Settings.
-
-        try {
-            // first read the script file line-by-line
-            InputStream is = getApplicationContext().getAssets().open(scriptName);
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            StringBuilder sb = new StringBuilder();
-            String line;
-            try {
-                while ((line = br.readLine()) != null) {
-                    sb.append(line).append('\n');
-                }
-            } catch (Exception e) {
-                Log.d(TAG, "Error reading script file.  Is this a plaintext UTF-8 multi-line script?");
-            }
-            is.close();
-            br.close();
-            // next, write the string out to the file in the files folder
-            File f = new File(getFilesDir().toString() + "/scripts/" + scriptName);
-            FileOutputStream fos = new FileOutputStream(f);
-            fos.write(sb.toString().getBytes(Charset.forName("UTF-8")));
-            fos.close();
-            // and finally, build a queue of permission commands by replacing the filename of the
-            // each SCRIPTS[] value with the matching permission command.  This lets us avoid calling
-            // su -c for every time we want to chmod.  Instead we do it in one call at the end.
-            SCRIPTS[index] = "chmod " + permissions + " " + f.toString();
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to copy: " + scriptName, e);
-            return false;
-        }
-        return true;
     }
 
     @Override
@@ -414,7 +334,64 @@ public class AppNavHomeActivity extends AppCompatActivity {
         toast.show();
     }
 
+    private void assetsToFiles(String TARGET_BASE_PATH, String path) {
+        AssetManager assetManager = this.getAssets();
+        String assets[] = null;
+        try {
+            //Log.i("tag", "assetsToFiles() "+path);
+            assets = assetManager.list(path);
+            if (assets.length == 0) {
+                copyFile(TARGET_BASE_PATH, path);
+            } else {
+                String fullPath =  TARGET_BASE_PATH + "/" + path;
+                //Log.i("tag", "path="+fullPath);
+                File dir = new File(fullPath);
+                if (!dir.exists() && !path.startsWith("images") && !path.startsWith("sounds") && !path.startsWith("webkit"))  // dont copy thouse dirs
+                    if (!dir.mkdirs())
+                        Log.i("tag", "could not create dir "+fullPath);
+                for (int i = 0; i < assets.length; ++i) {
+                    String p;
+                    if (path.equals(""))
+                        p = "";
+                    else
+                        p = path + "/";
 
+                    if (!path.startsWith("images") && !path.startsWith("sounds") && !path.startsWith("webkit"))
+                        assetsToFiles(TARGET_BASE_PATH, p + assets[i]);
+                }
+            }
+        } catch (IOException ex) {
+            Log.e("tag", "I/O Exception", ex);
+        }
+    }
+
+    private void copyFile(String TARGET_BASE_PATH, String filename) {
+        AssetManager assetManager = this.getAssets();
+
+        InputStream in = null;
+        OutputStream out = null;
+        String newFileName = null;
+        try {
+            //Log.i("tag", "copyFile() "+filename);
+            in = assetManager.open(filename);
+            newFileName = TARGET_BASE_PATH + "/" + filename;
+            out = new FileOutputStream(newFileName);
+
+            byte[] buffer = new byte[1024];
+            int read;
+            while ((read = in.read(buffer)) != -1) {
+                out.write(buffer, 0, read);
+            }
+            in.close();
+            out.flush();
+            out.close();
+
+        } catch (Exception e) {
+            Log.e("tag", "Exception in copyFile() of "+newFileName);
+            Log.e("tag", "Exception in copyFile() "+e.toString());
+        }
+
+    }
     public String readConfigFile(String configFilePath) {
 
 
