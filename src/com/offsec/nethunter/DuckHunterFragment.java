@@ -283,7 +283,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
     public static class DuckHunterConvertFragment extends Fragment implements View.OnClickListener{
 
-        public static String configFilePath = "files/modules/duckconvert.txt";
+        public static String configFilePath = "/configs/modules/duckconvert.txt";
         public static String loadFilePath = "files/scripts/ducky/";
         private static final int PICKFILE_RESULT_CODE = 1;
 
@@ -297,8 +297,8 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
             t2.setMovementMethod(LinkMovementMethod.getInstance());
 
             EditText source = (EditText) rootView.findViewById(R.id.editSource);
-            File sdcard = Environment.getExternalStorageDirectory();
-            File file = new File(sdcard, configFilePath);
+            File appFolder = getActivity().getFilesDir();
+            File file = new File(appFolder, configFilePath);
             StringBuilder text = new StringBuilder();
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file));
@@ -455,19 +455,23 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
         public static String readFileForPreview() {
             File file = new File(configFilePath, configFileFilename);
-            StringBuilder text = new StringBuilder();
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file));
-                String line;
-                while ((line = br.readLine()) != null) {
-                    text.append(line);
-                    text.append('\n');
+            if(file.exists()) {
+                StringBuilder text = new StringBuilder();
+                try {
+                    BufferedReader br = new BufferedReader(new FileReader(file));
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        text.append(line);
+                        text.append('\n');
+                    }
+                    br.close();
+                } catch (IOException e) {
+                    Log.e("Nethunter", "exception", e);
                 }
-                br.close();
-            } catch (IOException e) {
-                Log.e("Nethunter", "exception", e);
+                return text.toString();
+            } else {
+                return "duckout.sh is generated when a duckyscript is made";
             }
-            return text.toString();
         }
     }
 }
