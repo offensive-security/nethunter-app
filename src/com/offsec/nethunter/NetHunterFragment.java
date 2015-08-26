@@ -9,17 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-
-//import android.app.Fragment;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class NetHunterFragment extends Fragment {
 
@@ -29,16 +26,18 @@ public class NetHunterFragment extends Fragment {
      */
 
     private static final String ARG_SECTION_NUMBER = "section_number";
-
-    /**
-     * Returns a new instance of this fragment for the given section
-     * number.
-     */
+    private static final String IP_REGEX = "\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b";
+    private static final Pattern IP_REGEX_PATTERN = Pattern.compile(IP_REGEX);
+            /**
+             * Returns a new instance of this fragment for the given section
+             * number.
+             */
 
 
     public NetHunterFragment() {
 
     }
+
     public static NetHunterFragment newInstance(int sectionNumber) {
         NetHunterFragment fragment = new NetHunterFragment();
         Bundle args = new Bundle();
@@ -86,49 +85,34 @@ public class NetHunterFragment extends Fragment {
         ip.setText("Please wait...");
 
         new Thread(new Runnable() {
+            StringBuilder result = new StringBuilder();
+
             public void run() {
 
                 try {
-
                     StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
                     StrictMode.setThreadPolicy(policy);
-                    HttpClient httpclient = new DefaultHttpClient();
-                    HttpGet httpget = new HttpGet("http://myip.dnsomatic.com");
-                    final HttpResponse response;
-                    response = httpclient.execute(httpget);
-                    final HttpEntity entity = response.getEntity();
-
-                    if (entity != null) {
-                        long len = entity.getContentLength();
-                        if (len != -1 && len < 1024) {
-                            final String str = EntityUtils.toString(entity);
-                            ip.post(new Runnable() {
-                                public void run() {
-                                    ip.setText(str);
-                                }
-                            });
-                        } else {
-                            ip.post(new Runnable() {
-                                public void run() {
-                                    ip.setText("Response too long or error.");
-                                }
-                            });
-                        }
-                    } else {
-                        ip.post(new Runnable() {
-                            public void run() {
-                                ip.setText("Null:" + response.getStatusLine().toString());
-                            }
-                        });
+                    URLConnection urlcon = new URL("https://api.ipify.org").openConnection();
+                    BufferedReader rd = new BufferedReader(new InputStreamReader(urlcon.getInputStream()));
+                    String line;
+                    while ((line = rd.readLine()) != null) {
+                        result.append(line);
                     }
-
                 } catch (Exception e) {
-                    ip.post(new Runnable() {
-                        public void run() {
-                            ip.setText("Generic Error");
-                        }
-                    });
+                    result.append("Check connection!");
                 }
+                final String done;
+                Matcher p = IP_REGEX_PATTERN.matcher(result.toString());
+                if (p.matches() || result.toString().equals("Check connection!")) {
+                    done = result.toString();
+                } else {
+                    done = "Invalid IP!";
+                }
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        ip.setText(done);
+                    }
+                });
             }
         }).start();
     }
