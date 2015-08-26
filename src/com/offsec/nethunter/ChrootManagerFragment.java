@@ -1,5 +1,6 @@
 package com.offsec.nethunter;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
@@ -96,6 +97,8 @@ public class ChrootManagerFragment extends Fragment {
     String filesPath;
     SharedPreferences sharedpreferences;
     AlertDialog ad;
+    private String termWindowHandle;
+    private static final int REQUEST_TERM_WINDOW_HANDLE = 1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -330,7 +333,10 @@ public class ChrootManagerFragment extends Fragment {
                     new Intent("jackpal.androidterm.RUN_SCRIPT");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
             intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c '" + getActivity().getFilesDir() + "/scripts/bootkali apt-get install " + packages + "'");
-            startActivity(intent);
+            if (termWindowHandle != null) {
+                intent.putExtra("jackpal.androidterm.window_handle", termWindowHandle);
+            }
+            startActivityForResult(intent, REQUEST_TERM_WINDOW_HANDLE);
         } catch (Exception e) {
             Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
             try {
@@ -338,6 +344,16 @@ public class ChrootManagerFragment extends Fragment {
             } catch (android.content.ActivityNotFoundException anfe2) {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=jackpal.androidterm")));
             }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int request, int result, Intent data) {
+        if (result != Activity.RESULT_OK) {
+            return;
+        }
+        if (data != null && request == REQUEST_TERM_WINDOW_HANDLE) {
+            termWindowHandle = data.getStringExtra("jackpal.androidterm.window_handle");
         }
     }
 
