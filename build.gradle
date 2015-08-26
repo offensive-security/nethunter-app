@@ -15,15 +15,15 @@ def getDate() {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:22.2.1'
-    compile 'com.android.support:appcompat-v7:22.2.1'
-    compile 'com.android.support:design:22.2.1'
+    compile 'com.android.support:support-v4:23.0.0'
+    compile 'com.android.support:appcompat-v7:23.0.0'
+    compile 'com.android.support:design:23.0.0'
 }
 
 android {
 
-    compileSdkVersion 22
-    buildToolsVersion '23.0.0 rc3'
+    compileSdkVersion 23
+    buildToolsVersion '23.0.0'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
