@@ -21,7 +21,6 @@
         android:xlargeScreens="true" />
 
     <application
-        android:largeHeap="true"
         android:allowBackup="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
