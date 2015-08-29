@@ -38,6 +38,7 @@ import java.io.OutputStream;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
@@ -490,8 +491,25 @@ public class ChrootManagerFragment extends Fragment {
             if (mbb == null) {
                 throw new IOException();
             }
-            md.reset();
-            md.update(mbb);
+            /* Code from @SnakeDoc: http://stackoverflow.com/questions/16050827/filechannel-bytebuffer-and-hashing-files */
+            ByteBuffer bbf = ByteBuffer.allocateDirect(8192); // allocation in bytes - 1024, 2048, 4096, 8192
+
+            int b;
+
+            b = fc.read(bbf);
+
+            while ((b != -1) && (b != 0)) {
+                bbf.flip();
+
+                byte[] bytes = new byte[b];
+                bbf.get(bytes);
+
+                md.update(bytes, 0, b);
+
+                bbf.clear();
+                b = fc.read(bbf);
+            }
+
             byte[] result = md.digest();
             newSum = String.format("%0" + (result.length * 2) + "X", new BigInteger(1, result));
             fc.close();
