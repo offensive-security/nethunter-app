@@ -1,21 +1,16 @@
 package com.offsec.nethunter;
 
 import android.app.AlertDialog;
-import android.app.DownloadManager;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.FileObserver;
 import android.os.PowerManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
@@ -33,10 +28,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,6 +37,8 @@ import java.io.OutputStream;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
@@ -160,7 +155,7 @@ public class ChrootManagerFragment extends Fragment {
     private void checkforLegacyChroot() {
         // does old chroot directory exist?
         if (getActivity() != null) {
-            final View mView =  getView();
+            final View mView = getView();
 
             new Thread(new Runnable() {
 
@@ -207,7 +202,6 @@ public class ChrootManagerFragment extends Fragment {
             }).start();
 
 
-
         }
     }
 
@@ -246,7 +240,6 @@ public class ChrootManagerFragment extends Fragment {
                     final String _res = x.RunAsRootOutput(command);
 
 
-
                     installButton.post(new Runnable() {
                         @Override
                         public void run() {
@@ -276,8 +269,6 @@ public class ChrootManagerFragment extends Fragment {
                 }
 
             }).start();
-
-
 
 
         }
@@ -429,7 +420,7 @@ public class ChrootManagerFragment extends Fragment {
 
     private void inflateZip() {
         if (getActivity() != null) {
-            final View mView =  getView();
+            final View mView = getView();
             final boolean next = checkFileIntegrity(zipFilePath);
             new Thread(new Runnable() {
 
@@ -462,42 +453,39 @@ public class ChrootManagerFragment extends Fragment {
             }).start();
 
 
-
         }
 
     }
 
     private boolean checkFileIntegrity(String path) {
 
-        Log.d(TAG, "INIT checkFileIntegrity ::: " + path);
-        File theFile = new File(path);
-        byte[] bytes = new byte[(int) theFile.length()];
-        DataInputStream dis;
         MessageDigest md;
-        try {
-            dis = new DataInputStream(new FileInputStream(theFile));
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, "Error:  Can't find " + zipFilePath, e);
-            return false;
-        }
-        try {
-            dis.readFully(bytes);
-        } catch (NullPointerException | IOException e) {
-            Log.e(TAG, "Error reading " + zipFilePath, e);
-            return false;
-        }
         try {
             md = MessageDigest.getInstance("SHA-512");
         } catch (NoSuchAlgorithmException e) {
             Log.e(TAG, "For some reason, no SHA512 found on this device.", e);
             return false;
         }
-        md.reset();
+        Log.d(TAG, "INIT checkFileIntegrity ::: " + path);
+        String newSum;
+        try {
+            FileChannel fc = new FileInputStream(path).getChannel();
+            MappedByteBuffer mbb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
+            if (mbb == null) {
+                throw new IOException();
+            }
+            md.reset();
+            md.update(mbb);
+            byte[] result = md.digest();
+            newSum = String.format("%0" + (result.length * 2) + "X", new BigInteger(1, result));
+            fc.close();
+        } catch (IOException ioe) {
+            Log.e(TAG, "Error:  Can't read " + zipFilePath);
+            return false;
+        }
 
         // k, now check the sha.  Thanks to discussion regarding formatting at:
         // http://stackoverflow.com/questions/7166129/how-can-i-calculate-the-sha-256-hash-of-a-string-in-android
-        byte[] result = md.digest(bytes);
-        String newSum = String.format("%0" + (result.length * 2) + "X", new BigInteger(1, result));
         Boolean sumpass = newSum.equalsIgnoreCase(SHA512);
 
         Log.d(TAG, "checkSUM ORIG ::: " + SHA512);
@@ -516,6 +504,7 @@ public class ChrootManagerFragment extends Fragment {
             // quick & shorter formatter
             DateFormat dateFormat = DateFormat.getDateTimeInstance();
             String ts = dateFormat.format(cal.getTime());
+
             public void run() {
 
                 statusText.post(new Runnable() {
@@ -526,7 +515,6 @@ public class ChrootManagerFragment extends Fragment {
                     }
                 });
             }
-
 
 
         }).start();
@@ -583,6 +571,7 @@ public class ChrootManagerFragment extends Fragment {
         NotificationManager mNotifyManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getActivity());
         int last_perc = 0;
+
         public DownloadChroot(Context context) {
             this.context = context;
         }
@@ -637,11 +626,10 @@ public class ChrootManagerFragment extends Fragment {
             }
             return null;
         }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
-
 
 
             mBuilder.setContentTitle("Downloading Chroot")
@@ -667,7 +655,7 @@ public class ChrootManagerFragment extends Fragment {
         @Override
         protected void onProgressUpdate(Integer... progress) {
             super.onProgressUpdate(progress);
-            if(progress[0] > last_perc) {
+            if (progress[0] > last_perc) {
                 last_perc = progress[0];
                 // if we get here, length is known, now set indeterminate to false
                 // Notification
