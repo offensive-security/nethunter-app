@@ -471,10 +471,6 @@ public class ChrootManagerFragment extends Fragment {
         String newSum;
         try {
             FileChannel fc = new FileInputStream(path).getChannel();
-            MappedByteBuffer mbb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
-            if (mbb == null) {
-                throw new IOException();
-            }
             /* Code from @SnakeDoc: http://stackoverflow.com/questions/16050827/filechannel-bytebuffer-and-hashing-files */
             ByteBuffer bbf = ByteBuffer.allocateDirect(8192); // allocation in bytes - 1024, 2048, 4096, 8192
 
