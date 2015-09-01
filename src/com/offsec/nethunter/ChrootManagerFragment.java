@@ -81,10 +81,10 @@ public class ChrootManagerFragment extends Fragment {
     /* put chroot info here */
     private static final String FILENAME = "kalifs-minimal.tar.xz";
     // private static final String URI = "http://images.offensive-security.com/" + FILENAME;
-    private static final String URI = "http://3bollcdn.com/nethunter/chroot/" + FILENAME;
+    private static final String URI = "http://images.offensive-security.com/" + FILENAME;
     private static final String SHA512 =
-            "20e41e93ba743fad8774fe2f065a685f586acce90bf02cec570ef83865c1fc90121b89bb" +
-                    "66a32e0c4f2e94e26ef339b549e8b0fa8ad104b5bc12f8251faf1330";
+            "3d92fcefb9e6bb8c5f34ccfdabdad892b727c5c5e7902a90ab2bf9be8cd50d9c34904801e13ede7" +
+                    "b18006f1b69a38577244f4042a008adf307ffdde6c26ec352";
     private static final String OLD_CHROOT_PATH = "/data/local/kali-armhf/";
 
     String zipFilePath;
