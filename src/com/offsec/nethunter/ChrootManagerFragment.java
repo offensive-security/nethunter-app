@@ -123,7 +123,7 @@ public class ChrootManagerFragment extends Fragment {
         });
         updateButton.setVisibility(View.GONE);
         sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
-        filesPath = "/storage/emulated/0";
+        filesPath = "/sdcard";
         chrootPath = getActivity().getFilesDir() + "/chroot/";
         zipFilePath = filesPath + "/" + FILENAME;
 
