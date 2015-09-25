@@ -187,7 +187,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
         }
 
         int UACBypassIndex = sharedpreferences.getInt("UACBypassIndex", 0);
-        String[] command = new String[1];
+        final String[] command = new String[1];
         int pageNum = mViewPager.getCurrentItem();
         if (pageNum == 0) {
             switch (UACBypassIndex) {
@@ -214,9 +214,22 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
                     break;
             }
         }
-        ShellExecuter exe = new ShellExecuter();
-        exe.RunAsRoot(command);
-        ((AppNavHomeActivity) getActivity()).showMessage("Attack executed");
+        ((AppNavHomeActivity) getActivity()).showMessage("Attack launched...");
+        new Thread(new Runnable() {
+            public void run() {
+                ShellExecuter exe = new ShellExecuter();
+                exe.RunAsRoot(command);
+                //Logger.appendLog(outp1);
+                mViewPager.post(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        ((AppNavHomeActivity) getActivity()).showMessage("Attack execution ended.");
+                    }
+                });
+            }
+
+        }).start();
     }
 
     private void reset() {
