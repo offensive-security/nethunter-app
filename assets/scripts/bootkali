@@ -320,10 +320,13 @@ else
             LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $busybox chroot $mnt /usr/bin/apt-get update
          if [ -z ${var+x} ] || [ "$3" != "" ]; then
             echo -e "\e[32mkali-chroot$ /usr/bin/apt-get -y install "$3"\e[0m"
-            LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $busybox chroot $mnt /usr/bin/apt-get -y install "$3"
+            LANG=C DEBIAN_FRONTEND=noninteractive PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $busybox chroot $mnt /usr/bin/apt-get -y install "$3"
          fi
             echo -e "\e[32mkali-chroot$ /usr/bin/apt-get -y dist-upgrade\e[0m"
-            LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $busybox chroot $mnt /usr/bin/apt-get -y dist-upgrade
+            LANG=C DEBIAN_FRONTEND=noninteractive PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $busybox chroot $mnt /usr/bin/apt-get -y dist-upgrade
+            LANG=C DEBIAN_FRONTEND=noninteractive PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $busybox chroot $mnt /usr/bin/apt-get -y install "$3"
+            echo -e "\e[32mkali-chroot$ /usr/bin/apt-get -y dist-upgrade\e[0m"
+            LANG=C DEBIAN_FRONTEND=noninteractive PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $busybox chroot $mnt /usr/bin/apt-get -y dist-upgrade
             echo -e "\e[32m"
             printf "\n\nDone!\n\nPress the 'back' key to return to Nethunter.\n\nIf you noticed errors, press the up-arrow key (if your keyboard supports it) to review previously-issued commands.\n"
             printf "And remember to use the 'Maintain Chroot' button in the Chroot Manager to keep your chroot up-to-date and to install new metapackages.\n\n"
