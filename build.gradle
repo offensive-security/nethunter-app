@@ -52,7 +52,7 @@ android {
     signingConfigs {
 
         debug {
-            storeFile file(System.getenv("HOME") + "/.android/debug.keystore")
+            storeFile file("${System.properties['user.home']}" +  "/.android/debug.keystore")
         }
 
         /* note:  To build a signed version of nethunter:
@@ -65,7 +65,7 @@ android {
         */
         release {
             storePassword System.getenv("KEYSTORE_PASSWORD")
-            storeFile file(System.getenv("HOME") + "/.android/release.keystore")
+            storeFile file("${System.properties['user.home']}" +  "/.android/release.keystore")
             keyAlias "nethunter"
             keyPassword System.getenv("KEY_PASSWORD")
 
