@@ -141,6 +141,8 @@ public class ChrootManagerFragment extends Fragment {
 
         if (ARCH.contains("arm")) {
             dir = "kali-armhf";
+        } else if (ARCH.contains("aarch64")){
+            dir = "kali-armhf";
         } else if (ARCH.contains("i686")) {
             dir = "kali-amd64";
         } else if (ARCH.contains("mips")) {
