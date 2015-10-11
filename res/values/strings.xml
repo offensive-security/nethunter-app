@@ -105,7 +105,7 @@
     <string name="ip_address">IP address</string>
     <string name="bssid">BSSID</string>
     <string name="ssid">SSID</string>
-    <string name="chanel">Chanel</string>
+    <string name="chanel">Channel</string>
     <string name="enable_karma">Enable karma</string>
     <string name="admin">UAC Bypass</string>
     <string name="choose_language">Keyboard Layout</string>
