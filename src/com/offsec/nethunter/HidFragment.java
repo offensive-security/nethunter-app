@@ -182,25 +182,25 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
         if (pageNum == 0) {
             switch (UACBypassIndex) {
                 case 0:
-                    command[0] = "su -c bootkali start-rev-met --" + lang;
+                    command[0] = "su -c \"bootkali start-rev-met --" + lang + "\"";
                     break;
                 case 1:
-                    command[0] = "su -c bootkali start-rev-met-elevated-win7 --" + lang;
+                    command[0] = "su -c \"bootkali start-rev-met-elevated-win7 --" + lang + "\"";
                     break;
                 default:
-                    command[0] = "su -c bootkali start-rev-met-elevated-win8 --" + lang;
+                    command[0] = "su -c \"bootkali start-rev-met-elevated-win8 --" + lang + "\"";
                     break;
             }
         } else if (pageNum == 1) {
             switch (UACBypassIndex) {
                 case 0:
-                    command[0] = "su -c bootkali hid-cmd --" + lang;
+                    command[0] = "su -c \"bootkali hid-cmd --" + lang + "\"";
                     break;
                 case 1:
-                    command[0] = "su -c bootkali hid-cmd-elevated-win7 --" + lang;
+                    command[0] = "su -c \"bootkali hid-cmd-elevated-win7 --" + lang + "\"";
                     break;
                 default:
-                    command[0] = "su -c bootkali hid-cmd-elevated-win8 --" + lang;
+                    command[0] = "su -c \"bootkali hid-cmd-elevated-win8 --" + lang + "\"";
                     break;
             }
         }

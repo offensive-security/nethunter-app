@@ -155,7 +155,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                         break;
                 }
                 String[] command = new String[1];
-                command[0] = "su -c bootkali duck-hunt-convert " + lang + " /sdcard/" + DuckHunterConvertFragment.configFilePath + " /opt/" + DuckHunterPreviewFragment.configFileFilename;
+                command[0] = "su -c \"bootkali duck-hunt-convert " + lang + " /sdcard/" + DuckHunterConvertFragment.configFilePath + " /opt/" + DuckHunterPreviewFragment.configFileFilename + "\"";
                 ShellExecuter exe = new ShellExecuter();
                 exe.RunAsRoot(command);
                 ((AppNavHomeActivity) getActivity()).showMessage("converting started");
@@ -177,7 +177,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
     private void start() {
         String[] command = new String[1];
-        command[0] = "su -c bootkali duck-hunt-run /opt/duckout.sh";
+        command[0] = "su -c 'bootkali duck-hunt-run /opt/duckout.sh'";
         ShellExecuter exe = new ShellExecuter();
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("Attack started");
