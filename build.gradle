@@ -77,10 +77,11 @@ android {
         debug {
             buildConfigField "java.util.Date", "BUILD_TIME", "new java.util.Date(" + getDate() + "L)"
             buildConfigField "String", "BUILD_NAME", "\"" + System.getenv("USER") + "\"";
+            return true
         }
         release {
             signingConfig signingConfigs.release
-            minifyEnabled true
+            //minifyEnabled true
             shrinkResources true
             proguardFile file('proguard.cfg')
             debuggable false
@@ -88,6 +89,7 @@ android {
             zipAlignEnabled true
             buildConfigField "java.util.Date", "BUILD_TIME", "new java.util.Date(" + getDate() + "L)"
             buildConfigField "String", "BUILD_NAME", "\"" + System.getenv("USER") + "\"";
+            return true
         }
     }
 }
