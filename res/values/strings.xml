@@ -241,4 +241,11 @@
     <string name="legacychrootmessage">You appear to already have an existing Kali chroot from an older version of Nethunter.\n\nMigrating it to its new location requires a reboot.\n\nOr, you can leave the old chroot alone and install a new chroot.  If you choose this option, make sure you have enough storage for both.</string>
     <string name="legacychrootposbutton">Migrate (reboot)</string>
     <string name="legacychrootnegbutton">Ignore current</string>
+
+    <!-- Custom Launhcer -->
+    <string name="add_button">Add a Button</string>
+    <string name="add_lauchner_btn_label">Button label: </string>
+    <string name="add_lauchner_btn_command">Command: </string>
+    <string name="toast_error_launcher">Invalid call of function!</string>
+    <string name="toast_input_error_launcher">Invalid arguments given!</string>
 </resources>
