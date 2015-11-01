@@ -80,7 +80,7 @@ public class ChrootManagerFragment extends Fragment {
     /* put chroot info here */
     private static final String FILENAME = "kalifs-minimal.tar.xz";
     // private static final String URI = "http://images.offensive-security.com/" + FILENAME;
-    private static final String URI = "http://3bollcdn.com/nethunter/chroot/" + FILENAME;
+    private static final String URI = "http://images.offensive-security.com/" + FILENAME;
     private static final String SHA512 =
             "dacff65c8d91014e4f787cc255450644625624bd8af6309ac80409b6e02bd819f6e12c83425d9" +
                     "d9275e663bab8ce370a402cbc3a126f1bf698696828359c9582";
