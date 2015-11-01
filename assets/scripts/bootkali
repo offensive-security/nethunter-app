@@ -88,9 +88,10 @@ fi
 # hid-cmd, hid-cmd-elevated-win[7-8], wifite, iptables, update
 # start-rev-met, start-rev-met-elevated-win[8-7]
 
-if [ $# -eq 0 ]; then
-	$busybox chroot $mnt /bin/bash -l
-else
+    if [ $# -eq 0 ]; then
+        $busybox chroot $mnt /bin/bash -l
+    else
+
    	#APACHE
 
    	if [ "$1" == "apache" ] && [ "$2" == "start" ]; then
@@ -103,7 +104,7 @@ else
    	#BEEF-XSS
 
    	if [ "$1" == "beef-xss" ] && [ "$2" == "start" ]; then
-   		$busybox chroot $mnt service beef-xss start
+        LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8 LC_ALL=en_US.UTF-8 $busybox chroot $mnt service beef-xss start
    		sleep 35
    		am start -a android.intent.action.VIEW -d http://127.0.0.1:3000/ui/panel
    	fi
@@ -318,6 +319,9 @@ else
 			if [ -f "/sys/module/tegra_otg/parameters/tegra_otg_on_charging" ]; then
 				echo "Y" > /sys/module/tegra_otg/parameters/tegra_otg_on_charging
 			fi
+			if [ -f "/sys/module/dwc3/parameters/aca_enable" ]; then
+            	echo "Y" > /sys/module/dwc3/parameters/aca_enable
+            fi
 		fi
 
 		if [ "$1" == "ycable" ] && [ "$2" == "stop" ]; then
@@ -327,6 +331,9 @@ else
 			if [ -f "/sys/module/tegra_otg/parameters/tegra_otg_on_charging" ]; then
 				echo "N" > /sys/module/tegra_otg/parameters/tegra_otg_on_charging
 			fi
+			if [ -f "/sys/module/dwc3/parameters/aca_enable" ]; then
+            	echo "N" > /sys/module/dwc3/parameters/aca_enable
+            fi
 		fi
 
 		#CUSTOM BUTTONS
