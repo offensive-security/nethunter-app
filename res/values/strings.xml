@@ -88,6 +88,7 @@
     <string name="update_kali_chroot">Update Kali chroot</string>
     <string name="turn_off_external_wifi">Turn Off External Wifi</string>
     <string name="shutdown_kali">Unmount Kali</string>
+    <string name="kali_dumpmifare">Dump Mifare</string>
     
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
