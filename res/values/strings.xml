@@ -88,6 +88,8 @@
     <string name="update_kali_chroot">Update Kali chroot</string>
     <string name="turn_off_external_wifi">Turn Off External Wifi</string>
     <string name="shutdown_kali">Unmount Kali</string>
+    <string name="kali_dumpmifare">Dump Mifare</string>
+
     <string name="add_button">Add a Button</string>
 
     <string name="add_lauchner_btn_label">Button label: </string>

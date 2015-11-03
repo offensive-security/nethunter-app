@@ -98,6 +98,14 @@ public class KaliLauncherFragment extends Fragment {
             }
         }, rootView);
         /**
+         * Turn off external wifi
+         */
+        addClickListener(R.id.kali_dumpmifare, new View.OnClickListener() {
+            public void onClick(View v) {
+                intentClickListener("bootkali dumpmifare");
+            }
+        }, rootView);
+        /**
          * Shutdown Kali
          */
         addClickListener(R.id.shutdown_kali, new View.OnClickListener() {
