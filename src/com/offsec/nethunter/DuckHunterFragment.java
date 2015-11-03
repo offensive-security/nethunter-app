@@ -46,6 +46,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     private String fileDir = "";
+    private static final String TAG = "DuckHunterFragment";
     private static final String CHROOTDIR_HARDCODED = "/data/data/com.offsec.nethunter/files/chroot/kali-armhf/";
     public DuckHunterFragment() {
 
@@ -175,6 +176,10 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                 command[0] = "su -c '" + fileDir + "/bootkali duck-hunt-convert " + lang +
                         " /sdcard/" + DuckHunterConvertFragment.configFilePath + " /opt/" +
                         DuckHunterPreviewFragment.configFileFilename + "'";
+                String command_string = "su -c '" + fileDir + "/bootkali duck-hunt-convert " + lang +
+                        " /sdcard/" + DuckHunterConvertFragment.configFilePath + " /opt/" +
+                        DuckHunterPreviewFragment.configFileFilename + "'";
+                Log.d(TAG, command_string);
                 ShellExecuter exe = new ShellExecuter();
                 exe.RunAsRoot(command);
                 ((AppNavHomeActivity) getActivity()).showMessage("converting started");
@@ -197,6 +202,8 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     private void start() {
         String[] command = new String[1];
         command[0] = "su -c '" + fileDir + "/bootkali duck-hunt-run /opt/duckout.sh'";
+        String command_string = "su -c '" + fileDir + "/bootkali duck-hunt-run /opt/duckout.sh'";
+        Log.d(TAG, command_string);
         ShellExecuter exe = new ShellExecuter();
         exe.RunAsRoot(command);
         ((AppNavHomeActivity) getActivity()).showMessage("Attack started");
@@ -283,7 +290,8 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
     public static class DuckHunterConvertFragment extends Fragment implements View.OnClickListener{
 
-        public static String configFilePath = "/configs/modules/duckconvert.txt";
+        public static String configFilePath = "files/modules/duckconvert.txt";
+        //public static String configFilePath = "/configs/modules/duckconvert.txt";
         public static String loadFilePath = "files/scripts/ducky/";
         private static final int PICKFILE_RESULT_CODE = 1;
 
@@ -297,8 +305,9 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
             t2.setMovementMethod(LinkMovementMethod.getInstance());
 
             EditText source = (EditText) rootView.findViewById(R.id.editSource);
-            File appFolder = getActivity().getFilesDir();
-            File file = new File(appFolder, configFilePath);
+            //File appFolder = getActivity().getFilesDir();
+            File sdcard = Environment.getExternalStorageDirectory();
+            File file = new File(sdcard, configFilePath);
             StringBuilder text = new StringBuilder();
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file));
