@@ -44,7 +44,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
     private Integer selectedScriptIndex = 0;
     final CharSequence[] scripts = {"mana-nat-full", "mana-nat-simple", "mana-nat-simple-bdf"};
-
+    private static final String TAG = "ManaFragment";
     private static final String ARG_SECTION_NUMBER = "section_number";
     private String fileDir;
 
@@ -282,17 +282,12 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
         private String configFilePath;
 
         @Override
-        public void onActivityCreated(Bundle savedInstanceState) {
-            super.onActivityCreated(savedInstanceState);
-            configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
-
-        }
-
-        @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.mana_hostapd, container, false);
             loadOptions(rootView);
+
+            configFilePath = getActivity().getFilesDir().toString() + "/chroot/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
 
             //Update button
             Button button = (Button) rootView.findViewById(R.id.updateButton);
@@ -465,19 +460,14 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
         private String configFilePath;
 
         @Override
-        public void onActivityCreated(Bundle savedInstanceState) {
-            String configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/etc/mana-toolkit/dnsspoof.conf";
-
-            super.onActivityCreated(savedInstanceState);
-        }
-
-        @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
             String description = getResources().getString(R.string.mana_dnsspoof);
             TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
+
+            configFilePath = getActivity().getFilesDir().toString() + "/chroot/kali-armhf/etc/mana-toolkit/dnsspoof.conf";
 
             ShellExecuter exe = new ShellExecuter();
             String text = exe.RunAsRootOutput("cat " + configFilePath);
@@ -506,18 +496,14 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
         private String configFilePath;
 
         @Override
-        public void onActivityCreated(Bundle savedInstanceState) {
-            String configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-full-mod.sh";
-            super.onActivityCreated(savedInstanceState);
-        }
-
-        @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
             String description = getResources().getString(R.string.mana_nat_full);
             TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
+
+            configFilePath = getActivity().getFilesDir().toString() + "/chroot/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-full-mod.sh";
 
             ShellExecuter exe = new ShellExecuter();
             String text = exe.Executer("cat " + configFilePath);
@@ -545,20 +531,17 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
         private String configFilePath;
 
         @Override
-        public void onActivityCreated(Bundle savedInstanceState) {
-             String configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-simple.sh";
-
-            super.onActivityCreated(savedInstanceState);
-        }
-
-        @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
 
+            configFilePath = getActivity().getFilesDir().toString() + "/chroot/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-simple.sh";
+
             String description = getResources().getString(R.string.mana_nat_simple);
             TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
+
+            Log.d(TAG, " onCreateView " + configFilePath);
 
             ShellExecuter exe = new ShellExecuter();
             String text = exe.RunAsRootOutput("cat " + configFilePath);
@@ -587,12 +570,6 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
         private String configFilePath;
 
         @Override
-        public void onActivityCreated(Bundle savedInstanceState) {
-            configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/etc/bdfproxy/bdfproxy.cfg";
-            super.onActivityCreated(savedInstanceState);
-        }
-
-        @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
@@ -601,8 +578,13 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
 
+            configFilePath = getActivity().getFilesDir().toString() + "/chroot/kali-armhf/etc/bdfproxy/bdfproxy.cfg";
+
+            Log.d(TAG, " onCreateView " + configFilePath);
+
             ShellExecuter exe = new ShellExecuter();
             String text = exe.RunAsRootOutput("cat " + configFilePath);
+            Log.d(TAG, "exe.RunasRootOutput(cat " + configFilePath + ")");
             EditText source = (EditText) rootView.findViewById(R.id.source);
             source.setText(text);
 
