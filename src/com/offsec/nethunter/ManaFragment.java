@@ -455,7 +455,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
             desc.setText(description);
             
             ShellExecuter exe = new ShellExecuter();
-            String text = exe.Executer("cat " + configFilePath);
+            String text = exe.RunAsRootOutput("cat " + configFilePath);
             EditText source = (EditText) rootView.findViewById(R.id.source);
             source.setText(text);
 
@@ -489,7 +489,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
             desc.setText(description);
             
             ShellExecuter exe = new ShellExecuter();
-            String text = exe.Executer("cat " + configFilePath);
+            String text = exe.RunAsRootOutput("cat " + configFilePath);
             EditText source = (EditText) rootView.findViewById(R.id.source);
             source.setText(text);
             Button button = (Button) rootView.findViewById(R.id.update);
@@ -523,7 +523,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
             desc.setText(description);
             
             ShellExecuter exe = new ShellExecuter();
-            String text = exe.Executer("cat " + configFilePath);
+            String text = exe.RunAsRootOutput("cat " + configFilePath);
             EditText source = (EditText) rootView.findViewById(R.id.source);
             source.setText(text);
 
@@ -558,7 +558,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
             desc.setText(description);
 
             ShellExecuter exe = new ShellExecuter();
-            String text = exe.Executer("cat " + configFilePath);
+            String text = exe.RunAsRootOutput("cat " + configFilePath);
             EditText source = (EditText) rootView.findViewById(R.id.source);
             source.setText(text);
 
@@ -593,7 +593,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener 	{
             desc.setText(description);
             
             ShellExecuter exe = new ShellExecuter();
-            String text = exe.Executer("cat " + configFilePath);
+            String text = exe.RunAsRootOutput("cat " + configFilePath);
             EditText source = (EditText) rootView.findViewById(R.id.source);
             source.setText(text);
 
