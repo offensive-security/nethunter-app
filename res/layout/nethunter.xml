@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:weightSum="1">
 
         <ImageView
             android:id="@+id/test_image"
@@ -84,7 +85,7 @@
 
             <TextView
                 android:id="@+id/external_address"
-                android:layout_width="wrap_content"
+                android:layout_width="110dp"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
                 android:layout_gravity="end"
@@ -103,7 +104,7 @@
 
                 <TextView
                     android:id="@+id/editText2"
-                    android:layout_width="wrap_content"
+                    android:layout_width="110dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:inputType="none"
@@ -115,11 +116,52 @@
 
                 <Button
                     android:id="@+id/button1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/get_external_ip" />
+                    android:layout_width="121dp"
+                    android:layout_height="38dp"
+                    android:text="@string/get_external_ip"
+                    android:textSize="11dp" />
             </LinearLayout>
 
+        </GridLayout>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="16sp"
+            android:columnCount="2"
+            android:rowCount="2"
+            android:layout_weight="0.08">
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_row="0"
+                android:text="@string/nethunter_hid_detect"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/editText3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_row="1"
+                android:inputType="none"
+                android:paddingTop="8sp"
+                android:textSize="12sp"
+                android:typeface="monospace" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_column="1"
+                android:layout_gravity="end"
+                android:layout_row="1"
+                android:orientation="vertical" >
+
+            </LinearLayout>
         </GridLayout>
 
         <TextView
@@ -138,7 +180,8 @@
             android:gravity="bottom|center"
             android:text="@string/nhwarning"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="@color/highlighted_text_material_dark" />
+            android:textColor="@color/highlighted_text_material_dark"
+            android:textSize="10dp" />
     </LinearLayout>
 </ScrollView>
 

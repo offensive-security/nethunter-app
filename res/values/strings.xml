@@ -9,6 +9,8 @@
     <string name="nethunter_description">Welcome to Kali Linux NetHunter by Offensive Security! This application is designed to make it easier to execute attacks and control services. The navigation menu contains links to useful commands, settings, macros, and attack configuration pages. Most configurations work out of the box but some may require some minimal tweaking.</string>
     <string name="nethunter_current_interfaces">Network Interfaces</string>
     <string name="nethunter_external_ip">External IP</string>
+    <string name="nethunter_hid_detect">HID Interfaces</string>
+
 
     <string name="kali_services_label">Kali Service Control</string>
     <string name="kali_services_description">Various Kali network services can be started and stopped via the buttons in this part of the interface.</string>

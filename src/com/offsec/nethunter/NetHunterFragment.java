@@ -71,6 +71,7 @@ public class NetHunterFragment extends Fragment {
             }
         }, rootView);
         getInterfaces(rootView);
+        getHid(rootView);
 
         return rootView;
     }
@@ -123,7 +124,7 @@ public class NetHunterFragment extends Fragment {
         new Thread(new Runnable() {
             public void run() {
                 if (interfaces != null) {
-                    interfaces.setText("Please wait...");
+                    interfaces.setText("Detecting interface...");
                     ShellExecuter exe = new ShellExecuter();
                     String command[] = {"sh", "-c", "netcfg |grep UP |grep -v ^lo|awk -F\" \" '{print $1\"\t\" $3}'"};
                     final String outp = exe.Executer(command);
@@ -138,8 +139,28 @@ public class NetHunterFragment extends Fragment {
                 }
             }
         }).start();
+    }
 
+    private void getHid(View rootView) {
+        final TextView hid = (TextView) rootView.findViewById(R.id.editText3);
 
-
+        new Thread(new Runnable() {
+            public void run() {
+                if (hid != null) {
+                    hid.setText("Detecting HID support...");
+                    ShellExecuter exe = new ShellExecuter();
+                    String command[] = {"sh", "-c", "ls /dev/hidg*"};
+                    final String outp = exe.Executer(command);
+                    //Logger.appendLog(outp1);
+                    hid.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            hid.setText(outp);
+                            hid.setFocusable(false);
+                        }
+                    });
+                }
+            }
+        }).start();
     }
 }
