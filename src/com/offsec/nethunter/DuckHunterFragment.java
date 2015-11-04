@@ -81,9 +81,6 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
         mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                if (position == 1) {
-
-                }
                 getActivity().invalidateOptionsMenu();
             }
         });
