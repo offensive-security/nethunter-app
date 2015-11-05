@@ -46,7 +46,7 @@ public class IptablesFragment extends Fragment {
 
         EditText source = (EditText) rootView.findViewById(R.id.source);
         File sdcard = Environment.getExternalStorageDirectory();
-        File file = new File(sdcard, "files/iptables.conf");
+        File file = new File(sdcard, "files/configs/iptables.conf");
         StringBuilder text = new StringBuilder();
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
@@ -66,7 +66,7 @@ public class IptablesFragment extends Fragment {
             public void onClick(View v) {
                 try {
                     File sdcard = Environment.getExternalStorageDirectory();
-                    File myFile = new File(sdcard, "files/iptables.conf");
+                    File myFile = new File(sdcard, "files/configs/iptables.conf");
                     myFile.createNewFile();
                     FileOutputStream fOut = new FileOutputStream(myFile);
                     OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);

@@ -120,11 +120,10 @@ public class NetHunterFragment extends Fragment {
 
     private void getInterfaces(View rootView) {
         final TextView interfaces = (TextView) rootView.findViewById(R.id.editText1);
-
+        interfaces.setText("Detecting interface...");
         new Thread(new Runnable() {
             public void run() {
                 if (interfaces != null) {
-                    interfaces.setText("Detecting interface...");
                     ShellExecuter exe = new ShellExecuter();
                     String command[] = {"sh", "-c", "netcfg |grep UP |grep -v ^lo|awk -F\" \" '{print $1\"\t\" $3}'"};
                     final String outp = exe.Executer(command);

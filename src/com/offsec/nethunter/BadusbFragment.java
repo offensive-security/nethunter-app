@@ -27,9 +27,9 @@ public class BadusbFragment extends Fragment {
 
     public BadusbFragment() {
         if (Build.VERSION.SDK_INT >= 21) {
-            configFilePath = "files/startbadusb-lollipop.sh";
+            configFilePath = "files/configs/startbadusb-lollipop.sh";
         } else {
-            configFilePath = "files/startbadusb-kitkat.sh";
+            configFilePath = "files/configs/startbadusb-kitkat.sh";
         }
     }
 
