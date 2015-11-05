@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 
 public class DnsmasqFragment extends Fragment {
 
-    private String configFilePath = "files/dnsmasq.conf";
+    private String configFilePath = "files/configs/dnsmasq.conf";
     private static final String ARG_SECTION_NUMBER = "section_number";
     private String fileDir;
 

@@ -348,7 +348,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
     public static class PowerSploitFragment extends Fragment implements OnClickListener {
 
         private String configFilePath;
-        private String configFileUrlPath = "/configs/powersploit-url";
+        private String configFileUrlPath = "/files/configs/powersploit-url";
 
         @Override
         public void onActivityCreated(Bundle savedInstanceState) {
@@ -376,7 +376,8 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
             switch (v.getId()) {
                 case R.id.powersploitOptionsUpdate:
                     try {
-                        File appFolder = getActivity().getFilesDir();
+                        File appFolder = Environment.getExternalStorageDirectory();
+                        Log.d("FOLDERRRR",appFolder.toString());
                         File myFile = new File(appFolder, configFileUrlPath);
                         myFile.createNewFile();
 
@@ -427,7 +428,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
 
 
         private void loadOptions() {
-            File appFolder = getActivity().getFilesDir();
+            File appFolder = Environment.getExternalStorageDirectory();
             File file = new File(appFolder, configFileUrlPath);
             StringBuilder textUrl = new StringBuilder();
             try {
@@ -504,9 +505,9 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
 
         @Override
         public void onActivityCreated(Bundle savedInstanceState) {
-            configFilePath = "/configs/hid-cmd.conf";
+            configFilePath = "/files/configs/hid-cmd.conf";
             EditText source = (EditText)getActivity().findViewById(R.id.windowsCmdSource);
-            File appFolder = getActivity().getFilesDir();
+            File appFolder = Environment.getExternalStorageDirectory();
             File file = new File(appFolder, configFilePath);
             StringBuilder text = new StringBuilder();
             try {
@@ -545,7 +546,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
                     EditText source = (EditText) getView().findViewById(R.id.windowsCmdSource);
                     String text = source.getText().toString();
                     try {
-                        File appFolder = getActivity().getFilesDir();
+                        File appFolder = Environment.getExternalStorageDirectory();
                         File myFile = new File(appFolder, configFilePath);
                         myFile.createNewFile();
                         FileOutputStream fOut = new FileOutputStream(myFile);

@@ -403,7 +403,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
     public static class DhcpdFragment extends Fragment {
 
-        private String configFilePath = "files/dhcpd.conf";
+        private String configFilePath = "files/configs/dhcpd.conf";
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -503,10 +503,10 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
 
-            configFilePath = getActivity().getFilesDir().toString() + "/chroot/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-full-mod.sh";
+            configFilePath = getActivity().getFilesDir().toString() + "/chroot/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-full.sh";
 
             ShellExecuter exe = new ShellExecuter();
-            String text = exe.Executer("cat " + configFilePath);
+            String text = exe.RunAsRootOutput("cat " + configFilePath);
             EditText source = (EditText) rootView.findViewById(R.id.source);
             source.setText(text);
             Button button = (Button) rootView.findViewById(R.id.update);
@@ -540,9 +540,6 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             String description = getResources().getString(R.string.mana_nat_simple);
             TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
-
-            Log.d(TAG, " onCreateView " + configFilePath);
-
             ShellExecuter exe = new ShellExecuter();
             String text = exe.RunAsRootOutput("cat " + configFilePath);
             EditText source = (EditText) rootView.findViewById(R.id.source);
