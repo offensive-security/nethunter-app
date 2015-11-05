@@ -41,6 +41,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
 
     public final static String TAG = "AppNavHomeActivity";
     public static final String CHROOT_INSTALLED_TAG = "CHROOT_INSTALLED_TAG";
+    public static final String COPY_ASSETS_TAG = "COPY_ASSETS_TAG";
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -50,6 +51,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
     private Stack<String> titles = new Stack<>();
     private SharedPreferences prefs;
     String filesPath;
+    String sdCard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +61,11 @@ public class AppNavHomeActivity extends AppCompatActivity {
         //set kali wallpaper as background
 
         filesPath = getFilesDir().toString();
+        sdCard = Environment.getExternalStorageDirectory().toString();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        prefs = getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
+        File sdCardDir = new File(Environment.getExternalStorageDirectory() + "/files");
         if (navigationView != null) {
             setupDrawerContent(navigationView);
         }
@@ -78,29 +83,45 @@ public class AppNavHomeActivity extends AppCompatActivity {
 
         // copy script files, but off the main UI thread
         final ImageView myImageView = (ImageView) findViewById(R.id.bgHome);
-        final Runnable r = new Runnable() {
-            public void run() {
-                assetsToFiles(getFilesDir().toString(), ""); // 1:1 copy (recursive) of the assets folder to data/data/...
-                ShellExecuter exe = new ShellExecuter();
-                exe.RunAsRoot(new String[]{"chmod 700 " + getFilesDir() + "/scripts/*", "chmod 700 " + getFilesDir() + "/etc/init.d/*"});
+        if (!prefs.getBoolean(COPY_ASSETS_TAG, false) || !sdCardDir.isDirectory()) {
+
+            Log.d(COPY_ASSETS_TAG,"COPING FILES....");
+            final Runnable r = new Runnable() {
+                public void run() {
+                    // 1:1 copy (recursive) of the assets/{scripts, etc, wallpapers} folders to /data/data/...
+                    assetsToFiles(filesPath, "", "data");
+                    // 1:1 copy (recursive) of the configs to  /sdcard...
+                    assetsToFiles(sdCard, "", "sdcard");
+                    ShellExecuter exe = new ShellExecuter();
+                    exe.RunAsRoot(new String[]{"chmod 700 " + getFilesDir() + "/scripts/*", "chmod 700 " + getFilesDir() + "/etc/init.d/*"});
 
 
-                myImageView.post(new Runnable() {
-                    @Override
-                    public void run() {
+                    myImageView.post(new Runnable() {
+                        @Override
+                        public void run() {
 
-                        String imageInSD = filesPath + "/wallpapers/kali-nh-2183x1200.png";
-                        Bitmap bitmap = BitmapFactory.decodeFile(imageInSD);
+                            String imageInSD = filesPath + "/wallpapers/kali-nh-2183x1200.png";
+                            Bitmap bitmap = BitmapFactory.decodeFile(imageInSD);
 
-                        myImageView.setImageBitmap(bitmap);
-                    }
+                            myImageView.setImageBitmap(bitmap);
+                        }
 
 
-                });
-            }
-        };
-        Thread t = new Thread(r);
-        t.start();
+                    });
+                }
+            };
+            Thread t = new Thread(r);
+            t.start();
+            SharedPreferences.Editor ed = prefs.edit();
+            ed.putBoolean(COPY_ASSETS_TAG, true);
+            ed.commit();
+        } else {
+            Log.d(COPY_ASSETS_TAG,"FILES NOT COPIED");
+            String imageInSD = filesPath + "/wallpapers/kali-nh-2183x1200.png";
+            Bitmap bitmap = BitmapFactory.decodeFile(imageInSD);
+            myImageView.setImageBitmap(bitmap);
+        }
+
         // now pop in the default fragment
 
         getSupportFragmentManager()
@@ -111,7 +132,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
         // and put the title in the queue for when you need to back through them
         titles.push(mTitle.toString());
 
-        prefs = getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
+
 
         // make sure we check if we have chroot every time we open the drawer, so that
         // we can disable everything but the Chroot Manager
@@ -333,38 +354,59 @@ public class AppNavHomeActivity extends AppCompatActivity {
         toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
         toast.show();
     }
-
-    private void assetsToFiles(String TARGET_BASE_PATH, String path) {
+    private Boolean pathIsAllowed(String path, String copyType) {
+        // never copy images, sounds or webkit
+        if(!path.startsWith("images") && !path.startsWith("sounds") && !path.startsWith("webkit")) {
+            if (copyType.equals("sdcard")) {
+                if(path.equals("") || path.startsWith("files")) {
+                    return true;
+                }
+                return false;
+            }
+            if (copyType.equals("data")) {
+                if(path.equals("") || path.startsWith("scripts") || path.startsWith("wallpapers") || path.startsWith("etc")) {
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        }
+        return false;
+    }
+    // now this only copies the folders: scripts, etc , wallpapers to /data/data...
+    private void assetsToFiles(String TARGET_BASE_PATH, String path, String copyType) {
         AssetManager assetManager = this.getAssets();
-        String assets[] = null;
+        String assets[];
         try {
-            //Log.i("tag", "assetsToFiles() "+path);
+            // Log.i("tag", "assetsTo" + copyType +"() "+path);
             assets = assetManager.list(path);
             if (assets.length == 0) {
                 copyFile(TARGET_BASE_PATH, path);
             } else {
                 String fullPath =  TARGET_BASE_PATH + "/" + path;
-                //Log.i("tag", "path="+fullPath);
+                // Log.i("tag", "path="+fullPath);
                 File dir = new File(fullPath);
-                if (!dir.exists() && !path.startsWith("images") && !path.startsWith("sounds") && !path.startsWith("webkit"))  // dont copy thouse dirs
-                    if (!dir.mkdirs())
-                        Log.i("tag", "could not create dir "+fullPath);
+                if (!dir.exists() && pathIsAllowed(path, copyType)) { // copy thouse dirs
+                    if (!dir.mkdirs()){
+                        Log.i("tag", "could not create dir " + fullPath);
+                    }
+                }
                 for (int i = 0; i < assets.length; ++i) {
                     String p;
-                    if (path.equals(""))
+                    if (path.equals("")) {
                         p = "";
-                    else
+                    } else {
                         p = path + "/";
-
-                    if (!path.startsWith("images") && !path.startsWith("sounds") && !path.startsWith("webkit"))
-                        assetsToFiles(TARGET_BASE_PATH, p + assets[i]);
+                    }
+                    if (pathIsAllowed(path, copyType)) {
+                        assetsToFiles(TARGET_BASE_PATH, p + assets[i], copyType);
+                    }
                 }
             }
         } catch (IOException ex) {
             Log.e("tag", "I/O Exception", ex);
         }
     }
-
     private void copyFile(String TARGET_BASE_PATH, String filename) {
         AssetManager assetManager = this.getAssets();
 
@@ -372,19 +414,23 @@ public class AppNavHomeActivity extends AppCompatActivity {
         OutputStream out = null;
         String newFileName = null;
         try {
-            //Log.i("tag", "copyFile() "+filename);
+            // Log.i("tag", "copyFile() "+filename);
             in = assetManager.open(filename);
             newFileName = TARGET_BASE_PATH + "/" + filename;
-            out = new FileOutputStream(newFileName);
+            File nfile = new File(newFileName);
+            // only if the file isnt there.
+            if(!nfile.exists()) {
+                out = new FileOutputStream(newFileName);
 
-            byte[] buffer = new byte[1024];
-            int read;
-            while ((read = in.read(buffer)) != -1) {
-                out.write(buffer, 0, read);
+                byte[] buffer = new byte[1024];
+                int read;
+                while ((read = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, read);
+                }
+                in.close();
+                out.flush();
+                out.close();
             }
-            in.close();
-            out.flush();
-            out.close();
 
         } catch (Exception e) {
             Log.e("tag", "Exception in copyFile() of "+newFileName);
