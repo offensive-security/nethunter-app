@@ -63,8 +63,8 @@ public class NetHunterFragment extends Fragment {
 
         ip.setFocusable(false);
 
-        buildInfo1.setText("Version: " + BuildConfig.VERSION_NAME + " (" + android.os.Build.TAGS + ")");
-        buildInfo2.setText("Built by " + BuildConfig.BUILD_NAME + " at " + sdf.format(BuildConfig.BUILD_TIME));
+        buildInfo1.setText(String.format("Version: %s (%s)", BuildConfig.VERSION_NAME, android.os.Build.TAGS));
+        buildInfo2.setText(String.format("Built by %s at %s", BuildConfig.BUILD_NAME, sdf.format(BuildConfig.BUILD_TIME)));
         addClickListener(R.id.button1, new View.OnClickListener() {
             public void onClick(View v) {
                 getExternalIp();
@@ -128,7 +128,6 @@ public class NetHunterFragment extends Fragment {
 
         new Thread(new Runnable() {
             public void run() {
-                if (netIfaces != null && hidIfaces != null) {
                     ShellExecuter exe = new ShellExecuter();
                     String commandNET[] = {"sh", "-c", "netcfg |grep UP |grep -v ^lo|awk -F\" \" '{print $1\"\t\" $3}'"};
                     String commandHID[] = {"sh", "-c", "ls /dev/hidg*"};
@@ -154,7 +153,6 @@ public class NetHunterFragment extends Fragment {
                         }
                     });
                 }
-            }
         }).start();
     }
 
