@@ -71,7 +71,7 @@ public class NetHunterFragment extends Fragment {
             }
         }, rootView);
         getInterfaces(rootView);
-        getHid(rootView);
+
 
         return rootView;
     }
@@ -118,21 +118,39 @@ public class NetHunterFragment extends Fragment {
         }).start();
     }
 
-    private void getInterfaces(View rootView) {
-        final TextView interfaces = (TextView) rootView.findViewById(R.id.editText1);
-        interfaces.setText("Detecting interface...");
+    private void getInterfaces(final View rootView) {
+        // 1 thread, 2 commands
+        final TextView netIfaces = (TextView) rootView.findViewById(R.id.editText1); // NET IFACES
+        final TextView hidIfaces = (TextView) rootView.findViewById(R.id.editText3); // HID IFACES
+        // Dont move this inside the thread. (Will throw a null pointer.)
+        netIfaces.setText("Detecting Network interfaces...");
+        hidIfaces.setText("Detecting HID interfaces...");
+
         new Thread(new Runnable() {
             public void run() {
-                if (interfaces != null) {
+                if (netIfaces != null && hidIfaces != null) {
                     ShellExecuter exe = new ShellExecuter();
-                    String command[] = {"sh", "-c", "netcfg |grep UP |grep -v ^lo|awk -F\" \" '{print $1\"\t\" $3}'"};
-                    final String outp = exe.Executer(command);
-                    //Logger.appendLog(outp1);
-                    interfaces.post(new Runnable() {
+                    String commandNET[] = {"sh", "-c", "netcfg |grep UP |grep -v ^lo|awk -F\" \" '{print $1\"\t\" $3}'"};
+                    String commandHID[] = {"sh", "-c", "ls /dev/hidg*"};
+
+                    final String outputNET = exe.Executer(commandNET);
+                    final String outputHID = exe.Executer(commandHID);
+
+                    netIfaces.post(new Runnable() {
                         @Override
                         public void run() {
-                            interfaces.setText(outp);
-                            interfaces.setFocusable(false);
+                            if (outputNET.equals("")) {
+                                netIfaces.setText("No interfaces detected");
+                            } else {
+                                netIfaces.setText(outputNET);
+                            }
+                            netIfaces.setFocusable(false);
+                            if (outputHID.equals("")) {
+                                hidIfaces.setText("No interfaces detected");
+                            } else {
+                                hidIfaces.setText(outputHID);
+                            }
+                            hidIfaces.setFocusable(false);
                         }
                     });
                 }
@@ -140,26 +158,4 @@ public class NetHunterFragment extends Fragment {
         }).start();
     }
 
-    private void getHid(View rootView) {
-        final TextView hid = (TextView) rootView.findViewById(R.id.editText3);
-
-        new Thread(new Runnable() {
-            public void run() {
-                if (hid != null) {
-                    hid.setText("Detecting HID support...");
-                    ShellExecuter exe = new ShellExecuter();
-                    String command[] = {"sh", "-c", "ls /dev/hidg*"};
-                    final String outp = exe.Executer(command);
-                    //Logger.appendLog(outp1);
-                    hid.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            hid.setText(outp);
-                            hid.setFocusable(false);
-                        }
-                    });
-                }
-            }
-        }).start();
-    }
 }

@@ -34,7 +34,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.ByteBuffer;
@@ -43,6 +45,7 @@ import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.util.GregorianCalendar;
 
 /**
@@ -79,6 +82,7 @@ public class ChrootManagerFragment extends Fragment {
 
     /* put chroot info here */
     private static final String FILENAME = "kalifs-minimal.tar.xz";
+    private static final String EXTRACTED_FILENAME = "kalifs-minimal.tar";
     // private static final String URI = "http://images.offensive-security.com/" + FILENAME;
     private static final String URI = "http://188.138.17.16/" + FILENAME;
     private static final String SHA512 =
@@ -87,6 +91,7 @@ public class ChrootManagerFragment extends Fragment {
     private static final String OLD_CHROOT_PATH = "/data/local/kali-armhf/";
 
     String zipFilePath;
+    String extracted_zipFilePath;
 
     TextView statusText;
     String chrootPath;
@@ -120,10 +125,10 @@ public class ChrootManagerFragment extends Fragment {
         });
         updateButton.setVisibility(View.GONE);
         sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
-        filesPath = "/sdcard";
+        filesPath =  Environment.getExternalStorageDirectory().toString();
         chrootPath = getActivity().getFilesDir() + "/chroot/";
         zipFilePath = filesPath + "/" + FILENAME;
-
+        extracted_zipFilePath = filesPath + "/" + EXTRACTED_FILENAME;
         return rootView;
     }
 
@@ -396,26 +401,28 @@ public class ChrootManagerFragment extends Fragment {
         String state = Environment.getExternalStorageState();
         return Environment.MEDIA_MOUNTED.equals(state);
     }
-
-    private boolean startZipDownload() {
-
-        File checkFile = new File(zipFilePath);
-        File otherFile = new File(zipFilePath.replace("/storage/emulated/0", "/storage/emulated/legacy"));
-        if (checkFile.exists() || otherFile.exists()) {
-            statusLog(zipFilePath + getActivity().getString(R.string.existsalready));
+    private boolean deleteFile(String filePath) {
+        File checkFile = new File(filePath);
+        if (checkFile.exists()) {
+            statusLog(filePath + getActivity().getString(R.string.existsalready));
             statusLog(getActivity().getString(R.string.deletingforroom));
             if (checkFile.delete()) {
                 statusLog(getActivity().getString(R.string.oldfiledeleted));
+                return true;
             } else {
                 statusLog(getActivity().getString(R.string.problemdeletingoldfile));
+                return false;
             }
         }
+        return false;
+    }
+    private boolean startZipDownload() {
+        deleteFile(zipFilePath);
         statusLog(getActivity().getString(R.string.startingdownload));
         if (!isExternalStorageWritable()) {
             statusLog(getActivity().getString(R.string.unwritablestorageerror));
             return false;
         }
-
         final DownloadChroot downloadTask = new DownloadChroot(getActivity());
         downloadTask.execute(URI);
         return true;
@@ -424,11 +431,12 @@ public class ChrootManagerFragment extends Fragment {
     private void inflateZip() {
         if (getActivity() != null) {
             final View mView = getView();
-            final boolean next = checkFileIntegrity(zipFilePath);
+
             new Thread(new Runnable() {
 
                 public void run() {
                     if (mView != null) {
+                        final boolean next = checkFileIntegrity(zipFilePath);
                         mView.post(new Runnable() {
                             @Override
                             public void run() {
@@ -558,7 +566,7 @@ public class ChrootManagerFragment extends Fragment {
         protected Boolean doInBackground(Void... Void) {
             try {
                 x.RunAsRootWithException("busybox xz -df '" + zipFilePath + "';" +
-                        "busybox tar xf '" + zipFilePath.substring(0, zipFilePath.lastIndexOf('.')) + "' -C '" + chrootPath + "'");
+                        "busybox tar xf '" + extracted_zipFilePath + "' -C '" + chrootPath + "'");
             } catch (RuntimeException e) {
                 Log.d(TAG, "Error: ", e);
                 return false;
@@ -570,12 +578,16 @@ public class ChrootManagerFragment extends Fragment {
         protected void onPostExecute(Boolean result) {
             if (result) {
                 statusLog(getActivity().getString(R.string.unzippinguntarringdone));
+                pd.dismiss();
+                checkForExistingChroot();
+                deleteFile(extracted_zipFilePath);
+                addMetaPackages();
             } else {
                 statusLog(getActivity().getString(R.string.therewasanerror));
+                pd.dismiss();
+                return;
             }
-            pd.dismiss();
-            checkForExistingChroot();
-            addMetaPackages();
+
         }
     }
 
@@ -586,12 +598,38 @@ public class ChrootManagerFragment extends Fragment {
         ProgressDialog mProgressDialog;
         NotificationManager mNotifyManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getActivity());
-        int last_perc = 0;
-
+        private boolean isRunning = true;
+        double last_perc = 0.0;
+        double humanSize = 0.0;
+        double onePercent = 0.0;
+        double fineProgress = 0.0;
         public DownloadChroot(Context context) {
             this.context = context;
-        }
+            mProgressDialog = new ProgressDialog(context);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel the download", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    cancel(true);
+                }
+            });
 
+        }
+        @Override
+        protected void onCancelled() {
+            isRunning = false;
+            // mProgressDialog.setTitle("Chroot download Aborted.");
+            mBuilder.setContentTitle("Chroot download Aborted.")
+                    .setContentText("Download canceled by the user.")
+                    .setSmallIcon(R.drawable.ic_action_perm_device_information)
+                    // Removes the progress bar
+                    .setProgress(0, 0, false);
+            mNotifyManager.notify(1, mBuilder.build());
+            statusLog("Download canceled by the user, removing temp file...");
+            deleteFile(zipFilePath);
+            checkforLegacyChroot();
+            mNotifyManager.cancel(1);
+        }
         @Override
         protected String doInBackground(String... sUrl) {
             InputStream input = null;
@@ -607,14 +645,15 @@ public class ChrootManagerFragment extends Fragment {
                             + " " + connection.getResponseMessage();
                 }
                 int fileLength = connection.getContentLength();
+                humanSize =  round(fileLength/1000000); // in MiB
+                onePercent = round(fileLength/100000000);
                 // download the file
                 input = connection.getInputStream();
                 output = new FileOutputStream(zipFilePath);
-
                 byte data[] = new byte[1024];
                 long total = 0;
                 int count;
-                while ((count = input.read(data)) != -1) {
+                while ((count = input.read(data)) != -1 && isRunning) {
                     // allow canceling with back button
                     if (isCancelled()) {
                         input.close();
@@ -623,7 +662,8 @@ public class ChrootManagerFragment extends Fragment {
                     total += count;
                     // publishing the progress....
                     if (fileLength > 0) // only if total length is known
-                        publishProgress((int) (total * 100 / fileLength));
+                    fineProgress = round(round(total * 100) / fileLength);
+                        publishProgress((int) (fineProgress));
                     output.write(data, 0, count);
                 }
             } catch (Exception e) {
@@ -642,7 +682,6 @@ public class ChrootManagerFragment extends Fragment {
             }
             return null;
         }
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -652,11 +691,12 @@ public class ChrootManagerFragment extends Fragment {
                     .setContentText("Starting download...")
                     .setSmallIcon(R.drawable.ic_action_refresh);
             // instantiate it within the onCreate method
-            mProgressDialog = new ProgressDialog(getActivity());
-            mProgressDialog.setTitle("Downloading Chroot");
+
+            mProgressDialog.setTitle("Starting Chroot download.");
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            mProgressDialog.setCancelable(false);
+            mProgressDialog.setMax(100);
+
 
 
             // take CPU lock to prevent CPU from going off if the user
@@ -671,17 +711,19 @@ public class ChrootManagerFragment extends Fragment {
         @Override
         protected void onProgressUpdate(Integer... progress) {
             super.onProgressUpdate(progress);
-            if (progress[0] > last_perc) {
-                last_perc = progress[0];
+            if (fineProgress > last_perc) {
+                last_perc = fineProgress;
+                double ttDownloaded = round(last_perc * onePercent);
                 // if we get here, length is known, now set indeterminate to false
                 // Notification
                 mBuilder.setProgress(100, progress[0], false)
-                        .setContentText("So far " + progress[0] + "% downloaded...");
+                        .setContentTitle("Downloading Chroot: " + last_perc + "%")
+                        .setContentText("So far " + ttDownloaded + " MiB of " + humanSize + " MiB downloaded.");
                 mNotifyManager.notify(1, mBuilder.build());
                 // Dialog
                 mProgressDialog.setIndeterminate(false);
-                mProgressDialog.setMax(100);
                 mProgressDialog.setProgress(progress[0]);
+                mProgressDialog.setTitle("Downloading Chroot.");
             }
         }
 
@@ -690,11 +732,32 @@ public class ChrootManagerFragment extends Fragment {
             mWakeLock.release();
 
             if (result != null) {
-                mProgressDialog.setTitle("ERROR Downloading Chroot.");
-                mBuilder.setContentTitle("ERROR downloading Chroot.")
-                        .setContentText(result)
+                mProgressDialog.dismiss();
+
+                mBuilder.setContentTitle("Download error.")
+                        .setContentText("Error in the Chroot download.")
+                        .setSmallIcon(R.drawable.ic_action_perm_device_information)
                         .setProgress(0, 0, false);
                 mNotifyManager.notify(1, mBuilder.build());
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Error in the Chroot download.");
+                builder.setMessage("Error in the Chroot download, posible causes: server down or conection issues, here is the error: " + result)
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                statusLog("Error in the download, removing temp file...");
+                                deleteFile(zipFilePath);
+                                checkforLegacyChroot();
+                                mNotifyManager.cancel(1);
+                            }
+                        });
+                // Create the AlertDialog object and return it
+
+                ad = builder.create();
+                ad.setCancelable(false);
+                ad.show();
+
+
             } else {
                 mProgressDialog.dismiss();
                 mBuilder.setContentTitle("Chroot download completed.").setContentText("Chroot download completed")
@@ -704,6 +767,11 @@ public class ChrootManagerFragment extends Fragment {
                 inflateZip();
                 mNotifyManager.cancel(1);
             }
+        }
+        protected double round(double value) {
+            BigDecimal bd = new BigDecimal(value).setScale(1, RoundingMode.HALF_EVEN);
+            value = bd.doubleValue();
+            return value;
         }
     }
 }
