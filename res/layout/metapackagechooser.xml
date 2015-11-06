@@ -116,10 +116,12 @@
             android:textColor="@color/highlighted_text_material_dark"
             android:textIsSelectable="false" />
 
-        <WebView
-            android:id="@+id/metapackagesWebView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        <Button
+            android:id="@+id/metapackagesWeb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Open kali-metapackages WebSite"
+            android:layout_gravity="center_horizontal" />
 
     </LinearLayout>
 </ScrollView>
