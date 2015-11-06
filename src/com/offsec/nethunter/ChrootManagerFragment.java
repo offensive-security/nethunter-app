@@ -20,7 +20,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
@@ -28,11 +27,9 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -42,12 +39,10 @@ import java.math.RoundingMode;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.ByteBuffer;
-import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -89,7 +84,7 @@ public class ChrootManagerFragment extends Fragment {
     private static final String EXTRACTED_FILENAME = "kalifs-minimal.tar";
 
     // private static final String URI = "http://images.offensive-security.com/" + FILENAME;
-    private static final String URI = "http://10.0.0.106:8000/" + FILENAME;
+    private static final String URI = "http://188.138.17.16/" + FILENAME;
     private static final String SHA512 =
             "6fe09e30236e99a9e79a9f188789944c18cedf69d6510849ac5821fad84e174c2bbfa8704a2d763" +
                     "4e39ed5aa3e5ad7e67b435642cdd733905e160fa6672bb651";
