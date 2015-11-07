@@ -69,7 +69,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/var/www/payload";
+        configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/var/www/html/powersploit-payload";
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -352,7 +352,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
 
         @Override
         public void onActivityCreated(Bundle savedInstanceState) {
-            configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/var/www/payload";
+            configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/var/www/html/powersploit-payload";
 
             super.onActivityCreated(savedInstanceState);
         }
@@ -377,7 +377,6 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
                 case R.id.powersploitOptionsUpdate:
                     try {
                         File appFolder = Environment.getExternalStorageDirectory();
-                        Log.d("FOLDERRRR",appFolder.toString());
                         File myFile = new File(appFolder, configFileUrlPath);
                         myFile.createNewFile();
 
