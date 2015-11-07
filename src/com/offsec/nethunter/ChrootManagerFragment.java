@@ -721,8 +721,8 @@ public class ChrootManagerFragment extends Fragment {
                             + " " + connection.getResponseMessage();
                 }
                 int fileLength = connection.getContentLength();
-                humanSize =  round(fileLength/1000000); // in MiB
-                onePercent = round(fileLength/100000000);
+                humanSize =  fileLength/1000000; // in MiB
+                onePercent = humanSize/100;
                 // download the file
                 input = connection.getInputStream();
                 output = new FileOutputStream(zipFilePath);
