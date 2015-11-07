@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.PriorityQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,6 +25,7 @@ import java.util.regex.Pattern;
 public class BadusbFragment extends Fragment {
 
     private String configFilePath;
+    private String sourcePath;
     private static final String ARG_SECTION_NUMBER = "section_number";
 
     public BadusbFragment() {
@@ -31,6 +34,7 @@ public class BadusbFragment extends Fragment {
         } else {
             configFilePath = "files/configs/startbadusb-kitkat.sh";
         }
+        sourcePath = Environment.getExternalStorageDirectory() +"/"+ configFilePath;
     }
 
     public static BadusbFragment newInstance(int sectionNumber) {
@@ -96,7 +100,8 @@ public class BadusbFragment extends Fragment {
                 return true;
             case R.id.source_button:
                 Intent i = new Intent(getActivity(), EditSourceActivity.class);
-                i.putExtra("path", configFilePath);
+                i.putExtra("shell", true);
+                i.putExtra("path", sourcePath);
                 startActivity(i);
                 return true;
             default:
