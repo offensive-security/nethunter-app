@@ -22,7 +22,11 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -31,10 +35,10 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.Stack;
 
 public class AppNavHomeActivity extends AppCompatActivity {
@@ -47,6 +51,8 @@ public class AppNavHomeActivity extends AppCompatActivity {
      */
     private DrawerLayout mDrawerLayout;
     private NavigationView navigationView;
+    private RelativeLayout navigationHeadView;
+    private Button readmeButton;
     private CharSequence mTitle = "NetHunter";
     private Stack<String> titles = new Stack<>();
     private SharedPreferences prefs;
@@ -63,9 +69,33 @@ public class AppNavHomeActivity extends AppCompatActivity {
         filesPath = getFilesDir().toString();
         sdCard = Environment.getExternalStorageDirectory().toString();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navigationHeadView = (RelativeLayout) mDrawerLayout.findViewById(R.id.side_head);
+        readmeButton = (Button) navigationHeadView.findViewById(R.id.info_header);
+
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationHeadView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Prevents a weird click animation.
+            }
+        });
+        readmeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLicense();
+                // Consume input from header view. This disables the unwanted ripple effect.
+            }
+        });
+        /// moved build info to the menu
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd KK:mm:ss a zzz",
+                Locale.US);
+        TextView buildInfo1 = (TextView) navigationHeadView.findViewById(R.id.buildinfo1);
+        TextView buildInfo2 = (TextView) navigationHeadView.findViewById(R.id.buildinfo2);
+        String buildTime = sdf.format(BuildConfig.BUILD_TIME);
+                buildInfo1.setText(String.format("Version: %s (%s)", BuildConfig.VERSION_NAME, android.os.Build.TAGS));
+        buildInfo2.setText(String.format("Built by %s at %s", BuildConfig.BUILD_NAME, buildTime));
         prefs = getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
-        File sdCardDir = new File(Environment.getExternalStorageDirectory() + "/files");
+
         if (navigationView != null) {
             setupDrawerContent(navigationView);
         }
@@ -83,7 +113,12 @@ public class AppNavHomeActivity extends AppCompatActivity {
 
         // copy script files, but off the main UI thread
         final ImageView myImageView = (ImageView) findViewById(R.id.bgHome);
-        if (!prefs.getBoolean(COPY_ASSETS_TAG, false) || !sdCardDir.isDirectory()) {
+
+        File sdCardDir = new File(Environment.getExternalStorageDirectory() + "/files");
+        File scriptsDir = new File(getFilesDir() + "/scripts");
+        File etcDir = new File(getFilesDir() + "/etc");
+        // Copy files if: no files, no scripts, no etc or new apk version
+        if (!prefs.getString(COPY_ASSETS_TAG, buildTime).equals(buildTime) || !sdCardDir.isDirectory() || !scriptsDir.isDirectory() || !etcDir.isDirectory()) {
 
             Log.d(COPY_ASSETS_TAG,"COPING FILES....");
             final Runnable r = new Runnable() {
@@ -94,8 +129,6 @@ public class AppNavHomeActivity extends AppCompatActivity {
                     assetsToFiles(sdCard, "", "sdcard");
                     ShellExecuter exe = new ShellExecuter();
                     exe.RunAsRoot(new String[]{"chmod 700 " + getFilesDir() + "/scripts/*", "chmod 700 " + getFilesDir() + "/etc/init.d/*"});
-
-
                     myImageView.post(new Runnable() {
                         @Override
                         public void run() {
@@ -113,7 +146,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
             Thread t = new Thread(r);
             t.start();
             SharedPreferences.Editor ed = prefs.edit();
-            ed.putBoolean(COPY_ASSETS_TAG, true);
+            ed.putString(COPY_ASSETS_TAG, buildTime);
             ed.commit();
         } else {
             Log.d(COPY_ASSETS_TAG,"FILES NOT COPIED");
@@ -169,6 +202,26 @@ public class AppNavHomeActivity extends AppCompatActivity {
         // pre-set the drawer options
         setDrawerOptions();
         checkForRoot(myImageView); //  gateway check to make sure root's possible & pop up dialog if not
+    }
+
+    public void showLicense(){
+        // @binkybear here goses the changelog etc...just moar \n\n%s
+        String readmeData = String.format("%s\n\n%s",
+                getResources().getString(R.string.licenseInfo),
+                getResources().getString(R.string.nhwarning));
+
+        AlertDialog.Builder adb = new AlertDialog.Builder(this);
+        adb.setTitle("README INFO")
+                .setMessage(readmeData)
+                .setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                }); //nhwarning
+        AlertDialog ad = adb.create();
+        ad.setCancelable(false);
+        ad.show();
     }
 
     public void checkForRoot(final ImageView v) {
@@ -358,13 +411,21 @@ public class AppNavHomeActivity extends AppCompatActivity {
         // never copy images, sounds or webkit
         if(!path.startsWith("images") && !path.startsWith("sounds") && !path.startsWith("webkit")) {
             if (copyType.equals("sdcard")) {
-                if(path.equals("") || path.startsWith("files")) {
+                if(path.equals("")) {
+                    return true;
+                } else if(path.startsWith("files")) {
                     return true;
                 }
                 return false;
             }
             if (copyType.equals("data")) {
-                if(path.equals("") || path.startsWith("scripts") || path.startsWith("wallpapers") || path.startsWith("etc")) {
+                if (path.equals("")) {
+                    return true;
+                } else if (path.startsWith("scripts")) {
+                    return true;
+                } else if (path.startsWith("wallpapers")) {
+                    return true;
+                } else if (path.startsWith("etc")) {
                     return true;
                 }
                 return false;
@@ -391,7 +452,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
                         Log.i("tag", "could not create dir " + fullPath);
                     }
                 }
-                for (int i = 0; i < assets.length; ++i) {
+                for (String asset : assets) {
                     String p;
                     if (path.equals("")) {
                         p = "";
@@ -399,7 +460,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
                         p = path + "/";
                     }
                     if (pathIsAllowed(path, copyType)) {
-                        assetsToFiles(TARGET_BASE_PATH, p + assets[i], copyType);
+                        assetsToFiles(TARGET_BASE_PATH, p + asset, copyType);
                     }
                 }
             }
@@ -410,8 +471,8 @@ public class AppNavHomeActivity extends AppCompatActivity {
     private void copyFile(String TARGET_BASE_PATH, String filename) {
         AssetManager assetManager = this.getAssets();
 
-        InputStream in = null;
-        OutputStream out = null;
+        InputStream in;
+        OutputStream out;
         String newFileName = null;
         try {
             // Log.i("tag", "copyFile() "+filename);
