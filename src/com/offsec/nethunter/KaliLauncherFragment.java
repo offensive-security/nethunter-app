@@ -102,14 +102,6 @@ public class KaliLauncherFragment extends Fragment {
             }
         }, rootView);
         /**
-         * Shutdown Kali
-         */
-        addClickListener(R.id.shutdown_kali, new View.OnClickListener() {
-            public void onClick(View v) {
-                intentClickListener("killkali");
-            }
-        }, rootView);
-        /**
          * Add button
          */
         addClickListener(R.id.add_Button, new View.OnClickListener() {
