@@ -32,114 +32,95 @@
             android:paddingTop="16sp"
             android:text="@string/nethunter_description" />
 
-        <GridLayout
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="16sp"
-            android:columnCount="2"
-            android:rowCount="2">
 
-            <TextView
-                android:id="@+id/current_interfaces"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="0"
-                android:layout_row="0"
-                android:text="@string/nethunter_current_interfaces"
-                android:textSize="18sp"
-                android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/editText1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="0"
-                android:layout_row="1"
-                android:inputType="none"
-                android:paddingTop="8sp"
-                android:textSize="12sp"
-                android:typeface="monospace" />
+        <TextView
+            android:id="@+id/current_interfaces"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_row="0"
+            android:text="@string/nethunter_current_interfaces"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/external_address"
-                android:layout_width="110dp"
-                android:layout_height="wrap_content"
-                android:layout_column="1"
-                android:layout_gravity="end"
-                android:layout_row="0"
-                android:text="@string/nethunter_external_ip"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+        <TextView
+            android:id="@+id/editText1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_row="1"
+            android:inputType="none"
+            android:paddingTop="8sp"
+            android:layout_marginBottom="10dp"
+            android:textSize="12sp"
+            android:typeface="monospace" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_column="1"
-                android:layout_gravity="end"
-                android:layout_row="1"
-                android:orientation="vertical">
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_row="0"
+            android:text="@string/nethunter_hid_detect"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/editText2"
-                    android:layout_width="110dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:inputType="none"
-                    android:paddingTop="8sp"
-                    android:singleLine="true"
-                    android:text="@string/unknown"
-                    android:textSize="12sp"
-                    android:typeface="monospace" />
+        <TextView
+            android:id="@+id/editText3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_row="1"
+            android:inputType="none"
+            android:paddingTop="8sp"
+            android:layout_marginBottom="10dp"
+            android:textSize="12sp"
+            android:typeface="monospace" />
 
-                <Button
-                    android:id="@+id/button1"
-                    android:layout_width="121dp"
-                    android:layout_height="38dp"
-                    android:text="@string/get_external_ip"
-                    android:textSize="11dp" />
-            </LinearLayout>
-
-        </GridLayout>
-
-        <GridLayout
+        <TextView
+            android:id="@+id/external_address"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="16sp"
-            android:columnCount="2"
-            android:rowCount="2"
-            android:layout_weight="0.08">
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:layout_gravity="end"
+            android:layout_row="0"
+            android:text="@string/nethunter_external_ip"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:layout_gravity="end"
+            android:layout_row="1"
+            android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textView5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="0"
-                android:layout_row="0"
-                android:text="@string/nethunter_hid_detect"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/editText3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="0"
-                android:layout_row="1"
+                android:id="@+id/editText2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_gravity="end"
                 android:inputType="none"
                 android:paddingTop="8sp"
+                android:singleLine="true"
+                android:gravity="center"
+                android:text="@string/unknown"
                 android:textSize="12sp"
                 android:typeface="monospace" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_column="1"
-                android:layout_gravity="end"
-                android:layout_row="1"
-                android:orientation="vertical" >
+            <Button
+                android:id="@+id/button1"
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:text="@string/get_external_ip"
+                android:textSize="11dp" />
+        </LinearLayout>
 
-            </LinearLayout>
-        </GridLayout>
 
     </LinearLayout>
 </ScrollView>
