@@ -13,8 +13,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -51,27 +49,14 @@ public class NetHunterFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.nethunter, container, false);
 
-
         TextView ip = (TextView) rootView.findViewById(R.id.editText2);
-        TextView buildInfo1 = (TextView) rootView.findViewById(R.id.buildinfo1);
-        TextView buildInfo2 = (TextView) rootView.findViewById(R.id.buildinfo2);
-        TextView licenseView = (TextView) rootView.findViewById(R.id.licenseInfo);
-        licenseView.setMovementMethod(LinkMovementMethod.getInstance());
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd KK:mm:ss a zzz",
-                Locale.US);
-
         ip.setFocusable(false);
-
-        buildInfo1.setText(String.format("Version: %s (%s)", BuildConfig.VERSION_NAME, android.os.Build.TAGS));
-        buildInfo2.setText(String.format("Built by %s at %s", BuildConfig.BUILD_NAME, sdf.format(BuildConfig.BUILD_TIME)));
         addClickListener(R.id.button1, new View.OnClickListener() {
             public void onClick(View v) {
                 getExternalIp();
             }
         }, rootView);
         getInterfaces(rootView);
-
 
         return rootView;
     }
