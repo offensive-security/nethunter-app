@@ -106,7 +106,7 @@ public class RunAtBootService extends Service {
             }
         }
         ShellExecuter exe = new ShellExecuter();
-        String[] runner = {busybox.getAbsolutePath() + " run-parts " + getFilesDir() + "/scripts/etc/init.d"};
+        String[] runner = {busybox.getAbsolutePath() + " run-parts " + getFilesDir() + "/etc/init.d"};
         Log.d(TAG, "executing: " + runner[0]);
         Toast.makeText(getBaseContext(), getString(R.string.autorunningscripts), Toast.LENGTH_SHORT).show();
         exe.RunAsRoot(runner);
