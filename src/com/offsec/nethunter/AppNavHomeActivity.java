@@ -478,20 +478,16 @@ public class AppNavHomeActivity extends AppCompatActivity {
             // Log.i("tag", "copyFile() "+filename);
             in = assetManager.open(filename);
             newFileName = TARGET_BASE_PATH + "/" + filename;
-            File nfile = new File(newFileName);
-            // only if the file isnt there.
-            if(!nfile.exists()) {
-                out = new FileOutputStream(newFileName);
-
-                byte[] buffer = new byte[1024];
-                int read;
-                while ((read = in.read(buffer)) != -1) {
-                    out.write(buffer, 0, read);
-                }
-                in.close();
-                out.flush();
-                out.close();
+            out = new FileOutputStream(newFileName);
+            byte[] buffer = new byte[8096];
+            int read;
+            while ((read = in.read(buffer)) != -1) {
+                out.write(buffer, 0, read);
             }
+            in.close();
+            out.flush();
+            out.close();
+
 
         } catch (Exception e) {
             Log.e("tag", "Exception in copyFile() of "+newFileName);
