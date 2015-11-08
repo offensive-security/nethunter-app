@@ -72,7 +72,8 @@ else
 
 	# NETWORK SETTINGS #
 	$busybox sysctl -w net.ipv4.ip_forward=1
-	echo "127.0.0.1 localhost" > $mnt/etc/hosts
+	echo "127.0.0.1       localhost kali" > $mnt/etc/hosts
+	echo "::1             localhost ip6-localhost ip6-loopback" >> $mnt/etc/hosts
 	echo "kali" > $mnt/proc/sys/kernel/hostname
 
 	clear
@@ -89,36 +90,36 @@ fi
 # start-rev-met, start-rev-met-elevated-win[8-7]
 
     if [ $# -eq 0 ]; then
-        $busybox chroot $mnt /bin/bash -l
+        $busybox chroot $mnt /bin/login -f root
     else
 
    	#APACHE
 
    	if [ "$1" == "apache" ] && [ "$2" == "start" ]; then
-   		$busybox chroot $mnt service apache2 start
+   		$busybox chroot $mnt sudo service apache2 start
    	fi
    	if [ "$1" == "apache" ] && [ "$2" == "stop" ]; then
-   		$busybox chroot $mnt service apache2 stop
+   		$busybox chroot $mnt sudo service apache2 stop
    	fi
 
    	#BEEF-XSS
 
    	if [ "$1" == "beef-xss" ] && [ "$2" == "start" ]; then
-        LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8 LC_ALL=en_US.UTF-8 $busybox chroot $mnt service beef-xss start
+        LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8 LC_ALL=en_US.UTF-8 $busybox chroot $mnt sudo service beef-xss start
    		sleep 35
    		am start -a android.intent.action.VIEW -d http://127.0.0.1:3000/ui/panel
    	fi
    	if [ "$1" == "beef-xss" ] && [ "$2" == "stop" ]; then
-   		$busybox chroot $mnt service beef-xss stop
+   		$busybox chroot $mnt sudo service beef-xss stop
    	fi
 
    	#DHCP
 
    	if [ "$1" == "dhcp" ] && [ "$2" == "start" ]; then
-   		$busybox chroot $mnt service isc-dhcp-server start
+   		$busybox chroot $mnt sudo service isc-dhcp-server start
    	fi
    	if [ "$1" == "dhcp" ] && [ "$2" == "stop" ]; then
-   		$busybox chroot $mnt service isc-dhcp-server stop
+   		$busybox chroot $mnt sudo service isc-dhcp-server stop
    	fi
 
    	#DNSMASQ
@@ -210,22 +211,22 @@ fi
       # bootkali start-rev-met --us | --fr | --de | --es
 
    	if [ "$1" == "start-rev-met" ]; then
-         $busybox chroot $mnt /usr/bin/hid-all.sh start-rev-met "$2" |/system/bin/sh
+         $busybox chroot $mnt sudo /usr/bin/hid-all.sh start-rev-met "$2" |/system/bin/sh
    	fi
    	if [ "$1" == "start-rev-met-elevated-win7" ]; then
-         $busybox chroot $mnt /usr/bin/hid-all.sh start-rev-met-elevated-win7 $2 |/system/bin/sh
+         $busybox chroot $mnt sudo /usr/bin/hid-all.sh start-rev-met-elevated-win7 $2 |/system/bin/sh
    	fi
    	if [ "$1" == "start-rev-met-elevated-win8" ]; then
-         $busybox chroot $mnt /usr/bin/hid-all.sh start-rev-met-elevated-win8 $2 |/system/bin/sh
+         $busybox chroot $mnt sudo /usr/bin/hid-all.sh start-rev-met-elevated-win8 $2 |/system/bin/sh
    	fi
       if [ "$1" == "hid-cmd-elevated-win8" ]; then
-         $busybox chroot $mnt /usr/bin/hid-all.sh hid-cmd-elevated-win8 "$2" |/system/bin/sh
+         $busybox chroot $mnt sudo /usr/bin/hid-all.sh hid-cmd-elevated-win8 "$2" |/system/bin/sh
       fi
       if [ "$1" == "hid-cmd-elevated-win7" ]; then
-         $busybox chroot $mnt /usr/bin/hid-all.sh hid-cmd-elevated-win7 "$2" |/system/bin/sh
+         $busybox chroot $mnt sudo /usr/bin/hid-all.sh hid-cmd-elevated-win7 "$2" |/system/bin/sh
       fi
       if [ "$1" == "hid-cmd" ]; then
-         $busybox chroot $mnt /usr/bin/hid-all.sh hid-cmd "$2" |/system/bin/sh
+         $busybox chroot $mnt sudo /usr/bin/hid-all.sh hid-cmd "$2" |/system/bin/sh
       fi
 
       # DUCK HUNT - Rubber Ducky conversion script to nethunter
@@ -237,8 +238,8 @@ fi
       # bootkali duck-hunt-run {/opt/duckout.sh}
 
       if [ "$1" == "duck-hunt-convert" ]; then
-         $busybox chroot $mnt python /sdcard/files/modules/duckhunter.py -l $2 $3 $4
-         $busybox chroot $mnt chmod 755 $4
+         $busybox chroot $mnt sudo python /sdcard/files/modules/duckhunter.py -l $2 $3 $4
+         $busybox chroot $mnt sudo chmod 755 $4
       fi
       if [ "$1" == "duck-hunt-run" ]; then
          if [ ! -f /data/data/com.offsec.nethunter/files/chroot/kali-armhf$2 ]; then
@@ -252,32 +253,32 @@ fi
    	#SSH
 
    	if [ "$1" == "ssh" ] && [ "$2" == "start" ]; then
-   		$busybox chroot $mnt service ssh start
+   		$busybox chroot $mnt sudo service ssh start
    	fi
    	if [ "$1" == "ssh" ] && [ "$2" == "stop" ]; then
-   		$busybox chroot $mnt service ssh stop
+   		$busybox chroot $mnt sudo service ssh stop
    	fi
 
    	#UPDATE
 
    	if [ "$1" == "update" ]; then
-   		LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $busybox chroot $mnt /usr/bin/start-update.sh
+   		LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $busybox chroot $mnt sudo /usr/bin/start-update.sh
    	fi
 
    	#Disable WLAN1
 
    	if [ "$1" == "wifi-disable" ]; then
-   		LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $busybox chroot $mnt /usr/bin/stop-wlan1.sh
+   		LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $busybox chroot $mnt sudo /usr/bin/stop-wlan1.sh
    	fi
 
 
    	#WIFITE
 
       if [ "$1" == "wifite" ]; then
-         $busybox chroot $mnt /bin/bash -c "chmod 777 /dev/null"
+         $busybox chroot $mnt sudo /bin/bash -c "chmod 777 /dev/null"
          ifconfig wlan1 up
          sleep 3
-         LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $busybox chroot $mnt /usr/bin/python /usr/bin/wifite
+         LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $busybox chroot $mnt sudo /usr/bin/python /usr/bin/wifite
    	fi
 
       #FRUITYWIFI
@@ -297,17 +298,17 @@ fi
       # Usage: bootkali macchanger random <interface>
 
       if [ "$1" == "macchanger" ] && [ "$2" == "random" ]; then
-         $busybox chroot $mnt /usr/bin/macchanger --random $3
+         $busybox chroot $mnt sudo /usr/bin/macchanger --random $3
       fi
 
       if [ "$1" == "macchanger_custom" ]; then
-         $busybox chroot $mnt /usr/bin/macchanger --mac=$2 $3
+         $busybox chroot $mnt sudo /usr/bin/macchanger --mac=$2 $3
       fi
 
       #KALIMENU
 
       if [ "$1" == "kalimenu" ]; then
-         $busybox chroot $mnt /usr/bin/kalimenu
+         $busybox chroot $mnt sudo /usr/bin/kalimenu
       fi
 
 		#YCABLE ¯\_(ಠ_ಠ)_/¯
@@ -345,7 +346,7 @@ fi
 				shift
 				commmand=${commmand}" "$1
 			done
-			$busybox chroot $mnt $commmand
+			$busybox chroot $mnt sudo $commmand
 		fi
 
 		#MFOC MIFARE DUMP

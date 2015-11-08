@@ -39,16 +39,31 @@ $busybox chmod 666 /dev/null
 # SET 250MB TO ALLOW POSTGRESQL #
 $busybox sysctl -w kernel.shmmax=268435456
 
+######### SET DNS ########
+
+rm -f /data/data/com.offsec.nethunter/files/chroot/kali-armhf/etc/resolv.conf # remove dns entries
+touch /data/data/com.offsec.nethunter/files/chroot/kali-armhf/etc/resolv.conf # create empty resolv.conf
+
+for i in 1 2 3 4; do
+   if [[  -z $(getprop net.dns${i}) ]]; then
+      # we go through 1-4 dns servers and break out of loop on empty
+      break
+   else
+      # add local/device dns server first
+      echo "nameserver $(getprop net.dns${i})" >> /data/data/com.offsec.nethunter/files/chroot/kali-armhf/etc/resolv.conf
+   fi
+done
+
+# lastly add two default dns entries
+echo "nameserver 208.67.222.222" >> /data/data/com.offsec.nethunter/files/chroot/kali-armhf/etc/resolv.conf
+echo "nameserver 208.67.220.220" >> /data/data/com.offsec.nethunter/files/chroot/kali-armhf/etc/resolv.conf
+
 # NETWORK SETTINGS #
 $busybox sysctl -w net.ipv4.ip_forward=1
-echo "nameserver 208.67.222.222" > $mnt/etc/resolv.conf
-echo "nameserver 208.67.220.220" >> $mnt/etc/resolv.conf
-echo "127.0.0.1 localhost" > $mnt/etc/hosts
+echo "127.0.0.1       localhost kali" > $mnt/etc/hosts
+echo "::1             localhost ip6-localhost ip6-loopback" >> $mnt/etc/hosts
 echo "kali" > $mnt/proc/sys/kernel/hostname
 
 # execute startup script
-
-clear
-$busybox chroot $mnt /bin/bash -l
 
 log userinit.sh is completed.
