@@ -37,7 +37,7 @@ $busybox mount -t sysfs sysfs $mnt/sys
 $busybox chmod 666 /dev/null
 
 # SET 250MB TO ALLOW POSTGRESQL #
-$busybox sysctl -w kernel.shmmax=268435456
+$busybox sysctl -w kernel.shmmax=268435456 &>/dev/null
 
 ######### SET DNS ########
 
@@ -59,7 +59,7 @@ echo "nameserver 208.67.222.222" >> /data/data/com.offsec.nethunter/files/chroot
 echo "nameserver 208.67.220.220" >> /data/data/com.offsec.nethunter/files/chroot/kali-armhf/etc/resolv.conf
 
 # NETWORK SETTINGS #
-$busybox sysctl -w net.ipv4.ip_forward=1
+$busybox sysctl -w net.ipv4.ip_forward=1 &>/dev/null
 echo "127.0.0.1       localhost kali" > $mnt/etc/hosts
 echo "::1             localhost ip6-localhost ip6-loopback" >> $mnt/etc/hosts
 echo "kali" > $mnt/proc/sys/kernel/hostname
