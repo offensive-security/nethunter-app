@@ -13,13 +13,6 @@
         android:padding="16dp"
         android:weightSum="1">
 
-        <ImageView
-            android:id="@+id/test_image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitCenter"
-            android:src="@drawable/offsec_logo_2" />
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -28,23 +21,7 @@
             android:text="@string/hometitle"
             android:textSize="22sp" />
 
-        <TextView
-            android:id="@+id/buildinfo1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|center"
-            android:gravity="center"
-            android:paddingTop="4dp"
-            android:textSize="12sp" />
 
-        <TextView
-            android:id="@+id/buildinfo2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|center"
-            android:gravity="center"
-            android:paddingBottom="4dp"
-            android:textSize="12sp" />
 
         <TextView
             android:layout_width="match_parent"
@@ -164,24 +141,6 @@
             </LinearLayout>
         </GridLayout>
 
-        <TextView
-            android:id="@+id/licenseInfo"
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:gravity="bottom|center"
-            android:paddingBottom="8dp"
-            android:text="@string/licenseInfo"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:gravity="bottom|center"
-            android:text="@string/nhwarning"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="@color/highlighted_text_material_dark"
-            android:textSize="10dp" />
     </LinearLayout>
 </ScrollView>
 

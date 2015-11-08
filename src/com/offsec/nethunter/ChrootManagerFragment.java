@@ -46,6 +46,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 /**
  * Created by fattire on 3/14/15.
@@ -133,7 +134,7 @@ public class ChrootManagerFragment extends Fragment {
         zipFilePath = filesPath + "/" + FILENAME;
         extracted_zipFilePath = filesPath + "/" + EXTRACTED_FILENAME;
 
-        String init_ts = new SimpleDateFormat("yyyyMMddhhmmss'.txt'").format(new Date());
+        String init_ts = new SimpleDateFormat("yyyyMM_ddhhmmss'.txt'",Locale.US).format(new Date());
         installLogFile = filesPath + "/nh_install_log_" + init_ts;
 
         return rootView;
@@ -422,10 +423,10 @@ public class ChrootManagerFragment extends Fragment {
     private boolean deleteFile(String filePath) {
         File checkFile = new File(filePath);
         if (checkFile.exists()) {
-            statusLog(filePath + getActivity().getString(R.string.existsalready));
+            statusLog(filePath + " found.");
             statusLog(getActivity().getString(R.string.deletingforroom));
             if (checkFile.delete()) {
-                statusLog(getActivity().getString(R.string.oldfiledeleted));
+                statusLog("File deleted.");
                 return true;
             } else {
                 statusLog(getActivity().getString(R.string.problemdeletingoldfile));
