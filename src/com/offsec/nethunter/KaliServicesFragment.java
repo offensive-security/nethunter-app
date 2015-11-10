@@ -157,7 +157,7 @@ class SwichLoader extends BaseAdapter {
         _serviceBootStates = bootStates.split("(?!^)");
 
         bootScriptPath = mContext.getFilesDir().toString() + "/etc/init.d/";
-        shebang = "#!/system/bin/sh\n\n# Init at boot kaliSevice";
+        shebang = "#!/system/bin/sh\n\n# Init at boot kaliSevice: ";
 
     }
 
@@ -178,7 +178,7 @@ class SwichLoader extends BaseAdapter {
     }
     public void addBootService(int serviceId) {
         String bootServiceFile = bootScriptPath + services[serviceId][4];
-        String fileContents = shebang + services[serviceId][2];
+        String fileContents = shebang + services[serviceId][0] + "\n" + services[serviceId][2];
         exe.RunAsRoot(new String[]{
             "echo '"+ fileContents +"' > " +  bootServiceFile,
             "chmod 700 " + bootServiceFile
