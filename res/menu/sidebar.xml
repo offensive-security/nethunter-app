@@ -21,6 +21,10 @@
             android:icon="@drawable/ic_action_settings_applications"
             android:title="@string/drawertitlekaliservices" />
         <item
+            android:id="@+id/custom_commands_item"
+            android:icon="@drawable/ic_action_play"
+            android:title="Custom Commands" />
+        <item
             android:id="@+id/hid_item"
             android:icon="@drawable/ic_action_keyboard"
             android:title="@string/drawertitlehid" />

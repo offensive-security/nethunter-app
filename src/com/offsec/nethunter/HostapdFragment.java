@@ -45,7 +45,7 @@ public class HostapdFragment extends Fragment {
         final Button button = (Button) rootView.findViewById(R.id.updateOptions);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                updateOptions(v);
+                updateOptions();
             }
         });
         setHasOptionsMenu(true);
@@ -63,7 +63,9 @@ public class HostapdFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        loadOptions(getView().getRootView());
+        if(getView() != null) {
+            loadOptions(getView().getRootView());
+        }
     }
 
     @Override
@@ -165,7 +167,7 @@ public class HostapdFragment extends Fragment {
         }
     }
 
-    public void updateOptions(View arg0) {
+    public void updateOptions() {
         String source = ((AppNavHomeActivity) getActivity()).readConfigFile(configFilePath);
         EditText ifc = (EditText) getActivity().findViewById(R.id.ifc);
         EditText bssid = (EditText) getActivity().findViewById(R.id.bssid);

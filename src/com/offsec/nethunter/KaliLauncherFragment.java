@@ -9,19 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import android.database.sqlite.SQLiteOpenHelper;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import java.lang.reflect.Array;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import java.util.List;
-import android.graphics.Color;
-
-//import android.app.Fragment;
-
 public class KaliLauncherFragment extends Fragment {
     /**
      * The fragment argument representing the section number for this
@@ -29,8 +16,6 @@ public class KaliLauncherFragment extends Fragment {
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final String TAG = "KaliLauncherFragment";
-    private SQLPersistence database;
-    private LayoutInflater inflater;
     /**
      * Returns a new instance of this fragment for the given section
      * number.
@@ -51,9 +36,6 @@ public class KaliLauncherFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        database = new SQLPersistence(getActivity().getApplicationContext());
-        this.inflater = inflater;
 
         View rootView = inflater.inflate(R.layout.kali_launcher, container, false);
         addClickListener(R.id.button_start_kali, new View.OnClickListener() {
@@ -101,24 +83,7 @@ public class KaliLauncherFragment extends Fragment {
                 intentClickListener("bootkali dumpmifare");
             }
         }, rootView);
-        /**
-         * Add button
-         */
-        addClickListener(R.id.add_Button, new View.OnClickListener() {
-            public void onClick(View v) {
-                createNewButton();
-            }
-        }, rootView);
 
-        // load buttons from db
-        List<LauncherApp> apps = database.getAllApps();
-        for (LauncherApp app : apps) {
-            LauncherButton newButton = createButton(app.getBtn_label(), app.getCommand(), app.getId());
-            if (newButton != null) {
-                LinearLayout mainLayout = (LinearLayout) rootView.findViewById(R.id.launcher_layout);
-                mainLayout.addView(newButton);
-            }
-        }
         return rootView;
     }
 
@@ -132,170 +97,6 @@ public class KaliLauncherFragment extends Fragment {
 
     private void addClickListener(int buttonId, View.OnClickListener onClickListener, View rootView) {
         rootView.findViewById(buttonId).setOnClickListener(onClickListener);
-    }
-
-    private void addLongClickListener(int buttonId, View.OnLongClickListener onLongClickListener, View rootView) {
-        rootView.findViewById(buttonId).setOnLongClickListener(onLongClickListener);
-    }
-
-    private LauncherButton createButton(final String label, final String command, final long id) {
-
-        if (label.length() > 0 && command.length() > 0 && id != 0) {
-            final LauncherButton newButton = new LauncherButton(getActivity().getApplicationContext());
-
-            newButton.setWidth(LinearLayout.LayoutParams.FILL_PARENT);
-            newButton.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
-            newButton.setText(label);
-            newButton.setDb_id(id);
-            newButton.setTextColor(Color.LTGRAY);
-            newButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    intentClickListener("bootkali custom_cmd " + command);
-                }
-            });
-
-            newButton.setOnLongClickListener(new View.OnLongClickListener() {
-
-                public boolean onLongClick(View view) {
-                    deleteUpdateButton(newButton);
-                    return true;
-                }
-            });
-            return newButton;
-        }
-        return null;
-    }
-
-    private void deleteButton(final LauncherButton button) {
-        if (button != null) {
-            LinearLayout mainLayout = (LinearLayout) getActivity().findViewById(R.id.launcher_layout);
-            button.setOnLongClickListener(null);
-            button.setOnClickListener(null);
-            mainLayout.removeView(button);
-        }
-    }
-
-    private void createNewButton() {
-
-        View promptsView = inflater.inflate(R.layout.newapplauncher, null);
-
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-
-        alertDialogBuilder.setView(promptsView);
-
-        final EditText userInputBtnLabel= (EditText) promptsView
-                .findViewById(R.id.editText_launcher_btn_label);
-
-        final EditText userInputCommand = (EditText) promptsView
-                .findViewById(R.id.editText_launcher_command);
-
-        alertDialogBuilder
-                .setCancelable(false)
-                .setPositiveButton("OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                if (userInputBtnLabel.getText().length() > 0 &&
-                                        userInputCommand.getText().length() > 0) {
-
-                                    long db_id = database.addApp(userInputBtnLabel.getText().toString(),
-                                            userInputCommand.getText().toString());
-
-                                    LauncherButton newButton = createButton(userInputBtnLabel.getText().toString(),
-                                            userInputCommand.getText().toString(), db_id);
-
-                                    if (newButton != null) {
-                                        LinearLayout mainLayout = (LinearLayout) getActivity().findViewById(R.id.launcher_layout);
-                                        mainLayout.addView(newButton);
-                                    } else {
-                                        Toast.makeText(getActivity().getApplicationContext(),
-                                                getString(R.string.toast_error_launcher),
-                                                Toast.LENGTH_SHORT).show();
-                                    }
-
-                                } else {
-                                    Toast.makeText(getActivity().getApplicationContext(),
-                                            getString(R.string.toast_input_error_launcher),
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        })
-                .setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
-
-    private void deleteUpdateButton(final LauncherButton button) {
-
-        final LauncherApp app = database.getApp(button.getDb_id());
-
-        View promptsView = inflater.inflate(R.layout.newapplauncher, null);
-
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-
-        alertDialogBuilder.setView(promptsView);
-
-        final EditText userInputBtnLabel= (EditText) promptsView
-                .findViewById(R.id.editText_launcher_btn_label);
-        userInputBtnLabel.setText(app.getBtn_label());
-
-        final EditText userInputCommand = (EditText) promptsView
-                .findViewById(R.id.editText_launcher_command);
-        userInputCommand.setText(app.getCommand());
-
-        alertDialogBuilder
-                .setCancelable(false)
-                .setPositiveButton("Update",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                if (userInputBtnLabel.getText().length() > 0 &&
-                                        userInputCommand.getText().length() > 0) {
-
-                                    database.updateApp(new LauncherApp(app.getId(),
-                                            userInputBtnLabel.getText().toString(),
-                                            userInputCommand.getText().toString()));
-
-                                    deleteButton(button);
-
-                                    LauncherButton newButton = createButton(userInputBtnLabel.getText().toString(),
-                                            userInputCommand.getText().toString(), app.getId());
-
-                                    if (newButton != null) {
-                                        LinearLayout mainLayout = (LinearLayout) getActivity().findViewById(R.id.launcher_layout);
-                                        mainLayout.addView(newButton);
-                                    } else {
-                                        Toast.makeText(getActivity().getApplicationContext(),
-                                                getString(R.string.toast_error_launcher),
-                                                Toast.LENGTH_SHORT).show();
-                                    }
-
-                                } else {
-                                    Toast.makeText(getActivity().getApplicationContext(),
-                                            getString(R.string.toast_input_error_launcher),
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        })
-                .setNeutralButton("Delete",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                database.deleteApp(app.getId());
-                                deleteButton(button);
-                            }
-                        })
-                .setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
     }
 
     private void intentClickListener(final String command) {
