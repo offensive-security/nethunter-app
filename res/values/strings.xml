@@ -241,7 +241,7 @@
     <string name="rootdialognegbutton">Quit</string>
 
     <string name="legacychroottitle">Legacy chroot found!</string>
-    <string name="legacychrootmessage">You appear to already have an existing Kali chroot from an older version of Nethunter.\n\nMigrating it to its new location requires a reboot.\n\nOr, you can leave the old chroot alone and install a new chroot.  If you choose this option, make sure you have enough storage for both.</string>
+    <string name="legacychrootmessage">You appear to already have an existing Kali chroot from an older version of Nethunter.\n\nMigrating it to its new location requires a reboot.\n\n Or, you can leave the old chroot alone and install a new chroot.  If you choose this option, make sure you have enough storage for both.</string>
     <string name="legacychrootposbutton">Migrate (reboot)</string>
     <string name="legacychrootnegbutton">Ignore current</string>
 

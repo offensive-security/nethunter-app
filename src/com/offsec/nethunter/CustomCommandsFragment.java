@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -405,27 +406,31 @@ class CmdLoader extends BaseAdapter {
         String _sendTo = commandInfo.getSend_To_Shell();
 
         String composedCommand;
+
         if(_sendTo.equals("KALI")){
             composedCommand = "su -c bootkali custom_cmd " + _cmd;
         } else{
             // SEND TO ANDROID
+            // no sure, if we add su, we cant exec comands as a normal android user
             composedCommand = _cmd;
         }
 
         if(_mode.equals("BACKGROUND")){
-            exe.RunAsRoot(new String[]{composedCommand});
+            // dont run all the bg commands as root
+            exe.Executer(composedCommand);
             Toast.makeText(_mContext,
                     "Command " + _label + " done.",
                     Toast.LENGTH_SHORT).show();
         } else {
             try {
+
                 Intent intent =
                         new Intent("jackpal.androidterm.RUN_SCRIPT");
                 intent.addCategory(Intent.CATEGORY_DEFAULT);
-
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
                 intent.putExtra("jackpal.androidterm.iInitialCommand", composedCommand);
                 _mContext.startActivity(intent);
+
             } catch (Exception e) {
                 Toast.makeText(_mContext, _mContext.getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
                 try {

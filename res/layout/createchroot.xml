@@ -76,13 +76,4 @@
             android:fontFamily="monospace" />
     </ScrollView>
 
-    <TextView
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/uninstallchrootwarning"
-        android:id="@+id/warningText"
-        android:padding="16sp"
-        android:layout_weight="0.74"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
 </LinearLayout>

@@ -51,8 +51,6 @@ public class AppNavHomeActivity extends AppCompatActivity {
      */
     private DrawerLayout mDrawerLayout;
     private NavigationView navigationView;
-    private RelativeLayout navigationHeadView;
-    private Button readmeButton;
     private CharSequence mTitle = "NetHunter";
     private Stack<String> titles = new Stack<>();
     private SharedPreferences prefs;
@@ -69,8 +67,8 @@ public class AppNavHomeActivity extends AppCompatActivity {
         filesPath = getFilesDir().toString();
         sdCard = Environment.getExternalStorageDirectory().toString();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        navigationHeadView = (RelativeLayout) mDrawerLayout.findViewById(R.id.side_head);
-        readmeButton = (Button) navigationHeadView.findViewById(R.id.info_header);
+        RelativeLayout navigationHeadView = (RelativeLayout) mDrawerLayout.findViewById(R.id.side_head);
+        Button readmeButton = (Button) navigationHeadView.findViewById(R.id.info_header);
 
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationHeadView.setOnClickListener(new View.OnClickListener() {

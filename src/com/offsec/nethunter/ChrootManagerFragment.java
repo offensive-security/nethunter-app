@@ -130,7 +130,7 @@ public class ChrootManagerFragment extends Fragment {
         updateButton.setVisibility(View.GONE);
         sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
         filesPath =  Environment.getExternalStorageDirectory().toString();
-        chrootPath = getActivity().getFilesDir() + "/chroot/";
+        chrootPath = "/data/local/nhsystem/";
         zipFilePath = filesPath + "/" + FILENAME;
         extracted_zipFilePath = filesPath + "/" + EXTRACTED_FILENAME;
 

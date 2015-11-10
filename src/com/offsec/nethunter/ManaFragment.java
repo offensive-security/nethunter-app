@@ -93,7 +93,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
+        configFilePath = "/data/local/nhsystem/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
 
         super.onActivityCreated(savedInstanceState);
     }
@@ -287,7 +287,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             View rootView = inflater.inflate(R.layout.mana_hostapd, container, false);
             loadOptions(rootView);
 
-            configFilePath = getActivity().getFilesDir().toString() + "/chroot/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
+            configFilePath = "/data/local/nhsystem/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
 
             //Update button
             Button button = (Button) rootView.findViewById(R.id.updateButton);
@@ -467,7 +467,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
 
-            configFilePath = getActivity().getFilesDir().toString() + "/chroot/kali-armhf/etc/mana-toolkit/dnsspoof.conf";
+            configFilePath = "/data/local/nhsystem/kali-armhf/etc/mana-toolkit/dnsspoof.conf";
 
             ShellExecuter exe = new ShellExecuter();
             String text = exe.RunAsRootOutput("cat " + configFilePath);
@@ -503,7 +503,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
 
-            configFilePath = getActivity().getFilesDir().toString() + "/chroot/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-full.sh";
+            configFilePath = "/data/local/nhsystem/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-full.sh";
 
             ShellExecuter exe = new ShellExecuter();
             String text = exe.RunAsRootOutput("cat " + configFilePath);
@@ -535,7 +535,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
 
-            configFilePath = getActivity().getFilesDir().toString() + "/chroot/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-simple.sh";
+            configFilePath = "/data/local/nhsystem/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-simple.sh";
 
             String description = getResources().getString(R.string.mana_nat_simple);
             TextView desc = (TextView) rootView.findViewById(R.id.description);
@@ -575,7 +575,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
 
-            configFilePath = getActivity().getFilesDir().toString() + "/chroot/kali-armhf/etc/bdfproxy/bdfproxy.cfg";
+            configFilePath = "/data/local/nhsystem/kali-armhf/etc/bdfproxy/bdfproxy.cfg";
 
             Log.d(TAG, " onCreateView " + configFilePath);
 
@@ -608,7 +608,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
         @Override
         public void onActivityCreated(Bundle savedInstanceState) {
-            configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-simple-bdf.sh";
+            configFilePath = "/data/local/nhsystem/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-simple-bdf.sh";
 
             super.onActivityCreated(savedInstanceState);
         }
