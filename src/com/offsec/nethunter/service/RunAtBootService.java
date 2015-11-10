@@ -45,7 +45,7 @@ public class RunAtBootService extends Service {
                 Toast.makeText(getBaseContext(), getString(R.string.toastchrootmountedwarning), Toast.LENGTH_LONG).show();
             } else{
                 Toast.makeText(getBaseContext(), getString(R.string.toastdeletingchroot), Toast.LENGTH_LONG).show();
-                x.RunAsRootOutput("su -c 'rm -rf " + getFilesDir() + "/chroot/*'");
+                x.RunAsRootOutput("su -c 'rm -rf /data/local/nhsystem/*'");
                 Toast.makeText(getBaseContext(), getString(R.string.toastdeletedchroot), Toast.LENGTH_LONG).show();
                 // remove the sp so we dont remove it again on next boot
                 sharedpreferences.edit().remove(ChrootManagerFragment.DELETE_CHROOT_TAG).apply();
@@ -67,7 +67,7 @@ public class RunAtBootService extends Service {
                 Toast.makeText(getBaseContext(), getString(R.string.toastchrootmountedwarning), Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(getBaseContext(), getString(R.string.toastmigratingchroot), Toast.LENGTH_LONG).show();
-                x.RunAsRootOutput("su -c 'mv /data/local/kali-armhf " + getFilesDir() + "/chroot/'");
+                x.RunAsRootOutput("su -c 'mv /data/local/kali-armhf /data/local/nhsystem/'");
                 Toast.makeText(getBaseContext(), getString(R.string.toastmigratedchroot), Toast.LENGTH_LONG).show();
                 sharedpreferences.edit().remove(ChrootManagerFragment.MIGRATE_CHROOT_TAG).apply();
             }

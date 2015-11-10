@@ -69,7 +69,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/var/www/html/powersploit-payload";
+        configFilePath = "/data/local/nhsystem/kali-armhf/var/www/html/powersploit-payload";
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -352,7 +352,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
 
         @Override
         public void onActivityCreated(Bundle savedInstanceState) {
-            configFilePath = getActivity().getFilesDir() + "/chroot/kali-armhf/var/www/html/powersploit-payload";
+            configFilePath = "/data/local/nhsystem/kali-armhf/var/www/html/powersploit-payload";
 
             super.onActivityCreated(savedInstanceState);
         }
@@ -591,7 +591,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
                     alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             String value = input.getText().toString();
-                            if(value != null && value.length() >0){
+                            if(!value.equals("") && value.length() >0){
                             //FIXME Save file (ask name)
                                 File sdcard = Environment.getExternalStorageDirectory();
                                 File scriptFile = new File(sdcard + File.separator + loadFilePath + File.separator +  value +".conf");

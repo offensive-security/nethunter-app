@@ -47,7 +47,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     private static final String ARG_SECTION_NUMBER = "section_number";
     private String fileDir = "";
     private static final String TAG = "DuckHunterFragment";
-    private static final String CHROOTDIR_HARDCODED = "/data/data/com.offsec.nethunter/files/chroot/kali-armhf/";
+    private static final String CHROOTDIR_HARDCODED = "/data/local/nhsystem/kali-armhf";
     public DuckHunterFragment() {
 
     }
