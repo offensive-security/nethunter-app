@@ -242,10 +242,10 @@ public class CustomCommandsFragment  extends Fragment {
         userInputCommand.setText(_cmd);
 
         if(_sendTo.equals("KALI")){
-            command_exec_mode.setSelection(0);
+            command_run_in_shell.setSelection(0);
         } else {
             // android
-            command_exec_mode.setSelection(1);
+            command_run_in_shell.setSelection(1);
         }
         if(_mode.equals("BACKGROUND")){
             command_exec_mode.setSelection(0);
