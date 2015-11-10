@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/doDbBackup"
+        android:title="Backup DB"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/doDbRestore"
+        android:title="Restore DB"
+        app:showAsAction="never"/>
+
+</menu>

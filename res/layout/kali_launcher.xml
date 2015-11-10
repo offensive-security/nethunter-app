@@ -14,14 +14,6 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <Button
-                android:id="@+id/add_Button"
-                android:layout_weight="1"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/add_button"
-                android:clickable="true"
-                android:textColor="#ff95ff84" />
 
             <Button
                 android:id="@+id/button_start_kali"

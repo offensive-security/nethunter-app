@@ -320,6 +320,13 @@ public class AppNavHomeActivity extends AppCompatActivity {
                                         .addToBackStack(null)
                                         .commit();
                                 break;
+                            case R.id.custom_commands_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, CustomCommandsFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
                             case R.id.hid_item:
                                 fragmentManager
                                         .beginTransaction()
