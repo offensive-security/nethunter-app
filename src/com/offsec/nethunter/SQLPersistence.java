@@ -144,6 +144,9 @@ public class SQLPersistence extends SQLiteOpenHelper {
                 src.close();
                 dst.close();
                 Log.d("importDB", "Successful");
+                Toast.makeText(context.getApplicationContext(),
+                        "Import DB Successful",
+                        Toast.LENGTH_SHORT).show();
 
             }
         } catch (Exception e) {
@@ -169,7 +172,9 @@ public class SQLPersistence extends SQLiteOpenHelper {
                 src.close();
                 dst.close();
                 Log.d("ExportDB", "Successful");
-
+                Toast.makeText(context.getApplicationContext(),
+                        "Export DB Successful",
+                        Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
             Log.d("ExportDB", "ExportDB Failed!");
