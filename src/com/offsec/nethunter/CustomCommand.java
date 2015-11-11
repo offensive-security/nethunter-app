@@ -6,10 +6,11 @@ package com.offsec.nethunter;
 public class CustomCommand {
 
     private long id;
-    private String btn_label;
+    private String command_label;
     private String command;
     private String execMode;
     private String sendToShell;
+    private Integer runAtBoot;
 
     final static String TABLE = "LAUNCHERS";
     final static String ID = "ID";
@@ -17,16 +18,18 @@ public class CustomCommand {
     final static String CMD = "COMMAND";
     final static String EXEC_MODE = "EXEC_MODE";
     final static String SEND_TO_SHELL = "SEND_TO_SHELL";
-
+    final static String RUN_AT_BOOT = "RUN_AT_BOOT";
     public CustomCommand(){
 
     }
-    public CustomCommand(long id, String btn_label, String command, String execMode, String sendToShell) {
+    public CustomCommand(long id, String command_label, String command, String execMode, String sendToShell,  Integer runAtBoot) {
         this.id = id;
-        this.btn_label = btn_label;
+        this.command_label = command_label;
         this.command = command;
         this.execMode = execMode;
         this.sendToShell = sendToShell;
+        this.runAtBoot = runAtBoot;
+
     }
 
     public void setId(long id) { this.id = id; }
@@ -36,11 +39,11 @@ public class CustomCommand {
     }
 
     public String getCommand_label() {
-        return btn_label;
+        return command_label;
     }
 
-    public void setBtn_label(String btn_label) {
-        this.btn_label = btn_label;
+    public void setCommand_label(String command_label) {
+        this.command_label = command_label;
     }
 
     public String getCommand() {
@@ -63,5 +66,12 @@ public class CustomCommand {
     }
     public void setSend_To_Shell(String sendToShell) {
         this.sendToShell = sendToShell;
+    }
+
+    public Integer getRun_At_Boot() {
+        return runAtBoot;
+    }
+    public void setRun_At_Boot(Integer runAtBoot) {
+        this.runAtBoot = runAtBoot;
     }
 }

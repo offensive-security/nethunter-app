@@ -123,7 +123,7 @@ public class KaliServicesFragment extends Fragment {
                 servicesList.post(new Runnable() {
                     @Override
                     public void run() {
-                        servicesList.setAdapter(new SwichLoader(getActivity().getApplicationContext(), serviceStates, finalCheckBootStates, KaliServices));
+                        servicesList.setAdapter(new KaliServicesLoader(getActivity().getApplicationContext(), serviceStates, finalCheckBootStates, KaliServices));
                     }
                 });
 
@@ -137,7 +137,7 @@ public class KaliServicesFragment extends Fragment {
 // This class is the main for the services
 
 
-class SwichLoader extends BaseAdapter {
+class KaliServicesLoader extends BaseAdapter {
 
     private Context mContext;
     private String[] _serviceStates;
@@ -148,7 +148,7 @@ class SwichLoader extends BaseAdapter {
     private ShellExecuter exe = new ShellExecuter();
 
 
-    public SwichLoader(Context context, String serviceStates, String bootStates, String[][] KaliServices) {
+    public KaliServicesLoader(Context context, String serviceStates, String bootStates, String[][] KaliServices) {
 
         mContext = context;
 
@@ -200,7 +200,7 @@ class SwichLoader extends BaseAdapter {
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.swich_item, parent, false);
+            convertView = inflater.inflate(R.layout.kali_services_item, parent, false);
 
             // set up the ViewHolder
             vH = new ViewHolderItem();
