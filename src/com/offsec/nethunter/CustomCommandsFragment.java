@@ -10,14 +10,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.MenuItemCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -38,8 +37,8 @@ public class CustomCommandsFragment  extends Fragment {
     private SQLPersistence database;
     private Context mContext;
     private ListView commandListView;
-    private CmdLoader commandAdapter;
-    private List commandList;
+    private TextView customComandsInfo;
+
 
     public CustomCommandsFragment() {
 
@@ -59,13 +58,12 @@ public class CustomCommandsFragment  extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        mContext = getActivity().getApplicationContext();
-        database = new SQLPersistence(mContext);
-
         View rootView = inflater.inflate(R.layout.custom_commands, container, false);
         final Button addCommand = (Button) rootView.findViewById(R.id.addCommand);
         setHasOptionsMenu(true);
         final SearchView searchStr= (SearchView) rootView.findViewById(R.id.searchCommand);
+        main(rootView, null);
+        // set up listeners
         addCommand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,10 +74,7 @@ public class CustomCommandsFragment  extends Fragment {
             @Override
             public boolean onClose() {
                 addCommand.setVisibility(View.VISIBLE);
-                commandList = database.getAllCommands();
-                commandAdapter = new CmdLoader(mContext, commandList);
-                commandListView.setAdapter(new CmdLoader(mContext, commandList));
-
+                main(null, null);
                 return false;
             }
         });
@@ -87,8 +82,7 @@ public class CustomCommandsFragment  extends Fragment {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                commandList = database.getAllAppsFiltered(query);
-                commandListView.setAdapter(new CmdLoader(mContext, commandList));
+                main(null, database.getAllAppsFiltered(query));
                 return false;
             }
 
@@ -98,14 +92,15 @@ public class CustomCommandsFragment  extends Fragment {
             }
 
         });
-        main(rootView);
-
         return rootView;
 
     }
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        //this runs BEFORE the ui is available
+        mContext = getActivity().getApplicationContext();
+        database = new SQLPersistence(mContext);
     }
 
     public void onResume()
@@ -133,25 +128,31 @@ public class CustomCommandsFragment  extends Fragment {
         switch (item.getItemId()) {
             case R.id.doDbBackup:
                 database.exportDB();
-                main(null);
+                main(null, null);
+                hideSoftKeyboard(getView());
                 return true;
             case R.id.doDbRestore:
                 database.importDB();
-                main(null);
+                main(null, null);
+                hideSoftKeyboard(getView());
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-    private void main(final View rootView) {
+    private void main(final View rootView, List commandList) {
         if(rootView != null){
             commandListView = (ListView) rootView.findViewById(R.id.commandList);
+            customComandsInfo = (TextView)rootView.findViewById(R.id.customComandsInfo);
         }
-        commandList = database.getAllCommands();
-        commandAdapter = new CmdLoader(mContext, commandList);
+        if(commandList == null){
+            commandList = database.getAllCommands();
+        }
+
+        commandListView.setOnItemLongClickListener(null);
+        CmdLoader commandAdapter = new CmdLoader(mContext, commandList);
         if(commandAdapter.getCount() == 0){
-            TextView customComandsInfo = (TextView)rootView.findViewById(R.id.customComandsInfo);
             customComandsInfo.setText("Add a new command");
             return;
         }
@@ -168,6 +169,16 @@ public class CustomCommandsFragment  extends Fragment {
             }
         });
 
+    }
+
+    private static void hideSoftKeyboard(final View caller) {
+        caller.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                InputMethodManager imm = (InputMethodManager) caller.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(caller.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        }, 100);
     }
 
     private void saveNewCommand() {
@@ -198,21 +209,21 @@ public class CustomCommandsFragment  extends Fragment {
                                     Toast.makeText(getActivity().getApplicationContext(),
                                             "Command created.",
                                             Toast.LENGTH_SHORT).show();
-                                    commandList = database.getAllCommands();
-                                    commandAdapter = new CmdLoader(mContext, commandList);
-                                    commandListView.setAdapter(commandAdapter);
+                                    main(null, null);
 
                                 } else {
                                     Toast.makeText(getActivity().getApplicationContext(),
                                             getString(R.string.toast_input_error_launcher),
                                             Toast.LENGTH_SHORT).show();
                                 }
+                                hideSoftKeyboard(getView());
                             }
                         })
                 .setNegativeButton("Cancel",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
+                                hideSoftKeyboard(getView());
                             }
                         });
         AlertDialog alertDialog = alertDialogBuilder.create();
@@ -273,33 +284,34 @@ public class CustomCommandsFragment  extends Fragment {
                                     Toast.makeText(getActivity().getApplicationContext(),
                                             "Command Updated",
                                             Toast.LENGTH_SHORT).show();
-                                    commandList = database.getAllCommands();
-                                    commandAdapter = new CmdLoader(mContext, commandList);
-                                    commandListView.setAdapter(commandAdapter);
+                                    main(null, null);
 
                                 } else {
                                     Toast.makeText(getActivity().getApplicationContext(),
                                             getString(R.string.toast_input_error_launcher),
                                             Toast.LENGTH_SHORT).show();
                                 }
+                                hideSoftKeyboard(getView());
                             }
                         })
                 .setNeutralButton("Delete",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 database.deleteCommand(_id);
+
                                 Toast.makeText(getActivity().getApplicationContext(),
                                         "Command Deleted",
                                         Toast.LENGTH_SHORT).show();
-                                commandList = database.getAllCommands();
-                                commandAdapter = new CmdLoader(mContext, commandList);
-                                commandListView.setAdapter(commandAdapter);
+
+                                main(null, null);
+                                hideSoftKeyboard(getView());
                             }
                         })
                 .setNegativeButton("Cancel",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
+                                hideSoftKeyboard(getView());
                             }
                         });
         AlertDialog alertDialog = alertDialogBuilder.create();
@@ -308,7 +320,6 @@ public class CustomCommandsFragment  extends Fragment {
 }
 
 class CmdLoader extends BaseAdapter {
-
 
     private final List _commandList;
     private Context _mContext;
@@ -406,12 +417,11 @@ class CmdLoader extends BaseAdapter {
         String _sendTo = commandInfo.getSend_To_Shell();
 
         String composedCommand;
-
         if(_sendTo.equals("KALI")){
             composedCommand = "su -c bootkali custom_cmd " + _cmd;
         } else{
             // SEND TO ANDROID
-            // no sure, if we add su, we cant exec comands as a normal android user
+            // no sure, if we add su -c , we cant exec comands as a normal android user
             composedCommand = _cmd;
         }
 
@@ -421,16 +431,13 @@ class CmdLoader extends BaseAdapter {
             Toast.makeText(_mContext,
                     "Command " + _label + " done.",
                     Toast.LENGTH_SHORT).show();
-        } else {
-            try {
-
+        } else try {
                 Intent intent =
                         new Intent("jackpal.androidterm.RUN_SCRIPT");
                 intent.addCategory(Intent.CATEGORY_DEFAULT);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
                 intent.putExtra("jackpal.androidterm.iInitialCommand", composedCommand);
                 _mContext.startActivity(intent);
-
             } catch (Exception e) {
                 Toast.makeText(_mContext, _mContext.getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
                 try {
@@ -439,9 +446,5 @@ class CmdLoader extends BaseAdapter {
                     _mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=jackpal.androidterm")));
                 }
             }
-        }
-
-
-
     }
 }
