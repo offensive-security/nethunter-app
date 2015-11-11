@@ -2,7 +2,6 @@ package com.offsec.nethunter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,6 +19,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -38,7 +38,12 @@ public class CustomCommandsFragment  extends Fragment {
     private Context mContext;
     private ListView commandListView;
     private TextView customComandsInfo;
-
+    private CmdLoader commandAdapter;
+    private List<CustomCommand> commandList;
+    private String bootScriptPath;
+    private String shebang;
+    private String custom_commands_runlevel;
+    private ShellExecuter exe = new ShellExecuter();
 
     public CustomCommandsFragment() {
 
@@ -62,7 +67,7 @@ public class CustomCommandsFragment  extends Fragment {
         final Button addCommand = (Button) rootView.findViewById(R.id.addCommand);
         setHasOptionsMenu(true);
         final SearchView searchStr= (SearchView) rootView.findViewById(R.id.searchCommand);
-        main(rootView, null);
+        main(rootView);
         // set up listeners
         addCommand.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,19 +75,14 @@ public class CustomCommandsFragment  extends Fragment {
                 saveNewCommand();
             }
         });
-        searchStr.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                addCommand.setVisibility(View.VISIBLE);
-                main(null, null);
-                return false;
-            }
-        });
+
         searchStr.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                main(null, database.getAllAppsFiltered(query));
+                commandList.clear();
+                commandList.addAll(database.getAllCommandsFiltered(query));
+                commandAdapter.notifyDataSetChanged();
                 return false;
             }
 
@@ -101,8 +101,40 @@ public class CustomCommandsFragment  extends Fragment {
         //this runs BEFORE the ui is available
         mContext = getActivity().getApplicationContext();
         database = new SQLPersistence(mContext);
-    }
+        bootScriptPath = mContext.getFilesDir().toString() + "/etc/init.d/";
+        shebang = "#!/system/bin/sh\n\n# Run at boot CustomCommand: ";
+        custom_commands_runlevel = "90";
 
+    }
+    private void addToBoot(CustomCommand command) {
+        String _label = command.getCommand_label();
+        String _cmd = command.getCommand();
+        //String _mode = command.getExec_Mode();
+        String _sendTo = command.getSend_To_Shell();
+
+        String composedCommand;
+        if(_sendTo.equals("KALI")){
+            composedCommand = "su -c bootkali custom_cmd " + _cmd;
+        } else{
+            // SEND TO ANDROID
+            // no sure, if we add su -c , we cant exec comands as a normal android user
+            composedCommand = _cmd;
+        }
+        String bootServiceFile = bootScriptPath + custom_commands_runlevel + "_" + command.getId() +"_custom_command";
+        String fileContents = shebang + _label + "\n" + composedCommand;
+        exe.RunAsRoot(new String[]{
+                "echo '" + fileContents + "' > " + bootServiceFile,
+                "chmod 700 " + bootServiceFile
+        });
+
+        // return the number of services
+
+    }
+    private void removeFromBoot(long commandId) {
+        // return the number of services
+        String bootServiceFile = bootScriptPath + custom_commands_runlevel + "_" + commandId +"_custom_command";
+        exe.RunAsRoot(new String[]{ "rm -rf " +  bootServiceFile });
+    }
     public void onResume()
     {
         super.onResume();
@@ -128,12 +160,27 @@ public class CustomCommandsFragment  extends Fragment {
         switch (item.getItemId()) {
             case R.id.doDbBackup:
                 database.exportDB();
-                main(null, null);
                 hideSoftKeyboard(getView());
                 return true;
             case R.id.doDbRestore:
+                // delete boot coomands
+                for (CustomCommand cc : database.getAllCommands()) {
+                    if(cc.getRun_At_Boot() == 1)
+                        removeFromBoot(cc.getId());
+                }
+                //restore db
                 database.importDB();
-                main(null, null);
+                commandList.clear();
+                // restored list
+                List<CustomCommand> _commandList = database.getAllCommands();
+                commandList.addAll(_commandList);
+                commandAdapter.notifyDataSetChanged();
+                // restore boot commands
+                for (CustomCommand cc : _commandList) {
+                    if(cc.getRun_At_Boot() == 1) {
+                        addToBoot(cc);
+                    }
+                }
                 hideSoftKeyboard(getView());
                 return true;
 
@@ -141,20 +188,18 @@ public class CustomCommandsFragment  extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
-    private void main(final View rootView, List commandList) {
-        if(rootView != null){
-            commandListView = (ListView) rootView.findViewById(R.id.commandList);
-            customComandsInfo = (TextView)rootView.findViewById(R.id.customComandsInfo);
-        }
-        if(commandList == null){
-            commandList = database.getAllCommands();
-        }
+    private void main(final View rootView) {
 
-        commandListView.setOnItemLongClickListener(null);
-        CmdLoader commandAdapter = new CmdLoader(mContext, commandList);
+        commandListView = (ListView) rootView.findViewById(R.id.commandList);
+        customComandsInfo = (TextView)rootView.findViewById(R.id.customComandsInfo);
+        commandList = database.getAllCommands();
+        commandAdapter = new CmdLoader(mContext, commandList);
+
+
         if(commandAdapter.getCount() == 0){
             customComandsInfo.setText("Add a new command");
         }
+
         commandListView.setAdapter(commandAdapter);
         commandListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -162,7 +207,7 @@ public class CustomCommandsFragment  extends Fragment {
                 ((Vibrator)mContext.getSystemService(Context.VIBRATOR_SERVICE)).vibrate(50);
 
                 CustomCommand currenCommand = (CustomCommand) commandListView.getItemAtPosition(position);
-                editCommand(currenCommand);
+                editCommand(currenCommand, position);
 
                 return false;
             }
@@ -192,7 +237,7 @@ public class CustomCommandsFragment  extends Fragment {
         final EditText userInputCommand = (EditText) promptsView.findViewById(R.id.editText_launcher_command);
         final Spinner command_exec_mode = (Spinner) promptsView.findViewById(R.id.spinnerExecMode);
         final Spinner command_run_in_shell = (Spinner) promptsView.findViewById(R.id.spinnerRun_in_shell);
-
+        final CheckBox run_at_boot = (CheckBox) promptsView.findViewById(R.id.custom_comands_runAtBoot);
         alertDialogBuilder
                 .setCancelable(false)
                 .setPositiveButton("OK",
@@ -200,16 +245,25 @@ public class CustomCommandsFragment  extends Fragment {
                             public void onClick(DialogInterface dialog, int id) {
                                 if (userInputBtnLabel.getText().length() > 0 &&
                                         userInputCommand.getText().length() > 0) {
+                                    Integer _run_at_boot = 0;
+                                    if (run_at_boot.isChecked()) {
+                                        _run_at_boot = 1;
 
-                                    database.addCommand(userInputBtnLabel.getText().toString(),
+                                    }
+                                    CustomCommand _insertedCommand = database.addCommand(userInputBtnLabel.getText().toString(),
                                             userInputCommand.getText().toString(),
                                             command_exec_mode.getSelectedItem().toString(),
-                                            command_run_in_shell.getSelectedItem().toString());
+                                            command_run_in_shell.getSelectedItem().toString(), _run_at_boot);
                                     Toast.makeText(getActivity().getApplicationContext(),
                                             "Command created.",
                                             Toast.LENGTH_SHORT).show();
-                                    main(null, null);
-
+                                    //
+                                    if (_run_at_boot == 1) {
+                                        addToBoot(_insertedCommand);
+                                    }
+                                    // add to top of the list
+                                    commandList.add(0, _insertedCommand);
+                                    commandAdapter.notifyDataSetChanged();
                                 } else {
                                     Toast.makeText(getActivity().getApplicationContext(),
                                             getString(R.string.toast_input_error_launcher),
@@ -228,7 +282,7 @@ public class CustomCommandsFragment  extends Fragment {
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
-    private void editCommand(final CustomCommand commandInfo) {
+    private void editCommand(final CustomCommand commandInfo, final int position) {
 
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View promptsView = inflater.inflate(R.layout.custon_commands_dialog, null);
@@ -241,16 +295,20 @@ public class CustomCommandsFragment  extends Fragment {
         final EditText userInputCommand = (EditText) promptsView.findViewById(R.id.editText_launcher_command);
         final Spinner command_exec_mode = (Spinner) promptsView.findViewById(R.id.spinnerExecMode);
         final Spinner command_run_in_shell = (Spinner) promptsView.findViewById(R.id.spinnerRun_in_shell);
-
+        final CheckBox run_at_boot = (CheckBox) promptsView.findViewById(R.id.custom_comands_runAtBoot);
         // command Info
-        final Long _id = commandInfo.getId();
+        final long _id = commandInfo.getId();
         String _label = commandInfo.getCommand_label();
         String _cmd = commandInfo.getCommand();
         String _mode = commandInfo.getExec_Mode();
         String _sendTo = commandInfo.getSend_To_Shell();
-
+        Integer _runAtBoot = commandInfo.getRun_At_Boot();
         userInputCommandLabel.setText(_label);
         userInputCommand.setText(_cmd);
+
+        if(_runAtBoot == 1){
+            run_at_boot.setChecked(true);
+        }
 
         if(_sendTo.equals("KALI")){
             command_run_in_shell.setSelection(0);
@@ -272,18 +330,27 @@ public class CustomCommandsFragment  extends Fragment {
                             public void onClick(DialogInterface dialog, int id) {
                                 if (userInputCommandLabel.getText().length() > 0 &&
                                         userInputCommand.getText().length() > 0) {
-
-
-                                    CustomCommand commandObj = new CustomCommand(_id,
+                                    Integer _run_at_boot = 0;
+                                    if (run_at_boot.isChecked()) {
+                                        _run_at_boot = 1;
+                                    }
+                                    CustomCommand _updatedCommand = new CustomCommand(_id,
                                             userInputCommandLabel.getText().toString(),
                                             userInputCommand.getText().toString(),
                                             command_exec_mode.getSelectedItem().toString(),
-                                            command_run_in_shell.getSelectedItem().toString());
-                                    database.updateCommand(commandObj);
+                                            command_run_in_shell.getSelectedItem().toString(),_run_at_boot);
+
+                                    database.updateCommand(_updatedCommand);
+                                    if (_run_at_boot == 1) {
+                                        addToBoot(_updatedCommand);
+                                    } else {
+                                        removeFromBoot(_updatedCommand.getId());
+                                    }
                                     Toast.makeText(getActivity().getApplicationContext(),
                                             "Command Updated",
                                             Toast.LENGTH_SHORT).show();
-                                    main(null, null);
+                                    commandList.set(position, _updatedCommand);
+                                    commandAdapter.notifyDataSetChanged();
 
                                 } else {
                                     Toast.makeText(getActivity().getApplicationContext(),
@@ -302,7 +369,10 @@ public class CustomCommandsFragment  extends Fragment {
                                         "Command Deleted",
                                         Toast.LENGTH_SHORT).show();
 
-                                main(null, null);
+                                    removeFromBoot(_id);
+
+                                commandList.remove(position);
+                                commandAdapter.notifyDataSetChanged();
                                 hideSoftKeyboard(getView());
                             }
                         })
@@ -320,13 +390,13 @@ public class CustomCommandsFragment  extends Fragment {
 
 class CmdLoader extends BaseAdapter {
 
-    private final List _commandList;
+    private final List<CustomCommand> _commandList;
     private Context _mContext;
 
     private ShellExecuter exe = new ShellExecuter();
 
 
-    public CmdLoader(Context context, List commandList) {
+    public CmdLoader(Context context, List<CustomCommand> commandList) {
 
         _mContext = context;
         _commandList = commandList;
@@ -337,8 +407,10 @@ class CmdLoader extends BaseAdapter {
         // The switch
         //Switch sw;
         // the msg holder
+
         TextView execmode;
         TextView sendtocmd;
+        TextView runatboot;
         // the service title
         TextView cwTitle;
         // run at boot checkbox
@@ -367,6 +439,7 @@ class CmdLoader extends BaseAdapter {
             // vH.cwSwich = (Switch) convertView.findViewById(R.id.switch1);
             vH.execmode = (TextView) convertView.findViewById(R.id.execmode);
             vH.sendtocmd = (TextView) convertView.findViewById(R.id.sendtocmd);
+            vH.runatboot = (TextView) convertView.findViewById(R.id.custom_comands_runAtBoot_text);
             vH.cwButton = (Button) convertView.findViewById(R.id.runCommand);
             convertView.setTag(vH);
             //System.out.println ("created row");
@@ -384,12 +457,18 @@ class CmdLoader extends BaseAdapter {
         String _cmd = commandInfo.getCommand();
         String _mode = commandInfo.getExec_Mode();
         String _sendTo = commandInfo.getSend_To_Shell();
-
+        Integer _runAtBoot = commandInfo.getRun_At_Boot();
+        String _runAtBoot_txt = "NO";
+        if (_runAtBoot ==1){
+            _runAtBoot_txt = "YES";
+            vH.runatboot.setTextColor(_mContext.getResources().getColor(R.color.clearTitle));
+        }
         vH.cwButton.setOnClickListener(null);
         // set service name
         vH.cwTitle.setText(_label);
         vH.execmode.setText(_mode);
         vH.sendtocmd.setText(_sendTo);
+        vH.runatboot.setText(_runAtBoot_txt);
         vH.cwButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -401,13 +480,12 @@ class CmdLoader extends BaseAdapter {
     }
 
     public CustomCommand getItem(int position) {
-        return (CustomCommand)_commandList.get(position);
+        return _commandList.get(position);
     }
 
     public long getItemId(int position) {
         return position;
     }
-
     private void doCustomCommand(CustomCommand commandInfo){
 
         String _label = commandInfo.getCommand_label();
@@ -446,4 +524,5 @@ class CmdLoader extends BaseAdapter {
                 }
             }
     }
+
 }
