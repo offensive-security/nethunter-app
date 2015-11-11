@@ -154,7 +154,6 @@ public class CustomCommandsFragment  extends Fragment {
         CmdLoader commandAdapter = new CmdLoader(mContext, commandList);
         if(commandAdapter.getCount() == 0){
             customComandsInfo.setText("Add a new command");
-            return;
         }
         commandListView.setAdapter(commandAdapter);
         commandListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
