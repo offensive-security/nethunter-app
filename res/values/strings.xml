@@ -251,6 +251,10 @@
     <string name="add_lauchner_btn_command">Command: </string>
     <string name="toast_error_launcher">Invalid call of function!</string>
     <string name="toast_input_error_launcher">Invalid arguments given!</string>
+    <string name="installing_notice">Installing Chroot...</string>
+    <string name="drawer_opened">Drawer opened</string>
+    <string name="drawer_closed">Drawer closed</string>
+    <string name="readme">README</string>
     <string-array name="exec_mode">
         <item>BACKGROUND</item>
         <item>INTERACTIVE</item>
@@ -259,4 +263,7 @@
         <item>KALI</item>
         <item>ANDROID</item>
     </string-array>
+    <string name="cancel">Cancel</string>
+    <string name="extract_part1">Uncompressing the Chroot... (~10 min)</string>
+    <string name="extract_part2">Deploying the Chroot... (~5-10 min)</string>
 </resources>

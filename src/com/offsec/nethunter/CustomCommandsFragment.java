@@ -470,7 +470,7 @@ class CmdLoader extends BaseAdapter {
             _runAtBoot_txt = "YES";
             vH.runatboot.setTextColor(_mContext.getResources().getColor(R.color.darkorange));
         } else {
-            vH.runatboot.setTextColor(_mContext.getResources().getColor(R.color.link_text_material_dark));
+            vH.runatboot.setTextColor(_mContext.getResources().getColor(R.color.blue));
         }
         vH.cwButton.setOnClickListener(null);
         // set service name

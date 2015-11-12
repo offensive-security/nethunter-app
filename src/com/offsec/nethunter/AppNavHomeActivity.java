@@ -11,21 +11,24 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,12 +53,14 @@ public class AppNavHomeActivity extends AppCompatActivity {
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView navigationView;
     private CharSequence mTitle = "NetHunter";
     private Stack<String> titles = new Stack<>();
     private SharedPreferences prefs;
-    String filesPath;
-    String sdCard;
+    private String filesPath;
+    private String sdCard;
+    private LinearLayout navigationHeadView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,47 +71,46 @@ public class AppNavHomeActivity extends AppCompatActivity {
 
         filesPath = getFilesDir().toString();
         sdCard = Environment.getExternalStorageDirectory().toString();
+
+        ActionBar ab = getSupportActionBar();
+        if (ab != null) {
+            ab.setHomeButtonEnabled(true);
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        RelativeLayout navigationHeadView = (RelativeLayout) mDrawerLayout.findViewById(R.id.side_head);
-        Button readmeButton = (Button) navigationHeadView.findViewById(R.id.info_header);
 
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        navigationHeadView.setOnClickListener(new View.OnClickListener() {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        navigationHeadView = (LinearLayout) inflater.inflate(R.layout.sidenav_header, null);
+        navigationView.addHeaderView(navigationHeadView);
+        FloatingActionButton readmeButton = (FloatingActionButton) navigationHeadView.findViewById(R.id.info_fab);
+        readmeButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                // Prevents a weird click animation.
-            }
-        });
-        readmeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            public boolean onTouch(View v, MotionEvent event) {
                 showLicense();
-                // Consume input from header view. This disables the unwanted ripple effect.
+                return false;
             }
         });
+
         /// moved build info to the menu
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd KK:mm:ss a zzz",
                 Locale.US);
+
+        prefs = getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
+
+        String buildTime = sdf.format(BuildConfig.BUILD_TIME);
         TextView buildInfo1 = (TextView) navigationHeadView.findViewById(R.id.buildinfo1);
         TextView buildInfo2 = (TextView) navigationHeadView.findViewById(R.id.buildinfo2);
-        String buildTime = sdf.format(BuildConfig.BUILD_TIME);
-                buildInfo1.setText(String.format("Version: %s (%s)", BuildConfig.VERSION_NAME, android.os.Build.TAGS));
+        buildInfo1.setText(String.format("Version: %s (%s)", BuildConfig.VERSION_NAME, android.os.Build.TAGS));
         buildInfo2.setText(String.format("Built by %s at %s", BuildConfig.BUILD_NAME, buildTime));
-        prefs = getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
 
         if (navigationView != null) {
             setupDrawerContent(navigationView);
         }
 
-        ActionBar ab = getSupportActionBar();
-        if (ab != null) {
-            ab.setHomeAsUpIndicator(R.drawable.ic_drawer);
-            ab.setDisplayHomeAsUpEnabled(true);
-            ab.setHomeButtonEnabled(true);
-        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // detail for android 5 devices
-            getWindow().setStatusBarColor(getResources().getColor(R.color.darkTitle));
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.darkTitle));
         }
 
         // copy script files, but off the main UI thread
@@ -118,7 +122,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
         // Copy files if: no files, no scripts, no etc or new apk version
         if (!prefs.getString(COPY_ASSETS_TAG, buildTime).equals(buildTime) || !sdCardDir.isDirectory() || !scriptsDir.isDirectory() || !etcDir.isDirectory()) {
 
-            Log.d(COPY_ASSETS_TAG,"COPING FILES....");
+            Log.d(COPY_ASSETS_TAG, "COPING FILES....");
             final Runnable r = new Runnable() {
                 public void run() {
                     // 1:1 copy (recursive) of the assets/{scripts, etc, wallpapers} folders to /data/data/...
@@ -147,7 +151,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
             ed.putString(COPY_ASSETS_TAG, buildTime);
             ed.commit();
         } else {
-            Log.d(COPY_ASSETS_TAG,"FILES NOT COPIED");
+            Log.d(COPY_ASSETS_TAG, "FILES NOT COPIED");
             String imageInSD = filesPath + "/wallpapers/kali-nh-2183x1200.png";
             Bitmap bitmap = BitmapFactory.decodeFile(imageInSD);
             myImageView.setImageBitmap(bitmap);
@@ -162,7 +166,6 @@ public class AppNavHomeActivity extends AppCompatActivity {
 
         // and put the title in the queue for when you need to back through them
         titles.push(mTitle.toString());
-
 
 
         // make sure we check if we have chroot every time we open the drawer, so that
@@ -189,6 +192,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
 
         });
 
+
         // if the nav bar hasn't been seen, let's show it
         if (!prefs.getBoolean("seenNav", false)) {
             mDrawerLayout.openDrawer(GravityCompat.START);
@@ -197,13 +201,18 @@ public class AppNavHomeActivity extends AppCompatActivity {
             ed.commit();
         }
 
+        mDrawerToggle = new ActionBarDrawerToggle(this,
+                mDrawerLayout, R.string.drawer_opened, R.string.drawer_closed);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
+
         // pre-set the drawer options
         setDrawerOptions();
         checkForRoot(myImageView); //  gateway check to make sure root's possible & pop up dialog if not
     }
 
-    public void showLicense(){
-        // @binkybear here goses the changelog etc...just moar \n\n%s
+    public void showLicense() {
+        // @binkybear here goes the changelog etc...just moar \n\n%s
         String readmeData = String.format("%s\n\n%s",
                 getResources().getString(R.string.licenseInfo),
                 getResources().getString(R.string.nhwarning));
@@ -273,6 +282,9 @@ public class AppNavHomeActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
         switch (item.getItemId()) {
             case android.R.id.home:
                 if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -412,13 +424,14 @@ public class AppNavHomeActivity extends AppCompatActivity {
         toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
         toast.show();
     }
+
     private Boolean pathIsAllowed(String path, String copyType) {
         // never copy images, sounds or webkit
-        if(!path.startsWith("images") && !path.startsWith("sounds") && !path.startsWith("webkit")) {
+        if (!path.startsWith("images") && !path.startsWith("sounds") && !path.startsWith("webkit")) {
             if (copyType.equals("sdcard")) {
-                if(path.equals("")) {
+                if (path.equals("")) {
                     return true;
-                } else if(path.startsWith("files")) {
+                } else if (path.startsWith("files")) {
                     return true;
                 }
                 return false;
@@ -439,6 +452,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
         }
         return false;
     }
+
     // now this only copies the folders: scripts, etc , wallpapers to /data/data...
     private void assetsToFiles(String TARGET_BASE_PATH, String path, String copyType) {
         AssetManager assetManager = this.getAssets();
@@ -449,11 +463,11 @@ public class AppNavHomeActivity extends AppCompatActivity {
             if (assets.length == 0) {
                 copyFile(TARGET_BASE_PATH, path);
             } else {
-                String fullPath =  TARGET_BASE_PATH + "/" + path;
+                String fullPath = TARGET_BASE_PATH + "/" + path;
                 // Log.i("tag", "path="+fullPath);
                 File dir = new File(fullPath);
                 if (!dir.exists() && pathIsAllowed(path, copyType)) { // copy thouse dirs
-                    if (!dir.mkdirs()){
+                    if (!dir.mkdirs()) {
                         Log.i("tag", "could not create dir " + fullPath);
                     }
                 }
@@ -473,6 +487,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
             Log.e("tag", "I/O Exception", ex);
         }
     }
+
     private void copyFile(String TARGET_BASE_PATH, String filename) {
         AssetManager assetManager = this.getAssets();
 
@@ -495,11 +510,12 @@ public class AppNavHomeActivity extends AppCompatActivity {
 
 
         } catch (Exception e) {
-            Log.e("tag", "Exception in copyFile() of "+newFileName);
-            Log.e("tag", "Exception in copyFile() "+e.toString());
+            Log.e("tag", "Exception in copyFile() of " + newFileName);
+            Log.e("tag", "Exception in copyFile() " + e.toString());
         }
 
     }
+
     public String readConfigFile(String configFilePath) {
 
 
@@ -550,5 +566,6 @@ public class AppNavHomeActivity extends AppCompatActivity {
         }
         restoreActionBar();
     }
+
 }
 
