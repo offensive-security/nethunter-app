@@ -20,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -37,7 +38,6 @@ public class CustomCommandsFragment  extends Fragment {
     private SQLPersistence database;
     private Context mContext;
     private ListView commandListView;
-    private TextView customComandsInfo;
     private CmdLoader commandAdapter;
     private List<CustomCommand> commandList;
     private String bootScriptPath;
@@ -191,7 +191,7 @@ public class CustomCommandsFragment  extends Fragment {
     private void main(final View rootView) {
 
         commandListView = (ListView) rootView.findViewById(R.id.commandList);
-        customComandsInfo = (TextView)rootView.findViewById(R.id.customComandsInfo);
+        TextView customComandsInfo = (TextView) rootView.findViewById(R.id.customComandsInfo);
         commandList = database.getAllCommands();
         commandAdapter = new CmdLoader(mContext, commandList);
 
@@ -238,6 +238,17 @@ public class CustomCommandsFragment  extends Fragment {
         final Spinner command_exec_mode = (Spinner) promptsView.findViewById(R.id.spinnerExecMode);
         final Spinner command_run_in_shell = (Spinner) promptsView.findViewById(R.id.spinnerRun_in_shell);
         final CheckBox run_at_boot = (CheckBox) promptsView.findViewById(R.id.custom_comands_runAtBoot);
+        run_at_boot.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    command_exec_mode.setSelection(0);
+                    command_exec_mode.setEnabled(false);
+                } else {
+                    command_exec_mode.setEnabled(true);
+                }
+            }
+        });
         alertDialogBuilder
                 .setCancelable(false)
                 .setPositiveButton("OK",
@@ -257,7 +268,7 @@ public class CustomCommandsFragment  extends Fragment {
                                     Toast.makeText(getActivity().getApplicationContext(),
                                             "Command created.",
                                             Toast.LENGTH_SHORT).show();
-                                    //
+
                                     if (_run_at_boot == 1) {
                                         addToBoot(_insertedCommand);
                                     }
@@ -282,6 +293,7 @@ public class CustomCommandsFragment  extends Fragment {
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
+
     private void editCommand(final CustomCommand commandInfo, final int position) {
 
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -308,6 +320,8 @@ public class CustomCommandsFragment  extends Fragment {
 
         if(_runAtBoot == 1){
             run_at_boot.setChecked(true);
+            command_exec_mode.setSelection(0); // allways background
+            command_exec_mode.setEnabled(false); // force option 1
         }
 
         if(_sendTo.equals("KALI")){
@@ -322,12 +336,23 @@ public class CustomCommandsFragment  extends Fragment {
             // interactive
             command_exec_mode.setSelection(1);
         }
-
+        run_at_boot.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    command_exec_mode.setSelection(0);
+                    command_exec_mode.setEnabled(false);
+                } else {
+                    command_exec_mode.setEnabled(true);
+                }
+            }
+        });
         alertDialogBuilder
                 .setCancelable(false)
                 .setPositiveButton("Update",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
+
                                 if (userInputCommandLabel.getText().length() > 0 &&
                                         userInputCommand.getText().length() > 0) {
                                     Integer _run_at_boot = 0;
@@ -454,7 +479,7 @@ class CmdLoader extends BaseAdapter {
         // remove listeners
         final CustomCommand commandInfo = getItem(position);
         String _label = commandInfo.getCommand_label();
-        String _cmd = commandInfo.getCommand();
+        // String _cmd = commandInfo.getCommand();
         String _mode = commandInfo.getExec_Mode();
         String _sendTo = commandInfo.getSend_To_Shell();
         Integer _runAtBoot = commandInfo.getRun_At_Boot();
