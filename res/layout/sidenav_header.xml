@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/side_head"
     android:layout_width="match_parent"
     android:layout_height="170dp"
@@ -11,34 +11,41 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="114dp"
-        android:orientation="horizontal"
+        android:layout_alignParentTop="true"
         android:background="@drawable/nh_cropbg"
-        android:layout_alignParentTop="true">
-        <ImageButton
+        android:orientation="horizontal">
+
+        <android.support.design.widget.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/info_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="right"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_action_android"
+            android:textSize="12sp"
+            app:elevation="6dp"
+            app:fabSize="mini"
+            app:pressedTranslationZ="12dp" />
+
+        <ImageView
+            android:id="@+id/offsec_logo_header"
             android:layout_width="100dp"
             android:layout_height="50dp"
-            android:id="@+id/offsec_logo_header"
             android:layout_gravity="left"
             android:layout_margin="5dp"
             android:background="@drawable/offsec_logo_transparent" />
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:id="@+id/info_header"
-            android:layout_gravity="right"
-            android:layout_margin="5dp"
-            android:textSize="11dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:text="README"/>
+
     </RelativeLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true">
+        android:clickable="false"
+        android:focusableInTouchMode="false"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/buildinfo1"
@@ -47,6 +54,7 @@
             android:layout_gravity="center_horizontal|center"
             android:gravity="center"
             android:paddingTop="4dp"
+            android:textColor="@android:color/white"
             android:textSize="12sp" />
 
         <TextView
@@ -56,8 +64,9 @@
             android:layout_gravity="center_horizontal|center"
             android:gravity="center"
             android:paddingBottom="4dp"
+            android:textColor="@android:color/white"
             android:textSize="12sp" />
 
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

@@ -129,12 +129,12 @@ public class ChrootManagerFragment extends Fragment {
         });
         updateButton.setVisibility(View.GONE);
         sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
-        filesPath =  Environment.getExternalStorageDirectory().toString();
+        filesPath = Environment.getExternalStorageDirectory().toString();
         chrootPath = "/data/local/nhsystem/";
         zipFilePath = filesPath + "/" + FILENAME;
         extracted_zipFilePath = filesPath + "/" + EXTRACTED_FILENAME;
 
-        String init_ts = new SimpleDateFormat("yyyyMM_ddhhmmss'.txt'",Locale.US).format(new Date());
+        String init_ts = new SimpleDateFormat("yyyyMM_ddhhmmss'.txt'", Locale.US).format(new Date());
         installLogFile = filesPath + "/nh_install_log_" + init_ts;
 
         return rootView;
@@ -154,7 +154,7 @@ public class ChrootManagerFragment extends Fragment {
 
         if (ARCH.contains("arm")) {
             dir = "kali-armhf";
-        } else if (ARCH.contains("aarch64")){
+        } else if (ARCH.contains("aarch64")) {
             dir = "kali-armhf";
         } else if (ARCH.contains("i686")) {
             dir = "kali-amd64";
@@ -437,7 +437,6 @@ public class ChrootManagerFragment extends Fragment {
     }
 
 
-
     private boolean startZipDownload() {
         deleteFile(zipFilePath);
         statusLog(getActivity().getString(R.string.startingdownload));
@@ -525,7 +524,7 @@ public class ChrootManagerFragment extends Fragment {
             md = MessageDigest.getInstance("SHA-512");
         } catch (NoSuchAlgorithmException e) {
             Log.e(TAG, "For some reason, no SHA512 found on this device.", e);
-            return new String[]{"0","For some reason, no SHA512 found on this device."};
+            return new String[]{"0", "For some reason, no SHA512 found on this device."};
         }
         try {
             FileChannel fc = new FileInputStream(path).getChannel();
@@ -550,7 +549,7 @@ public class ChrootManagerFragment extends Fragment {
             fc.close();
         } catch (IOException ioe) {
             Log.e(TAG, "Can't read " + zipFilePath);
-            return new String[]{"0","Can't read " + zipFilePath};
+            return new String[]{"0", "Can't read " + zipFilePath};
         }
         // k, now check the sha.  Thanks to discussion regarding formatting at:
         // http://stackoverflow.com/questions/7166129/how-can-i-calculate-the-sha-256-hash-of-a-string-in-android
@@ -558,16 +557,16 @@ public class ChrootManagerFragment extends Fragment {
         // Log.d(TAG, "checkSUM ORIG ::: " + SHA512);
         // Log.d(TAG, "checkSUM NEW  ::: " + newSum);
         // Log.d(TAG, "checkSUM PASS ::: " + sumpass);
-        if(sumpass) {
+        if (sumpass) {
             // match
-            return new String[]{"1",newSum};
+            return new String[]{"1", newSum};
         }
         // no match
-        return new String[]{"0","BAD CHECKSUM: " + newSum};
+        return new String[]{"0", "BAD CHECKSUM: " + newSum};
     }
 
-    public void doLog(String data, String fileName){
-        String[] appendToFile = {"echo '" + data + "' >> '"+ fileName +"'"};
+    public void doLog(String data, String fileName) {
+        String[] appendToFile = {"echo '" + data + "' >> '" + fileName + "'"};
         x.RunAsRoot(appendToFile);
     }
 
@@ -578,8 +577,9 @@ public class ChrootManagerFragment extends Fragment {
             DateFormat dateFormat = DateFormat.getDateTimeInstance();
             String ts = dateFormat.format(cal.getTime());
             String formatLog = ts + " - " + status;
+
             public void run() {
-                if(shouldLog){
+                if (shouldLog) {
                     doLog(formatLog, installLogFile);
                 }
                 statusText.post(new Runnable() {
@@ -605,31 +605,34 @@ public class ChrootManagerFragment extends Fragment {
     public class UnziptarTask extends AsyncTask<Void, String, Boolean> {
 
         Boolean isStarted = false;
+
         @Override
         protected void onPreExecute() {
-            pd.setTitle("Decompressing Chroot...");
+            pd.setTitle(getActivity().getString(R.string.installing_notice));
             statusLog(getActivity().getString(R.string.unzippinganduntarring));
             super.onPreExecute();
         }
+
         @Override
         protected void onProgressUpdate(String... progressInfo) {
             super.onProgressUpdate(progressInfo);
-            if (isStarted){
+            if (isStarted) {
                 pd.setTitle("Extracting and Deploying");
             }
             pd.setMessage(progressInfo[0]);
             statusLog(progressInfo[0]);
             isStarted = true;
         }
+
         @Override
         protected Boolean doInBackground(Void... Void) {
             try {
                 // First: decompress .tar.xz >>> .tar
-                publishProgress("1/2 Decompressing the Chroot... (this can take ~10 min)");
+                publishProgress(getActivity().getString(R.string.extract_part1));
                 x.RunAsRootWithException("busybox xz -df '" + zipFilePath + "'");
                 // Second: Extract and Deploy the chroot to Destination.
-                publishProgress("2/2 Extracting and Deploying the Chroot... (this can take 5-10 min)");
-                x.RunAsRootWithException("busybox tar xf '" + extracted_zipFilePath + "' -C '" + chrootPath + "'");
+                publishProgress(getActivity().getString(R.string.extract_part2));
+                x.RunAsRootWithException("busybox tar -xf '" + extracted_zipFilePath + "' -C '" + chrootPath + "'");
             } catch (RuntimeException e) {
                 Log.d(TAG, "Error: ", e);
                 publishProgress("Error: " + e);
@@ -685,13 +688,14 @@ public class ChrootManagerFragment extends Fragment {
             this.context = context;
             mProgressDialog = new ProgressDialog(context);
             mProgressDialog.setCancelable(false);
-            mProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel the download", new DialogInterface.OnClickListener() {
+            mProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     cancel(true);
                 }
             });
         }
+
         @Override
         protected void onCancelled() {
             isRunning = false;
@@ -707,6 +711,7 @@ public class ChrootManagerFragment extends Fragment {
             checkForExistingChroot();
             mNotifyManager.cancel(1);
         }
+
         @Override
         protected String doInBackground(String... sUrl) {
             InputStream input = null;
@@ -722,8 +727,8 @@ public class ChrootManagerFragment extends Fragment {
                             + " " + connection.getResponseMessage();
                 }
                 int fileLength = connection.getContentLength();
-                humanSize =  fileLength/1000000; // in MiB
-                onePercent = humanSize/100;
+                humanSize = fileLength / 1000000; // in MiB
+                onePercent = humanSize / 100;
                 // download the file
                 input = connection.getInputStream();
                 output = new FileOutputStream(zipFilePath);
@@ -758,6 +763,7 @@ public class ChrootManagerFragment extends Fragment {
             }
             return null;
         }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -837,6 +843,7 @@ public class ChrootManagerFragment extends Fragment {
                 mNotifyManager.cancel(1);
             }
         }
+
         protected double round(double value) {
             BigDecimal bd = new BigDecimal(value).setScale(1, RoundingMode.HALF_EVEN);
             value = bd.doubleValue();
