@@ -416,10 +416,13 @@ public class AppNavHomeActivity extends AppCompatActivity {
 
     public void restoreActionBar() {
         ActionBar ab = getSupportActionBar();
+
+
         if (ab != null) {
             //  ab.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
             ab.setDisplayShowTitleEnabled(true);
             ab.setTitle(mTitle);
+
         }
     }
 
@@ -568,6 +571,21 @@ public class AppNavHomeActivity extends AppCompatActivity {
         if (titles.size() > 1) {
             titles.pop();
             mTitle = titles.peek();
+        }
+        Menu menuNav = navigationView.getMenu();
+        for (int i=0; i<menuNav.size(); i++) {
+
+            if(menuNav.getItem(i).getTitle() == mTitle){
+                MenuItem _current = menuNav.getItem(i);
+                if(lastSelected != _current){
+                    //remove last
+                    lastSelected.setChecked(false);
+                    // udpate for the next
+                    lastSelected = _current;
+                }
+                //set checked
+                _current.setChecked(true);
+            }
         }
         restoreActionBar();
     }
