@@ -114,7 +114,15 @@ public class SQLPersistence extends SQLiteOpenHelper {
         db.close();
         return _List;
     }
-
+    public List<CustomCommand> getAllCommandsAtBoot() {
+        String query = "SELECT * FROM " + CustomCommand.TABLE
+                + " WHERE RUN_AT_BOOT = 1" ;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        List<CustomCommand> _List = createCommandList(cursor);
+        db.close();
+        return _List;
+    }
     private List<CustomCommand> createCommandList(Cursor cursor){
 
         List<CustomCommand> commandList = new LinkedList<>();
