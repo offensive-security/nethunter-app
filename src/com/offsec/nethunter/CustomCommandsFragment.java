@@ -72,7 +72,7 @@ public class CustomCommandsFragment  extends Fragment {
         addCommand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveNewCommand();
+                showCommandDialog("ADD", null, 0);
             }
         });
 
@@ -133,7 +133,7 @@ public class CustomCommandsFragment  extends Fragment {
     private void removeFromBoot(long commandId) {
         // return the number of services
         String bootServiceFile = bootScriptPath + custom_commands_runlevel + "_" + commandId +"_custom_command";
-        exe.RunAsRoot(new String[]{ "rm -rf " +  bootServiceFile });
+        exe.RunAsRoot(new String[]{"rm -rf " + bootServiceFile});
     }
     public void onResume()
     {
@@ -164,19 +164,17 @@ public class CustomCommandsFragment  extends Fragment {
                 return true;
             case R.id.doDbRestore:
                 // delete boot coomands
-                for (CustomCommand cc : database.getAllCommands()) {
-                    if(cc.getRun_At_Boot() == 1)
+                for (CustomCommand cc : database.getAllCommandsAtBoot()) {
                         removeFromBoot(cc.getId());
                 }
                 //restore db
                 database.importDB();
                 commandList.clear();
                 // restored list
-                List<CustomCommand> _commandList = database.getAllCommands();
-                commandList.addAll(_commandList);
+                commandList.addAll(database.getAllCommands());
                 commandAdapter.notifyDataSetChanged();
                 // restore boot commands
-                for (CustomCommand cc : _commandList) {
+                for (CustomCommand cc : database.getAllCommandsAtBoot()) {
                     if(cc.getRun_At_Boot() == 1) {
                         addToBoot(cc);
                     }
@@ -204,10 +202,10 @@ public class CustomCommandsFragment  extends Fragment {
         commandListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                ((Vibrator)mContext.getSystemService(Context.VIBRATOR_SERVICE)).vibrate(50);
+                ((Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE)).vibrate(50);
 
                 CustomCommand currenCommand = (CustomCommand) commandListView.getItemAtPosition(position);
-                editCommand(currenCommand, position);
+                showCommandDialog("EDIT", currenCommand, position);
 
                 return false;
             }
@@ -224,24 +222,29 @@ public class CustomCommandsFragment  extends Fragment {
             }
         }, 100);
     }
-
-    private void saveNewCommand() {
+    private void showCommandDialog(String action, CustomCommand commandInfo, int position) {
+        // common setup
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View promptsView = inflater.inflate(R.layout.custon_commands_dialog, null);
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         alertDialogBuilder.setView(promptsView);
+        alertDialogBuilder.setCancelable(false);
+        alertDialogBuilder.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        hideSoftKeyboard(getView());
+                    }
+                });
 
-        final EditText userInputBtnLabel= (EditText) promptsView.findViewById(R.id.editText_launcher_btn_label);
-
-        final EditText userInputCommand = (EditText) promptsView.findViewById(R.id.editText_launcher_command);
         final Spinner command_exec_mode = (Spinner) promptsView.findViewById(R.id.spinnerExecMode);
-        final Spinner command_run_in_shell = (Spinner) promptsView.findViewById(R.id.spinnerRun_in_shell);
         final CheckBox run_at_boot = (CheckBox) promptsView.findViewById(R.id.custom_comands_runAtBoot);
+
         run_at_boot.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked){
+                if (isChecked) {
                     command_exec_mode.setSelection(0);
                     command_exec_mode.setEnabled(false);
                 } else {
@@ -249,8 +252,23 @@ public class CustomCommandsFragment  extends Fragment {
                 }
             }
         });
+        switch (action) {
+            case "ADD":
+                saveNewCommand(alertDialogBuilder, promptsView);
+                break;
+            case "EDIT":
+                editCommand(alertDialogBuilder, promptsView, commandInfo, position);
+                break;
+        }
+    }
+    private void saveNewCommand(AlertDialog.Builder alertDialogBuilder, View promptsView) {
+
+        final EditText userInputBtnLabel= (EditText) promptsView.findViewById(R.id.editText_launcher_btn_label);
+        final EditText userInputCommand = (EditText) promptsView.findViewById(R.id.editText_launcher_command);
+        final Spinner command_exec_mode = (Spinner) promptsView.findViewById(R.id.spinnerExecMode);
+        final Spinner command_run_in_shell = (Spinner) promptsView.findViewById(R.id.spinnerRun_in_shell);
+        final CheckBox run_at_boot = (CheckBox) promptsView.findViewById(R.id.custom_comands_runAtBoot);
         alertDialogBuilder
-                .setCancelable(false)
                 .setPositiveButton("OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
@@ -282,26 +300,12 @@ public class CustomCommandsFragment  extends Fragment {
                                 }
                                 hideSoftKeyboard(getView());
                             }
-                        })
-                .setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                                hideSoftKeyboard(getView());
-                            }
                         });
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
 
-    private void editCommand(final CustomCommand commandInfo, final int position) {
-
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View promptsView = inflater.inflate(R.layout.custon_commands_dialog, null);
-
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-
-        alertDialogBuilder.setView(promptsView);
+    private void editCommand(AlertDialog.Builder alertDialogBuilder, View promptsView, CustomCommand commandInfo, final int position) {
 
         final EditText userInputCommandLabel= (EditText) promptsView.findViewById(R.id.editText_launcher_btn_label);
         final EditText userInputCommand = (EditText) promptsView.findViewById(R.id.editText_launcher_command);
@@ -336,19 +340,7 @@ public class CustomCommandsFragment  extends Fragment {
             // interactive
             command_exec_mode.setSelection(1);
         }
-        run_at_boot.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked){
-                    command_exec_mode.setSelection(0);
-                    command_exec_mode.setEnabled(false);
-                } else {
-                    command_exec_mode.setEnabled(true);
-                }
-            }
-        });
         alertDialogBuilder
-                .setCancelable(false)
                 .setPositiveButton("Update",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
@@ -363,7 +355,7 @@ public class CustomCommandsFragment  extends Fragment {
                                             userInputCommandLabel.getText().toString(),
                                             userInputCommand.getText().toString(),
                                             command_exec_mode.getSelectedItem().toString(),
-                                            command_run_in_shell.getSelectedItem().toString(),_run_at_boot);
+                                            command_run_in_shell.getSelectedItem().toString(), _run_at_boot);
 
                                     database.updateCommand(_updatedCommand);
                                     if (_run_at_boot == 1) {
@@ -389,23 +381,13 @@ public class CustomCommandsFragment  extends Fragment {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 database.deleteCommand(_id);
-
-                                Toast.makeText(getActivity().getApplicationContext(),
-                                        "Command Deleted",
-                                        Toast.LENGTH_SHORT).show();
-
-                                    removeFromBoot(_id);
-
+                                removeFromBoot(_id);
                                 commandList.remove(position);
                                 commandAdapter.notifyDataSetChanged();
                                 hideSoftKeyboard(getView());
-                            }
-                        })
-                .setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                                hideSoftKeyboard(getView());
+                                Toast.makeText(getActivity().getApplicationContext(),
+                                        "Command Deleted",
+                                        Toast.LENGTH_SHORT).show();
                             }
                         });
         AlertDialog alertDialog = alertDialogBuilder.create();
