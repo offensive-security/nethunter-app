@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:longClickable="true">
+    android:longClickable="true"
+    android:paddingBottom="5dp">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -35,6 +36,7 @@
         android:text="Send to:"
         android:id="@+id/textView4"
         android:paddingLeft="@dimen/base_listItem_LR"
+        android:layout_marginTop="-7dp"
         android:textColor="@color/accent_material_dark"
         android:paddingRight="@dimen/base_listItem_LR"
         android:layout_below="@+id/command_tag"

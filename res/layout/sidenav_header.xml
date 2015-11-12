@@ -24,7 +24,7 @@
             android:layout_alignParentTop="true"
             android:layout_gravity="right"
             android:layout_margin="16dp"
-            android:src="@drawable/ic_action_android"
+            android:src="@drawable/ic_chrome_reader"
             android:textSize="12sp"
             app:elevation="6dp"
             app:fabSize="mini"

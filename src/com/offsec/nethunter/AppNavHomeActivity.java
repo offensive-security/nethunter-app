@@ -61,6 +61,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
     private String filesPath;
     private String sdCard;
     private LinearLayout navigationHeadView;
+    private MenuItem lastSelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,7 +201,10 @@ public class AppNavHomeActivity extends AppCompatActivity {
             ed.putBoolean("seenNav", true);
             ed.commit();
         }
-
+        if(lastSelected == null){ // only in the 1st create
+            lastSelected = navigationView.getMenu().getItem(0);
+            lastSelected.setChecked(true);
+        }
         mDrawerToggle = new ActionBarDrawerToggle(this,
                 mDrawerLayout, R.string.drawer_opened, R.string.drawer_closed);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
@@ -302,9 +306,18 @@ public class AppNavHomeActivity extends AppCompatActivity {
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        // only change it if is no the same as the last one
+                        if(lastSelected != menuItem){
+                            //remove last
+                            lastSelected.setChecked(false);
+                            // udpate for the next
+                            lastSelected = menuItem;
+                        }
+                        //set checked
                         menuItem.setChecked(true);
                         mDrawerLayout.closeDrawers();
                         mTitle = menuItem.getTitle();
+                        titles.push(mTitle.toString());
 
                         FragmentManager fragmentManager = getSupportFragmentManager();
                         int itemId = menuItem.getItemId();
@@ -393,16 +406,8 @@ public class AppNavHomeActivity extends AppCompatActivity {
                                         .addToBackStack(null)
                                         .commit();
                                 break;
-                            default:
-                                // Start activity as usually // REMOVE THIS SOON not needed
-                                Intent target = new Intent();
-                                target.setClassName(getApplicationContext(), "AppNavHomeActivity");
-                                startActivity(target);
-                                break;
                         }
                         restoreActionBar();
-                        titles.push(mTitle.toString());
-                        menuItem.setChecked(true);
                         return true;
                     }
                 });
