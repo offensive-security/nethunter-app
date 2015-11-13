@@ -13,16 +13,17 @@ apply plugin: 'com.android.application'
 def getDate() {
     return Calendar.getInstance().getTimeInMillis()
 }
-/*
-*  Reverted to v 22.2.0 because of:
-*  nasty bug unsolved atm in v.23.*.
-*  https://code.google.com/p/android/issues/detail?id=183127
-*
-* */
+
+repositories {
+    mavenCentral()
+}
+
+
 dependencies {
     compile 'com.android.support:support-v4:23.1.1'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
+    compile 'com.google.guava:guava:19.0-rc2'
 }
 
 android {
