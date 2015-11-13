@@ -14,5 +14,10 @@
         <item name="color">@android:color/white</item>
     </style>
 
+
+    <style name="DialogStyle" parent="Base.Theme.AppCompat.Dialog.Alert">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
 </resources>
 
