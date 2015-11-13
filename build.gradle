@@ -91,9 +91,9 @@ android {
         }
         release {
             signingConfig signingConfigs.release
-            //minifyEnabled true
+            minifyEnabled true
             shrinkResources true
-            proguardFile file('proguard.cfg')
+            proguardFiles getDefaultProguardFile('proguard-android.txt')
             debuggable false
             jniDebuggable false
             zipAlignEnabled true
