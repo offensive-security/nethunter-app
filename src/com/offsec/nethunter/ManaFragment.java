@@ -34,6 +34,10 @@ import java.io.OutputStreamWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.io.Files;
+import com.google.common.base.Charsets;
+
+
 //import android.app.Fragment;
 //import android.support.v4.app.FragmentActivity;
 
@@ -295,7 +299,14 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                 @Override
                 public void onClick(View v) {
                     ShellExecuter exe = new ShellExecuter();
-                    String source = exe.RunAsRootOutput("cat " + configFilePath);
+                    File file = new File(configFilePath);
+                    String source = null;
+                    try {
+                        source = Files.toString(file, Charsets.UTF_8);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    //String source = exe.RunAsRootOutput("cat " + configFilePath);
 
                     EditText ifc = (EditText) getView().findViewById(R.id.ifc);
                     EditText bssid = (EditText) getView().findViewById(R.id.bssid);
@@ -303,6 +314,8 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                     EditText channel = (EditText) getView().findViewById(R.id.channel);
                     EditText enableKarma = (EditText) getView().findViewById(R.id.enable_karma);
                     EditText karmaLoud = (EditText) getView().findViewById(R.id.karma_loud);
+
+                    Log.d(TAG, "Source: " + source);
 
                     source = source.replaceAll("(?m)^interface=(.*)$", "interface=" + ifc.getText().toString());
                     source = source.replaceAll("(?m)^bssid=(.*)$", "bssid=" + bssid.getText().toString());
@@ -469,8 +482,15 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
             configFilePath = "/data/local/nhsystem/kali-armhf/etc/mana-toolkit/dnsspoof.conf";
 
-            ShellExecuter exe = new ShellExecuter();
-            String text = exe.RunAsRootOutput("cat " + configFilePath);
+            File file = new File(configFilePath);
+            String text = null;
+            try {
+                text = Files.toString(file, Charsets.UTF_8);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //ShellExecuter exe = new ShellExecuter();
+            //String text = exe.RunAsRootOutput("cat " + configFilePath);
             EditText source = (EditText) rootView.findViewById(R.id.source);
             source.setText(text);
 
@@ -504,9 +524,15 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             desc.setText(description);
 
             configFilePath = "/data/local/nhsystem/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-full.sh";
-
-            ShellExecuter exe = new ShellExecuter();
-            String text = exe.RunAsRootOutput("cat " + configFilePath);
+            File file = new File(configFilePath);
+            String text = null;
+            try {
+                text = Files.toString(file, Charsets.UTF_8);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //ShellExecuter exe = new ShellExecuter();
+            //String text = exe.RunAsRootOutput("cat " + configFilePath);
             EditText source = (EditText) rootView.findViewById(R.id.source);
             source.setText(text);
             Button button = (Button) rootView.findViewById(R.id.update);
@@ -540,8 +566,15 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             String description = getResources().getString(R.string.mana_nat_simple);
             TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
-            ShellExecuter exe = new ShellExecuter();
-            String text = exe.RunAsRootOutput("cat " + configFilePath);
+            File file = new File(configFilePath);
+            String text = null;
+            try {
+                text = Files.toString(file, Charsets.UTF_8);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //ShellExecuter exe = new ShellExecuter();
+            //String text = exe.RunAsRootOutput("cat " + configFilePath);
             EditText source = (EditText) rootView.findViewById(R.id.source);
             source.setText(text);
 
@@ -579,8 +612,15 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
             Log.d(TAG, " onCreateView " + configFilePath);
 
-            ShellExecuter exe = new ShellExecuter();
-            String text = exe.RunAsRootOutput("cat " + configFilePath);
+            File file = new File(configFilePath);
+            String text = null;
+            try {
+                text = Files.toString(file, Charsets.UTF_8);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //ShellExecuter exe = new ShellExecuter();
+            //String text = exe.RunAsRootOutput("cat " + configFilePath);
             Log.d(TAG, "exe.RunasRootOutput(cat " + configFilePath + ")");
             EditText source = (EditText) rootView.findViewById(R.id.source);
             source.setText(text);
@@ -623,7 +663,14 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             desc.setText(description);
 
             ShellExecuter exe = new ShellExecuter();
-            String text = exe.RunAsRootOutput("cat " + configFilePath);
+            File file = new File(configFilePath);
+            String text = null;
+            try {
+                text = Files.toString(file, Charsets.UTF_8);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //String text = exe.RunAsRootOutput("cat " + configFilePath);
             EditText source = (EditText) rootView.findViewById(R.id.source);
             source.setText(text);
 
