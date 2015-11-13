@@ -3,7 +3,6 @@ package com.offsec.nethunter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -232,6 +231,8 @@ public class AppNavHomeActivity extends AppCompatActivity {
                 }); //nhwarning
         AlertDialog ad = adb.create();
         ad.setCancelable(false);
+        ad.getWindow().getAttributes().windowAnimations = R.style.DialogStyle;
+
         ad.show();
     }
 

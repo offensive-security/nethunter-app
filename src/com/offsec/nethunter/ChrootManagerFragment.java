@@ -632,6 +632,7 @@ public class ChrootManagerFragment extends Fragment {
                 x.RunAsRootWithException("busybox xz -df '" + zipFilePath + "'");
                 // Second: Extract and Deploy the chroot to Destination.
                 publishProgress(getActivity().getString(R.string.extract_part2));
+                x.RunAsRootWithException("mkdir -p '" + chrootPath + "'");
                 x.RunAsRootWithException("busybox tar -xf '" + extracted_zipFilePath + "' -C '" + chrootPath + "'");
             } catch (RuntimeException e) {
                 Log.d(TAG, "Error: ", e);
