@@ -27,8 +27,7 @@ import java.io.OutputStreamWriter;
 public class IptablesFragment extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private String fileDir;
-
+    NhUtil nh;
     public IptablesFragment() {
 
     }
@@ -45,8 +44,7 @@ public class IptablesFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.iptables, container, false);
 
         EditText source = (EditText) rootView.findViewById(R.id.source);
-        File sdcard = Environment.getExternalStorageDirectory();
-        File file = new File(sdcard, "files/configs/iptables.conf");
+        File file = new File(nh.APP_SD_FILES_PATH, "/configs/iptables.conf");
         StringBuilder text = new StringBuilder();
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
@@ -65,8 +63,8 @@ public class IptablesFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 try {
-                    File sdcard = Environment.getExternalStorageDirectory();
-                    File myFile = new File(sdcard, "files/configs/iptables.conf");
+
+                    File myFile = new File(nh.APP_SD_FILES_PATH, "configs/iptables.conf");
                     myFile.createNewFile();
                     FileOutputStream fOut = new FileOutputStream(myFile);
                     OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
@@ -74,9 +72,9 @@ public class IptablesFragment extends Fragment {
                     myOutWriter.append(source.getText());
                     myOutWriter.close();
                     fOut.close();
-                    ((AppNavHomeActivity) getActivity()).showMessage("Source updated");
+                    nh.showMessage("Source updated");
                 } catch (Exception e) {
-                    ((AppNavHomeActivity) getActivity()).showMessage(e.getMessage());
+                    nh.showMessage(e.getMessage());
                 }
 
 
@@ -91,7 +89,7 @@ public class IptablesFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         if (isAdded()) {
-            fileDir = getActivity().getFilesDir().toString() + "/scripts";
+            nh = new NhUtil();
         }
     }
 
@@ -117,15 +115,15 @@ public class IptablesFragment extends Fragment {
 
     public void runIptables() {
         ShellExecuter exe = new ShellExecuter();
-        String[] command = {"su -c '" + fileDir + "/bootkali iptables'"};
+        String[] command = {"su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali iptables'"};
         exe.RunAsRoot(command);
-        ((AppNavHomeActivity) getActivity()).showMessage("Iptables started");
+        nh.showMessage("Iptables started");
     }
 
     public void flushIptables() {
         ShellExecuter exe = new ShellExecuter();
         String[] command = {"iptables-flush"}; // still works well
         exe.RunAsRoot(command);
-        ((AppNavHomeActivity) getActivity()).showMessage("Iptables flushed");
+        nh.showMessage("Iptables flushed");
     }
 }

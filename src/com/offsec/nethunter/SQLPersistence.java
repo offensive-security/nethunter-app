@@ -20,7 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class SQLPersistence extends SQLiteOpenHelper {
-
+    NhUtil nh;
     final static int DATABASE_VERSION = 2;
     final static String DATABASE_NAME = "KaliLaunchers";
 
@@ -36,6 +36,7 @@ public class SQLPersistence extends SQLiteOpenHelper {
     public SQLPersistence(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
+        nh = new NhUtil();
     }
 
     @Override
@@ -145,25 +146,23 @@ public class SQLPersistence extends SQLiteOpenHelper {
     }
     public void importDB() {
         try {
-            File sd = Environment.getExternalStorageDirectory();
-            File data = context.getFilesDir();
-            if (sd.canWrite()) {
-                String currentDBPath = "../databases/"  + DATABASE_NAME;
-                String backupDBPath = "/nh_bak_" + DATABASE_NAME + "_" + DATABASE_VERSION; // From SD directory.
-                File backupDB = new File(data, currentDBPath);
-                File currentDB = new File(sd, backupDBPath);
+            String sd = nh.SD_PATH;
+            String data = nh.APP_PATH;
+            String currentDBPath = "../databases/"  + DATABASE_NAME;
+            String backupDBPath = "/nh_bak_" + DATABASE_NAME + "_" + DATABASE_VERSION; // From SD directory.
+            File backupDB = new File(data, currentDBPath);
+            File currentDB = new File(sd, backupDBPath);
 
-                FileChannel src = new FileInputStream(currentDB).getChannel();
-                FileChannel dst = new FileOutputStream(backupDB).getChannel();
-                dst.transferFrom(src, 0, src.size());
-                src.close();
-                dst.close();
-                Log.d("importDB", "Successful");
-                Toast.makeText(context.getApplicationContext(),
-                        "Import DB Successful",
-                        Toast.LENGTH_SHORT).show();
+            FileChannel src = new FileInputStream(currentDB).getChannel();
+            FileChannel dst = new FileOutputStream(backupDB).getChannel();
+            dst.transferFrom(src, 0, src.size());
+            src.close();
+            dst.close();
+            Log.d("importDB", "Successful");
+            Toast.makeText(context.getApplicationContext(),
+                    "Import DB Successful",
+                    Toast.LENGTH_SHORT).show();
 
-            }
         } catch (Exception e) {
             Log.d("importDB", e.toString());
         }
@@ -171,26 +170,25 @@ public class SQLPersistence extends SQLiteOpenHelper {
 
     public void exportDB() {
         try {
-            File sd = Environment.getExternalStorageDirectory();
-            File data = context.getFilesDir();
+            String sd = nh.SD_PATH;
+            String data = nh.APP_PATH;
             Log.d("ExportDB sd =", sd.toString());
             Log.d("ExportDB sd =", data.toString());
-            if (sd.canWrite()) {
-                String currentDBPath = "../databases/"  + DATABASE_NAME;
-                String backupDBPath = "/nh_bak_" + DATABASE_NAME + "_" + DATABASE_VERSION;
-                File currentDB = new File(data, currentDBPath);
-                File backupDB = new File(sd, backupDBPath);
+            String currentDBPath = "../databases/"  + DATABASE_NAME;
+            String backupDBPath = "/nh_bak_" + DATABASE_NAME + "_" + DATABASE_VERSION;
+            File currentDB = new File(data, currentDBPath);
+            File backupDB = new File(sd, backupDBPath);
 
-                FileChannel src = new FileInputStream(currentDB).getChannel();
-                FileChannel dst = new FileOutputStream(backupDB).getChannel();
-                dst.transferFrom(src, 0, src.size());
-                src.close();
-                dst.close();
-                Log.d("ExportDB", "Successful");
-                Toast.makeText(context.getApplicationContext(),
-                        "Export DB Successful",
-                        Toast.LENGTH_SHORT).show();
-            }
+            FileChannel src = new FileInputStream(currentDB).getChannel();
+            FileChannel dst = new FileOutputStream(backupDB).getChannel();
+            dst.transferFrom(src, 0, src.size());
+            src.close();
+            dst.close();
+            Log.d("ExportDB", "Successful");
+            Toast.makeText(context.getApplicationContext(),
+                    "Export DB Successful",
+                    Toast.LENGTH_SHORT).show();
+
         } catch (Exception e) {
             Log.d("ExportDB", "ExportDB Failed!");
         }

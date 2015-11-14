@@ -1,5 +1,6 @@
 package com.offsec.nethunter;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,7 +10,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -57,21 +57,26 @@ public class AppNavHomeActivity extends AppCompatActivity {
     private CharSequence mTitle = "NetHunter";
     private Stack<String> titles = new Stack<>();
     private SharedPreferences prefs;
-    private String filesPath;
-    private String sdCard;
-    private LinearLayout navigationHeadView;
     private MenuItem lastSelected;
+    private NhUtil nh;
+    private static Context c;
+
+    public static Context getAppContext() {
+        return c;
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        // ************************************************
+            c = getApplication(); //* DONT REMOVE ME *
+            nh = new NhUtil();
+        // ************************************************
 
         setContentView(R.layout.base_layout);
         //set kali wallpaper as background
-
-        filesPath = getFilesDir().toString();
-        sdCard = Environment.getExternalStorageDirectory().toString();
-
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
             ab.setHomeButtonEnabled(true);
@@ -81,8 +86,9 @@ public class AppNavHomeActivity extends AppCompatActivity {
 
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        navigationHeadView = (LinearLayout) inflater.inflate(R.layout.sidenav_header, null);
+        LinearLayout navigationHeadView = (LinearLayout) inflater.inflate(R.layout.sidenav_header, null);
         navigationView.addHeaderView(navigationHeadView);
+
         FloatingActionButton readmeButton = (FloatingActionButton) navigationHeadView.findViewById(R.id.info_fab);
         readmeButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -115,29 +121,25 @@ public class AppNavHomeActivity extends AppCompatActivity {
 
         // copy script files, but off the main UI thread
         final ImageView myImageView = (ImageView) findViewById(R.id.bgHome);
-
-        File sdCardDir = new File(Environment.getExternalStorageDirectory() + "/files");
-        File scriptsDir = new File(getFilesDir() + "/scripts");
-        File etcDir = new File(getFilesDir() + "/etc");
+        File sdCardDir = new File(nh.APP_SD_FILES_PATH);
+        File scriptsDir = new File(nh.APP_SCRIPTS_PATH);
+        File etcDir = new File(nh.APP_INITD_PATH);
         // Copy files if: no files, no scripts, no etc or new apk version
         if (!prefs.getString(COPY_ASSETS_TAG, buildTime).equals(buildTime) || !sdCardDir.isDirectory() || !scriptsDir.isDirectory() || !etcDir.isDirectory()) {
-
             Log.d(COPY_ASSETS_TAG, "COPING FILES....");
             final Runnable r = new Runnable() {
                 public void run() {
                     // 1:1 copy (recursive) of the assets/{scripts, etc, wallpapers} folders to /data/data/...
-                    assetsToFiles(filesPath, "", "data");
+                    assetsToFiles(nh.APP_PATH, "", "data");
                     // 1:1 copy (recursive) of the configs to  /sdcard...
-                    assetsToFiles(sdCard, "", "sdcard");
+                    assetsToFiles(nh.SD_PATH, "", "sdcard");
                     ShellExecuter exe = new ShellExecuter();
-                    exe.RunAsRoot(new String[]{"chmod 700 " + getFilesDir() + "/scripts/*", "chmod 700 " + getFilesDir() + "/etc/init.d/*"});
+                    exe.RunAsRoot(new String[]{"chmod 700 " + nh.APP_SCRIPTS_PATH+"/*", "chmod 700 " + nh.APP_INITD_PATH + "/*"});
                     myImageView.post(new Runnable() {
                         @Override
                         public void run() {
-
-                            String imageInSD = filesPath + "/wallpapers/kali-nh-2183x1200.png";
+                            String imageInSD = nh.APP_PATH + "/wallpapers/kali-nh-2183x1200.png";
                             Bitmap bitmap = BitmapFactory.decodeFile(imageInSD);
-
                             myImageView.setImageBitmap(bitmap);
                         }
 
@@ -152,7 +154,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
             ed.commit();
         } else {
             Log.d(COPY_ASSETS_TAG, "FILES NOT COPIED");
-            String imageInSD = filesPath + "/wallpapers/kali-nh-2183x1200.png";
+            String imageInSD = nh.APP_PATH + "/wallpapers/kali-nh-2183x1200.png";
             Bitmap bitmap = BitmapFactory.decodeFile(imageInSD);
             myImageView.setImageBitmap(bitmap);
         }
@@ -165,34 +167,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
                 .commit();
 
         // and put the title in the queue for when you need to back through them
-        titles.push(mTitle.toString());
-
-
-        // make sure we check if we have chroot every time we open the drawer, so that
-        // we can disable everything but the Chroot Manager
-        mDrawerLayout.setDrawerListener(new DrawerLayout.DrawerListener() {
-            @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
-            }
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                // might wanna put this in ondrawerslide() above so that things
-                // don't disappear once the drawer is open, but anyhoo...
-                setDrawerOptions();
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-            }
-
-            @Override
-            public void onDrawerStateChanged(int newState) {
-            }
-
-        });
-
-
+        titles.push(navigationView.getMenu().getItem(0).getTitle().toString());
         // if the nav bar hasn't been seen, let's show it
         if (!prefs.getBoolean("seenNav", false)) {
             mDrawerLayout.openDrawer(GravityCompat.START);
@@ -207,15 +182,31 @@ public class AppNavHomeActivity extends AppCompatActivity {
         mDrawerToggle = new ActionBarDrawerToggle(this,
                 mDrawerLayout, R.string.drawer_opened, R.string.drawer_closed);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-        mDrawerToggle.syncState();
 
+        mDrawerLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    setDrawerOptions();
+                }
+            }
+        });
+        mDrawerToggle.syncState();
         // pre-set the drawer options
         setDrawerOptions();
         checkForRoot(myImageView); //  gateway check to make sure root's possible & pop up dialog if not
     }
 
+    public void setDrawerOptions() {
+        Menu menuNav = navigationView.getMenu();
+        if (prefs.getBoolean(CHROOT_INSTALLED_TAG, false)) {
+            menuNav.setGroupEnabled(R.id.chrootDependentGroup, true);
+        } else {
+            menuNav.setGroupEnabled(R.id.chrootDependentGroup, false);
+        }
+    }
     public void showLicense() {
-        // @binkybear here goes the changelog etc...just moar \n\n%s
+        // @binkybear here goes the changelog etc... \n\n%s
         String readmeData = String.format("%s\n\n%s",
                 getResources().getString(R.string.licenseInfo),
                 getResources().getString(R.string.nhwarning));
@@ -245,7 +236,6 @@ public class AppNavHomeActivity extends AppCompatActivity {
                 v.post(new Runnable() {
                     @Override
                     public void run() {
-
                         if (!isRootAvailable) {
                             AlertDialog.Builder adb = new AlertDialog.Builder(ctx);
                             adb.setTitle(R.string.rootdialogtitle)
@@ -276,14 +266,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
     }
     /* if the chroot isn't set up, don't show the chroot options */
 
-    private void setDrawerOptions() {
-        Menu menuNav = navigationView.getMenu();
-        if (prefs.getBoolean(CHROOT_INSTALLED_TAG, false)) {
-            menuNav.setGroupEnabled(R.id.chrootDependentGroup, true);
-        } else {
-            menuNav.setGroupEnabled(R.id.chrootDependentGroup, false);
-        }
-    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -303,6 +286,12 @@ public class AppNavHomeActivity extends AppCompatActivity {
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
+        navigationView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("TOUCHED","setOnClickListener");
+            }
+        });
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -414,7 +403,6 @@ public class AppNavHomeActivity extends AppCompatActivity {
                 });
     }
 
-
     public void restoreActionBar() {
         ActionBar ab = getSupportActionBar();
 
@@ -427,20 +415,13 @@ public class AppNavHomeActivity extends AppCompatActivity {
         }
     }
 
-    public void showMessage(String message) {
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(this, message, duration);
-        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
-        toast.show();
-    }
-
     private Boolean pathIsAllowed(String path, String copyType) {
         // never copy images, sounds or webkit
         if (!path.startsWith("images") && !path.startsWith("sounds") && !path.startsWith("webkit")) {
             if (copyType.equals("sdcard")) {
                 if (path.equals("")) {
                     return true;
-                } else if (path.startsWith("files")) {
+                } else if (path.startsWith(nh.NH_SD_FOLDER_NAME)) {
                     return true;
                 }
                 return false;
@@ -525,47 +506,6 @@ public class AppNavHomeActivity extends AppCompatActivity {
 
     }
 
-    public String readConfigFile(String configFilePath) {
-
-
-        File sdcard = Environment.getExternalStorageDirectory();
-        File file = new File(sdcard, configFilePath);
-        StringBuilder text = new StringBuilder();
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = br.readLine()) != null) {
-                text.append(line);
-                text.append('\n');
-            }
-            br.close();
-        } catch (IOException e) {
-            Log.e("Nethunter", "exception", e);
-            Logger Logger = new Logger();
-            Logger.appendLog(e.getMessage());
-        }
-        return text.toString();
-    }
-
-    public boolean updateConfigFile(String configFilePath, String source) {
-        try {
-            File sdcard = Environment.getExternalStorageDirectory();
-            File myFile = new File(sdcard, configFilePath);
-            myFile.createNewFile();
-            FileOutputStream fOut = new FileOutputStream(myFile);
-            OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-            myOutWriter.append(source);
-            myOutWriter.close();
-            fOut.close();
-            return true;
-        } catch (Exception e) {
-            showMessage(e.getMessage());
-            Logger Logger = new Logger();
-            Logger.appendLog(e.getMessage());
-            return false;
-        }
-    }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -574,8 +514,9 @@ public class AppNavHomeActivity extends AppCompatActivity {
             mTitle = titles.peek();
         }
         Menu menuNav = navigationView.getMenu();
-        for (int i=0; i<menuNav.size(); i++) {
-
+        int i=0;
+        int mSize = menuNav.size();
+        while (i<mSize) {
             if(menuNav.getItem(i).getTitle() == mTitle){
                 MenuItem _current = menuNav.getItem(i);
                 if(lastSelected != _current){
@@ -586,7 +527,9 @@ public class AppNavHomeActivity extends AppCompatActivity {
                 }
                 //set checked
                 _current.setChecked(true);
+                i = mSize;
             }
+            i++;
         }
         restoreActionBar();
     }

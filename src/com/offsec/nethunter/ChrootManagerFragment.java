@@ -25,7 +25,6 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -74,43 +73,39 @@ public class ChrootManagerFragment extends Fragment {
 
 
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private static final String ARCH = System.getProperty("os.arch");
     private static final String TAG = "CreateChroot";
     public static final String MIGRATE_CHROOT_TAG = "MIGRATE_CHROOT_TAG";
     public static final String DELETE_CHROOT_TAG = "DELETE_CHROOT_TAG";
     public static final String CHROOT_INSTALLED_TAG = "CHROOT_INSTALLED_TAG";
-
     /* put chroot info here */
     private static final String FILENAME = "kalifs-minimal.tar.xz";
     private static final String EXTRACTED_FILENAME = "kalifs-minimal.tar";
-
     // private static final String URI = "http://images.offensive-security.com/" + FILENAME;
     private static final String URI = "http://188.138.17.16/" + FILENAME;
     private static final String SHA512 =
             "6fe09e30236e99a9e79a9f188789944c18cedf69d6510849ac5821fad84e174c2bbfa8704a2d763" +
                     "4e39ed5aa3e5ad7e67b435642cdd733905e160fa6672bb651";
-    private static final String OLD_CHROOT_PATH = "/data/local/kali-armhf/";
+
 
     String zipFilePath;
     String extracted_zipFilePath;
-
-    TextView statusText;
     String installLogFile;
     Boolean shouldLog = false;
 
-    String chrootPath;
+    TextView statusText;
     Button installButton;
     Button updateButton;
-    String dir;
+
     final ShellExecuter x = new ShellExecuter();
     ProgressDialog pd;
-    String filesPath;
     SharedPreferences sharedpreferences;
     AlertDialog ad;
+    NhUtil nh;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        nh = new NhUtil();
         View rootView = inflater.inflate(R.layout.createchroot, container, false);
         statusText = (TextView) rootView.findViewById(R.id.statusText);
         statusText.setMovementMethod(new ScrollingMovementMethod());
@@ -129,14 +124,11 @@ public class ChrootManagerFragment extends Fragment {
         });
         updateButton.setVisibility(View.GONE);
         sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
-        filesPath = Environment.getExternalStorageDirectory().toString();
-        chrootPath = "/data/local/nhsystem/";
-        zipFilePath = filesPath + "/" + FILENAME;
-        extracted_zipFilePath = filesPath + "/" + EXTRACTED_FILENAME;
+        // extracte files location
 
-        String init_ts = new SimpleDateFormat("yyyyMM_ddhhmmss'.txt'", Locale.US).format(new Date());
-        installLogFile = filesPath + "/nh_install_log_" + init_ts;
-
+        zipFilePath = nh.SD_PATH + "/" + FILENAME;
+        extracted_zipFilePath = nh.SD_PATH + "/" + EXTRACTED_FILENAME;
+        installLogFile = nh.SD_PATH + "/nh_install_" + new SimpleDateFormat("yyyyMMdd_hhmmss'.log'", Locale.US).format(new Date());
         return rootView;
     }
 
@@ -151,18 +143,6 @@ public class ChrootManagerFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         // which chroot?
-
-        if (ARCH.contains("arm")) {
-            dir = "kali-armhf";
-        } else if (ARCH.contains("aarch64")) {
-            dir = "kali-armhf";
-        } else if (ARCH.contains("i686")) {
-            dir = "kali-amd64";
-        } else if (ARCH.contains("mips")) {
-            dir = "kali-mips";
-        } else if (ARCH.contains("x86")) {
-            dir = "kali-i386";  // etc
-        }
         checkforLegacyChroot();
         super.onActivityCreated(savedInstanceState);
     }
@@ -175,8 +155,8 @@ public class ChrootManagerFragment extends Fragment {
             new Thread(new Runnable() {
 
                 public void run() {
-                    String oldchrootcheck = "if [ -d " + OLD_CHROOT_PATH + " ];then echo 1; fi";  // look for old chroot
-                    String newchrootcheck = "if [ -d " + chrootPath + dir + " ];then echo 1; fi"; //check the dir existence
+                    String oldchrootcheck = "if [ -d " + nh.OLD_CHROOT_PATH + " ];then echo 1; fi";  // look for old chroot
+                    String newchrootcheck = "if [ -d " + nh.CHROOT_PATH + " ];then echo 1; fi"; //check the dir existence
                     final String _res = x.RunAsRootOutput(oldchrootcheck);
                     final String _res2 = x.RunAsRootOutput(newchrootcheck);
 
@@ -247,14 +227,12 @@ public class ChrootManagerFragment extends Fragment {
 
         // does chroot directory exist?
         if (getActivity() != null) {
-            statusLog(getActivity().getString(R.string.checkingforchroot) + chrootPath);
+            statusLog(getActivity().getString(R.string.checkingforchroot) + nh.CHROOT_PATH);
             new Thread(new Runnable() {
 
                 public void run() {
-                    String command = "if [ -d " + chrootPath + dir + " ];then echo 1; fi"; //check the dir existence
+                    String command = "if [ -d " + nh.CHROOT_PATH + " ];then echo 1; fi"; //check the dir existence
                     final String _res = x.RunAsRootOutput(command);
-
-
                     installButton.post(new Runnable() {
                         @Override
                         public void run() {
@@ -266,17 +244,18 @@ public class ChrootManagerFragment extends Fragment {
                                 installButton.setEnabled(true);
                                 updateButton.setVisibility(View.VISIBLE);
                                 editor.putBoolean(CHROOT_INSTALLED_TAG, true);
+                                editor.commit();
                             } else {
-                                File file = new File(chrootPath + "/");
+                                // chroot not found
                                 statusLog(getActivity().getString(R.string.nokalichrootfound));
-                                file.mkdir();
+                                x.RunAsRootOutput("mkdir -p " + nh.NH_SYSTEM_PATH);
                                 installButton.setText(getActivity().getResources().getString(R.string.installkalichrootbutton));
                                 installButton.setEnabled(true);
                                 updateButton.setVisibility(View.GONE);
                                 editor.putBoolean(CHROOT_INSTALLED_TAG, false);
+                                editor.commit();
                             }
-
-                            editor.commit(); // don't use apply() or it may not save
+                             // don't use apply() or it may not save
 
                         }
                     });
@@ -293,7 +272,7 @@ public class ChrootManagerFragment extends Fragment {
         statusLog("New instalation log file: " + installLogFile);
         new Thread(new Runnable() {
             public void run() {
-                String command = "if [ -d " + chrootPath + dir + " ];then echo 1; fi"; //check the dir existence
+                String command = "if [ -d " + nh.CHROOT_PATH + " ];then echo 1; fi"; //check the dir existence
                 final String _res = x.RunAsRootOutput(command);
                 installButton.post(new Runnable() {
                     @Override
@@ -378,10 +357,10 @@ public class ChrootManagerFragment extends Fragment {
             Intent intent =
                     new Intent("jackpal.androidterm.RUN_SCRIPT");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
-            intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c '" + getActivity().getFilesDir() + "/scripts/bootkali apt-get install " + packages + "'");
+            intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali apt-get install " + packages + "'");
             startActivity(intent);
         } catch (Exception e) {
-            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
+            nh.showMessage(getString(R.string.toast_install_terminal));
             try {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=jackpal.androidterm")));
             } catch (android.content.ActivityNotFoundException anfe2) {
@@ -484,7 +463,6 @@ public class ChrootManagerFragment extends Fragment {
                                     } catch (RuntimeException e) {
                                         Log.d(TAG, "Error in start unzip: ", e);
                                     }
-
                                 } else {
                                     pd.dismiss();
                                     // needed to add the button.
@@ -554,9 +532,6 @@ public class ChrootManagerFragment extends Fragment {
         // k, now check the sha.  Thanks to discussion regarding formatting at:
         // http://stackoverflow.com/questions/7166129/how-can-i-calculate-the-sha-256-hash-of-a-string-in-android
         Boolean sumpass = newSum.equalsIgnoreCase(SHA512);
-        // Log.d(TAG, "checkSUM ORIG ::: " + SHA512);
-        // Log.d(TAG, "checkSUM NEW  ::: " + newSum);
-        // Log.d(TAG, "checkSUM PASS ::: " + sumpass);
         if (sumpass) {
             // match
             return new String[]{"1", newSum};
@@ -632,11 +607,10 @@ public class ChrootManagerFragment extends Fragment {
                 x.RunAsRootWithException("busybox xz -df '" + zipFilePath + "'");
                 // Second: Extract and Deploy the chroot to Destination.
                 publishProgress(getActivity().getString(R.string.extract_part2));
-                x.RunAsRootWithException("mkdir -p '" + chrootPath + "'");
-                x.RunAsRootWithException("busybox tar -xf '" + extracted_zipFilePath + "' -C '" + chrootPath + "'");
+                x.RunAsRootWithException("busybox tar -xf '" + extracted_zipFilePath + "' -C '" + nh.NH_SYSTEM_PATH + "'");
             } catch (RuntimeException e) {
                 Log.d(TAG, "Error: ", e);
-                publishProgress("Error: " + e);
+                publishProgress("Error: " + e.toString());
                 return false;
             }
             return true;
@@ -661,7 +635,6 @@ public class ChrootManagerFragment extends Fragment {
                 } catch (RuntimeException e) {
                     Log.d(TAG, "Error in start unzip: ", e);
                 }
-
 
             } else {
                 statusLog(getActivity().getString(R.string.therewasanerror));
