@@ -219,6 +219,13 @@ fi
    	if [ "$1" == "start-rev-met-elevated-win8" ]; then
          $busybox chroot $mnt sudo /usr/bin/hid-all.sh start-rev-met-elevated-win8 $2 |/system/bin/sh
    	fi
+	if [ "$1" == "start-rev-met-elevated-win10" ]; then
+		 $busybox chroot $mnt sudo /usr/bin/hid-all.sh start-rev-met-elevated-win10 $2 |/system/bin/sh
+	fi
+
+      if [ "$1" == "hid-cmd" ]; then
+         $busybox chroot $mnt sudo /usr/bin/hid-all.sh hid-cmd-elevated-win10 "$2" |/system/bin/sh
+      fi
       if [ "$1" == "hid-cmd-elevated-win8" ]; then
          $busybox chroot $mnt sudo /usr/bin/hid-all.sh hid-cmd-elevated-win8 "$2" |/system/bin/sh
       fi
@@ -228,6 +235,7 @@ fi
       if [ "$1" == "hid-cmd" ]; then
          $busybox chroot $mnt sudo /usr/bin/hid-all.sh hid-cmd "$2" |/system/bin/sh
       fi
+
 
       # DUCK HUNT - Rubber Ducky conversion script to nethunter
       # Requires argument to generate based on language. e.g.:
