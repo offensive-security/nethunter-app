@@ -44,7 +44,7 @@ public class CustomCommandsFragment  extends Fragment {
     private String shebang;
     private String custom_commands_runlevel;
     private ShellExecuter exe = new ShellExecuter();
-
+    NhUtil nh;
     public CustomCommandsFragment() {
 
     }
@@ -98,10 +98,12 @@ public class CustomCommandsFragment  extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+
         //this runs BEFORE the ui is available
         mContext = getActivity().getApplicationContext();
+        nh = new NhUtil();
         database = new SQLPersistence(mContext);
-        bootScriptPath = mContext.getFilesDir().toString() + "/etc/init.d/";
+        bootScriptPath = nh.APP_INITD_PATH;
         shebang = "#!/system/bin/sh\n\n# Run at boot CustomCommand: ";
         custom_commands_runlevel = "90";
 
@@ -120,7 +122,7 @@ public class CustomCommandsFragment  extends Fragment {
             // no sure, if we add su -c , we cant exec comands as a normal android user
             composedCommand = _cmd;
         }
-        String bootServiceFile = bootScriptPath + custom_commands_runlevel + "_" + command.getId() +"_custom_command";
+        String bootServiceFile = bootScriptPath + "/" + custom_commands_runlevel + "_" + command.getId() +"_custom_command";
         String fileContents = shebang + _label + "\n" + composedCommand;
         exe.RunAsRoot(new String[]{
                 "echo '" + fileContents + "' > " + bootServiceFile,
@@ -132,7 +134,7 @@ public class CustomCommandsFragment  extends Fragment {
     }
     private void removeFromBoot(long commandId) {
         // return the number of services
-        String bootServiceFile = bootScriptPath + custom_commands_runlevel + "_" + commandId +"_custom_command";
+        String bootServiceFile = bootScriptPath + "/" +  custom_commands_runlevel + "_" + commandId +"_custom_command";
         exe.RunAsRoot(new String[]{"rm -rf " + bootServiceFile});
     }
     public void onResume()
@@ -283,9 +285,7 @@ public class CustomCommandsFragment  extends Fragment {
                                             userInputCommand.getText().toString(),
                                             command_exec_mode.getSelectedItem().toString(),
                                             command_run_in_shell.getSelectedItem().toString(), _run_at_boot);
-                                    Toast.makeText(getActivity().getApplicationContext(),
-                                            "Command created.",
-                                            Toast.LENGTH_SHORT).show();
+                                    nh.showMessage("Command created.");
 
                                     if (_run_at_boot == 1) {
                                         addToBoot(_insertedCommand);
@@ -294,9 +294,7 @@ public class CustomCommandsFragment  extends Fragment {
                                     commandList.add(0, _insertedCommand);
                                     commandAdapter.notifyDataSetChanged();
                                 } else {
-                                    Toast.makeText(getActivity().getApplicationContext(),
-                                            getString(R.string.toast_input_error_launcher),
-                                            Toast.LENGTH_SHORT).show();
+                                    nh.showMessage(getString(R.string.toast_input_error_launcher));
                                 }
                                 hideSoftKeyboard(getView());
                             }
@@ -363,16 +361,12 @@ public class CustomCommandsFragment  extends Fragment {
                                     } else {
                                         removeFromBoot(_updatedCommand.getId());
                                     }
-                                    Toast.makeText(getActivity().getApplicationContext(),
-                                            "Command Updated",
-                                            Toast.LENGTH_SHORT).show();
+                                    nh.showMessage("Command Updated");
                                     commandList.set(position, _updatedCommand);
                                     commandAdapter.notifyDataSetChanged();
 
                                 } else {
-                                    Toast.makeText(getActivity().getApplicationContext(),
-                                            getString(R.string.toast_input_error_launcher),
-                                            Toast.LENGTH_SHORT).show();
+                                    nh.showMessage(getString(R.string.toast_input_error_launcher));
                                 }
                                 hideSoftKeyboard(getView());
                             }
@@ -385,9 +379,7 @@ public class CustomCommandsFragment  extends Fragment {
                                 commandList.remove(position);
                                 commandAdapter.notifyDataSetChanged();
                                 hideSoftKeyboard(getView());
-                                Toast.makeText(getActivity().getApplicationContext(),
-                                        "Command Deleted",
-                                        Toast.LENGTH_SHORT).show();
+                                nh.showMessage("Command Deleted");
                             }
                         });
         AlertDialog alertDialog = alertDialogBuilder.create();
@@ -454,10 +446,7 @@ class CmdLoader extends BaseAdapter {
             // recycle the items in the list if already exists
             vH = (ViewHolderItem) convertView.getTag();
         }
-        if (position >= _commandList.size()) {
-            // out of range, return ,do nothing
-            return convertView;
-        }
+
         // remove listeners
         final CustomCommand commandInfo = getItem(position);
         String _label = commandInfo.getCommand_label();
@@ -518,8 +507,8 @@ class CmdLoader extends BaseAdapter {
                     "Command " + _label + " done.",
                     Toast.LENGTH_SHORT).show();
         } else try {
-                Intent intent =
-                        new Intent("jackpal.androidterm.RUN_SCRIPT");
+            Intent intent =
+                    new Intent("jackpal.androidterm.RUN_SCRIPT");
                 intent.addCategory(Intent.CATEGORY_DEFAULT);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
                 intent.putExtra("jackpal.androidterm.iInitialCommand", composedCommand);

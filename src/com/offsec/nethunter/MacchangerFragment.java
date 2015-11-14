@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,15 +24,9 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-
-
-//import android.app.Fragment;
-//import android.support.v4.app.FragmentActivity;
 
 public class MacchangerFragment extends Fragment {
 
@@ -41,9 +34,8 @@ public class MacchangerFragment extends Fragment {
     SharedPreferences sharedpreferences;
 
 
-
+    NhUtil nh;
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private String fileDir;
     public MacchangerFragment() {
 
     }
@@ -60,7 +52,7 @@ public class MacchangerFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         if (isAdded()) {
-            fileDir = getActivity().getFilesDir().toString() + "/scripts";
+            nh = new NhUtil(null);
         }
     }
 
@@ -205,14 +197,14 @@ public class MacchangerFragment extends Fragment {
                     } else {
                         exe.Executer("su -c 'busybox ifconfig " + selectedDevice + " down'");
 
-                        command = "su -c '" + fileDir + "/bootkali macchanger random '" + selectedDevice;
+                        command = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali macchanger random '" + selectedDevice;
                         macResult.setText(exe.Executer(command));
 
                         new android.os.Handler().postDelayed(
                                 new Runnable() {
                                     public void run() {
                                         exe.Executer("su -c 'busybox ifconfig " + selectedDevice + " up'");
-                                        showMessage("Refresh the current MAC.");
+                                        nh.showMessage("Refresh the current MAC.");
                                     }
                                 }, 500);
                     }
@@ -255,7 +247,7 @@ public class MacchangerFragment extends Fragment {
 
                         exe.Executer("su -c busybox ifconfig " + selectedDevice + " down");
 
-                        command = "su -c '" + fileDir + "/bootkali macchanger_custom " + macsArray[0] + " " + selectedDevice;
+                        command = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali macchanger_custom " + macsArray[0] + " " + selectedDevice;
                         macResult.setText(exe.RunAsRootOutput(command));
 
                         new android.os.Handler().postDelayed(
@@ -263,7 +255,7 @@ public class MacchangerFragment extends Fragment {
                                     public void run() {
 
                                         exe.Executer("su -c 'busybox ifconfig " + selectedDevice + " up'");
-                                        showMessage("Refresh the current MAC");
+                                        nh.showMessage("Refresh the current MAC");
 
                                     }
                                 }, 500);
@@ -352,11 +344,11 @@ public class MacchangerFragment extends Fragment {
                     StrictMode.setThreadPolicy(policy);
 
                     final ShellExecuter exe = new ShellExecuter();
-                    String command = "cat /sys/class/net/" + theDevice + "/address";
+                    String fileMac = "/sys/class/net/" + theDevice + "/address";
                     final String _res;
 
 
-                    _res = exe.RunAsRootOutput(command); // get the response
+                    _res = exe.ReadFile_SYNC(fileMac); // get the response
 
                     currMac.post(new Runnable() {
                         public void run() {
@@ -564,14 +556,6 @@ public class MacchangerFragment extends Fragment {
         });
         builder.show();
     }
-
-    public void showMessage(String message) {
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(getActivity(), message, duration);
-        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
-        toast.show();
-    }
-
     public String getDeviceName() {
         return Build.DEVICE;
     }

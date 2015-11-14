@@ -1,6 +1,5 @@
 package com.offsec.nethunter;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,10 +19,10 @@ import java.util.regex.Pattern;
 
 public class HostapdFragment extends Fragment {
 
-    private String configFilePath = "files/hostapd.conf";
+    private String configFilePath;
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private String fileDir;
-
+    NhUtil nh;
+    ShellExecuter exe = new ShellExecuter();
     public HostapdFragment() {
 
     }
@@ -38,10 +37,9 @@ public class HostapdFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+        nh = new NhUtil();
+        configFilePath = nh.APP_SD_FILES_PATH +"/configs/hostapd-karma.conf";
         View rootView = inflater.inflate(R.layout.hostapd, container, false);
-        loadOptions(rootView);
-
         final Button button = (Button) rootView.findViewById(R.id.updateOptions);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -49,23 +47,17 @@ public class HostapdFragment extends Fragment {
             }
         });
         setHasOptionsMenu(true);
+        loadOptions(rootView);
         return rootView;
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (isAdded()) {
-            fileDir = getActivity().getFilesDir().toString() + "/scripts";
-        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if(getView() != null) {
+        if(getView() != null){
             loadOptions(getView().getRootView());
         }
+
     }
 
     @Override
@@ -94,23 +86,22 @@ public class HostapdFragment extends Fragment {
     }
 
     public void startHostapd() {
-        ShellExecuter exe = new ShellExecuter();
-        String[] command = {"su -c '" + fileDir + "/bootkali hostapd start'"};
+        String[] command = {"su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali hostapd start'"};
         exe.RunAsRoot(command);
-        ((AppNavHomeActivity) getActivity()).showMessage("Hostapd started!");
+        nh.showMessage("Hostapd started!");
     }
 
     public void stopHostapd() {
-        ShellExecuter exe = new ShellExecuter();
-        String[] command = {"su -c '" + fileDir + "/bootkali hostapd stop'"};
+        String[] command = {"su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali hostapd stop'"};
         exe.RunAsRoot(command);
-        ((AppNavHomeActivity) getActivity()).showMessage("Hostapd stopped!");
+        nh.showMessage("Hostapd stopped!");
     }
 
     private void loadOptions(final View rootView) {
-        String text = ((AppNavHomeActivity) getActivity()).readConfigFile(configFilePath);
+        String text = exe.ReadFile_SYNC(configFilePath);
             /*
              * Interface
+             *
 	         */
         EditText ifc = (EditText) rootView.findViewById(R.id.ifc);
         String regExpatInterface = "^interface=(.*)$";
@@ -168,7 +159,7 @@ public class HostapdFragment extends Fragment {
     }
 
     public void updateOptions() {
-        String source = ((AppNavHomeActivity) getActivity()).readConfigFile(configFilePath);
+        String source = exe.ReadFile_SYNC(configFilePath);
         EditText ifc = (EditText) getActivity().findViewById(R.id.ifc);
         EditText bssid = (EditText) getActivity().findViewById(R.id.bssid);
         EditText ssid = (EditText) getActivity().findViewById(R.id.ssid);
@@ -181,11 +172,11 @@ public class HostapdFragment extends Fragment {
         source = source.replaceAll("(?m)^channel=(.*)$", "channel=" + channel.getText().toString());
         source = source.replaceAll("(?m)^enable_karma=(.*)$", "enable_karma=" + enableKarma.getText().toString());
 
-        boolean r = ((AppNavHomeActivity) getActivity()).updateConfigFile(configFilePath, source);
+        boolean r = exe.SaveFileContents(configFilePath, source);
         if (r) {
-            ((AppNavHomeActivity) getActivity()).showMessage("Options updated!");
+            nh.showMessage("Options updated!");
         } else {
-            ((AppNavHomeActivity) getActivity()).showMessage("There was a problem with updating options!");
+            nh.showMessage("There was a problem with updating options!");
         }
     }
 }

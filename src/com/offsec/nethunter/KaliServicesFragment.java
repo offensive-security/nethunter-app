@@ -25,7 +25,7 @@ public class KaliServicesFragment extends Fragment {
     private String[][] KaliServices;
     private static final String ARG_SECTION_NUMBER = "section_number";
     boolean updateStatuses = false;
-
+    NhUtil nh;
     public KaliServicesFragment() {
 
     }
@@ -56,24 +56,24 @@ public class KaliServicesFragment extends Fragment {
         super.onAttach(activity);
 
         if (isAdded()) {
-            String fileDir = getActivity().getFilesDir().toString() + "/scripts";
 
+            nh = new NhUtil();
             KaliServices = new String[][]{
 
                     // {name, check_cmd, start_cmd, stop_cmd, init_service_filename}
 
-                    {"SSH", "sh " + fileDir + "/check-kalissh", "su -c '" + fileDir + "/bootkali ssh start'", "su -c '" + fileDir + "/bootkali ssh stop'", "70ssh"},
-                    {"Dnsmasq", "sh " + fileDir + "/check-kalidnsmq", "su -c '" + fileDir + "/bootkali dnsmasq start'", "su -c '" + fileDir + "/bootkali dnsmasq stop'", "70dnsmasq"},
-                    {"Hostapd", "sh " + fileDir + "/check-kalihostapd", "su -c '" + fileDir + "/bootkali hostapd start'", "su -c '" + fileDir + "/bootkali hostapd stop'", "70hostapd"},
-                    {"OpenVPN", "sh " + fileDir + "/check-kalivpn", "su -c '" + fileDir + "/bootkali openvpn start'", "su -c '" + fileDir + "/bootkali openvpn stop'", "70openvpn"},
-                    {"Apache", "sh " + fileDir + "/check-kaliapache", "su -c '" + fileDir + "/bootkali apache start'", "su -c '" + fileDir + "/bootkali apache stop'", "70apache"},
-                    {"Metasploit", "sh " + fileDir + "/check-kalimetasploit", "su -c '" + fileDir + "/bootkali msf start'", "su -c '" + fileDir + "/bootkali msf stop'", "70msf"},
-                    //{"DHCP", "sh " + fileDir + "/check-kalidhcp","su -c '" + cachedir + "/bootkali dhcp start'","su -c '" + cachedir + "/bootkali dhcp stop'", "70dhcp"},
-                    {"BeEF Framework", "sh " + fileDir + "/check-kalibeef-xss", "su -c '" + fileDir + "/bootkali beef-xss start'", "su -c '" + fileDir + "/bootkali beef-xss stop'", "70beef"},
-                    {"Y-cable Charging", "sh " + fileDir + "/check-ycable","su -c 'bootkali ycable start'","su -c 'bootkali ycable stop'", "70ycable"},
-                    //{"Fruity WiFi", "sh " + fileDir + "/check-fruity-wifi","su -c start-fruity-wifi","su -c  stop-fruity-wifi", "70fruity"}
+                    {"SSH", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalissh", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali ssh start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali ssh stop'", "70ssh"},
+                    {"Dnsmasq", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalidnsmq", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali dnsmasq start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali dnsmasq stop'", "70dnsmasq"},
+                    {"Hostapd", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalihostapd", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali hostapd start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali hostapd stop'", "70hostapd"},
+                    {"OpenVPN", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalivpn", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali openvpn start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali openvpn stop'", "70openvpn"},
+                    {"Apache", "sh " + nh.APP_SCRIPTS_PATH + "/check-kaliapache", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali apache start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali apache stop'", "70apache"},
+                    {"Metasploit", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalimetasploit", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali msf start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali msf stop'", "70msf"},
+                    //{"DHCP", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalidhcp","su -c '" + cachedir + "/bootkali dhcp start'","su -c '" + cachedir + "/bootkali dhcp stop'", "70dhcp"},
+                    {"BeEF Framework", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalibeef-xss", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali beef-xss start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali beef-xss stop'", "70beef"},
+                    {"Y-cable Charging", "sh " + nh.APP_SCRIPTS_PATH + "/check-ycable","su -c 'bootkali ycable start'","su -c 'bootkali ycable stop'", "70ycable"},
+                    //{"Fruity WiFi", "sh " + nh.APP_SCRIPTS_PATH + "/check-fruity-wifi","su -c start-fruity-wifi","su -c  stop-fruity-wifi", "70fruity"}
                     // the stop script isnt working well, doing a raw cmd instead to stop vnc
-                    // {"VNC", "sh " + fileDir + "/check-kalivnc", "" + cachedir + "/bootkali\nvncserver", "" + cachedir + "/bootkali\nkill $(ps aux | grep 'Xtightvnc' | awk '{print $2}');CT=0;for x in $(ps aux | grep 'Xtightvnc' | awk '{print $2}'); do CT=$[$CT +1];tightvncserver -kill :$CT; done;rm /root/.vnc/*.log;rm -r /tmp/.X*", "70vnc"},
+                    // {"VNC", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalivnc", "" + cachedir + "/bootkali\nvncserver", "" + cachedir + "/bootkali\nkill $(ps aux | grep 'Xtightvnc' | awk '{print $2}');CT=0;for x in $(ps aux | grep 'Xtightvnc' | awk '{print $2}'); do CT=$[$CT +1];tightvncserver -kill :$CT; done;rm /root/.vnc/*.log;rm -r /tmp/.X*", "70vnc"},
             };
         }
     }
@@ -107,9 +107,9 @@ public class KaliServicesFragment extends Fragment {
                 final ListView servicesList = (ListView) rootView.findViewById(R.id.servicesList);
                 String checkCmd = "";
                 String checkBootStates = "";
-                String bootScriptPath = getActivity().getFilesDir().toString() + "/etc/init.d/";
+                final String bootScriptPath = nh.APP_INITD_PATH;
                 for (String[] KaliService : KaliServices) {
-                    File checkBootFile = new File(bootScriptPath + KaliService[4]);
+                    File checkBootFile = new File(bootScriptPath + "/" + KaliService[4]);
                     if (checkBootFile.exists()) {
                         checkBootStates += "1";
                     } else {
@@ -123,7 +123,7 @@ public class KaliServicesFragment extends Fragment {
                 servicesList.post(new Runnable() {
                     @Override
                     public void run() {
-                        servicesList.setAdapter(new KaliServicesLoader(getActivity().getApplicationContext(), serviceStates, finalCheckBootStates, KaliServices));
+                        servicesList.setAdapter(new KaliServicesLoader(getActivity().getApplicationContext(), serviceStates, finalCheckBootStates, KaliServices, bootScriptPath));
                     }
                 });
 
@@ -148,7 +148,7 @@ class KaliServicesLoader extends BaseAdapter {
     private ShellExecuter exe = new ShellExecuter();
 
 
-    public KaliServicesLoader(Context context, String serviceStates, String bootStates, String[][] KaliServices) {
+    public KaliServicesLoader(Context context, String serviceStates, String bootStates, String[][] KaliServices, String _bootScriptPath) {
 
         mContext = context;
 
@@ -156,7 +156,7 @@ class KaliServicesLoader extends BaseAdapter {
         _serviceStates = serviceStates.split("(?!^)");
         _serviceBootStates = bootStates.split("(?!^)");
 
-        bootScriptPath = mContext.getFilesDir().toString() + "/etc/init.d/";
+        bootScriptPath = _bootScriptPath;
         shebang = "#!/system/bin/sh\n\n# Init at boot kaliSevice: ";
 
     }
@@ -177,7 +177,7 @@ class KaliServicesLoader extends BaseAdapter {
         return services.length;
     }
     public void addBootService(int serviceId) {
-        String bootServiceFile = bootScriptPath + services[serviceId][4];
+        String bootServiceFile = bootScriptPath + "/" + services[serviceId][4];
         String fileContents = shebang + services[serviceId][0] + "\n" + services[serviceId][2];
         exe.RunAsRoot(new String[]{
             "echo '"+ fileContents +"' > " +  bootServiceFile,
@@ -189,7 +189,7 @@ class KaliServicesLoader extends BaseAdapter {
     }
     public void removeBootService(int serviceId) {
         // return the number of services
-        String bootServiceFile = bootScriptPath + services[serviceId][4];
+        String bootServiceFile = bootScriptPath + "/" + services[serviceId][4];
         exe.RunAsRoot(new String[]{ "rm -rf " +  bootServiceFile });
     }
     // getView method is called for each item of ListView

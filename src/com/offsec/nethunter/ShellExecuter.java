@@ -1,6 +1,9 @@
 package com.offsec.nethunter;
 
+import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -52,7 +55,7 @@ public class ShellExecuter {
         return output.toString();
     }
 
-    public void RunAsRoot(String[] command) {
+    public boolean RunAsRoot(String[] command) {
         try {
             Process process = Runtime.getRuntime().exec("su");
             DataOutputStream os = new DataOutputStream(process.getOutputStream());
@@ -63,7 +66,9 @@ public class ShellExecuter {
             os.flush();
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     public String RunAsRootWithException(String command) throws RuntimeException {
@@ -137,5 +142,59 @@ public class ShellExecuter {
             Log.d(TAG, "An InterruptedException was caught: " + ex.getMessage());
         }
         return output;
+    }
+
+    // this method accepts a text viu (prefect for cases like mana fragment)
+    // if you need to manipulate the outpput use the SYNC method. (down)
+    public void ReadFile_ASYNC(String _path, final EditText v) {
+        final String command = "cat " + _path;
+        new Thread(new Runnable() {
+            public void run() {
+                String output = "";
+                try {
+                    Process  p = Runtime.getRuntime().exec("su -c " + command);
+                    p.waitFor();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        output = output +  line + "\n";
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                final String _output = output;
+                v.post(new Runnable() {
+                    @Override
+                    public void run() {
+                     v.setText(_output.toString());
+                    }
+                });
+            }
+        }).start();
+    }
+
+    // WRAP THIS IN THE BACKGROUND IF POSIBLE WHE USING IT
+    public String ReadFile_SYNC(String _path) {
+
+        StringBuilder output = new StringBuilder();
+        String command = "cat " + _path;
+        Process p;
+        try {
+            p = Runtime.getRuntime().exec("su -c " + command);
+            p.waitFor();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output.append(line).append('\n');
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return output.toString();
+    }
+
+    public boolean SaveFileContents(String contents, String _path){
+        Boolean isSaved = RunAsRoot(new String[]{"echo '" + contents + "' > " + _path});
+        return  isSaved;
     }
 }

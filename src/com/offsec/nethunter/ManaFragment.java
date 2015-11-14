@@ -25,6 +25,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,10 +36,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.google.common.io.Files;
-import com.google.common.base.Charsets;
-
 
 //import android.app.Fragment;
 //import android.support.v4.app.FragmentActivity;
@@ -50,8 +49,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
     final CharSequence[] scripts = {"mana-nat-full", "mana-nat-simple", "mana-nat-simple-bdf"};
     private static final String TAG = "ManaFragment";
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private String fileDir;
-
+    static NhUtil nh;
     String configFilePath;
 
     public ManaFragment() {
@@ -68,7 +66,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+        nh = new NhUtil();
         View rootView = inflater.inflate(R.layout.mana, container, false);
         tabsPagerAdapter = new TabsPagerAdapter(getActivity().getSupportFragmentManager());
 
@@ -88,16 +86,8 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (isAdded()) {
-            fileDir = getActivity().getFilesDir().toString() + "/scripts";
-        }
-    }
-
-    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        configFilePath = "/data/local/nhsystem/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
+        configFilePath = nh.APP_SD_FILES_PATH + "/configs/hostapd-karma.conf";
 
         super.onActivityCreated(savedInstanceState);
     }
@@ -131,7 +121,6 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             case R.id.source_button:
                 Intent i = new Intent(getActivity(), EditSourceActivity.class);
                 i.putExtra("path", configFilePath);
-                i.putExtra("shell", true);
                 startActivity(i);
                 return true;
             default:
@@ -149,32 +138,32 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                 switch (selectedScriptIndex) {
                     case 0:
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            command[0] = "su -c '" + fileDir + "/bootkali mana-full-lollipop start'";
+                            command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali mana-full-lollipop start'";
                         } else {
-                            command[0] = "su -c '" + fileDir + "/bootkali mana-full-kitkat start'";
+                            command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali mana-full-kitkat start'";
                         }
                         break;
                     case 1:
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            command[0] = "su -c '" + fileDir + "/bootkali mana-simple-lollipop start'";
+                            command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali mana-simple-lollipop start'";
                         } else {
-                            command[0] = "su -c '" + fileDir + "/bootkali mana-simple-kitkat start'";
+                            command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali mana-simple-kitkat start'";
                         }
                         break;
                     case 2:
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            command[0] = "su -c '" + fileDir + "/bootkali mana-bdf-lollipop start'";
+                            command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali mana-bdf-lollipop start'";
                         } else {
-                            command[0] = "su -c '" + fileDir + "/bootkali mana-bdf-kitkat start'";
+                            command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali mana-bdf-kitkat start'";
                         }
                         break;
                     default:
-                        ((AppNavHomeActivity) getActivity()).showMessage("Invalid script!");
+                        nh.showMessage("Invalid script!");
                         return;
                 }
                 ShellExecuter exe = new ShellExecuter();
                 exe.RunAsRoot(command);
-                ((AppNavHomeActivity) getActivity()).showMessage("Attack executed!");
+                nh.showMessage("Attack executed!");
             }
         });
         builder.setNegativeButton("Quit", new DialogInterface.OnClickListener() {
@@ -197,12 +186,12 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
         ShellExecuter exe = new ShellExecuter();
         String[] command = new String[1];
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            command[0] = "su -c '" + fileDir + "/bootkali mana-lollipop stop'";
+            command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali mana-lollipop stop'";
         } else {
-            command[0] = "su -c '" + fileDir + "/bootkali mana-kitkat stop'";
+            command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali mana-kitkat stop'";
         }
         exe.RunAsRoot(command);
-        ((AppNavHomeActivity) getActivity()).showMessage("Mana Stopped");
+        nh.showMessage("Mana Stopped");
     }
 
     @Override
@@ -283,18 +272,14 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
     public static class HostapdFragment extends Fragment {
 
-        private String configFilePath;
+        private String configFilePath = nh.APP_SD_FILES_PATH + "/configs/hostapd-karma.conf";
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.mana_hostapd, container, false);
-            loadOptions(rootView);
-
-            configFilePath = "/data/local/nhsystem/kali-armhf/etc/mana-toolkit/hostapd-karma.conf";
-
-            //Update button
             Button button = (Button) rootView.findViewById(R.id.updateButton);
+            loadOptions(rootView);
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -306,7 +291,6 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    //String source = exe.RunAsRootOutput("cat " + configFilePath);
 
                     EditText ifc = (EditText) getView().findViewById(R.id.ifc);
                     EditText bssid = (EditText) getView().findViewById(R.id.bssid);
@@ -314,8 +298,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                     EditText channel = (EditText) getView().findViewById(R.id.channel);
                     EditText enableKarma = (EditText) getView().findViewById(R.id.enable_karma);
                     EditText karmaLoud = (EditText) getView().findViewById(R.id.karma_loud);
-
-                    Log.d(TAG, "Source: " + source);
+                    // FIXED BY BINKYBEAR <3
 
                     source = source.replaceAll("(?m)^interface=(.*)$", "interface=" + ifc.getText().toString());
                     source = source.replaceAll("(?m)^bssid=(.*)$", "bssid=" + bssid.getText().toString());
@@ -324,9 +307,8 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                     source = source.replaceAll("(?m)^enable_karma=(.*)$", "enable_karma=" + enableKarma.getText().toString());
                     source = source.replaceAll("(?m)^karma_loud=(.*)$", "karma_loud=" + karmaLoud.getText().toString());
 
-                    String[] command = {"sh", "-c", "cat <<'EOF' > " + configFilePath + "\n" + source + "\nEOF"};
-                    exe.RunAsRoot(command);
-                    ((AppNavHomeActivity) getActivity()).showMessage("Options updated!");
+                    exe.SaveFileContents(source, configFilePath);
+                    nh.showMessage("Source updated");;
                 }
             });
             return rootView;
@@ -334,89 +316,107 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
 
         public void loadOptions(View rootView) {
-            ShellExecuter exe = new ShellExecuter();
-            String text = exe.Executer("cat " + configFilePath);
-            /*
-             * Interface
-             */
-            EditText ifc = (EditText) rootView.findViewById(R.id.ifc);
-            String regExpatInterface = "^interface=(.*)$";
-            Pattern patternIfc = Pattern.compile(regExpatInterface, Pattern.MULTILINE);
-            Matcher matcherIfc = patternIfc.matcher(text);
-            if (matcherIfc.find()) {
-                String ifcValue = matcherIfc.group(1);
-                ifc.setText(ifcValue);
-            }
 
-	            /*
-                 * bssid
-	             */
-            EditText bssid = (EditText) rootView.findViewById(R.id.bssid);
-            String regExpatbssid = "^bssid=(.*)$";
-            Pattern patternBssid = Pattern.compile(regExpatbssid, Pattern.MULTILINE);
-            Matcher matcherBssid = patternBssid.matcher(text);
-            if (matcherBssid.find()) {
-                String bssidVal = matcherBssid.group(1);
-                bssid.setText(bssidVal);
-            }
-                /*
-	             * ssid
-	             */
-            EditText ssid = (EditText) rootView.findViewById(R.id.ssid);
-            String regExpatssid = "^ssid=(.*)$";
-            Pattern patternSsid = Pattern.compile(regExpatssid, Pattern.MULTILINE);
-            Matcher matcherSsid = patternSsid.matcher(text);
-            if (matcherSsid.find()) {
-                String ssidVal = matcherSsid.group(1);
-                ssid.setText(ssidVal);
-            }
-	            /*
-	             * channel
-	             */
-            EditText channel = (EditText) rootView.findViewById(R.id.channel);
-            String regExpatChannel = "^channel=(.*)$";
-            Pattern patternChannel = Pattern.compile(regExpatChannel, Pattern.MULTILINE);
-            Matcher matcherChannel = patternChannel.matcher(text);
-            if (matcherChannel.find()) {
-                String channelVal = matcherChannel.group(1);
-                channel.setText(channelVal);
-            }
-	            /*
-	             * enable_karma
-	             */
-            EditText enableKarma = (EditText) rootView.findViewById(R.id.enable_karma);
-            String regExpatEnableKarma = "^enable_karma=(.*)$";
-            Pattern patternEnableKarma = Pattern.compile(regExpatEnableKarma, Pattern.MULTILINE);
-            Matcher matcherEnableKarma = patternEnableKarma.matcher(text);
-            if (matcherEnableKarma.find()) {
-                String enableKarmaVal = matcherEnableKarma.group(1);
-                enableKarma.setText(enableKarmaVal);
-            }
 
-	            /*
-	             * karma_loud
-	             */
-            EditText karmaLoud = (EditText) rootView.findViewById(R.id.karma_loud);
-            String regExpatKarmaLoud = "^karma_loud=(.*)$";
-            Pattern patternKarmaLoud = Pattern.compile(regExpatKarmaLoud, Pattern.MULTILINE);
-            Matcher matcherKarmaLoud = patternKarmaLoud.matcher(text);
-            if (matcherKarmaLoud.find()) {
-                String karmaLoudVal = matcherKarmaLoud.group(1);
-                karmaLoud.setText(karmaLoudVal);
-            }
+
+            final EditText ifc = (EditText) rootView.findViewById(R.id.ifc);
+            final EditText bssid = (EditText) rootView.findViewById(R.id.bssid);
+            final EditText ssid = (EditText) rootView.findViewById(R.id.ssid);
+            final EditText channel = (EditText) rootView.findViewById(R.id.channel);
+            final EditText enableKarma = (EditText) rootView.findViewById(R.id.enable_karma);
+            final EditText karmaLoud = (EditText) rootView.findViewById(R.id.karma_loud);
+
+            new Thread(new Runnable() {
+                public void run() {
+                    ShellExecuter exe = new ShellExecuter();
+                    String text = exe.ReadFile_SYNC(configFilePath);
+
+                    String regExpatInterface = "^interface=(.*)$";
+                    Pattern patternIfc = Pattern.compile(regExpatInterface, Pattern.MULTILINE);
+                    final Matcher matcherIfc = patternIfc.matcher(text);
+
+                    String regExpatbssid = "^bssid=(.*)$";
+                    Pattern patternBssid = Pattern.compile(regExpatbssid, Pattern.MULTILINE);
+                    final Matcher matcherBssid = patternBssid.matcher(text);
+
+                    String regExpatssid = "^ssid=(.*)$";
+                    Pattern patternSsid = Pattern.compile(regExpatssid, Pattern.MULTILINE);
+                    final Matcher matcherSsid = patternSsid.matcher(text);
+
+                    String regExpatChannel = "^channel=(.*)$";
+                    Pattern patternChannel = Pattern.compile(regExpatChannel, Pattern.MULTILINE);
+                    final Matcher matcherChannel = patternChannel.matcher(text);
+
+                    String regExpatEnableKarma = "^enable_karma=(.*)$";
+                    Pattern patternEnableKarma = Pattern.compile(regExpatEnableKarma, Pattern.MULTILINE);
+                    final Matcher matcherEnableKarma = patternEnableKarma.matcher(text);
+
+                    String regExpatKarmaLoud = "^karma_loud=(.*)$";
+                    Pattern patternKarmaLoud = Pattern.compile(regExpatKarmaLoud, Pattern.MULTILINE);
+                    final Matcher matcherKarmaLoud = patternKarmaLoud.matcher(text);
+
+                    ifc.post(new Runnable() {
+                        @Override
+                        public void run() {
+                        /*
+                         * Interface
+                         */
+                        if (matcherIfc.find()) {
+                            String ifcValue = matcherIfc.group(1);
+                            ifc.setText(ifcValue);
+                        }
+                        /*
+                         * bssid
+                         */
+                        if (matcherBssid.find()) {
+                            String bssidVal = matcherBssid.group(1);
+                            bssid.setText(bssidVal);
+                        }
+                        /*
+                         * ssid
+                         */
+                        if (matcherSsid.find()) {
+                            String ssidVal = matcherSsid.group(1);
+                            ssid.setText(ssidVal);
+                        }
+                        /*
+                         * channel
+                         */
+                        if (matcherChannel.find()) {
+                            String channelVal = matcherChannel.group(1);
+                            channel.setText(channelVal);
+                        }
+                        /*
+                         * enable_karma
+                         */
+                        if (matcherEnableKarma.find()) {
+                            String enableKarmaVal = matcherEnableKarma.group(1);
+                            enableKarma.setText(enableKarmaVal);
+                        }
+                       /*
+                       * karma_loud
+                       */
+                        if (matcherKarmaLoud.find()) {
+                            String karmaLoudVal = matcherKarmaLoud.group(1);
+                            karmaLoud.setText(karmaLoudVal);
+                        }
+                        }
+                    });
+                }
+            }).start();
         }
 
         @Override
         public void onResume() {
             super.onResume();
-            loadOptions(getView().getRootView());
+
         }
     }
 
 
     public static class DhcpdFragment extends Fragment {
 
-        private String configFilePath = "files/configs/dhcpd.conf";
+        private String configFilePath = "/configs/dhcpd.conf";
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -427,8 +427,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
 
-            File sdcard = Environment.getExternalStorageDirectory();
-            File file = new File(sdcard, configFilePath);
+            File file = new File(nh.APP_SD_FILES_PATH, configFilePath);
             StringBuilder text = new StringBuilder();
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file));
@@ -449,8 +448,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                 @Override
                 public void onClick(View v) {
                     try {
-                        File sdcard = Environment.getExternalStorageDirectory();
-                        File myFile = new File(sdcard, configFilePath);
+                        File myFile = new File(nh.APP_SD_FILES_PATH, configFilePath);
                         myFile.createNewFile();
                         FileOutputStream fOut = new FileOutputStream(myFile);
                         OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
@@ -458,9 +456,9 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                         myOutWriter.append(source.getText());
                         myOutWriter.close();
                         fOut.close();
-                        ((AppNavHomeActivity) getActivity()).showMessage("Source updated");
+                        nh.showMessage("Source updated");
                     } catch (Exception e) {
-                        ((AppNavHomeActivity) getActivity()).showMessage(e.getMessage());
+                        nh.showMessage(e.getMessage());
                     }
                 }
             });
@@ -480,17 +478,17 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
 
-            configFilePath = "/data/local/nhsystem/kali-armhf/etc/mana-toolkit/dnsspoof.conf";
-
-            File file = new File(configFilePath);
+            configFilePath = nh.CHROOT_PATH + "/etc/mana-toolkit/dnsspoof.conf";
+            // got EACCES (Thouse files perms??)
+            /*File file = new File(configFilePath);
             String text = null;
             try {
                 text = Files.toString(file, Charsets.UTF_8);
             } catch (IOException e) {
                 e.printStackTrace();
-            }
-            //ShellExecuter exe = new ShellExecuter();
-            //String text = exe.RunAsRootOutput("cat " + configFilePath);
+            }*/
+            ShellExecuter exe = new ShellExecuter();
+            String text = exe.RunAsRootOutput("cat " + configFilePath);
             EditText source = (EditText) rootView.findViewById(R.id.source);
             source.setText(text);
 
@@ -500,11 +498,9 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                 public void onClick(View v) {
                     EditText source = (EditText) getView().findViewById(R.id.source);
                     String newSource = source.getText().toString();
-
                     ShellExecuter exe = new ShellExecuter();
-                    String[] command = {"sh", "-c", "cat <<'EOF' > " + configFilePath + "\n" + newSource + "\nEOF"};
-                    exe.RunAsRoot(command);
-                    ((AppNavHomeActivity) getActivity()).showMessage("Source updated");
+                    exe.SaveFileContents(newSource, configFilePath);
+                    nh.showMessage("Source updated");
                 }
             });
             return rootView;
@@ -523,29 +519,20 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
 
-            configFilePath = "/data/local/nhsystem/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-full.sh";
-            File file = new File(configFilePath);
-            String text = null;
-            try {
-                text = Files.toString(file, Charsets.UTF_8);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            //ShellExecuter exe = new ShellExecuter();
-            //String text = exe.RunAsRootOutput("cat " + configFilePath);
+            configFilePath = nh.CHROOT_PATH +"/usr/share/mana-toolkit/run-mana/start-nat-full.sh";
+
             EditText source = (EditText) rootView.findViewById(R.id.source);
-            source.setText(text);
+            ShellExecuter exe = new ShellExecuter();
+            exe.ReadFile_ASYNC(configFilePath, source);
             Button button = (Button) rootView.findViewById(R.id.update);
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     EditText source = (EditText) getView().findViewById(R.id.source);
                     String newSource = source.getText().toString();
-
                     ShellExecuter exe = new ShellExecuter();
-                    String[] command = {"sh", "-c", "cat <<'EOF' > " + configFilePath + "\n" + newSource + "\nEOF"};
-                    exe.RunAsRoot(command);
-                    ((AppNavHomeActivity) getActivity()).showMessage("Source updated");
+                    exe.SaveFileContents(newSource, configFilePath);
+                    nh.showMessage("Source updated");
                 }
             });
             return rootView;
@@ -561,22 +548,16 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
 
-            configFilePath = "/data/local/nhsystem/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-simple.sh";
+            configFilePath = nh.CHROOT_PATH + "/usr/share/mana-toolkit/run-mana/start-nat-simple.sh";
 
             String description = getResources().getString(R.string.mana_nat_simple);
             TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
             File file = new File(configFilePath);
-            String text = null;
-            try {
-                text = Files.toString(file, Charsets.UTF_8);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            //ShellExecuter exe = new ShellExecuter();
-            //String text = exe.RunAsRootOutput("cat " + configFilePath);
+
             EditText source = (EditText) rootView.findViewById(R.id.source);
-            source.setText(text);
+            ShellExecuter exe = new ShellExecuter();
+            exe.ReadFile_ASYNC(configFilePath, source);
 
             Button button = (Button) rootView.findViewById(R.id.update);
             button.setOnClickListener(new View.OnClickListener() {
@@ -584,11 +565,9 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                 public void onClick(View v) {
                     EditText source = (EditText) getView().findViewById(R.id.source);
                     String newSource = source.getText().toString();
-
                     ShellExecuter exe = new ShellExecuter();
-                    String[] command = {"sh", "-c", "cat <<'EOF' > " + configFilePath + "\n" + newSource + "\nEOF"};
-                    exe.RunAsRoot(command);
-                    ((AppNavHomeActivity) getActivity()).showMessage("Source updated");
+                    exe.SaveFileContents(newSource, configFilePath);
+                    nh.showMessage("Source updated");
                 }
             });
             return rootView;
@@ -608,22 +587,11 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
 
-            configFilePath = "/data/local/nhsystem/kali-armhf/etc/bdfproxy/bdfproxy.cfg";
+            configFilePath = nh.CHROOT_PATH + "/etc/bdfproxy/bdfproxy.cfg";
 
-            Log.d(TAG, " onCreateView " + configFilePath);
-
-            File file = new File(configFilePath);
-            String text = null;
-            try {
-                text = Files.toString(file, Charsets.UTF_8);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            //ShellExecuter exe = new ShellExecuter();
-            //String text = exe.RunAsRootOutput("cat " + configFilePath);
-            Log.d(TAG, "exe.RunasRootOutput(cat " + configFilePath + ")");
             EditText source = (EditText) rootView.findViewById(R.id.source);
-            source.setText(text);
+            ShellExecuter exe = new ShellExecuter();
+            exe.ReadFile_ASYNC(configFilePath, source);
 
             Button button = (Button) rootView.findViewById(R.id.update);
             button.setOnClickListener(new View.OnClickListener() {
@@ -631,11 +599,9 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                 public void onClick(View v) {
                     EditText source = (EditText) getView().findViewById(R.id.source);
                     String newSource = source.getText().toString();
-
                     ShellExecuter exe = new ShellExecuter();
-                    String[] command = {"sh", "-c", "cat <<'EOF' > " + configFilePath + "\n" + newSource + "\nEOF"};
-                    exe.RunAsRoot(command);
-                    ((AppNavHomeActivity) getActivity()).showMessage("Source updated");
+                    exe.SaveFileContents(newSource, configFilePath);
+                    nh.showMessage("Source updated");
                 }
             });
             return rootView;
@@ -648,7 +614,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
         @Override
         public void onActivityCreated(Bundle savedInstanceState) {
-            configFilePath = "/data/local/nhsystem/kali-armhf/usr/share/mana-toolkit/run-mana/start-nat-simple-bdf.sh";
+            configFilePath = nh.CHROOT_PATH + "/usr/share/mana-toolkit/run-mana/start-nat-simple-bdf.sh";
 
             super.onActivityCreated(savedInstanceState);
         }
@@ -661,30 +627,18 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             String description = getResources().getString(R.string.mana_nat_simple_bdf);
             TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
-
-            ShellExecuter exe = new ShellExecuter();
-            File file = new File(configFilePath);
-            String text = null;
-            try {
-                text = Files.toString(file, Charsets.UTF_8);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            //String text = exe.RunAsRootOutput("cat " + configFilePath);
             EditText source = (EditText) rootView.findViewById(R.id.source);
-            source.setText(text);
-
+            ShellExecuter exe = new ShellExecuter();
+            exe.ReadFile_ASYNC(configFilePath, source);
             Button button = (Button) rootView.findViewById(R.id.update);
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     EditText source = (EditText) getView().findViewById(R.id.source);
                     String newSource = source.getText().toString();
-
                     ShellExecuter exe = new ShellExecuter();
-                    String[] command = {"sh", "-c", "cat <<'EOF' > " + configFilePath + "\n" + newSource + "\nEOF"};
-                    exe.RunAsRoot(command);
-                    ((AppNavHomeActivity) getActivity()).showMessage("Source updated");
+                    exe.SaveFileContents(newSource, configFilePath);
+                    nh.showMessage("Source updated");
                 }
             });
             return rootView;

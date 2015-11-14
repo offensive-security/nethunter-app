@@ -64,9 +64,9 @@ iptables -D natctrl_FORWARD -j DROP
 echo 1 > /proc/sys/net/ipv4/ip_forward
 
 # dnsmasq -H /data/local/tmp/hosts -i $INTERFACE -R -S 8.8.8.8 -F 10.0.0.100,10.0.0.200 -x $TMPDIR/dnsmasq.pid
-dnsmasq -C /sdcard/files/dnsmasq.conf -x $TMPDIR/dnsmasq.pid -i $INTERFACE
+dnsmasq -C /sdcard/nh_files/dnsmasq.conf -x $TMPDIR/dnsmasq.pid -i $INTERFACE
 
-## log-facility=/sdcard/files/dnsmasq.log
+## log-facility=/sdcard/nh_files/dnsmasq.log
 ## #address=/#/10.0.0.1
 ## #address=/google.com/10.0.0.1
 ## interface=rndis0

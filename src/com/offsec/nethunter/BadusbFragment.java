@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import java.util.PriorityQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,14 +25,10 @@ public class BadusbFragment extends Fragment {
     private String configFilePath;
     private String sourcePath;
     private static final String ARG_SECTION_NUMBER = "section_number";
-
+    NhUtil nh;
+    ShellExecuter exe = new ShellExecuter();
     public BadusbFragment() {
-        if (Build.VERSION.SDK_INT >= 21) {
-            configFilePath = "files/configs/startbadusb-lollipop.sh";
-        } else {
-            configFilePath = "files/configs/startbadusb-kitkat.sh";
-        }
-        sourcePath = Environment.getExternalStorageDirectory() +"/"+ configFilePath;
+
     }
 
     public static BadusbFragment newInstance(int sectionNumber) {
@@ -52,7 +46,7 @@ public class BadusbFragment extends Fragment {
         final Button button = (Button) rootView.findViewById(R.id.updateOptions);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                updateOptions(v);
+                updateOptions();
             }
         });
         setHasOptionsMenu(true);
@@ -63,25 +57,41 @@ public class BadusbFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        nh = new NhUtil();
+        if (Build.VERSION.SDK_INT >= 21) {
+            configFilePath = "/configs/startbadusb-lollipop.sh";
+        } else {
+            configFilePath = "/configs/startbadusb-kitkat.sh";
+        }
+        sourcePath = nh.APP_SD_FILES_PATH + configFilePath;
     }
 
     public void onResume() {
         super.onResume();
-        loadOptions(getView().getRootView());
+        if(getView() != null){
+            loadOptions(getView().getRootView());
+        }
     }
 
-
     private void loadOptions(View rootView) {
-        String text = ((AppNavHomeActivity) getActivity()).readConfigFile(configFilePath);
-
-        EditText ifc = (EditText) rootView.findViewById(R.id.ifc);
-        String regExpatInterface = "^INTERFACE=(.*)$";
-        Pattern pattern = Pattern.compile(regExpatInterface, Pattern.MULTILINE);
-        Matcher matcher = pattern.matcher(text);
-        if (matcher.find()) {
-            String ifcValue = matcher.group(1);
-            ifc.setText(ifcValue);
-        }
+        final EditText ifc = (EditText) rootView.findViewById(R.id.ifc);
+        new Thread(new Runnable() {
+            public void run() {
+                final String text = exe.ReadFile_SYNC(sourcePath);
+                ifc.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        String regExpatInterface = "^INTERFACE=(.*)$";
+                        Pattern pattern = Pattern.compile(regExpatInterface, Pattern.MULTILINE);
+                        Matcher matcher = pattern.matcher(text);
+                        if (matcher.find()) {
+                            String ifcValue = matcher.group(1);
+                            ifc.setText(ifcValue);
+                        }
+                    }
+                });
+            }
+        }).start();
     }
 
     @Override
@@ -100,7 +110,6 @@ public class BadusbFragment extends Fragment {
                 return true;
             case R.id.source_button:
                 Intent i = new Intent(getActivity(), EditSourceActivity.class);
-                i.putExtra("shell", true);
                 i.putExtra("path", sourcePath);
                 startActivity(i);
                 return true;
@@ -109,15 +118,15 @@ public class BadusbFragment extends Fragment {
         }
     }
 
-    public void updateOptions(View arg0) {
-        String source = ((AppNavHomeActivity) getActivity()).readConfigFile(configFilePath);
+    public void updateOptions() {
+        String source = exe.ReadFile_SYNC(sourcePath);
         EditText ifc = (EditText) getActivity().findViewById(R.id.ifc);
         source = source.replaceAll("(?m)^INTERFACE=(.*)$", "INTERFACE=" + ifc.getText().toString());
-        Boolean r = ((AppNavHomeActivity) getActivity()).updateConfigFile(configFilePath, source);
+        Boolean r = exe.SaveFileContents(sourcePath, source);
         if (r) {
-            ((AppNavHomeActivity) getActivity()).showMessage("Options updated!");
+            nh.showMessage("Options updated!");
         } else {
-            ((AppNavHomeActivity) getActivity()).showMessage("Options not updated!");
+            nh.showMessage("Options not updated!");
         }
     }
 
@@ -125,12 +134,12 @@ public class BadusbFragment extends Fragment {
         ShellExecuter exe = new ShellExecuter();
         String[] command = new String[1];
         if (Build.VERSION.SDK_INT >= 21) {
-            command[0] = "start-badusb-lollipop &> /sdcard/files/badusb.log &";
+            command[0] = "start-badusb-lollipop &> "+ nh.APP_SD_FILES_PATH +"/badusb.log &";
         } else {
-            command[0] = "start-badusb-kitkat &> /sdcard/files/badusb.log &";
+            command[0] = "start-badusb-kitkat &> "+ nh.APP_SD_FILES_PATH +"/badusb.log &";
         }
         exe.RunAsRoot(command);
-        ((AppNavHomeActivity) getActivity()).showMessage("BadUSB attack started!");
+        nh.showMessage("BadUSB attack started!");
     }
 
     public void stop() {
@@ -142,6 +151,6 @@ public class BadusbFragment extends Fragment {
             command[0] = "stop-badusb-kitkat";
         }
         exe.RunAsRoot(command);
-        ((AppNavHomeActivity) getActivity()).showMessage("BadUSB attack stopped!");
+        nh.showMessage("BadUSB attack stopped!");
     }
 }

@@ -1,84 +1,39 @@
 package com.offsec.nethunter;
 
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.Toast;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-
 
 public class EditSourceActivity extends AppCompatActivity {
 
     private String configFilePath = "";
-    private Boolean shell = false;
-
+    NhUtil nh;
+    ShellExecuter exe = new ShellExecuter();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        nh = new NhUtil();
         Bundle b = getIntent().getExtras();
         configFilePath = b.getString("path");
-        if (getIntent().hasExtra("shell")) {
-            shell = b.getBoolean("shell");
-        }
         setContentView(R.layout.source);
         if (Build.VERSION.SDK_INT >= 21) {
             // detail for android 5 devices
             getWindow().setStatusBarColor(getResources().getColor(R.color.darkTitle));
+        }
 
-        }
         EditText source = (EditText) findViewById(R.id.source);
-        String text;
-        if (shell) {
-            text = readFileShell();
-        } else {
-            text = readFile();
-        }
-        source.setText(text);
+        source.setText("Loading...\n\nFILE: " + configFilePath);
+        exe.ReadFile_ASYNC(configFilePath, source);
+
         ActionBar ab = getSupportActionBar();
         if (ab != null ) {
             ab.setDisplayHomeAsUpEnabled(true);
         }
-    }
-
-    private String readFile() {
-
-        File sdcard = Environment.getExternalStorageDirectory();
-        File file = new File(sdcard, configFilePath);
-        StringBuilder text = new StringBuilder();
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = br.readLine()) != null) {
-                text.append(line);
-                text.append('\n');
-            }
-            br.close();
-        } catch (IOException e) {
-            Log.e("Nethunter", "exception", e);
-        }
-        return text.toString();
-    }
-
-    private String readFileShell() {
-        ShellExecuter exe = new ShellExecuter();
-        return exe.Executer("cat " + configFilePath);
+        nh.showMessage("File Loaded");
     }
 
     @Override
@@ -90,45 +45,15 @@ public class EditSourceActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void updateSource(View arg0) {
-        if (shell) {
-            EditText source = (EditText) findViewById(R.id.source);
-            String newSource = source.getText().toString();
+    public void updateSource() {
 
-            ShellExecuter exe = new ShellExecuter();
-            String news;
-            news = newSource;
-
-            String[] command = {"sh", "-c", "cat <<'EOF' > " + configFilePath + "\n" + news + "\nEOF"};
-            exe.RunAsRoot(command);
-            showMessage("Source updated");
+        EditText source = (EditText) findViewById(R.id.source);
+        String newSource = source.getText().toString();
+        Boolean isSaved = exe.SaveFileContents(newSource, configFilePath);
+        if(isSaved){
+            nh.showMessage("Source updated");
         } else {
-            try {
-                File sdcard = Environment.getExternalStorageDirectory();
-                File myFile = new File(sdcard, configFilePath);
-                myFile.createNewFile();
-                FileOutputStream fOut = new FileOutputStream(myFile);
-                OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-                EditText source = (EditText) findViewById(R.id.source);
-                myOutWriter.append(source.getText());
-                myOutWriter.close();
-                fOut.close();
-                showMessage("Source updated");
-                InputMethodManager imm = (InputMethodManager) getSystemService(
-                        Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(source.getWindowToken(), 0);
-                super.onBackPressed();
-            } catch (Exception e) {
-                showMessage(e.getMessage());
-            }
+            nh.showMessage("Source not updated");
         }
-    }
-
-    private void showMessage(String message) {
-        Context context = getApplicationContext();
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context, message, duration);
-        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
-        toast.show();
     }
 }
