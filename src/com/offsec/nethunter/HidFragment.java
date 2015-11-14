@@ -360,13 +360,8 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
             View rootView = inflater.inflate(R.layout.hid_powersploit, container, false);
             Button b = (Button) rootView.findViewById(R.id.powersploitOptionsUpdate);
             b.setOnClickListener(this);
+            loadOptions(rootView);
             return rootView;
-        }
-
-        @Override
-        public void onResume() {
-            super.onResume();
-            loadOptions();
         }
 
         public void onClick(View v) {
@@ -419,10 +414,10 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
                     break;
             }
         }
-        private void loadOptions() {
-            final EditText payloadUrl = (EditText) getView().findViewById(R.id.payloadUrl);
-            final EditText port = (EditText) getView().findViewById(R.id.port);
-            final Spinner payload = (Spinner) getView().findViewById(R.id.payload);
+        private void loadOptions(View rootView) {
+            final EditText payloadUrl = (EditText) rootView.findViewById(R.id.payloadUrl);
+            final EditText port = (EditText) rootView.findViewById(R.id.port);
+            final Spinner payload = (Spinner) rootView.findViewById(R.id.payload);
             final ShellExecuter exe = new ShellExecuter();
 
             new Thread(new Runnable() {
