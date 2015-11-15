@@ -271,7 +271,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
 
     public static class HostapdFragment extends Fragment {
-
+        // private String configFilePath = nh.CHROOT_PATH + "/etc/hostapd.conf";
         private String configFilePath = nh.APP_SD_FILES_PATH + "/configs/hostapd-karma.conf";
 
         @Override
@@ -413,10 +413,10 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
         }
     }
 
-
     public static class DhcpdFragment extends Fragment {
 
-        private String configFilePath = "/configs/dhcpd.conf";
+        private String configFilePath = nh.CHROOT_PATH +"/etc/dhcp/dhcpd.conf";
+        ShellExecuter exe = new ShellExecuter();
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -427,38 +427,19 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
 
-            File file = new File(nh.APP_SD_FILES_PATH, configFilePath);
-            StringBuilder text = new StringBuilder();
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file));
-                String line;
-                while ((line = br.readLine()) != null) {
-                    text.append(line);
-                    text.append('\n');
-                }
-                br.close();
-            } catch (IOException e) {
-                Log.e("Nethunter", "exception", e);
-            }
-            EditText source = (EditText) rootView.findViewById(R.id.source);
-            source.setText(text);
 
+            EditText source = (EditText) rootView.findViewById(R.id.source);
+            exe.ReadFile_ASYNC(configFilePath, source);
             Button button = (Button) rootView.findViewById(R.id.update);
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    try {
-                        File myFile = new File(nh.APP_SD_FILES_PATH, configFilePath);
-                        myFile.createNewFile();
-                        FileOutputStream fOut = new FileOutputStream(myFile);
-                        OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-                        EditText source = (EditText) rootView.findViewById(R.id.source);
-                        myOutWriter.append(source.getText());
-                        myOutWriter.close();
-                        fOut.close();
+                    EditText source = (EditText) rootView.findViewById(R.id.source);
+                    Boolean isSaved = exe.SaveFileContents(source.getText().toString(), configFilePath);
+                    if(isSaved){
                         nh.showMessage("Source updated");
-                    } catch (Exception e) {
-                        nh.showMessage(e.getMessage());
+                    } else {
+                        nh.showMessage("Source not updated");
                     }
                 }
             });
@@ -469,28 +450,20 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
     public static class DnsspoofFragment extends Fragment {
 
         private String configFilePath;
-
+        ShellExecuter exe = new ShellExecuter();
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+
             View rootView = inflater.inflate(R.layout.source_short, container, false);
             String description = getResources().getString(R.string.mana_dnsspoof);
             TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
 
             configFilePath = nh.CHROOT_PATH + "/etc/mana-toolkit/dnsspoof.conf";
-            // got EACCES (Thouse files perms??)
-            /*File file = new File(configFilePath);
-            String text = null;
-            try {
-                text = Files.toString(file, Charsets.UTF_8);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
-            ShellExecuter exe = new ShellExecuter();
-            String text = exe.RunAsRootOutput("cat " + configFilePath);
+
             EditText source = (EditText) rootView.findViewById(R.id.source);
-            source.setText(text);
+            exe.ReadFile_ASYNC(configFilePath, source);
 
             Button button = (Button) rootView.findViewById(R.id.update);
             button.setOnClickListener(new View.OnClickListener() {
@@ -498,7 +471,6 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                 public void onClick(View v) {
                     EditText source = (EditText) getView().findViewById(R.id.source);
                     String newSource = source.getText().toString();
-                    ShellExecuter exe = new ShellExecuter();
                     exe.SaveFileContents(newSource, configFilePath);
                     nh.showMessage("Source updated");
                 }
@@ -515,11 +487,16 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
-            String description = getResources().getString(R.string.mana_nat_full);
             TextView desc = (TextView) rootView.findViewById(R.id.description);
-            desc.setText(description);
 
-            configFilePath = nh.CHROOT_PATH +"/usr/share/mana-toolkit/run-mana/start-nat-full.sh";
+            desc.setText(getResources().getString(R.string.mana_nat_full));
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                configFilePath = nh.CHROOT_PATH +"/usr/share/mana-toolkit/run-mana/start-nat-full-lollipop.sh";
+            } else {
+                configFilePath = nh.CHROOT_PATH +"/usr/share/mana-toolkit/run-mana/start-nat-full-kitkat.sh";
+            }
+
 
             EditText source = (EditText) rootView.findViewById(R.id.source);
             ShellExecuter exe = new ShellExecuter();
@@ -547,13 +524,16 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
-
-            configFilePath = nh.CHROOT_PATH + "/usr/share/mana-toolkit/run-mana/start-nat-simple.sh";
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                configFilePath = nh.CHROOT_PATH +"/usr/share/mana-toolkit/run-mana/start-nat-simple-lollipop.sh";
+            } else {
+                configFilePath = nh.CHROOT_PATH +"/usr/share/mana-toolkit/run-mana/start-nat-simple-kitkat.sh";
+            }
 
             String description = getResources().getString(R.string.mana_nat_simple);
             TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
-            File file = new File(configFilePath);
+
 
             EditText source = (EditText) rootView.findViewById(R.id.source);
             ShellExecuter exe = new ShellExecuter();
@@ -614,8 +594,12 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
         @Override
         public void onActivityCreated(Bundle savedInstanceState) {
-            configFilePath = nh.CHROOT_PATH + "/usr/share/mana-toolkit/run-mana/start-nat-simple-bdf.sh";
 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                configFilePath = nh.CHROOT_PATH + "/usr/share/mana-toolkit/run-mana/start-nat-simple-bdf-lollipop.sh";
+            } else {
+                configFilePath = nh.CHROOT_PATH + "/usr/share/mana-toolkit/run-mana/start-nat-simple-bdf-kitkat.sh";
+            }
             super.onActivityCreated(savedInstanceState);
         }
 
