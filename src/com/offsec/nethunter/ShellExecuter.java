@@ -1,8 +1,6 @@
 package com.offsec.nethunter;
 
-import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
 
 import java.io.BufferedReader;
