@@ -1,7 +1,10 @@
 package com.offsec.nethunter;
 import android.os.Environment;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
+
+import java.io.File;
 
 import static com.offsec.nethunter.AppNavHomeActivity.getAppContext;
 
@@ -104,5 +107,19 @@ public class NhUtil {
         Toast toast = Toast.makeText(getAppContext(), message, duration);
         toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
         toast.show();
+    }
+    public String whichBusybox() {
+        String[] BB_PATHS = {
+                "/system/bin/busybox",
+                "/data/local/bin/busybox",
+                "/system/xbin/busybox"
+        };
+        for (String BB_PATH : BB_PATHS) {
+            File busybox = new File(BB_PATH);
+            if (busybox.exists()) {
+                return BB_PATH;
+            }
+        }
+        return null;
     }
 }

@@ -1,6 +1,5 @@
 package com.offsec.nethunter;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,7 +19,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,16 +27,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.Stack;
@@ -135,16 +129,6 @@ public class AppNavHomeActivity extends AppCompatActivity {
                     assetsToFiles(nh.SD_PATH, "", "sdcard");
                     ShellExecuter exe = new ShellExecuter();
                     exe.RunAsRoot(new String[]{"chmod 700 " + nh.APP_SCRIPTS_PATH+"/*", "chmod 700 " + nh.APP_INITD_PATH + "/*"});
-                    myImageView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            String imageInSD = nh.APP_PATH + "/wallpapers/kali-nh-2183x1200.png";
-                            Bitmap bitmap = BitmapFactory.decodeFile(imageInSD);
-                            myImageView.setImageBitmap(bitmap);
-                        }
-
-
-                    });
                 }
             };
             Thread t = new Thread(r);
@@ -154,9 +138,6 @@ public class AppNavHomeActivity extends AppCompatActivity {
             ed.commit();
         } else {
             Log.d(COPY_ASSETS_TAG, "FILES NOT COPIED");
-            String imageInSD = nh.APP_PATH + "/wallpapers/kali-nh-2183x1200.png";
-            Bitmap bitmap = BitmapFactory.decodeFile(imageInSD);
-            myImageView.setImageBitmap(bitmap);
         }
 
         // now pop in the default fragment
@@ -286,12 +267,6 @@ public class AppNavHomeActivity extends AppCompatActivity {
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
-        navigationView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("TOUCHED","setOnClickListener");
-            }
-        });
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -489,7 +464,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
             in = assetManager.open(filename);
             newFileName = TARGET_BASE_PATH + "/" + filename;
             out = new FileOutputStream(newFileName);
-            byte[] buffer = new byte[8096];
+            byte[] buffer = new byte[8092];
             int read;
             while ((read = in.read(buffer)) != -1) {
                 out.write(buffer, 0, read);
@@ -497,8 +472,6 @@ public class AppNavHomeActivity extends AppCompatActivity {
             in.close();
             out.flush();
             out.close();
-
-
         } catch (Exception e) {
             Log.e("tag", "Exception in copyFile() of " + newFileName);
             Log.e("tag", "Exception in copyFile() " + e.toString());

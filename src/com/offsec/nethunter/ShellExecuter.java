@@ -1,10 +1,7 @@
 package com.offsec.nethunter;
 
-import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -172,10 +169,8 @@ public class ShellExecuter {
             }
         }).start();
     }
-
     // WRAP THIS IN THE BACKGROUND IF POSIBLE WHE USING IT
     public String ReadFile_SYNC(String _path) {
-
         StringBuilder output = new StringBuilder();
         String command = "cat " + _path;
         Process p;
@@ -192,9 +187,8 @@ public class ShellExecuter {
         }
         return output.toString();
     }
-
+    // SAVE FILE CONTENTS: (contents, fullFilePath)
     public boolean SaveFileContents(String contents, String _path){
-        Boolean isSaved = RunAsRoot(new String[]{"echo '" + contents + "' > " + _path});
-        return  isSaved;
+        return RunAsRoot(new String[]{"echo '" + contents + "' > " + _path});
     }
 }

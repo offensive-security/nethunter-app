@@ -37,7 +37,7 @@
         android:id="@+id/customComandsInfo"
         android:layout_gravity="center_horizontal|center"
 		android:gravity="center"
-        android:text="Long press to manage a command, dont forget to backup!" />
+        android:text="Long press to manage a command, dont forget to backup!. Use double quotes if needed." />
 
     <ListView
         android:layout_width="fill_parent"

@@ -3,7 +3,7 @@ package com.offsec.nethunter;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
-import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +48,8 @@ public class NetHunterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.nethunter, container, false);
-
+        // chmod /dev/null //tho it can be moved to bootservice
+        new BootKali("chmod 777 /dev/null").run_bg();
         TextView ip = (TextView) rootView.findViewById(R.id.editText2);
         ip.setFocusable(false);
         addClickListener(R.id.button1, new View.OnClickListener() {
@@ -119,6 +120,8 @@ public class NetHunterFragment extends Fragment {
 
                     final String outputNET = exe.Executer(commandNET);
                     final String outputHID = exe.Executer(commandHID);
+                    exe.Executer(new String[]{"sh", "-c", ""});
+
 
                     netIfaces.post(new Runnable() {
                         @Override

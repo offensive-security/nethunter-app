@@ -23,7 +23,8 @@ view using match_parent for both width and height to consume the full space avai
         android:layout_alignParentTop="true"
         android:alpha="0.05"
         android:contentDescription="@string/app_name"
-        android:scaleType="centerCrop" />
+        android:src="@drawable/nh_cropbg"
+        android:scaleType="center" />
 
     <android.support.design.widget.NavigationView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/navigation_view"
