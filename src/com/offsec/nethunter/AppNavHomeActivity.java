@@ -37,6 +37,8 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.Stack;
 
+import com.winsontan520.wversionmanager.library.WVersionManager;
+
 public class AppNavHomeActivity extends AppCompatActivity {
 
     public final static String TAG = "AppNavHomeActivity";
@@ -59,7 +61,6 @@ public class AppNavHomeActivity extends AppCompatActivity {
         return c;
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -70,6 +71,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
         // ************************************************
 
         setContentView(R.layout.base_layout);
+
         //set kali wallpaper as background
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
@@ -87,7 +89,8 @@ public class AppNavHomeActivity extends AppCompatActivity {
         readmeButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                showLicense();
+                checkUpdate();
+                //showLicense();
                 return false;
             }
         });
@@ -186,6 +189,15 @@ public class AppNavHomeActivity extends AppCompatActivity {
             menuNav.setGroupEnabled(R.id.chrootDependentGroup, false);
         }
     }
+    public void checkUpdate(){
+        WVersionManager versionManager = new WVersionManager(this);
+        versionManager.setVersionContentUrl("http://images.offsec.com/version.txt");
+        versionManager.setUpdateUrl("http://images.offsec.com/latest.apk");
+        versionManager.checkVersion();
+        versionManager.setUpdateNowLabel("Update Now");
+        versionManager.setIgnoreThisVersionLabel("Ignore this version");
+    }
+
     public void showLicense() {
         // @binkybear here goes the changelog etc... \n\n%s
         String readmeData = String.format("%s\n\n%s",
