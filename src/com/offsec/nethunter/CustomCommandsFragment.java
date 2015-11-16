@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -63,6 +64,14 @@ public class CustomCommandsFragment  extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        //this runs BEFORE the ui is available
+        mContext = getActivity().getApplicationContext();
+        nh = new NhUtil();
+        database = new SQLPersistence(mContext);
+        bootScriptPath = nh.APP_INITD_PATH;
+        shebang = "#!/system/bin/sh\n\n# Run at boot CustomCommand: ";
+        custom_commands_runlevel = "90";
+
         View rootView = inflater.inflate(R.layout.custom_commands, container, false);
         final Button addCommand = (Button) rootView.findViewById(R.id.addCommand);
         setHasOptionsMenu(true);
@@ -95,19 +104,7 @@ public class CustomCommandsFragment  extends Fragment {
         return rootView;
 
     }
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
 
-        //this runs BEFORE the ui is available
-        mContext = getActivity().getApplicationContext();
-        nh = new NhUtil();
-        database = new SQLPersistence(mContext);
-        bootScriptPath = nh.APP_INITD_PATH;
-        shebang = "#!/system/bin/sh\n\n# Run at boot CustomCommand: ";
-        custom_commands_runlevel = "90";
-
-    }
     private void addToBoot(CustomCommand command) {
         String _label = command.getCommand_label();
         String _cmd = command.getCommand();
@@ -492,26 +489,30 @@ class CmdLoader extends BaseAdapter {
         String _sendTo = commandInfo.getSend_To_Shell();
 
         String composedCommand;
-        if(_sendTo.equals("KALI")){
-            composedCommand = "su -c bootkali custom_cmd " + _cmd;
-        } else{
-            // SEND TO ANDROID
-            // no sure, if we add su -c , we cant exec comands as a normal android user
-            composedCommand = _cmd;
-        }
 
         if(_mode.equals("BACKGROUND")){
-            // dont run all the bg commands as root
-            exe.Executer(composedCommand);
-            Toast.makeText(_mContext,
-                    "Command " + _label + " done.",
-                    Toast.LENGTH_SHORT).show();
+            if(_sendTo.equals("KALI")){
+                new BootKali(_cmd).run_bg();
+                Toast.makeText(_mContext,
+                        "Kali cmd done.",
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                // dont run all the bg commands as root
+                exe.Executer(_cmd);
+                Toast.makeText(_mContext,
+                        "Android cmd done.",
+                        Toast.LENGTH_SHORT).show();
+            }
         } else try {
+            // INTERACTIVE
+            if(_sendTo.equals("KALI")){
+                _cmd = new BootKali(_cmd).GET_TERM_CMD();
+            }
             Intent intent =
                     new Intent("jackpal.androidterm.RUN_SCRIPT");
                 intent.addCategory(Intent.CATEGORY_DEFAULT);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-                intent.putExtra("jackpal.androidterm.iInitialCommand", composedCommand);
+                intent.putExtra("jackpal.androidterm.iInitialCommand", _cmd);
                 _mContext.startActivity(intent);
             } catch (Exception e) {
                 Toast.makeText(_mContext, _mContext.getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();

@@ -129,16 +129,6 @@ public class AppNavHomeActivity extends AppCompatActivity {
                     assetsToFiles(nh.SD_PATH, "", "sdcard");
                     ShellExecuter exe = new ShellExecuter();
                     exe.RunAsRoot(new String[]{"chmod 700 " + nh.APP_SCRIPTS_PATH+"/*", "chmod 700 " + nh.APP_INITD_PATH + "/*"});
-                    myImageView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            String imageInSD = nh.APP_PATH + "/wallpapers/kali-nh-2183x1200.png";
-                            Bitmap bitmap = BitmapFactory.decodeFile(imageInSD);
-                            myImageView.setImageBitmap(bitmap);
-                        }
-
-
-                    });
                 }
             };
             Thread t = new Thread(r);
@@ -148,9 +138,6 @@ public class AppNavHomeActivity extends AppCompatActivity {
             ed.commit();
         } else {
             Log.d(COPY_ASSETS_TAG, "FILES NOT COPIED");
-            String imageInSD = nh.APP_PATH + "/wallpapers/kali-nh-2183x1200.png";
-            Bitmap bitmap = BitmapFactory.decodeFile(imageInSD);
-            myImageView.setImageBitmap(bitmap);
         }
 
         // now pop in the default fragment
@@ -280,12 +267,6 @@ public class AppNavHomeActivity extends AppCompatActivity {
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
-        navigationView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("TOUCHED","setOnClickListener");
-            }
-        });
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -483,7 +464,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
             in = assetManager.open(filename);
             newFileName = TARGET_BASE_PATH + "/" + filename;
             out = new FileOutputStream(newFileName);
-            byte[] buffer = new byte[8096];
+            byte[] buffer = new byte[8092];
             int read;
             while ((read = in.read(buffer)) != -1) {
                 out.write(buffer, 0, read);
@@ -491,8 +472,6 @@ public class AppNavHomeActivity extends AppCompatActivity {
             in.close();
             out.flush();
             out.close();
-
-
         } catch (Exception e) {
             Log.e("tag", "Exception in copyFile() of " + newFileName);
             Log.e("tag", "Exception in copyFile() " + e.toString());

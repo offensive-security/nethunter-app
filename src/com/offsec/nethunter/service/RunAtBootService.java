@@ -103,23 +103,16 @@ public class RunAtBootService extends Service {
         // Put scripts in fileDir/scripts/etc/init.d/ and set execute permission.  Scripts should
         // start with a number and include a hashbang such as #!/system/bin/sh as the first line.
 
-        File busybox = new File("/system/xbin/busybox");
-        if (!busybox.exists()) {
-            busybox = new File("/data/local/bin/busybox");
-            if (!busybox.exists()) {
-                busybox = new File("/system/bin/busybox");
-                if (!busybox.exists()) {
-                    Log.d(TAG, "Busybox not found.");
-                    Toast.makeText(getBaseContext(), getString(R.string.toastForNoBusybox), Toast.LENGTH_SHORT).show();
-                    return false;
-                }
-            }
-        }
-        ShellExecuter exe = new ShellExecuter();
 
-        String[] runner = {busybox.getAbsolutePath() + " run-parts " +  nh.APP_INITD_PATH};
-        Toast.makeText(getBaseContext(), getString(R.string.autorunningscripts), Toast.LENGTH_SHORT).show();
-        exe.RunAsRoot(runner);
-        return true;
+        ShellExecuter exe = new ShellExecuter();
+        String busybox = nh.whichBusybox();
+        if(busybox != null){
+            String[] runner = {busybox + " run-parts " +  nh.APP_INITD_PATH};
+            Toast.makeText(getBaseContext(), getString(R.string.autorunningscripts), Toast.LENGTH_SHORT).show();
+            exe.RunAsRoot(runner);
+            return true;
+        }
+        Toast.makeText(getBaseContext(), getString(R.string.toastForNoBusybox), Toast.LENGTH_SHORT).show();
+        return false;
     }
 }
