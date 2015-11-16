@@ -194,8 +194,8 @@ public class AppNavHomeActivity extends AppCompatActivity {
         versionManager.setVersionContentUrl("http://images.offensive-security.com/version.txt");
         versionManager.setUpdateUrl("http://images.offensive-security.com/latest.apk");
         versionManager.checkVersion();
-        versionManager.setUpdateNowLabel("Update Now");
-        versionManager.setIgnoreThisVersionLabel("Ignore this version");
+        versionManager.setUpdateNowLabel("Update");
+        versionManager.setIgnoreThisVersionLabel("Ignore");
     }
 
     public void showLicense() {
