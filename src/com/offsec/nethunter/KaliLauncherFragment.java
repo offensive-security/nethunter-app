@@ -56,7 +56,7 @@ public class KaliLauncherFragment extends Fragment {
          */
         addClickListener(R.id.update_kali_chroot, new View.OnClickListener() {
             public void onClick(View v) {
-                intentClickListener("bootkali update");
+                intentClickListener("su -c \"bootkali update\"");
             }
         }, rootView);
         /**
@@ -64,7 +64,7 @@ public class KaliLauncherFragment extends Fragment {
          */
         addClickListener(R.id.button_launch_wifite, new View.OnClickListener() {
             public void onClick(View v) {
-                intentClickListener("bootkali wifite");
+                intentClickListener("su -c \"bootkali wifite\"");
             }
         }, rootView);
         /**
@@ -72,7 +72,7 @@ public class KaliLauncherFragment extends Fragment {
          */
         addClickListener(R.id.turn_off_external_wifi, new View.OnClickListener() {
             public void onClick(View v) {
-                intentClickListener("bootkali wifi-disable");
+                intentClickListener("su -c \"bootkali wifi-disable\"");
             }
         }, rootView);
         /**
@@ -80,7 +80,7 @@ public class KaliLauncherFragment extends Fragment {
          */
         addClickListener(R.id.kali_dumpmifare, new View.OnClickListener() {
             public void onClick(View v) {
-                intentClickListener("bootkali dumpmifare");
+                intentClickListener("su -c \"bootkali dumpmifare\"");
             }
         }, rootView);
 
