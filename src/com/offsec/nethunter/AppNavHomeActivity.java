@@ -191,8 +191,8 @@ public class AppNavHomeActivity extends AppCompatActivity {
     }
     public void checkUpdate(){
         WVersionManager versionManager = new WVersionManager(this);
-        versionManager.setVersionContentUrl("http://images.offsec.com/version.txt");
-        versionManager.setUpdateUrl("http://images.offsec.com/latest.apk");
+        versionManager.setVersionContentUrl("http://images.offensive-security.com/version.txt");
+        versionManager.setUpdateUrl("http://images.offensive-security.com/latest.apk");
         versionManager.checkVersion();
         versionManager.setUpdateNowLabel("Update Now");
         versionManager.setIgnoreThisVersionLabel("Ignore this version");
