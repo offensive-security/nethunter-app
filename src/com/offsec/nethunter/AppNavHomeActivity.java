@@ -89,8 +89,8 @@ public class AppNavHomeActivity extends AppCompatActivity {
         readmeButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                checkUpdate();
-                //showLicense();
+                //checkUpdate();
+                showLicense();
                 return false;
             }
         });
@@ -382,6 +382,9 @@ public class AppNavHomeActivity extends AppCompatActivity {
                                         .replace(R.id.container, ChrootManagerFragment.newInstance(itemId))
                                         .addToBackStack(null)
                                         .commit();
+                                break;
+                            case R.id.checkforupdate_item:
+                                checkUpdate();
                                 break;
                         }
                         restoreActionBar();
