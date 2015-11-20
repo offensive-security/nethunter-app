@@ -387,6 +387,13 @@ public class AppNavHomeActivity extends AppCompatActivity {
                                         .addToBackStack(null)
                                         .commit();
                                 break;
+                            case R.id.mpc_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, MPCFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
                             case R.id.checkforupdate_item:
                                 checkUpdate();
                                 break;
