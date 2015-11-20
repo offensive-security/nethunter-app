@@ -249,6 +249,9 @@ public class ChrootManagerFragment extends Fragment {
                                 // chroot not found
                                 statusLog(getActivity().getString(R.string.nokalichrootfound));
                                 x.RunAsRootOutput("mkdir -p " + nh.NH_SYSTEM_PATH);
+                                // prevents muts 'dirty' install issue /nhsystem is nethunter property.
+                                statusLog("Cleaning install directory");
+                                x.RunAsRootOutput("rm -rf " + nh.NH_SYSTEM_PATH + "/*");
                                 installButton.setText(getActivity().getResources().getString(R.string.installkalichrootbutton));
                                 installButton.setEnabled(true);
                                 updateButton.setVisibility(View.GONE);
@@ -256,7 +259,6 @@ public class ChrootManagerFragment extends Fragment {
                                 editor.commit();
                             }
                              // don't use apply() or it may not save
-
                         }
                     });
 
@@ -355,17 +357,18 @@ public class ChrootManagerFragment extends Fragment {
 
         try {
             Intent intent =
-                    new Intent("jackpal.androidterm.RUN_SCRIPT");
+                    new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
-            intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali apt-get install " + packages + "'");
+            if(packages.equals("")){
+                intent.putExtra("com.offsec.nhterm.iInitialCommand", "apt-get install " + packages);
+            }
+            //
+            //  Log.d("PACKS:", "PACKS:" + packages);
             startActivity(intent);
         } catch (Exception e) {
             nh.showMessage(getString(R.string.toast_install_terminal));
-            try {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=jackpal.androidterm")));
-            } catch (android.content.ActivityNotFoundException anfe2) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=jackpal.androidterm")));
-            }
+            statusLog("Error: Terminal app not found, cant continue.");
+            checkForExistingChroot();
         }
     }
 
@@ -611,6 +614,7 @@ public class ChrootManagerFragment extends Fragment {
             } catch (RuntimeException e) {
                 Log.d(TAG, "Error: ", e);
                 publishProgress("Error: " + e.toString());
+                statusLog(TAG + " >> Error: " +  e.toString());
                 return false;
             }
             return true;
@@ -633,11 +637,12 @@ public class ChrootManagerFragment extends Fragment {
                                 }
                             }, 3000);
                 } catch (RuntimeException e) {
-                    Log.d(TAG, "Error in start unzip: ", e);
+                    Log.d(TAG, "Error post extraction: ", e);
+                    statusLog(TAG + " >> Error: " +  e.toString());
                 }
 
             } else {
-                statusLog(getActivity().getString(R.string.therewasanerror));
+                statusLog(getActivity().getString(R.string.therewasanerror) + " ERROR:" + result);
                 pd.dismiss();
             }
 
