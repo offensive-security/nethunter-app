@@ -359,11 +359,8 @@ public class ChrootManagerFragment extends Fragment {
             Intent intent =
                     new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
-            if(packages.equals("")){
-                intent.putExtra("com.offsec.nhterm.iInitialCommand", "apt-get install " + packages);
-            }
-            //
-            //  Log.d("PACKS:", "PACKS:" + packages);
+            intent.putExtra("com.offsec.nhterm.iInitialCommand", "apt-get install " + packages);
+            Log.d("PACKS:", "PACKS:" + packages);
             startActivity(intent);
         } catch (Exception e) {
             nh.showMessage(getString(R.string.toast_install_terminal));
