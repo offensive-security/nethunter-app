@@ -2,6 +2,7 @@ package com.offsec.nethunter;
 
 import android.app.AlertDialog;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -330,6 +331,7 @@ public class ChrootManagerFragment extends Fragment {
         adb.setPositiveButton(R.string.InstallAndUpdateButtonText, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                statusLog("Everything went fine, chroot is installed. Selecting metapackages.");
                 StringBuilder sb = new StringBuilder("");
                 CheckBox cb;
                 // now grab all the checkboxes in the dialog and check their status
@@ -345,6 +347,7 @@ public class ChrootManagerFragment extends Fragment {
                         }
                     }
                 }
+
                 installAndUpgrade(sb.toString());
             }
         });
@@ -356,15 +359,19 @@ public class ChrootManagerFragment extends Fragment {
     private void installAndUpgrade(String packages) {
 
         try {
-            Intent intent =
-                    new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
+            Intent intent = new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
             intent.putExtra("com.offsec.nhterm.iInitialCommand", "apt-get install " + packages);
             Log.d("PACKS:", "PACKS:" + packages);
             startActivity(intent);
+
+            if(packages.equals("")){
+                packages = "No packages selected. You can come back and install them at any moment.";
+            }
+            statusLog("Metapackages selected: " + packages);
         } catch (Exception e) {
             nh.showMessage(getString(R.string.toast_install_terminal));
-            statusLog("Error: Terminal app not found, cant continue.");
+            statusLog("Error: Terminal app not found, cant continue. Install a terminal.");
             checkForExistingChroot();
         }
     }
@@ -662,6 +669,7 @@ public class ChrootManagerFragment extends Fragment {
 
         public DownloadChroot(Context context) {
             this.context = context;
+
             mProgressDialog = new ProgressDialog(context);
             mProgressDialog.setCancelable(false);
             mProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -743,7 +751,10 @@ public class ChrootManagerFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
+            // if the user clicks the notif, bring back the app screen to top.
+            Intent newIntent = new Intent(getContext(), AppNavHomeActivity.class);
+            PendingIntent pIntent = PendingIntent.getActivity(getContext(), 0, newIntent, 0);
+            mBuilder.setContentIntent(pIntent);
             mBuilder.setContentTitle("Downloading Chroot")
                     .setContentText("Starting download...")
                     .setSmallIcon(R.drawable.ic_action_refresh);
@@ -769,6 +780,7 @@ public class ChrootManagerFragment extends Fragment {
                 double ttDownloaded = round(last_perc * onePercent);
                 // if we get here, length is known, now set indeterminate to false
                 // Notification
+
                 mBuilder.setProgress(100, progress[0], false)
                         .setContentTitle("Downloading Chroot: " + last_perc + "%")
                         .setContentText("So far " + ttDownloaded + " MiB of " + humanSize + " MiB downloaded.");
