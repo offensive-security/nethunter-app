@@ -56,7 +56,13 @@ public class RunAtBootService extends Service {
         // anything.  For that reason it may be wise to do a full install of the files at boot as
         // well, but that doesn't happen now.  Easy to add, but merits some discussion if script
         // updates should be done at boot, at every app start (current practice), etc.
-
+        if (!sharedpreferences.getBoolean(CHROOT_INSTALLED_TAG, false)) {
+            // chroot not installed
+            Log.d(TAG,"Nethunter chroot is not installed.");
+            doing_action = "Nethunter chroot is not installed.";
+            runBootServices = false;
+            doNotification(TAG, getString(R.string.nokalichrootfound));
+        }
         // check for DELETE_CHROOT_TAG pref & make sure default is NO
         if(ChrootManagerFragment.DELETE_CHROOT_TAG.equals(sharedpreferences.getString(ChrootManagerFragment.DELETE_CHROOT_TAG, ""))){
             doing_action = "DELETE CHROOT";
@@ -110,15 +116,6 @@ public class RunAtBootService extends Service {
                 doNotification(TAG, getString(R.string.toastmigratedchroot));
             }
         }
-        if (!sharedpreferences.getBoolean(CHROOT_INSTALLED_TAG, false)) {
-            // chroot not installed
-
-            Log.d(TAG,"Nethunter chroot is not installed.");
-            doing_action = "Nethunter chroot is not installed.";
-            runBootServices = false;
-            doNotification(TAG, getString(R.string.nokalichrootfound));
-        }
-
 
         if (userinit(runBootServices)) {
             Toast.makeText(getBaseContext(), "Boot end: ALL OK", Toast.LENGTH_SHORT).show();
@@ -128,7 +125,6 @@ public class RunAtBootService extends Service {
                 Toast.makeText(getBaseContext(), "Not runing boot scripts. OK", Toast.LENGTH_SHORT).show();
                 doNotification(TAG, "Boot ended. All fine. Action performed: " + doing_action + " OK");
             } else {
-
                 doNotification(TAG, "Boot ended. No busybox found!");
             }
         }
@@ -146,22 +142,19 @@ public class RunAtBootService extends Service {
         if(!ShouldRun){
             return false;
         }
-
-
         doing_action = "RUNNING BOOT SERVICES";
-        doNotification(TAG, getString(R.string.autorunningscripts));
+        doNotification(TAG, "RUNNING BOOT SERVICES");
         // this duplicates the functionality of the userinit service, formerly in init.rc
         // These scripts will start up after the system is booted.
         // Put scripts in fileDir/scripts/etc/init.d/ and set execute permission.  Scripts should
         // start with a number and include a hashbang such as #!/system/bin/sh as the first line.
-
-
         ShellExecuter exe = new ShellExecuter();
         String busybox = nh.whichBusybox();
         if(busybox != null){
             String[] runner = {busybox + " run-parts " +  nh.APP_INITD_PATH};
             exe.RunAsRoot(runner);
             Toast.makeText(getBaseContext(), getString(R.string.autorunningscripts), Toast.LENGTH_SHORT).show();
+            return true;
         }
         Toast.makeText(getBaseContext(), getString(R.string.toastForNoBusybox), Toast.LENGTH_SHORT).show();
         doNotification(TAG, getString(R.string.toastForNoBusybox));
