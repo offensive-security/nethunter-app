@@ -10,6 +10,10 @@
             android:id="@+id/createchroot_item"
             android:icon="@drawable/ic_action_android"
             android:title="@string/drawertitlecreatechroot" />
+        <item
+            android:id="@+id/checkforupdate_item"
+            android:icon="@drawable/ic_system_update_black_36dp"
+            android:title="@string/drawertitlecheckupdate" />
     </group>
     <group android:id="@+id/chrootDependentGroup">
         <item

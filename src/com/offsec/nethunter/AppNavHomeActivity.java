@@ -37,6 +37,8 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.Stack;
 
+import com.winsontan520.wversionmanager.library.WVersionManager;
+
 public class AppNavHomeActivity extends AppCompatActivity {
 
     public final static String TAG = "AppNavHomeActivity";
@@ -59,7 +61,6 @@ public class AppNavHomeActivity extends AppCompatActivity {
         return c;
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -70,6 +71,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
         // ************************************************
 
         setContentView(R.layout.base_layout);
+
         //set kali wallpaper as background
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
@@ -87,6 +89,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
         readmeButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                //checkUpdate();
                 showLicense();
                 return false;
             }
@@ -186,6 +189,15 @@ public class AppNavHomeActivity extends AppCompatActivity {
             menuNav.setGroupEnabled(R.id.chrootDependentGroup, false);
         }
     }
+    public void checkUpdate(){
+        WVersionManager versionManager = new WVersionManager(this);
+        versionManager.setVersionContentUrl("http://images.offensive-security.com/version.txt");
+        versionManager.setUpdateUrl("http://images.offensive-security.com/latest.apk");
+        versionManager.checkVersion();
+        versionManager.setUpdateNowLabel("Update");
+        versionManager.setIgnoreThisVersionLabel("Ignore");
+    }
+
     public void showLicense() {
         // @binkybear here goes the changelog etc... \n\n%s
         String readmeData = String.format("%s\n\n%s",
@@ -370,6 +382,9 @@ public class AppNavHomeActivity extends AppCompatActivity {
                                         .replace(R.id.container, ChrootManagerFragment.newInstance(itemId))
                                         .addToBackStack(null)
                                         .commit();
+                                break;
+                            case R.id.checkforupdate_item:
+                                checkUpdate();
                                 break;
                         }
                         restoreActionBar();
