@@ -506,21 +506,28 @@ class CmdLoader extends BaseAdapter {
         } else try {
             // INTERACTIVE
             if(_sendTo.equals("KALI")){
-                _cmd = new BootKali(_cmd).GET_TERM_CMD();
-            }
-            Intent intent =
-                    new Intent("jackpal.androidterm.RUN_SCRIPT");
+                Intent intent =
+                        new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
                 intent.addCategory(Intent.CATEGORY_DEFAULT);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-                intent.putExtra("jackpal.androidterm.iInitialCommand", _cmd);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("com.offsec.nhterm.iInitialCommand", _cmd);
                 _mContext.startActivity(intent);
+
+            } else {
+                Intent intent =
+                        new Intent("com.offsec.nhterm.RUN_SCRIPT");
+                intent.addCategory(Intent.CATEGORY_DEFAULT);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("com.offsec.nhterm.iInitialCommand", _cmd);
+                _mContext.startActivity(intent);
+
+
+
+
+            }
+
             } catch (Exception e) {
                 Toast.makeText(_mContext, _mContext.getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
-                try {
-                    _mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=jackpal.androidterm")));
-                } catch (android.content.ActivityNotFoundException anfe2) {
-                    _mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=jackpal.androidterm")));
-                }
             }
     }
 
