@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ public class MPCFragment extends Fragment {
     String payloadVar;
     String callbackVar;
     String stagerVar;
+    String cmd;
 
     NhUtil nh;
     private static final String ARG_SECTION_NUMBER = "section_number";
@@ -41,7 +43,7 @@ public class MPCFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.payload_maker, container, false);
+        final View rootView = inflater.inflate(R.layout.payload_maker, container, false);
         sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
         mContext = getActivity().getApplicationContext();
 
@@ -52,10 +54,15 @@ public class MPCFragment extends Fragment {
                 R.array.mpc_type_array, android.R.layout.simple_spinner_item);
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         typeSpinner.setAdapter(typeAdapter);
+        //Give it a initial value: this value stands until onItemSelected is fired
+        // usually the 1st value of spinner
+        typeVar = "asp";
         typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id){
                 String selectedItemText = parent.getItemAtPosition(pos).toString();
+                Log.d("Slected: ", selectedItemText);
+                //use swich!
 
                 if(selectedItemText.equals("ASP")) {
                     typeVar = "asp";
@@ -106,10 +113,13 @@ public class MPCFragment extends Fragment {
                 R.array.mpc_payload_array, android.R.layout.simple_spinner_item);
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         payloadSpinner.setAdapter(payloadAdapter);
+        //Give it a initial value: this value stands until onItemSelected is fired
+        payloadVar = "msf";
         payloadSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 String selectedItemText = parent.getItemAtPosition(pos).toString();
+                Log.d("Slected: ", selectedItemText);
                 if(selectedItemText.equals("MSF")) {
                     payloadVar = "msf";
                 }
@@ -130,10 +140,13 @@ public class MPCFragment extends Fragment {
                 R.array.mpc_callback_array, android.R.layout.simple_spinner_item);
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         callbackSpinner.setAdapter(callbackAdapter);
+        //Give it a initial value: this value stands until onItemSelected is fired
+        callbackVar = "reverse";
         callbackSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 String selectedItemText = parent.getItemAtPosition(pos).toString();
+                Log.d("Slected: ", selectedItemText);
                 if(selectedItemText.equals("Reverse")) {
                     callbackVar = "reverse";
                 }
@@ -153,10 +166,13 @@ public class MPCFragment extends Fragment {
                 R.array.mpc_stage_array, android.R.layout.simple_spinner_item);
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         stageSpinner.setAdapter(stagerAdapter);
+        //Give it a initial value: this value stands until onItemSelected is fired
+        stagerVar = "staged";
         stageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 String selectedItemText = parent.getItemAtPosition(pos).toString();
+                Log.d("Slected: ", selectedItemText);
                 if(selectedItemText.equals("Staged")) {
                     stagerVar = "staged";
                 }
@@ -177,16 +193,20 @@ public class MPCFragment extends Fragment {
                 R.array.mpc_callbacktype_array, android.R.layout.simple_spinner_item);
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         callbackTypeSpinner.setAdapter(callbackTypeAdapter);
+        //Give it a initial value: this value stands until onItemSelected is fired
+        callbackTypeVar = "tcp";
         callbackTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 String selectedItemText = parent.getItemAtPosition(pos).toString();
+                Log.d("Slected: ", selectedItemText);
+                //use swich!
                 if (selectedItemText.equals("TCP")) {
                     callbackTypeVar = "tcp";
                 } else if (selectedItemText.equals("HTTP")) {
                     callbackTypeVar = "http";
                 } else if (selectedItemText.equals("HTTPS")) {
-                   callbackTypeVar = "https";
+                    callbackTypeVar = "https";
                 } else if (selectedItemText.equals("Find Port")) {
                     callbackTypeVar = "find_port";
                 }
@@ -201,7 +221,7 @@ public class MPCFragment extends Fragment {
         // Port Text Field
         EditText port = (EditText)rootView.findViewById(R.id.mpc_port);
         port.setText("443");
-        final String PortStr = port.getText().toString();
+        //final String PortStr = port.getText().toString();
 
         // Get IP address for IP default IP field
         // http://stackoverflow.com/questions/6064510/how-to-get-ip-address-of-the-device
@@ -213,24 +233,35 @@ public class MPCFragment extends Fragment {
         // IP Text Field
         EditText ipaddress = (EditText)rootView.findViewById(R.id.mpc_ip_address);
         ipaddress.setText(ip);
-        final String IPAddressStr = ipaddress.getText().toString();
+        //final String IPAddressStr = ipaddress.getText().toString();
+        // this should not be assigned like that
+        // the vaue is dinamic, create a gettet (getCmd())
+        //cmd = typeVar + " " + ipaddress.getText() + " " + port.getText() + " " + payloadVar + " " + callbackVar + " " + " " + stagerVar + " " + callbackTypeVar;
 
-        final String cmd = typeVar + " " + IPAddressStr + " " + PortStr + " " + payloadVar + " " + callbackVar + " " + " " + stagerVar + " " + callbackTypeVar;
+        Log.d("start cmd values", getCmd(rootView));
 
         // Buttons
         addClickListener(R.id.mpc_GenerateSDCARD, new View.OnClickListener() {
             public void onClick(View v) {
-                intentClickListener_NH("cd /sdcard/; mpc " + cmd); // since is a kali command we can send it as is
+                Log.d("thecmd", "cd /sdcard/; mpc " + getCmd(rootView));
+                intentClickListener_NH("cd /sdcard/; mpc " + getCmd(rootView)); // since is a kali command we can send it as is
             }
         }, rootView);
 
         addClickListener(R.id.mpc_GenerateHTTP, new View.OnClickListener() {
             public void onClick(View v) {
-                intentClickListener_NH("cd /var/www/html; mpc " + cmd); // since is a kali command we can send it as is
+                Log.d("thecmd", "cd /var/www/html; mpc " + getCmd(rootView));
+                intentClickListener_NH("cd /var/www/html; mpc " + getCmd(rootView)); // since is a kali command we can send it as is
             }
         }, rootView);
 
         return rootView;
+    }
+
+    private String getCmd(View rootView){
+        EditText ipaddress = (EditText)rootView.findViewById(R.id.mpc_ip_address);
+        EditText port = (EditText)rootView.findViewById(R.id.mpc_port);
+        return typeVar + " " + ipaddress.getText() + " " + port.getText() + " " + payloadVar + " " + callbackVar + " " + " " + stagerVar + " " + callbackTypeVar;
     }
 
     private void addClickListener(int buttonId, View.OnClickListener onClickListener, View rootView) {
