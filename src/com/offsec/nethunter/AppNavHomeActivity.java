@@ -3,6 +3,7 @@ package com.offsec.nethunter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -101,7 +102,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
 
         prefs = getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
 
-        String buildTime = sdf.format(BuildConfig.BUILD_TIME);
+        final String buildTime = sdf.format(BuildConfig.BUILD_TIME);
         TextView buildInfo1 = (TextView) navigationHeadView.findViewById(R.id.buildinfo1);
         TextView buildInfo2 = (TextView) navigationHeadView.findViewById(R.id.buildinfo2);
         buildInfo1.setText(String.format("Version: %s (%s)", BuildConfig.VERSION_NAME, android.os.Build.TAGS));
@@ -118,31 +119,34 @@ public class AppNavHomeActivity extends AppCompatActivity {
 
         // copy script files, but off the main UI thread
         final ImageView myImageView = (ImageView) findViewById(R.id.bgHome);
-        File sdCardDir = new File(nh.APP_SD_FILES_PATH);
-        File scriptsDir = new File(nh.APP_SCRIPTS_PATH);
-        File etcDir = new File(nh.APP_INITD_PATH);
-        // Copy files if: no files, no scripts, no etc or new apk version
-        if (!prefs.getString(COPY_ASSETS_TAG, buildTime).equals(buildTime) || !sdCardDir.isDirectory() || !scriptsDir.isDirectory() || !etcDir.isDirectory()) {
-            Log.d(COPY_ASSETS_TAG, "COPING FILES....");
-            final Runnable r = new Runnable() {
-                public void run() {
+        final Runnable r = new Runnable() {
+            public void run() {
+                File sdCardDir = new File(nh.APP_SD_FILES_PATH);
+                File scriptsDir = new File(nh.APP_SCRIPTS_PATH);
+                File etcDir = new File(nh.APP_INITD_PATH);
+                // Copy files if: no files, no scripts, no etc or new apk version
+                if (!prefs.getString(COPY_ASSETS_TAG, buildTime).equals(buildTime) || !sdCardDir.isDirectory() || !scriptsDir.isDirectory() || !etcDir.isDirectory()) {
+                    Log.d(COPY_ASSETS_TAG, "COPING FILES....");
+
                     // 1:1 copy (recursive) of the assets/{scripts, etc, wallpapers} folders to /data/data/...
                     assetsToFiles(nh.APP_PATH, "", "data");
                     // 1:1 copy (recursive) of the configs to  /sdcard...
                     assetsToFiles(nh.SD_PATH, "", "sdcard");
                     ShellExecuter exe = new ShellExecuter();
                     exe.RunAsRoot(new String[]{"chmod 700 " + nh.APP_SCRIPTS_PATH+"/*", "chmod 700 " + nh.APP_INITD_PATH + "/*"});
-                }
-            };
-            Thread t = new Thread(r);
-            t.start();
-            SharedPreferences.Editor ed = prefs.edit();
-            ed.putString(COPY_ASSETS_TAG, buildTime);
-            ed.commit();
-        } else {
-            Log.d(COPY_ASSETS_TAG, "FILES NOT COPIED");
-        }
 
+
+                    SharedPreferences.Editor ed = prefs.edit();
+                    ed.putString(COPY_ASSETS_TAG, buildTime);
+                    ed.commit();
+                } else {
+                    Log.d(COPY_ASSETS_TAG, "FILES NOT COPIED");
+                }
+            }
+        };
+        Thread t = new Thread(r);
+        t.start();
+        new ShellExecuter().RunAsRootOutput("/system/bin/bootkali");
         // now pop in the default fragment
 
         getSupportFragmentManager()
