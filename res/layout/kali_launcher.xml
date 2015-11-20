@@ -22,7 +22,20 @@
                 android:layout_height="wrap_content"
                 android:text="@string/launch_kali_shell"
                 android:textColor="#ffffffff" />
-
+            <Button
+                android:id="@+id/button_start_su"
+                android:layout_weight="1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Launch Android SU Shell"
+                android:textColor="#ffffffff" />
+            <Button
+                android:id="@+id/button_start_android"
+                android:layout_weight="1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Launch Android Shell"
+                android:textColor="#ffffffff" />
             <Button
                 android:id="@+id/button_start_kalimenu"
                 android:layout_weight="1"

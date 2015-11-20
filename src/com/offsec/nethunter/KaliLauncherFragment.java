@@ -40,7 +40,17 @@ public class KaliLauncherFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.kali_launcher, container, false);
         addClickListener(R.id.button_start_kali, new View.OnClickListener() {
             public void onClick(View v) {
-                intentClickListener(new BootKali("").GET_KALI_SHELL_CMD());
+                intentClickListener_NH(""); // pops kali term.
+            }
+        }, rootView);
+        addClickListener(R.id.button_start_su, new View.OnClickListener() {
+            public void onClick(View v) {
+                intentClickListener_SU(""); // pops SU shell in term
+            }
+        }, rootView);
+        addClickListener(R.id.button_start_android, new View.OnClickListener() {
+            public void onClick(View v) {
+                intentClickListener_ANDROID(""); // pops andrid default shell
             }
         }, rootView);
         /**
@@ -48,7 +58,7 @@ public class KaliLauncherFragment extends Fragment {
          */
         addClickListener(R.id.button_start_kalimenu, new View.OnClickListener() {
             public void onClick(View v) {
-                intentClickListener(new BootKali("kalimenu").GET_TERM_CMD());
+                intentClickListener_NH("kalimenu"); // since is a kali command we can send it as is
             }
         }, rootView);
         /**
@@ -56,7 +66,7 @@ public class KaliLauncherFragment extends Fragment {
          */
         addClickListener(R.id.update_kali_chroot, new View.OnClickListener() {
             public void onClick(View v) {
-                intentClickListener("su -c \"bootkali update\"");
+                intentClickListener_NH("/usr/bin/start-update.sh");  // file in kali, exec it
             }
         }, rootView);
         /**
@@ -64,7 +74,7 @@ public class KaliLauncherFragment extends Fragment {
          */
         addClickListener(R.id.button_launch_wifite, new View.OnClickListener() {
             public void onClick(View v) {
-                intentClickListener("su -c \"bootkali wifite\"");
+                intentClickListener_SU("bootkali wifite"); // todo move out bootkali
             }
         }, rootView);
         /**
@@ -72,7 +82,7 @@ public class KaliLauncherFragment extends Fragment {
          */
         addClickListener(R.id.turn_off_external_wifi, new View.OnClickListener() {
             public void onClick(View v) {
-                intentClickListener("su -c \"bootkali wifi-disable\"");
+                intentClickListener_SU("bootkali wifi-disable"); // todo move out bootkali
             }
         }, rootView);
         /**
@@ -80,36 +90,62 @@ public class KaliLauncherFragment extends Fragment {
          */
         addClickListener(R.id.kali_dumpmifare, new View.OnClickListener() {
             public void onClick(View v) {
-                intentClickListener("su -c \"bootkali dumpmifare\"");
+                intentClickListener_SU("bootkali dumpmifare"); // todo move out bootkali
             }
         }, rootView);
 
         return rootView;
     }
 
-    public void getTerminalApp() {
+/*   public void getTerminalApp() {
         try {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=jackpal.androidterm")));
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=jackpal.androidterm"))); // todo move out jackpal link
         } catch (android.content.ActivityNotFoundException anfe2) {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=jackpal.androidterm")));
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=jackpal.androidterm"))); // todo move out jackpal link
         }
     }
-
+*/
     private void addClickListener(int buttonId, View.OnClickListener onClickListener, View rootView) {
         rootView.findViewById(buttonId).setOnClickListener(onClickListener);
     }
 
-    private void intentClickListener(final String command) {
+    private void intentClickListener_ANDROID(final String command) {
         try {
             Intent intent =
-                    new Intent("jackpal.androidterm.RUN_SCRIPT");
+                    new Intent("com.offsec.nhterm.RUN_SCRIPT");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
 
-            intent.putExtra("jackpal.androidterm.iInitialCommand", command);
+            intent.putExtra("com.offsec.nhterm.iInitialCommand", command);
             startActivity(intent);
         } catch (Exception e) {
             Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
-            getTerminalApp();
+            //getTerminalApp();
+        }
+    }
+    private void intentClickListener_SU(final String command) {
+        try {
+            Intent intent =
+                    new Intent("com.offsec.nhterm.RUN_SCRIPT_SU");
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+
+            intent.putExtra("com.offsec.nhterm.iInitialCommand", command);
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
+
+        }
+    }
+    private void intentClickListener_NH(final String command) {
+        try {
+            Intent intent =
+                    new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+
+            intent.putExtra("com.offsec.nhterm.iInitialCommand", command);
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
+
         }
     }
 

@@ -2,6 +2,7 @@ package com.offsec.nethunter;
 
 import android.app.AlertDialog;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -249,6 +250,9 @@ public class ChrootManagerFragment extends Fragment {
                                 // chroot not found
                                 statusLog(getActivity().getString(R.string.nokalichrootfound));
                                 x.RunAsRootOutput("mkdir -p " + nh.NH_SYSTEM_PATH);
+                                // prevents muts 'dirty' install issue /nhsystem is nethunter property.
+                                statusLog("Cleaning install directory");
+                                x.RunAsRootOutput("rm -rf " + nh.NH_SYSTEM_PATH + "/*");
                                 installButton.setText(getActivity().getResources().getString(R.string.installkalichrootbutton));
                                 installButton.setEnabled(true);
                                 updateButton.setVisibility(View.GONE);
@@ -256,7 +260,6 @@ public class ChrootManagerFragment extends Fragment {
                                 editor.commit();
                             }
                              // don't use apply() or it may not save
-
                         }
                     });
 
@@ -328,6 +331,7 @@ public class ChrootManagerFragment extends Fragment {
         adb.setPositiveButton(R.string.InstallAndUpdateButtonText, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                statusLog("Everything went fine, chroot is installed. Selecting metapackages.");
                 StringBuilder sb = new StringBuilder("");
                 CheckBox cb;
                 // now grab all the checkboxes in the dialog and check their status
@@ -343,6 +347,7 @@ public class ChrootManagerFragment extends Fragment {
                         }
                     }
                 }
+
                 installAndUpgrade(sb.toString());
             }
         });
@@ -354,18 +359,20 @@ public class ChrootManagerFragment extends Fragment {
     private void installAndUpgrade(String packages) {
 
         try {
-            Intent intent =
-                    new Intent("jackpal.androidterm.RUN_SCRIPT");
+            Intent intent = new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
-            intent.putExtra("jackpal.androidterm.iInitialCommand", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali apt-get install " + packages + "'");
+            intent.putExtra("com.offsec.nhterm.iInitialCommand", "apt-get install " + packages);
+            Log.d("PACKS:", "PACKS:" + packages);
             startActivity(intent);
+
+            if(packages.equals("")){
+                packages = "No packages selected. You can come back and install them at any moment.";
+            }
+            statusLog("Metapackages selected: " + packages);
         } catch (Exception e) {
             nh.showMessage(getString(R.string.toast_install_terminal));
-            try {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=jackpal.androidterm")));
-            } catch (android.content.ActivityNotFoundException anfe2) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=jackpal.androidterm")));
-            }
+            statusLog("Error: Terminal app not found, cant continue. Install a terminal.");
+            checkForExistingChroot();
         }
     }
 
@@ -611,6 +618,7 @@ public class ChrootManagerFragment extends Fragment {
             } catch (RuntimeException e) {
                 Log.d(TAG, "Error: ", e);
                 publishProgress("Error: " + e.toString());
+                statusLog(TAG + " >> Error: " +  e.toString());
                 return false;
             }
             return true;
@@ -633,11 +641,12 @@ public class ChrootManagerFragment extends Fragment {
                                 }
                             }, 3000);
                 } catch (RuntimeException e) {
-                    Log.d(TAG, "Error in start unzip: ", e);
+                    Log.d(TAG, "Error post extraction: ", e);
+                    statusLog(TAG + " >> Error: " +  e.toString());
                 }
 
             } else {
-                statusLog(getActivity().getString(R.string.therewasanerror));
+                statusLog(getActivity().getString(R.string.therewasanerror) + " ERROR:" + result);
                 pd.dismiss();
             }
 
@@ -660,6 +669,7 @@ public class ChrootManagerFragment extends Fragment {
 
         public DownloadChroot(Context context) {
             this.context = context;
+
             mProgressDialog = new ProgressDialog(context);
             mProgressDialog.setCancelable(false);
             mProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -741,7 +751,10 @@ public class ChrootManagerFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
+            // if the user clicks the notif, bring back the app screen to top.
+            Intent newIntent = new Intent(getContext(), AppNavHomeActivity.class);
+            PendingIntent pIntent = PendingIntent.getActivity(getContext(), 0, newIntent, 0);
+            mBuilder.setContentIntent(pIntent);
             mBuilder.setContentTitle("Downloading Chroot")
                     .setContentText("Starting download...")
                     .setSmallIcon(R.drawable.ic_action_refresh);
@@ -767,6 +780,7 @@ public class ChrootManagerFragment extends Fragment {
                 double ttDownloaded = round(last_perc * onePercent);
                 // if we get here, length is known, now set indeterminate to false
                 // Notification
+
                 mBuilder.setProgress(100, progress[0], false)
                         .setContentTitle("Downloading Chroot: " + last_perc + "%")
                         .setContentText("So far " + ttDownloaded + " MiB of " + humanSize + " MiB downloaded.");
