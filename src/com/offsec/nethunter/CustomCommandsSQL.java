@@ -11,6 +11,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.offsec.nethunter.utils.NhPaths;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -18,8 +20,8 @@ import java.nio.channels.FileChannel;
 import java.util.LinkedList;
 import java.util.List;
 
-public class SQLPersistence extends SQLiteOpenHelper {
-    NhUtil nh;
+public class CustomCommandsSQL extends SQLiteOpenHelper {
+    NhPaths nh;
     final static int DATABASE_VERSION = 2;
     final static String DATABASE_NAME = "KaliLaunchers";
 
@@ -32,10 +34,10 @@ public class SQLPersistence extends SQLiteOpenHelper {
             CustomCommand.SEND_TO_SHELL + " TEXT, " +
             CustomCommand.RUN_AT_BOOT + " INTEGER )";
     Context context;
-    public SQLPersistence(Context context) {
+    public CustomCommandsSQL(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
-        nh = new NhUtil();
+        nh = new NhPaths();
     }
 
     @Override
@@ -171,8 +173,8 @@ public class SQLPersistence extends SQLiteOpenHelper {
         try {
             String sd = nh.SD_PATH;
             String data = nh.APP_PATH;
-            Log.d("ExportDB sd =", sd.toString());
-            Log.d("ExportDB sd =", data.toString());
+            Log.d("ExportDB sd =", sd);
+            Log.d("ExportDB sd =", data);
             String currentDBPath = "../databases/"  + DATABASE_NAME;
             String backupDBPath = "/nh_bak_" + DATABASE_NAME + "_" + DATABASE_VERSION;
             File currentDB = new File(data, currentDBPath);

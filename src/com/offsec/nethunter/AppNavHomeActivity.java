@@ -3,11 +3,7 @@ package com.offsec.nethunter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -19,32 +15,26 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.Stack;
 
+import com.offsec.nethunter.utils.CheckForRoot;
 import com.winsontan520.wversionmanager.library.WVersionManager;
 
 public class AppNavHomeActivity extends AppCompatActivity {
 
     public final static String TAG = "AppNavHomeActivity";
     public static final String CHROOT_INSTALLED_TAG = "CHROOT_INSTALLED_TAG";
-    public static final String COPY_ASSETS_TAG = "COPY_ASSETS_TAG";
+
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -55,8 +45,8 @@ public class AppNavHomeActivity extends AppCompatActivity {
     private Stack<String> titles = new Stack<>();
     private SharedPreferences prefs;
     private MenuItem lastSelected;
-    private NhUtil nh;
     private static Context c;
+    private Boolean weCheckedForRoot = false;
 
     public static Context getAppContext() {
         return c;
@@ -68,8 +58,10 @@ public class AppNavHomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // ************************************************
             c = getApplication(); //* DONT REMOVE ME *
-            nh = new NhUtil();
         // ************************************************
+        CheckForRoot mytask = new CheckForRoot(this);
+        mytask.execute();
+
 
         setContentView(R.layout.base_layout);
 
@@ -117,36 +109,8 @@ public class AppNavHomeActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.darkTitle));
         }
 
-        // copy script files, but off the main UI thread
-        final ImageView myImageView = (ImageView) findViewById(R.id.bgHome);
-        final Runnable r = new Runnable() {
-            public void run() {
-                File sdCardDir = new File(nh.APP_SD_FILES_PATH);
-                File scriptsDir = new File(nh.APP_SCRIPTS_PATH);
-                File etcDir = new File(nh.APP_INITD_PATH);
-                // Copy files if: no files, no scripts, no etc or new apk version
-                if (!prefs.getString(COPY_ASSETS_TAG, buildTime).equals(buildTime) || !sdCardDir.isDirectory() || !scriptsDir.isDirectory() || !etcDir.isDirectory()) {
-                    Log.d(COPY_ASSETS_TAG, "COPING FILES....");
 
-                    // 1:1 copy (recursive) of the assets/{scripts, etc, wallpapers} folders to /data/data/...
-                    assetsToFiles(nh.APP_PATH, "", "data");
-                    // 1:1 copy (recursive) of the configs to  /sdcard...
-                    assetsToFiles(nh.SD_PATH, "", "sdcard");
-                    ShellExecuter exe = new ShellExecuter();
-                    exe.RunAsRoot(new String[]{"chmod 700 " + nh.APP_SCRIPTS_PATH+"/*", "chmod 700 " + nh.APP_INITD_PATH + "/*"});
-
-
-                    SharedPreferences.Editor ed = prefs.edit();
-                    ed.putString(COPY_ASSETS_TAG, buildTime);
-                    ed.commit();
-                } else {
-                    Log.d(COPY_ASSETS_TAG, "FILES NOT COPIED");
-                }
-            }
-        };
-        Thread t = new Thread(r);
-        t.start();
-        new ShellExecuter().RunAsRootOutput("/system/bin/bootkali");
+//        new ShellExecuter().RunAsRootOutput("/system/bin/bootkali");
         // now pop in the default fragment
 
         getSupportFragmentManager()
@@ -163,6 +127,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
             ed.putBoolean("seenNav", true);
             ed.commit();
         }
+
         if(lastSelected == null){ // only in the 1st create
             lastSelected = navigationView.getMenu().getItem(0);
             lastSelected.setChecked(true);
@@ -182,7 +147,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
         mDrawerToggle.syncState();
         // pre-set the drawer options
         setDrawerOptions();
-        checkForRoot(myImageView); //  gateway check to make sure root's possible & pop up dialog if not
+
     }
 
     public void setDrawerOptions() {
@@ -220,51 +185,9 @@ public class AppNavHomeActivity extends AppCompatActivity {
         AlertDialog ad = adb.create();
         ad.setCancelable(false);
         ad.getWindow().getAttributes().windowAnimations = R.style.DialogStyle;
-
         ad.show();
     }
-
-    public void checkForRoot(final ImageView v) {
-        final AppNavHomeActivity ctx = this;
-        new Thread(new Runnable() {
-            public void run() {
-                ShellExecuter exe = new ShellExecuter();
-                final Boolean isRootAvailable = exe.isRootAvailable();
-                v.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!isRootAvailable) {
-                            AlertDialog.Builder adb = new AlertDialog.Builder(ctx);
-                            adb.setTitle(R.string.rootdialogtitle)
-                                    .setMessage(R.string.rootdialogmessage)
-                                    .setPositiveButton(R.string.rootdialogposbutton, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.cancel();
-                                            checkForRoot(v);
-                                        }
-                                    })
-                                    .setNegativeButton(R.string.rootdialognegbutton, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            finish();
-                                        }
-                                    });
-                            AlertDialog ad = adb.create();
-                            ad.setCancelable(false);
-                            ad.show();
-                        }
-                    }
-
-
-                });
-            }
-        }).start();
-    }
     /* if the chroot isn't set up, don't show the chroot options */
-
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (mDrawerToggle.onOptionsItemSelected(item)) {
@@ -281,7 +204,6 @@ public class AppNavHomeActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
     private void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
@@ -414,95 +336,6 @@ public class AppNavHomeActivity extends AppCompatActivity {
             ab.setTitle(mTitle);
 
         }
-    }
-
-    private Boolean pathIsAllowed(String path, String copyType) {
-        // never copy images, sounds or webkit
-        if (!path.startsWith("images") && !path.startsWith("sounds") && !path.startsWith("webkit")) {
-            if (copyType.equals("sdcard")) {
-                if (path.equals("")) {
-                    return true;
-                } else if (path.startsWith(nh.NH_SD_FOLDER_NAME)) {
-                    return true;
-                }
-                return false;
-            }
-            if (copyType.equals("data")) {
-                if (path.equals("")) {
-                    return true;
-                } else if (path.startsWith("scripts")) {
-                    return true;
-                } else if (path.startsWith("wallpapers")) {
-                    return true;
-                } else if (path.startsWith("etc")) {
-                    return true;
-                }
-                return false;
-            }
-            return false;
-        }
-        return false;
-    }
-
-    // now this only copies the folders: scripts, etc , wallpapers to /data/data...
-    private void assetsToFiles(String TARGET_BASE_PATH, String path, String copyType) {
-        AssetManager assetManager = this.getAssets();
-        String assets[];
-        try {
-            // Log.i("tag", "assetsTo" + copyType +"() "+path);
-            assets = assetManager.list(path);
-            if (assets.length == 0) {
-                copyFile(TARGET_BASE_PATH, path);
-            } else {
-                String fullPath = TARGET_BASE_PATH + "/" + path;
-                // Log.i("tag", "path="+fullPath);
-                File dir = new File(fullPath);
-                if (!dir.exists() && pathIsAllowed(path, copyType)) { // copy thouse dirs
-                    if (!dir.mkdirs()) {
-                        Log.i("tag", "could not create dir " + fullPath);
-                    }
-                }
-                for (String asset : assets) {
-                    String p;
-                    if (path.equals("")) {
-                        p = "";
-                    } else {
-                        p = path + "/";
-                    }
-                    if (pathIsAllowed(path, copyType)) {
-                        assetsToFiles(TARGET_BASE_PATH, p + asset, copyType);
-                    }
-                }
-            }
-        } catch (IOException ex) {
-            Log.e("tag", "I/O Exception", ex);
-        }
-    }
-
-    private void copyFile(String TARGET_BASE_PATH, String filename) {
-        AssetManager assetManager = this.getAssets();
-
-        InputStream in;
-        OutputStream out;
-        String newFileName = null;
-        try {
-            // Log.i("tag", "copyFile() "+filename);
-            in = assetManager.open(filename);
-            newFileName = TARGET_BASE_PATH + "/" + filename;
-            out = new FileOutputStream(newFileName);
-            byte[] buffer = new byte[8092];
-            int read;
-            while ((read = in.read(buffer)) != -1) {
-                out.write(buffer, 0, read);
-            }
-            in.close();
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            Log.e("tag", "Exception in copyFile() of " + newFileName);
-            Log.e("tag", "Exception in copyFile() " + e.toString());
-        }
-
     }
 
     @Override

@@ -24,6 +24,8 @@ import android.widget.TextView;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
+import com.offsec.nethunter.utils.NhPaths;
+import com.offsec.nethunter.utils.ShellExecuter;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +44,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
     final CharSequence[] scripts = {"mana-nat-full", "mana-nat-simple", "mana-nat-simple-bdf"};
     private static final String TAG = "ManaFragment";
     private static final String ARG_SECTION_NUMBER = "section_number";
-    static NhUtil nh;
+    static NhPaths nh;
     String configFilePath;
 
     public ManaFragment() {
@@ -59,7 +61,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        nh = new NhUtil();
+        nh = new NhPaths();
         View rootView = inflater.inflate(R.layout.mana, container, false);
         tabsPagerAdapter = new TabsPagerAdapter(getActivity().getSupportFragmentManager());
 
@@ -284,7 +286,9 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
+                    if(getView() == null){
+                        return;
+                    }
                     EditText ifc = (EditText) getView().findViewById(R.id.ifc);
                     EditText bssid = (EditText) getView().findViewById(R.id.bssid);
                     EditText ssid = (EditText) getView().findViewById(R.id.ssid);
@@ -292,16 +296,18 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                     EditText enableKarma = (EditText) getView().findViewById(R.id.enable_karma);
                     EditText karmaLoud = (EditText) getView().findViewById(R.id.karma_loud);
                     // FIXED BY BINKYBEAR <3
+                    if(source != null){
+                        source = source.replaceAll("(?m)^interface=(.*)$", "interface=" + ifc.getText().toString());
+                        source = source.replaceAll("(?m)^bssid=(.*)$", "bssid=" + bssid.getText().toString());
+                        source = source.replaceAll("(?m)^ssid=(.*)$", "ssid=" + ssid.getText().toString());
+                        source = source.replaceAll("(?m)^channel=(.*)$", "channel=" + channel.getText().toString());
+                        source = source.replaceAll("(?m)^enable_karma=(.*)$", "enable_karma=" + enableKarma.getText().toString());
+                        source = source.replaceAll("(?m)^karma_loud=(.*)$", "karma_loud=" + karmaLoud.getText().toString());
 
-                    source = source.replaceAll("(?m)^interface=(.*)$", "interface=" + ifc.getText().toString());
-                    source = source.replaceAll("(?m)^bssid=(.*)$", "bssid=" + bssid.getText().toString());
-                    source = source.replaceAll("(?m)^ssid=(.*)$", "ssid=" + ssid.getText().toString());
-                    source = source.replaceAll("(?m)^channel=(.*)$", "channel=" + channel.getText().toString());
-                    source = source.replaceAll("(?m)^enable_karma=(.*)$", "enable_karma=" + enableKarma.getText().toString());
-                    source = source.replaceAll("(?m)^karma_loud=(.*)$", "karma_loud=" + karmaLoud.getText().toString());
+                        exe.SaveFileContents(source, configFilePath);
+                        nh.showMessage("Source updated");
+                    }
 
-                    exe.SaveFileContents(source, configFilePath);
-                    nh.showMessage("Source updated");;
                 }
             });
             return rootView;
@@ -462,6 +468,9 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(getView() == null){
+                        return;
+                    }
                     EditText source = (EditText) getView().findViewById(R.id.source);
                     String newSource = source.getText().toString();
                     exe.SaveFileContents(newSource, configFilePath);
@@ -498,6 +507,9 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(getView() == null){
+                        return;
+                    }
                     EditText source = (EditText) getView().findViewById(R.id.source);
                     String newSource = source.getText().toString();
                     ShellExecuter exe = new ShellExecuter();
@@ -536,6 +548,9 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(getView() == null){
+                        return;
+                    }
                     EditText source = (EditText) getView().findViewById(R.id.source);
                     String newSource = source.getText().toString();
                     ShellExecuter exe = new ShellExecuter();
@@ -570,6 +585,9 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(getView() == null){
+                        return;
+                    }
                     EditText source = (EditText) getView().findViewById(R.id.source);
                     String newSource = source.getText().toString();
                     ShellExecuter exe = new ShellExecuter();
@@ -611,6 +629,9 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(getView() == null){
+                        return;
+                    }
                     EditText source = (EditText) getView().findViewById(R.id.source);
                     String newSource = source.getText().toString();
                     ShellExecuter exe = new ShellExecuter();

@@ -2,20 +2,18 @@ package com.offsec.nethunter.service;
 
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.offsec.nethunter.ChrootManagerFragment;
-import com.offsec.nethunter.NhUtil;
+import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.R;
-import com.offsec.nethunter.ShellExecuter;
+import com.offsec.nethunter.utils.ShellExecuter;
 
 
 public class RunAtBootService extends Service {
@@ -23,7 +21,7 @@ public class RunAtBootService extends Service {
     public static final String TAG = "NH: RunAtBootServices";
     final ShellExecuter x = new ShellExecuter();
     SharedPreferences sharedpreferences;
-    NhUtil nh;
+    NhPaths nh;
     Boolean runBootServices = true;
     String doing_action = "";
     Notification.Builder n = null;
@@ -50,7 +48,7 @@ public class RunAtBootService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         doNotification(TAG, "Doing boot checks");
-        nh = new NhUtil(getFilesDir().toString());
+        nh = new NhPaths(getFilesDir().toString());
         sharedpreferences = getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
         // NOTE:  If the Nethunter app has not yet been run (to install these files), this won't do
         // anything.  For that reason it may be wise to do a full install of the files at boot as

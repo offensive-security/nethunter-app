@@ -14,6 +14,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.offsec.nethunter.utils.NhPaths;
+import com.offsec.nethunter.utils.ShellExecuter;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,7 +28,7 @@ public class BadusbFragment extends Fragment {
     private String configFilePath;
     private String sourcePath;
     private static final String ARG_SECTION_NUMBER = "section_number";
-    NhUtil nh;
+    NhPaths nh;
     ShellExecuter exe = new ShellExecuter();
     public BadusbFragment() {
 
@@ -57,7 +60,7 @@ public class BadusbFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        nh = new NhUtil();
+        nh = new NhPaths();
         if (Build.VERSION.SDK_INT >= 21) {
             configFilePath = "/configs/startbadusb-lollipop.sh";
         } else {

@@ -1,4 +1,4 @@
-package com.offsec.nethunter;
+package com.offsec.nethunter.utils;
 
 import android.util.Log;
 
@@ -51,7 +51,7 @@ import java.util.ArrayList;
  */
 public class BootKali {
     private String TERM_CMD;
-    private NhUtil nh = new NhUtil();
+    private NhPaths nh = new NhPaths();
     private String KALI_ENV;
     private String KALI_COMMAND;
 
@@ -112,8 +112,8 @@ public class BootKali {
     private Boolean GET_ANDROID_DNS() {
         try {
             Class<?> SystemProperties = Class.forName("android.os.SystemProperties");
-            Method method = SystemProperties.getMethod("get", new Class[]{String.class});
-            ArrayList<String> servers = new ArrayList<String>();
+            Method method = SystemProperties.getMethod("get", String.class);
+            ArrayList<String> servers = new ArrayList<>();
             String dns_servers = "";
             for (String name : new String[]{"net.dns1", "net.dns2", "net.dns3", "net.dns4",}) {
                 String value = (String) method.invoke(null, name);

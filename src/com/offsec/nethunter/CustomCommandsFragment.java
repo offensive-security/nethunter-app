@@ -1,15 +1,12 @@
 package com.offsec.nethunter;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,6 +26,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.offsec.nethunter.utils.BootKali;
+import com.offsec.nethunter.utils.NhPaths;
+import com.offsec.nethunter.utils.ShellExecuter;
+
 import java.util.List;
 
 public class CustomCommandsFragment  extends Fragment {
@@ -36,7 +37,7 @@ public class CustomCommandsFragment  extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final String TAG = "CustomCommandsFragment";
-    private SQLPersistence database;
+    private CustomCommandsSQL database;
     private Context mContext;
     private ListView commandListView;
     private CmdLoader commandAdapter;
@@ -45,7 +46,7 @@ public class CustomCommandsFragment  extends Fragment {
     private String shebang;
     private String custom_commands_runlevel;
     private ShellExecuter exe = new ShellExecuter();
-    NhUtil nh;
+    NhPaths nh;
     public CustomCommandsFragment() {
 
     }
@@ -66,8 +67,8 @@ public class CustomCommandsFragment  extends Fragment {
 
         //this runs BEFORE the ui is available
         mContext = getActivity().getApplicationContext();
-        nh = new NhUtil();
-        database = new SQLPersistence(mContext);
+        nh = new NhPaths();
+        database = new CustomCommandsSQL(mContext);
         bootScriptPath = nh.APP_INITD_PATH;
         shebang = "#!/system/bin/sh\n\n# Run at boot CustomCommand: ";
         custom_commands_runlevel = "90";
