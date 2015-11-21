@@ -60,6 +60,7 @@ else
 
 	$busybox mount -o bind /system $mnt/system
 	$busybox mount -o bind /sdcard $mnt/sdcard
+	$busybox mount -o bind /storage/usbdisk $mnt/mnt/usbdisk
 	$busybox mount -o bind /dev $mnt/dev
 	$busybox mount -t devpts devpts $mnt/dev/pts
 	$busybox mount -t proc proc $mnt/proc
