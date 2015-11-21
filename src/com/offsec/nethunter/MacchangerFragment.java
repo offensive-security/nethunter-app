@@ -27,6 +27,9 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.offsec.nethunter.utils.NhPaths;
+import com.offsec.nethunter.utils.ShellExecuter;
+
 
 public class MacchangerFragment extends Fragment {
 
@@ -34,7 +37,7 @@ public class MacchangerFragment extends Fragment {
     SharedPreferences sharedpreferences;
 
 
-    NhUtil nh;
+    NhPaths nh;
     private static final String ARG_SECTION_NUMBER = "section_number";
     public MacchangerFragment() {
 
@@ -52,7 +55,7 @@ public class MacchangerFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         if (isAdded()) {
-            nh = new NhUtil(null);
+            nh = new NhPaths(null);
         }
     }
 

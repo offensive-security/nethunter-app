@@ -28,6 +28,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.offsec.nethunter.utils.NhPaths;
+import com.offsec.nethunter.utils.ShellExecuter;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -45,7 +48,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final String TAG = "DuckHunterFragment";
-    static NhUtil nh;
+    static NhPaths nh;
     public DuckHunterFragment() {
 
     }
@@ -64,7 +67,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
         if (isAdded()) {
 
-            nh = new NhUtil();
+            nh = new NhPaths();
         }
     }
 
@@ -408,6 +411,9 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
             switch (requestCode) {
                 case PICKFILE_RESULT_CODE:
                     if (resultCode == Activity.RESULT_OK) {
+                        if(getView() == null){
+                            return;
+                        }
                         String FilePath = data.getData().getPath();
                         EditText source = (EditText) getView().findViewById(R.id.editSource);
                         try {
@@ -451,9 +457,6 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
         @Override
         public void setUserVisibleHint(boolean isVisibleToUser) {
             super.setUserVisibleHint(isVisibleToUser);
-            if (isVisibleToUser) {
-
-            }
         }
 
         public void onResume() {

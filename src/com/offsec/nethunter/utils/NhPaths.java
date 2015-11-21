@@ -1,6 +1,5 @@
-package com.offsec.nethunter;
+package com.offsec.nethunter.utils;
 import android.os.Environment;
-import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 
@@ -39,7 +38,7 @@ import static com.offsec.nethunter.AppNavHomeActivity.getAppContext;
  *        jmingov.
  */
 
-public class NhUtil {
+public class NhPaths {
     // System paths
     public String APP_PATH;
     public String APP_INITD_PATH;
@@ -60,7 +59,7 @@ public class NhUtil {
 
     // constructor for app Activities and Fragments, anything with appCtx;
 
-    public  NhUtil () {
+    public NhPaths() {
         // App base path () /data/data/com.offsec.....
         this.APP_PATH = getAppContext().getFilesDir().toString();
         doSetup(this);
@@ -71,7 +70,7 @@ public class NhUtil {
     }
     // constructor for service (different ctx)
 
-    public NhUtil (String _path) {
+    public NhPaths(String _path) {
         // App base path () /data/data/com.offsec.....
         this.APP_PATH = _path;
         doSetup(this);
@@ -81,7 +80,7 @@ public class NhUtil {
         */
     }
 
-    private void doSetup(NhUtil nh){
+    private void doSetup(NhPaths nh){
         // APP_PATH is now available !!!
         nh.APP_INITD_PATH = APP_PATH + "/etc/init.d";
         nh.APP_SCRIPTS_PATH = APP_PATH + "/scripts";

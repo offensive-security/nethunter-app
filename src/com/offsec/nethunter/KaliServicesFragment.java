@@ -15,6 +15,9 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.offsec.nethunter.utils.NhPaths;
+import com.offsec.nethunter.utils.ShellExecuter;
+
 import java.io.File;
 
 public class KaliServicesFragment extends Fragment {
@@ -25,7 +28,7 @@ public class KaliServicesFragment extends Fragment {
     private String[][] KaliServices;
     private static final String ARG_SECTION_NUMBER = "section_number";
     boolean updateStatuses = false;
-    NhUtil nh;
+    NhPaths nh;
     public KaliServicesFragment() {
 
     }
@@ -57,7 +60,7 @@ public class KaliServicesFragment extends Fragment {
 
         if (isAdded()) {
 
-            nh = new NhUtil();
+            nh = new NhPaths();
             KaliServices = new String[][]{
 
                     // {name, check_cmd, start_cmd, stop_cmd, init_service_filename}

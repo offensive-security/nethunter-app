@@ -13,6 +13,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.offsec.nethunter.utils.NhPaths;
+import com.offsec.nethunter.utils.ShellExecuter;
+
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,7 +24,7 @@ public class DnsmasqFragment extends Fragment {
 
     private String configFilePath;
     private static final String ARG_SECTION_NUMBER = "section_number";
-    NhUtil nh;
+    NhPaths nh;
     ShellExecuter exe = new ShellExecuter();
     public DnsmasqFragment() {
 
@@ -37,7 +40,7 @@ public class DnsmasqFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        nh = new NhUtil();
+        nh = new NhPaths();
         configFilePath = nh.CHROOT_PATH + "/etc/dnsmasq.conf";
         View rootView = inflater.inflate(R.layout.dnsmasq, container, false);
         loadOptions(rootView);

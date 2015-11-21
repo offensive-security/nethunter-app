@@ -27,6 +27,9 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.offsec.nethunter.utils.NhPaths;
+import com.offsec.nethunter.utils.ShellExecuter;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -82,7 +85,7 @@ public class ChrootManagerFragment extends Fragment {
     private static final String FILENAME = "kalifs-minimal.tar.xz";
     private static final String EXTRACTED_FILENAME = "kalifs-minimal.tar";
     //private static final String URI = "http://images.offensive-security.com/" + FILENAME;
-    private static final String URI = "http://188.138.17.16/" + FILENAME;
+    private static final String URI = "http://3bollcdn.com/nethunter/chroot/" + FILENAME;
     private static final String SHA512 =
             "8b9fe6f93bf4fd879871b8c797b98d7fd0adad553fcd36211151061edfb7bf098ad3845103545" +
                     "e9a3ae91aca3527cd90a8068d12cf0f61a3d69c4c0d0220fd45";
@@ -101,12 +104,12 @@ public class ChrootManagerFragment extends Fragment {
     ProgressDialog pd;
     SharedPreferences sharedpreferences;
     AlertDialog ad;
-    NhUtil nh;
+    NhPaths nh;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        nh = new NhUtil();
+        nh = new NhPaths();
         View rootView = inflater.inflate(R.layout.createchroot, container, false);
         statusText = (TextView) rootView.findViewById(R.id.statusText);
         statusText.setMovementMethod(new ScrollingMovementMethod());
@@ -669,7 +672,6 @@ public class ChrootManagerFragment extends Fragment {
 
         public DownloadChroot(Context context) {
             this.context = context;
-
             mProgressDialog = new ProgressDialog(context);
             mProgressDialog.setCancelable(false);
             mProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {

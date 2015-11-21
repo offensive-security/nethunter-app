@@ -3,11 +3,12 @@ package com.offsec.nethunter;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.offsec.nethunter.utils.ShellExecuter;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -100,6 +101,8 @@ public class NetHunterFragment extends Fragment {
                 });
             }
         }).start();
+        // CHECK FOR ROOT ACCESS
+
     }
 
     private void getInterfaces(final View rootView) {
@@ -136,6 +139,7 @@ public class NetHunterFragment extends Fragment {
                                 hidIfaces.setText(outputHID);
                             }
                             hidIfaces.setFocusable(false);
+
                         }
                     });
                 }

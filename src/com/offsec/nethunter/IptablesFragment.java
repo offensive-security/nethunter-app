@@ -13,6 +13,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.offsec.nethunter.utils.NhPaths;
+import com.offsec.nethunter.utils.ShellExecuter;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,7 +29,7 @@ import java.io.OutputStreamWriter;
 public class IptablesFragment extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
-    NhUtil nh;
+    NhPaths nh;
     public IptablesFragment() {
 
     }
@@ -88,7 +91,7 @@ public class IptablesFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         if (isAdded()) {
-            nh = new NhUtil();
+            nh = new NhPaths();
         }
     }
 

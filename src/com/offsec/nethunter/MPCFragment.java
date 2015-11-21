@@ -17,6 +17,8 @@ import android.widget.Toast;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiInfo;
 
+import com.offsec.nethunter.utils.NhPaths;
+
 public class MPCFragment extends Fragment {
 
     SharedPreferences sharedpreferences;
@@ -28,7 +30,7 @@ public class MPCFragment extends Fragment {
     String stagerVar;
     String cmd;
 
-    NhUtil nh;
+    NhPaths nh;
     private static final String ARG_SECTION_NUMBER = "section_number";
     public MPCFragment() {
     }

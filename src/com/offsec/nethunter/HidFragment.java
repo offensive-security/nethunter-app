@@ -28,6 +28,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.offsec.nethunter.utils.NhPaths;
+import com.offsec.nethunter.utils.ShellExecuter;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
@@ -42,7 +45,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
     TabsPagerAdapter TabsPagerAdapter;
     ViewPager mViewPager;
     SharedPreferences sharedpreferences;
-    static NhUtil nh;
+    static NhPaths nh;
     final CharSequence[] platforms = {"No UAC Bypass", "Windows 7", "Windows 8", "Windows 10"};
     final CharSequence[] languages = {"American English", "Belgian", "British English", "Danish", "French", "German", "Italian", "Norwegian", "Portugese", "Russian", "Spanish", "Swedish"};
     private String configFilePath;
@@ -71,7 +74,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         if (isAdded()) {
-            nh = new NhUtil();
+            nh = new NhPaths();
         }
     }
 

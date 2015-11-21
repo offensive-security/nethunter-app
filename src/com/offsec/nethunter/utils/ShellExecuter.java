@@ -1,4 +1,4 @@
-package com.offsec.nethunter;
+package com.offsec.nethunter.utils;
 
 import android.util.Log;
 import android.widget.EditText;
@@ -101,10 +101,9 @@ public class ShellExecuter {
             throw new RuntimeException(ex);
         }
     }
-
     public boolean isRootAvailable() {
         String result = RunAsRootOutput("busybox id -u");
-        return result.matches("0");
+        return result.equals("0");
     }
 
     public String RunAsRootOutput(String command) {
@@ -163,7 +162,7 @@ public class ShellExecuter {
                 v.post(new Runnable() {
                     @Override
                     public void run() {
-                     v.setText(_output.toString());
+                     v.setText(_output);
                     }
                 });
             }

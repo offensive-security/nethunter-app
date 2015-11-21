@@ -9,15 +9,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.offsec.nethunter.utils.NhPaths;
+import com.offsec.nethunter.utils.ShellExecuter;
+
 public class EditSourceActivity extends AppCompatActivity {
 
     private String configFilePath = "";
-    NhUtil nh;
+    NhPaths nh;
     ShellExecuter exe = new ShellExecuter();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        nh = new NhUtil();
+        nh = new NhPaths();
         Bundle b = getIntent().getExtras();
         configFilePath = b.getString("path");
         setContentView(R.layout.source);
