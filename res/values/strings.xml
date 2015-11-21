@@ -4,7 +4,7 @@
     <string name="app_nav_home_label">NetHunter</string>
 
 
-	<string name="hometitle">Kali Linux NetHunter</string>
+    <string name="hometitle">Kali Linux NetHunter</string>
     <string name="nethunter_label">Nethunter Panel Home</string>
     <string name="nethunter_description">Welcome to Kali Linux NetHunter by Offensive Security! This application is designed to make it easier to execute attacks and control services. The navigation menu contains links to useful commands, settings, macros, and attack configuration pages. Most configurations work out of the box but some may require some minimal tweaking.</string>
     <string name="nethunter_current_interfaces">Network Interfaces</string>
@@ -18,7 +18,7 @@
     <string name="hid_label">HID Keyboard Attack</string>
     <string name="hid_powersploit_description">The Powersploit payload provides you a choice of reverse meterpreter HTTP/S payloads. "URL to payload" should be a URL accessible to the victim machine where the larger payload is downloaded to.</string>
     <string name="hid_windows_cmd_description">This Windows CMD payload allows you to enter raw commands to a Windows command prompt. Hitting the list menu will allow you to choose keyboard layout or UAC bypass options. </string>
-    
+
     <string name="hid_admin_select">Please select</string>
     <string-array name="hid_admin_options">
         <item>win7</item>
@@ -34,15 +34,15 @@
     <string name="mana_headline">Evil Access Point</string>
     <string name="mana_description">This is the configuration page for MANA, an evil access point implementation by Sensepost. The various MITM logs get written to the /var/lib/mana-toolkit directory in the Kali chroot..</string>
 
-	<string name="mana_hostapd">The hostapd configuration file used by Mana.</string>
-	<string name="mana_dhcpd">The dhcpd configuration file used by Mana.</string>
-	<string name="mana_dnsspoof">The dnsspoof configuration file used by Mana.</string>
-	<string name="mana_nat_full">The Mana script that does full NAT &amp; SSL interception.</string>
-	<string name="mana_nat_simple">The Mana script that does full NAT only.</string>
-	<string name="mana_nat_simple_bdf">The Mana script that does full NAT &amp; BDFProxy HTTP routing to port 8080.</string>
+    <string name="mana_hostapd">The hostapd configuration file used by Mana.</string>
+    <string name="mana_dhcpd">The dhcpd configuration file used by Mana.</string>
+    <string name="mana_dnsspoof">The dnsspoof configuration file used by Mana.</string>
+    <string name="mana_nat_full">The Mana script that does full NAT &amp; SSL interception.</string>
+    <string name="mana_nat_simple">The Mana script that does full NAT only.</string>
+    <string name="mana_nat_simple_bdf">The Mana script that does full NAT &amp; BDFProxy HTTP routing to port 8080.</string>
     <string name="bdfproxy_cfg">The configuration file for BDFProxy.</string>
-	<string name="mana_noupstream">The Mana no-upstream run script.</string>
-	<string name="mana_noupstream_eap">The Mana no-upstream EAP run script.</string>
+    <string name="mana_noupstream">The Mana no-upstream run script.</string>
+    <string name="mana_noupstream_eap">The Mana no-upstream EAP run script.</string>
 
     <string name="dnsmasq_label">Dnsmasq Service</string>
     <string name="dnsmasq_headline">Dnsmasq Config</string>
@@ -52,12 +52,12 @@
     <string name="hostapd_headline">Hostapd Config</string>
     <string name="hostapd_description">hostapd is a user space daemon for wireless access point and authentication servers. You can use hostapd to easily create a wireless access point using these configuration options:</string>
 
-	<string name="duckhunter_label">HID Ducky Script Attacks</string>
-	<string name="select_language">Language</string>
-	<string name="duckConvertUpdate">Update</string>
-	<string name="duckConvertConvert">Convert</string>
-	<string name="duckPreviewRefresh">Refresh</string>	
-	<string name="duck_hunter_headline">The DuckHunter script can easily convert "USB Rubber Ducky" scripts into NetHunter HID format.  You can generate preconfigured scripts at the incredibly useful <a href="http://www.ducktoolkit.com/Home.jsp">Ducky Toolkit</a> site, or check out the Rubber Ducky script syntax from the official <a href="https://github.com/hak5darren/USB-Rubber-Ducky/wiki/Duckyscript">README</a></string>
+    <string name="duckhunter_label">HID Ducky Script Attacks</string>
+    <string name="select_language">Language</string>
+    <string name="duckConvertUpdate">Update</string>
+    <string name="duckConvertConvert">Convert</string>
+    <string name="duckPreviewRefresh">Refresh</string>
+    <string name="duck_hunter_headline">The DuckHunter script can easily convert "USB Rubber Ducky" scripts into NetHunter HID format.  You can generate preconfigured scripts at the incredibly useful <a href="http://www.ducktoolkit.com/Home.jsp">Ducky Toolkit</a> site, or check out the Rubber Ducky script syntax from the official <a href="https://github.com/hak5darren/USB-Rubber-Ducky/wiki/Duckyscript">README</a></string>
 
     <string name="iptables_label">Iptables Configuration</string>
     <string name="iptables_headline">Iptables Setup Config</string>
@@ -91,7 +91,7 @@
     <string name="turn_off_external_wifi">Turn Off External Wifi</string>
     <string name="shutdown_kali">Unmount Kali</string>
     <string name="kali_dumpmifare">Dump Mifare</string>
-    
+
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -102,7 +102,7 @@
     <string name="save">Save</string>
     <string name="execute">Execute</string>
     <string name="execute_attack">Execute Attack</string>
-    
+
     <string name="stop_mana">Stop mana</string>
     <string name="start_mana">Start mana</string>
     <string name="ip_address">IP address</string>
@@ -128,7 +128,7 @@
     <string name="get_external_ip">Get external IP</string>
     <string name="karma_loud">karma loud</string>
     <string name="dhcp_range">dhcp range</string>
-    
+
     <string name="ps_ip_address">IP Address (LHOST)</string>
     <string name="ps_port">Port (LPORT)</string>
     <string name="ps_payload_url">URL to payload</string>
@@ -218,7 +218,7 @@
     <string name="nhwarning">Nethunter installs and uses a standard Kali Linux distribution \"under the hood\".  To support this functionality, some <u>standard Android security features such as Security Enhanced Linux (selinux) are disabled</u>.  Moreover, Kali\'s Linux processes may run with full root privileges and can therefore access system functionality well beyond the normal Android security model.  Consider therefore that this device, as a hybrid, may not be as secure as either standard Kali Linux OR standard Android, and you are advised not to install or use Nethunter on \"daily driver\" devices or devices which store or access sensitive/private data.</string>
     <string name="unknown">Unknown</string>
     <string name="statusText">Status:</string>
-    <string name="licenseInfo">Nethunter is licensed under the <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html">GPLv2</a> and source is available at <a href="https://github.com/offensive-security">github.com/offensive-security</a>.  Some icons are licensed from Google, Inc. under <a href="https://creativecommons.org/licenses/by/4.0">CC BY 4.0</a>.</string>
+    <string name="licenseInfo">Nethunter is licensed under the <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html">GPLv2</a> and source is available at <a href="https://github.com/offensive-security">github.com/offensive-security</a>.  Some icons are licensed from Google, Inc. under <a href="https://creativecommons.org/licenses/by/4.0">CC BY 4.0</a>. Android-WVersionManager and jTar is licensed under Apache 2.0.  </string>
 
     <!-- sidebar menu item titles -->
     <string name="drawertitlenethunter">Home</string>
@@ -232,6 +232,7 @@
     <string name="drawertitlednsmasq">DNSMasq</string>
     <string name="drawertitleiptables">IP Tables</string>
     <string name="drawertitlemacchanger">MAC Changer</string>
+    <string name="drawertitlempc">Metasploit Payload Generator</string>
     <string name="drawertitlecheckupdate">Check App Update</string>
     <string name="InstallAndUpdateButtonText"><![CDATA[Install & Update]]></string>
     <string name="metapackagesExplanation">Choose some \"metapackages\". The chroot will also be upgraded (via \"apt-get update/dist-upgrade\").\n\nSelecting metapackages you already have installed (or no packages at all) simply update/upgrades without removing anything.\n\nDepending on what metapackages you select, you may be asked to do stuff (such as set passwords for services), so pay attention.</string>
@@ -245,6 +246,47 @@
     <string name="legacychrootmessage">You appear to already have an existing Kali chroot from an older version of Nethunter.\n\nMigrating it to its new location requires a reboot.\n\n Or, you can leave the old chroot alone and install a new chroot.  If you choose this option, make sure you have enough storage for both.</string>
     <string name="legacychrootposbutton">Migrate (reboot)</string>
     <string name="legacychrootnegbutton">Ignore current</string>
+
+    <!-- MPC -->
+    <string name="mpc_description">Msfvenom Payload Creator (MPC) is a wrapper written by g0tmi1k to generate multiple types of payloads, based on users choice. The idea is to be as simple as possible (only requiring one input) to produce their payload.</string>
+    <string name="mpc_type">Type:</string>
+    <string-array name="mpc_type_array">
+        <item>ASP</item>
+        <item>ASPX</item>
+        <item>Bash [.sh]</item>
+        <item>Java [.jsp]</item>
+        <item>Linux [.elf]</item>
+        <item>OSX [.macho]</item>
+        <item>Perl [.pl]</item>
+        <item>PHP</item>
+        <item>Powershell [.ps1]</item>
+        <item>Python [.py]</item>
+        <item>Tomcat [.war]</item>
+        <item>Windows [.exe]</item>
+    </string-array>
+    <string name="mpc_port">Port:</string>
+    <string name="mpc_ip_address">IP Address:</string>
+    <string name="mpc_payload">Payload Options:</string>
+    <string-array name="mpc_payload_array">
+        <item>MSF</item>
+        <item>CMD</item>
+    </string-array>
+    <string-array name="mpc_callback_array">
+        <item>Reverse</item>
+        <item>Bind</item>
+    </string-array>
+    <string-array name="mpc_stage_array">
+        <item>Staged</item>
+        <item>Stageless</item>
+    </string-array>
+    <string-array name="mpc_callbacktype_array">
+        <item>TCP</item>
+        <item>HTTP</item>
+        <item>HTTPS</item>
+        <item>Find Port</item>
+    </string-array>
+    <string name="mpc_generateSDCARD">Generate to SDCARD</string>
+    <string name="mpc_generateHTTP">Generate to HTTP</string>
 
     <!-- Custom Launhcer -->
     <string name="add_button">Add a Button</string>
@@ -267,4 +309,7 @@
     <string name="cancel">Cancel</string>
     <string name="extract_part1">Uncompressing the Chroot... (~10 min)</string>
     <string name="extract_part2">Deploying the Chroot... (~5-10 min)</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
