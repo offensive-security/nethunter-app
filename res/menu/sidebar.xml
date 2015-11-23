@@ -29,6 +29,10 @@
             android:icon="@drawable/ic_action_play"
             android:title="Custom Commands" />
         <item
+            android:id="@+id/vnc_item"
+            android:icon="@drawable/ic_action_home"
+            android:title="VNC Manager" />
+        <item
             android:id="@+id/hid_item"
             android:icon="@drawable/ic_action_keyboard"
             android:title="@string/drawertitlehid" />
