@@ -316,6 +316,13 @@ public class AppNavHomeActivity extends AppCompatActivity {
                                         .addToBackStack(null)
                                         .commit();
                                 break;
+                            case R.id.vnc_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, VNCFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
                             case R.id.checkforupdate_item:
                                 checkUpdate();
                                 break;
@@ -328,10 +335,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
 
     public void restoreActionBar() {
         ActionBar ab = getSupportActionBar();
-
-
         if (ab != null) {
-            //  ab.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
             ab.setDisplayShowTitleEnabled(true);
             ab.setTitle(mTitle);
 

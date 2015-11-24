@@ -10,6 +10,7 @@
     <uses-permission android:name="com.offsec.nhterm.permission.RUN_SCRIPT" />
     <uses-permission android:name="com.offsec.nhterm.permission.RUN_SCRIPT_SU" />
     <uses-permission android:name="com.offsec.nhterm.permission.RUN_SCRIPT_NH" />
+    <uses-permission android:name="com.offsec.nhvnc.permission.OPEN_VNC_CONN" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.VIBRATE" />
