@@ -126,9 +126,10 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:ems="10"
                 android:id="@+id/vnc_PASSWD"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="1" />
+                android:layout_weight="1"/>
 
             <TextView
                 android:layout_width="wrap_content"
