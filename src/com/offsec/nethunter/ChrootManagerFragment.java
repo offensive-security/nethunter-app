@@ -87,10 +87,8 @@ public class ChrootManagerFragment extends Fragment {
     //private static final String URI = "http://images.offensive-security.com/" + FILENAME;
     private static final String URI = "http://188.138.17.16/" + FILENAME;
     private static final String SHA512 =
-            "c82006436aebb1a76fe03afe647db3eb6d120893d2eef9d4cf3c5b54c986970ed692555f6dded542" +
-                    "889fa446e75f39266d55c6dcdb87562f44820cb818e05fec";
-
-
+            "c82006436aebb1a76fe03afe647db3eb6d120893d2eef9d4cf3c5b54c986970ed692555f6dded542889fa446e75f39266d55c6dcdb87562f44820cb818e05fec";
+    
     String zipFilePath;
     String extracted_zipFilePath;
     String installLogFile;
