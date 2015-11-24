@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.util.DisplayMetrics;
 
 import com.offsec.nethunter.utils.NhPaths;
 
@@ -19,7 +20,9 @@ public class VNCFragment  extends Fragment {
 
     SharedPreferences sharedpreferences;
     private Context mContext;
-
+    private static final String TAG = "VNCFragment";
+    String xwidth;
+    String xheight;
 
     NhPaths nh;
     private static final String ARG_SECTION_NUMBER = "section_number";
@@ -40,6 +43,23 @@ public class VNCFragment  extends Fragment {
         sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
         mContext = getActivity().getApplicationContext();
 
+        // Get screen size to pass to VNC
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        final int screen_height = displaymetrics.heightPixels;
+        final int screen_width = displaymetrics.widthPixels;
+        Log.d(TAG, "Real Height: " + screen_height + " Real Width: " + screen_width);
+
+        // Because height and width changes on screen rotation, use the largest as width
+        if (screen_height > screen_width){
+            xwidth = Integer.toString(screen_height);
+            xheight = Integer.toString(screen_width);
+        } else {
+            xwidth = Integer.toString(screen_width);
+            xheight = Integer.toString(screen_height);
+        }
+        Log.d(TAG, "xHeight: " + xheight + " xWidth: " + xwidth);
+
         Button SetupVNCButton = (Button) rootView.findViewById(R.id.set_up_vnc);
         Button StartVNCButton = (Button) rootView.findViewById(R.id.start_vnc);
         Button StopVNCButton = (Button) rootView.findViewById(R.id.stop_vnc);
@@ -52,7 +72,7 @@ public class VNCFragment  extends Fragment {
         });
         addClickListener(StartVNCButton, new View.OnClickListener() {
             public void onClick(View v) {
-                intentClickListener_NH("vncserver :1 && echo \"Now you can exit, we can autoexit like in the vnc setup\""); // since is a kali command we can send it as is
+                intentClickListener_NH("vncserver :1 -localhost -geometry " + xwidth + "x" + xheight + " && echo \"Now you can exit, we can autoexit like in the vnc setup\""); // since is a kali command we can send it as is
             }
         });
         addClickListener(StopVNCButton, new View.OnClickListener() {
