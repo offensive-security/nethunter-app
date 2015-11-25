@@ -1,10 +1,17 @@
 package com.offsec.nethunter;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.provider.DocumentFile;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,6 +24,10 @@ import android.widget.EditText;
 import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -121,15 +132,19 @@ public class BadusbFragment extends Fragment {
         }
     }
 
+
     public void updateOptions() {
         String source = exe.ReadFile_SYNC(sourcePath);
         EditText ifc = (EditText) getActivity().findViewById(R.id.ifc);
         source = source.replaceAll("(?m)^INTERFACE=(.*)$", "INTERFACE=" + ifc.getText().toString());
-        Boolean r = exe.SaveFileContents(sourcePath, source);
-        if (r) {
-            nh.showMessage("Options updated!");
-        } else {
-            nh.showMessage("Options not updated!");
+        ContentResolver resolver = this.getContext().getContentResolver();
+        File file = new File(sourcePath);
+        try {
+            OutputStream OS = resolver.openOutputStream(Uri.fromFile(file));
+            OS.write(source.getBytes());
+            OS.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
