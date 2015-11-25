@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -122,10 +123,10 @@ public class BadusbFragment extends Fragment {
     }
 
     public void updateOptions() {
-        String source = exe.ReadFile_SYNC(sourcePath);
+        String sourceFile = exe.ReadFile_SYNC(sourcePath);
         EditText ifc = (EditText) getActivity().findViewById(R.id.ifc);
-        source = source.replaceAll("(?m)^INTERFACE=(.*)$", "INTERFACE=" + ifc.getText().toString());
-        Boolean r = exe.SaveFileContents(sourcePath, source);
+        sourceFile = sourceFile.replaceAll("(?m)^INTERFACE=(.*)$", "INTERFACE=" + ifc.getText().toString());
+        Boolean r = exe.SaveFileContents(sourceFile, sourcePath);// 1st arg contents, 2nd arg filepath
         if (r) {
             nh.showMessage("Options updated!");
         } else {
@@ -137,12 +138,12 @@ public class BadusbFragment extends Fragment {
         ShellExecuter exe = new ShellExecuter();
         String[] command = new String[1];
         if (Build.VERSION.SDK_INT >= 21) {
-            command[0] = "start-badusb-lollipop &> "+ nh.APP_SD_FILES_PATH +"/badusb.log &";
+            command[0] = nh.APP_SCRIPTS_PATH + "/start-badusb-lollipop &> "+ nh.APP_SD_FILES_PATH +"/badusb.log &";
         } else {
-            command[0] = "start-badusb-kitkat &> "+ nh.APP_SD_FILES_PATH +"/badusb.log &";
+            command[0] = nh.APP_SCRIPTS_PATH + "/start-badusb-kitkat &> "+ nh.APP_SD_FILES_PATH +"/badusb.log &";
         }
         exe.RunAsRoot(command);
-        nh.showMessage("BadUSB attack started!");
+        nh.showMessage("BadUSB attack started! Check /sdcard/nh_files/badusb.log");
     }
 
     public void stop() {

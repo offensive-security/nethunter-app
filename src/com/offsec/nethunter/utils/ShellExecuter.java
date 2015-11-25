@@ -179,7 +179,7 @@ public class ShellExecuter {
             BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
-                output.append(line).append('\n');
+                output.append(line).append("\n");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -188,6 +188,14 @@ public class ShellExecuter {
     }
     // SAVE FILE CONTENTS: (contents, fullFilePath)
     public boolean SaveFileContents(String contents, String _path){
-        return RunAsRoot(new String[]{"echo '" + contents + "' > " + _path});
+
+        String _newCmd = "cat << 'EOF' > "+_path+"\n"+contents+"\nEOF";
+        String _res = RunAsRootOutput(_newCmd);
+        if(_res.equals("")){ // no error we fine
+            return true;
+        } else {
+            Log.d("ErrorSavingFile: ", "Error: " + _res);
+            return false;
+        }
     }
 }
