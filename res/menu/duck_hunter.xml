@@ -6,7 +6,6 @@
         android:icon="@drawable/ic_action_save"
         android:title="@string/duckConvertUpdate"
         app:showAsAction="ifRoom|withText"  />
-        
     <item
         android:id="@+id/duckConvertConvert"
         android:icon="@drawable/ic_action_play"
