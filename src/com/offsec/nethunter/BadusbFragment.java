@@ -150,9 +150,9 @@ public class BadusbFragment extends Fragment {
         ShellExecuter exe = new ShellExecuter();
         String[] command = new String[1];
         if (Build.VERSION.SDK_INT >= 21) {
-            command[0] = "stop-badusb-lollipop";
+            command[0] = nh.APP_SCRIPTS_PATH + "/stop-badusb-lollipop";
         } else {
-            command[0] = "stop-badusb-kitkat";
+            command[0] = nh.APP_SCRIPTS_PATH + "/stop-badusb-kitkat";
         }
         exe.RunAsRoot(command);
         nh.showMessage("BadUSB attack stopped!");
