@@ -173,10 +173,10 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                 }
                 String[] command = new String[1];
                 command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali duck-hunt-convert " + lang +
-                        " " + nh.APP_SD_FILES_PATH + DuckHunterConvertFragment.configFilePath + " /opt/" +
+                        " /sdcard/nh_files/modules/duckconvert.txt " + "/opt/" +
                         DuckHunterPreviewFragment.configFileFilename + "'";
                 String command_string = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali duck-hunt-convert " + lang +
-                        " " + nh.APP_SD_FILES_PATH + DuckHunterConvertFragment.configFilePath + " /opt/" +
+                        " /sdcard/nh_files/modules/duckconvert.txt " + " /opt/" +
                         DuckHunterPreviewFragment.configFileFilename + "'";
                 Log.d(TAG, command_string);
                 ShellExecuter exe = new ShellExecuter();
