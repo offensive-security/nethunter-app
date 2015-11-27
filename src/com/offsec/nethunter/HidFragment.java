@@ -66,7 +66,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        configFilePath =   nh.APP_SD_FILES_PATH + "/configs/powersploit-payload";
+        configFilePath =   nh.CHROOT_PATH + "/var/www/html/powersploit-payload";;
         super.onActivityCreated(savedInstanceState);
     }
 
