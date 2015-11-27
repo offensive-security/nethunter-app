@@ -84,10 +84,10 @@ public class ChrootManagerFragment extends Fragment {
     /* put chroot info here */
     private static final String FILENAME = "kalifs-minimal.tar.xz";
     private static final String EXTRACTED_FILENAME = "kalifs-minimal.tar";
-    //private static final String URI = "http://images.offensive-security.com/" + FILENAME;
-    private static final String URI = "http://188.138.17.16/" + FILENAME;
+    private static final String URI = "http://images.offensive-security.com/" + FILENAME;
+    //private static final String URI = "http://188.138.17.16/" + FILENAME;
     private static final String SHA512 =
-            "c82006436aebb1a76fe03afe647db3eb6d120893d2eef9d4cf3c5b54c986970ed692555f6dded542889fa446e75f39266d55c6dcdb87562f44820cb818e05fec";
+            "41d5054299c782e55ac9f81688da8702e5fddd1718c60662d8d68282b060371e220f4f3b83cbc6bd5af0ca6eda79b7d63219bec0ae79b4618662ff366638ef08";
     
     String zipFilePath;
     String extracted_zipFilePath;
