@@ -53,9 +53,9 @@
             android:icon="@drawable/ic_memory_24dp"
             android:title="@string/drawertitlempc" />
         <item
-            android:id="@+id/dnsmasq_item"
-            android:icon="@drawable/ic_action_dns"
-            android:title="@string/drawertitlednsmasq" />
+            android:id="@+id/searchsploit_item"
+            android:icon="@drawable/ic_bug_report_black_24dp"
+            android:title="@string/drawertitlesearchsploit" />
         <item
             android:id="@+id/macchanger_item"
             android:icon="@drawable/ic_action_perm_device_information"
@@ -64,6 +64,10 @@
             android:id="@+id/iptables_item"
             android:icon="@drawable/ic_action_import_export"
             android:title="@string/drawertitleiptables" />
+        <item
+            android:id="@+id/dnsmasq_item"
+            android:icon="@drawable/ic_action_dns"
+            android:title="@string/drawertitlednsmasq" />
     </group>
 
 </menu>
