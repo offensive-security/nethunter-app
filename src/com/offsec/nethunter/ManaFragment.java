@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
@@ -148,6 +149,8 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                     case 2:
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali mana-bdf-lollipop start'";
+                            nh.showMessage("Starting BDFPROXY in the background...");
+                            intentClickListener_NH("sleep 10 ; msfconsole -q -r /usr/share/bdfproxy/bdfproxy_msf_resource.rc");
                         } else {
                             command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali mana-bdf-kitkat start'";
                         }
@@ -575,7 +578,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
 
-            configFilePath = nh.CHROOT_PATH + "/etc/bdfproxy/bdfproxy.cfg";
+            configFilePath = nh.APP_SD_FILES_PATH + "/configs/bdfproxy.cfg";
 
             EditText source = (EditText) rootView.findViewById(R.id.source);
             ShellExecuter exe = new ShellExecuter();
@@ -643,4 +646,16 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
         }
     }
 
+    private void intentClickListener_NH(final String command) {
+        try {
+            Intent intent =
+                    new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+
+            intent.putExtra("com.offsec.nhterm.iInitialCommand", command);
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
+        }
+    }
 }
