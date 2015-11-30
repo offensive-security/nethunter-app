@@ -91,7 +91,7 @@ fi
 # start-rev-met, start-rev-met-elevated-win[8-7]
 
     if [ $# -eq 0 ]; then
-        $busybox chroot $mnt /bin/login -f root
+        $busybox chroot $mnt /bin/bash -i
     else
 
    	#APACHE
