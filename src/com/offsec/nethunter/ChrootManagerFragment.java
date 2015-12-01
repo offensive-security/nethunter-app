@@ -94,23 +94,27 @@ public class ChrootManagerFragment extends Fragment {
     private static final String URI_FULL = IMAGE_SERVER + FILENAME_FULL;
 
     //private static final String URI = "http://188.138.17.16/" + FILENAME;
-    private static final String SHA512 =
+
+    private static final String SHA512_MINIMAL =
             "41d5054299c782e55ac9f81688da8702e5fddd1718c60662d8d68282b060371e220f4f3b83cbc6bd5af0ca6eda79b7d63219bec0ae79b4618662ff366638ef08";
-    
-    String zipFilePath;
-    String extracted_zipFilePath;
-    String installLogFile;
-    Boolean shouldLog = false;
+    private static final String SHA512_FULL =
+            "HEREGOES_NEWSHA";
 
-    TextView statusText;
-    Button installButton;
-    Button updateButton;
+    private String SHA512;
+    private String zipFilePath;
+    private String extracted_zipFilePath;
+    private String installLogFile;
+    private Boolean shouldLog = false;
 
-    final ShellExecuter x = new ShellExecuter();
-    ProgressDialog pd;
-    SharedPreferences sharedpreferences;
-    AlertDialog ad;
-    NhPaths nh;
+    private TextView statusText;
+    private Button installButton;
+    private Button updateButton;
+
+    private final ShellExecuter x = new ShellExecuter();
+    private ProgressDialog pd;
+    private SharedPreferences sharedpreferences;
+    private AlertDialog ad;
+    private NhPaths nh;
 
 
     @Override
@@ -348,6 +352,7 @@ public class ChrootManagerFragment extends Fragment {
                         dialog.cancel();
                         zipFilePath = nh.SD_PATH + "/" + FILENAME_MINIMAL;
                         extracted_zipFilePath = nh.SD_PATH + "/" + EXTRACTED_FILENAME_MINIMAL;
+                        SHA512 = SHA512_MINIMAL;
                         if (shouldDownload) {
                             if (!startZipDownload(URI_MINIMAL)) {
                                 installButton.setEnabled(true);
@@ -362,6 +367,7 @@ public class ChrootManagerFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
+                        SHA512 = SHA512_FULL;
                         zipFilePath = nh.SD_PATH + "/" + FILENAME_FULL;
                         extracted_zipFilePath = nh.SD_PATH + "/" + EXTRACTED_FILENAME_FULL;
                         if (shouldDownload) {
