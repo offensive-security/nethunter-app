@@ -98,9 +98,9 @@ public class ChrootManagerFragment extends Fragment {
     //private static final String URI = "http://188.138.17.16/" + FILENAME;
 
     private static final String SHA512_MINIMAL =
-            "41d5054299c782e55ac9f81688da8702e5fddd1718c60662d8d68282b060371e220f4f3b83cbc6bd5af0ca6eda79b7d63219bec0ae79b4618662ff366638ef08";
+            "810a161e6d040a8d812ca1b07b69e7c83355e9b840637f99454fc7df73ed4a05d9a5f904e4fada6e4587d12bf37923cc66c8e2dd53c67f753af8421d57105a6c";
     private static final String SHA512_FULL =
-            "HEREGOES_NEWSHA";
+            "ae0f0288bdcd71c53b49a982922221f400fb5fecf8534a10135aa51566af89384ca6f3000647167162186882cda3adc9560d2f88fef558899bb90fbabdbab64b";
 
     private String SHA512;
     private String zipFilePath;
