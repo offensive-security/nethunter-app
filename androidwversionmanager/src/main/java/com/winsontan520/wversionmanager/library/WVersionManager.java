@@ -11,6 +11,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.thoughtcrime.ssl.pinning.util.PinningHelper;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -29,6 +30,8 @@ import android.widget.Toast;
 
 public class WVersionManager implements IWVersionManager {
 	private static final String TAG = "WVersionManager";
+	String[] pins = new String[] {"b3fc3c6ba754e3f0b05b57efe5f202f655a8e483"};
+
 
 	private static final int MODE_CHECK_VERSION = 100;
 	private static final int MODE_ASK_FOR_RATE = 200;
@@ -429,7 +432,9 @@ public class WVersionManager implements IWVersionManager {
 
 		@Override
 		protected String doInBackground(String... uri) {
-			DefaultHttpClient client = new DefaultHttpClient();
+			DefaultHttpClient client = (DefaultHttpClient) PinningHelper.getPinnedHttpClient(context, pins);
+
+			//DefaultHttpClient client = new DefaultHttpClient();
 			String responseBody = null;
 			HttpResponse httpResponse = null;
 			ByteArrayOutputStream out = null;
