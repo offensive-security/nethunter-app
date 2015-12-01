@@ -82,9 +82,17 @@ public class ChrootManagerFragment extends Fragment {
     public static final String DELETE_CHROOT_TAG = "DELETE_CHROOT_TAG";
     public static final String CHROOT_INSTALLED_TAG = "CHROOT_INSTALLED_TAG";
     /* put chroot info here */
-    private static final String FILENAME = "kalifs-minimal.tar.xz";
-    private static final String EXTRACTED_FILENAME = "kalifs-minimal.tar";
-    private static final String URI = "http://images.offensive-security.com/" + FILENAME;
+    private static final String IMAGE_SERVER = "https://images.offensive-security.com/";
+
+    private static final String FILENAME_MINIMAL = "kalifs-minimal.tar.xz";
+    private static final String EXTRACTED_FILENAME_MINIMAL = "kalifs-minimal.tar";
+
+    private static final String FILENAME_FULL = "kalifs-full.tar.xz";
+    private static final String EXTRACTED_FILENAME_FULL = "kalifs-full.tar";
+
+    private static final String URI_MINIMAL = IMAGE_SERVER + FILENAME_MINIMAL;
+    private static final String URI_FULL = IMAGE_SERVER + FILENAME_FULL;
+
     //private static final String URI = "http://188.138.17.16/" + FILENAME;
     private static final String SHA512 =
             "41d5054299c782e55ac9f81688da8702e5fddd1718c60662d8d68282b060371e220f4f3b83cbc6bd5af0ca6eda79b7d63219bec0ae79b4618662ff366638ef08";
@@ -128,8 +136,7 @@ public class ChrootManagerFragment extends Fragment {
         sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
         // extracte files location
 
-        zipFilePath = nh.SD_PATH + "/" + FILENAME;
-        extracted_zipFilePath = nh.SD_PATH + "/" + EXTRACTED_FILENAME;
+
         installLogFile = nh.SD_PATH + "/nh_install_" + new SimpleDateFormat("yyyyMMdd_hhmmss'.log'", Locale.US).format(new Date());
         return rootView;
     }
@@ -302,16 +309,76 @@ public class ChrootManagerFragment extends Fragment {
                             ad.setCancelable(false);
                             ad.show();
                         } else {
-                            // no chroot.  need to enable it.
-                            if (!startZipDownload()) {
-                                installButton.setEnabled(true);
-                            }
+                            downloadOrSdcard();
                         }
                     }
                 });
             }
         }).start();
     }
+    private void downloadOrSdcard(){
+        AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+        adb.setTitle("Select Chroot install mode:")
+                .setMessage("Download is the prefered mode. Get the latest chroot from the offsec servers.\n\n Also you can place a custom\nkalifs-[minimal|full].tar.xz in /sdcard\nand skip the download.")
+                .setNeutralButton("Use SdCard", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        fullOrMinimal(false);
+                    }
+                })
+                .setPositiveButton("Download Latest", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        fullOrMinimal(true);
+                    }
+                });
+        AlertDialog ad = adb.create();
+        ad.setCancelable(false);
+        ad.show();
+    }
+    private void fullOrMinimal(final Boolean shouldDownload){
+        AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+        adb.setTitle("Select Chroot Download:")
+                .setMessage("We recomend the full chroot, so you can enjoy all the nethunter features.\n\nIf you are installing from the SdCard, choose the type of chroot you copied to the SdCard.\n\nThe minimal is for testing/development")
+                .setNeutralButton("Minimal Chroot", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        zipFilePath = nh.SD_PATH + "/" + FILENAME_MINIMAL;
+                        extracted_zipFilePath = nh.SD_PATH + "/" + EXTRACTED_FILENAME_MINIMAL;
+                        if (shouldDownload) {
+                            if (!startZipDownload(URI_MINIMAL)) {
+                                installButton.setEnabled(true);
+                            }
+                        } else {
+                            UnziptarTask mytask = new UnziptarTask();
+                            mytask.execute();
+                        }
+                    }
+                })
+                .setPositiveButton("Full Chroot", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        zipFilePath = nh.SD_PATH + "/" + FILENAME_FULL;
+                        extracted_zipFilePath = nh.SD_PATH + "/" + EXTRACTED_FILENAME_FULL;
+                        if (shouldDownload) {
+                            if (!startZipDownload(URI_FULL)) {
+                                installButton.setEnabled(true);
+                            }
+                        } else {
+                            UnziptarTask mytask = new UnziptarTask();
+                            mytask.execute();
+                        }
+                    }
+                });
+        AlertDialog ad = adb.create();
+        ad.setCancelable(false);
+        ad.show();
+    }
+
 
     private void addMetaPackages() {
         //for now, we'll hardcode packages in the dialog view.  At some point we'll want to grab them automatically.
@@ -424,7 +491,7 @@ public class ChrootManagerFragment extends Fragment {
     }
 
 
-    private boolean startZipDownload() {
+    private boolean startZipDownload(String _URI) {
         deleteFile(zipFilePath);
         statusLog(getActivity().getString(R.string.startingdownload));
         if (!isExternalStorageWritable()) {
@@ -432,12 +499,13 @@ public class ChrootManagerFragment extends Fragment {
             return false;
         }
         final DownloadChroot downloadTask = new DownloadChroot(getActivity());
-        downloadTask.execute(URI);
+        downloadTask.execute(_URI);
         return true;
     }
 
     private void inflateZip() {
         if (getActivity() != null) {
+
             final View mView = getView();
             pd = new ProgressDialog(getActivity());
             pd.setTitle("Checking Download... ");
@@ -464,6 +532,7 @@ public class ChrootManagerFragment extends Fragment {
                                         new android.os.Handler().postDelayed(
                                                 new Runnable() {
                                                     public void run() {
+                                                        pd.dismiss();
                                                         UnziptarTask mytask = new UnziptarTask();
                                                         mytask.execute();
                                                     }
@@ -591,7 +660,9 @@ public class ChrootManagerFragment extends Fragment {
 
         @Override
         protected void onPreExecute() {
+            pd = new ProgressDialog(getActivity());
             pd.setTitle(getActivity().getString(R.string.installing_notice));
+            pd.show();
             statusLog(getActivity().getString(R.string.unzippinganduntarring));
             super.onPreExecute();
         }
@@ -611,6 +682,12 @@ public class ChrootManagerFragment extends Fragment {
         protected Boolean doInBackground(Void... Void) {
             try {
                 // First: decompress .tar.xz >>> .tar
+                String fExists = x.RunAsRootOutput("[ -f "+ zipFilePath +" ] && echo \"1\" || echo \"0\"");
+                if(fExists.equals("0")){
+                    Log.d(TAG, "Error: No tar.xz found");
+                    publishProgress("Error: Missing file: "+ zipFilePath +" not found.");
+                    return false;
+                }
                 publishProgress(getActivity().getString(R.string.extract_part1));
                 x.RunAsRootWithException("busybox xz -df '" + zipFilePath + "'");
                 // Second: Extract and Deploy the chroot to Destination.
@@ -647,10 +724,9 @@ public class ChrootManagerFragment extends Fragment {
                 }
 
             } else {
-                statusLog(getActivity().getString(R.string.therewasanerror) + " ERROR:" + result);
                 pd.dismiss();
+                installButton.setEnabled(true);
             }
-
         }
     }
 
