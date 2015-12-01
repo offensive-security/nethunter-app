@@ -112,7 +112,7 @@ dict_fr = {
 	"\x20": "\\x00\\x00\\x00\\x2c\\x00\\x00\\x00\\x00",
 	"\x21": "\\x00\\x00\\x00\\x38\\x00\\x00\\x00\\x00",
 	"\x22": "\\x00\\x00\\x00\\x20\\x00\\x00\\x00\\x00",
-	"\x23": "\\x40\\x00\\x00\\x20\\x00\\x00\\x00\\x00",
+	"\x23": "\\x05\\x00\\x00\\x20\\x00\\x00\\x00\\x00",
 	"\x24": "\\x00\\x00\\x00\\x30\\x00\\x00\\x00\\x00",
 	"\x25": "\\x20\\x00\\x00\\x34\\x00\\x00\\x00\\x00",
 	"\x26": "\\x00\\x00\\x00\\x1e\\x00\\x00\\x00\\x00",
@@ -125,11 +125,11 @@ dict_fr = {
 	"\x33": "\\x20\\x00\\x00\\x20\\x00\\x00\\x00\\x00",
 	"\x34": "\\x20\\x00\\x00\\x21\\x00\\x00\\x00\\x00",
 	"\x35": "\\x20\\x00\\x00\\x22\\x00\\x00\\x00\\x00",
-	"\x36": "\\x20\\x00\\x00\\x23\\x00\\x00\\x00\\x00",
+	"\x36": "\\x00\\x00\\x00\\x23\\x00\\x00\\x00\\x00",
 	"\x37": "\\x20\\x00\\x00\\x24\\x00\\x00\\x00\\x00",
 	"\x38": "\\x20\\x00\\x00\\x25\\x00\\x00\\x00\\x00",
 	"\x39": "\\x20\\x00\\x00\\x26\\x00\\x00\\x00\\x00",
-	"\x40": "\\x40\\x00\\x00\\x27\\x00\\x00\\x00\\x00",
+	"\x40": "\\x05\\x00\\x00\\x27\\x00\\x00\\x00\\x00",
 	"\x41": "\\x20\\x00\\x00\\x14\\x00\\x00\\x00\\x00",
 	"\x42": "\\x20\\x00\\x00\\x05\\x00\\x00\\x00\\x00",
 	"\x43": "\\x20\\x00\\x00\\x06\\x00\\x00\\x00\\x00",
@@ -149,7 +149,7 @@ dict_fr = {
 	"\x57": "\\x20\\x00\\x00\\x1d\\x00\\x00\\x00\\x00",
 	"\x58": "\\x20\\x00\\x00\\x1b\\x00\\x00\\x00\\x00",
 	"\x59": "\\x20\\x00\\x00\\x1c\\x00\\x00\\x00\\x00",
-	"\x60": "\\x40\\x00\\x00\\x24\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x2c\\x00\\x00\\x00\\x00",  # ` + Space  (Might output the extra space on a Linux OS)
+	"\x60": "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00",  # Removed as it is a composition char that mangles the next one
 	"\x61": "\\x00\\x00\\x00\\x14\\x00\\x00\\x00\\x00",
 	"\x62": "\\x00\\x00\\x00\\x05\\x00\\x00\\x00\\x00",
 	"\x63": "\\x00\\x00\\x00\\x06\\x00\\x00\\x00\\x00",
@@ -188,10 +188,10 @@ dict_fr = {
 	"\x4e": "\\x20\\x00\\x00\\x11\\x00\\x00\\x00\\x00",
 	"\x4f": "\\x20\\x00\\x00\\x12\\x00\\x00\\x00\\x00",
 	"\x5a": "\\x20\\x00\\x00\\x1a\\x00\\x00\\x00\\x00",
-	"\x5b": "\\x40\\x00\\x00\\x22\\x00\\x00\\x00\\x00",
-	"\x5c": "\\x40\\x00\\x00\\x25\\x00\\x00\\x00\\x00",
-	"\x5d": "\\x40\\x00\\x00\\x2d\\x00\\x00\\x00\\x00",
-	"\x5e": "\\x00\\x00\\x00\\x2f\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x2c\\x00\\x00\\x00\\x00",  # ^ + Space
+	"\x5b": "\\x05\\x00\\x00\\x22\\x00\\x00\\x00\\x00",
+	"\x5c": "\\x05\\x00\\x00\\x25\\x00\\x00\\x00\\x00",
+	"\x5d": "\\x05\\x00\\x00\\x2d\\x00\\x00\\x00\\x00",
+	"\x5e": "\\x00\\x00\\x00\\x2f\\x00\\x00\\x00\\x00",
 	"\x5f": "\\x00\\x00\\x00\\x25\\x00\\x00\\x00\\x00",
 	"\x6a": "\\x00\\x00\\x00\\x0d\\x00\\x00\\x00\\x00",
 	"\x6b": "\\x00\\x00\\x00\\x0e\\x00\\x00\\x00\\x00",
@@ -200,10 +200,10 @@ dict_fr = {
 	"\x6e": "\\x00\\x00\\x00\\x11\\x00\\x00\\x00\\x00",
 	"\x6f": "\\x00\\x00\\x00\\x12\\x00\\x00\\x00\\x00",
 	"\x7a": "\\x00\\x00\\x00\\x1a\\x00\\x00\\x00\\x00",
-	"\x7b": "\\x40\\x00\\x00\\x21\\x00\\x00\\x00\\x00",
-	"\x7c": "\\x40\\x00\\x00\\x23\\x00\\x00\\x00\\x00",
-	"\x7d": "\\x40\\x00\\x00\\x2e\\x00\\x00\\x00\\x00",
-	"\x7e": "\\x40\\x00\\x00\\x1f\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x2c\\x00\\x00\\x00\\x00",  # ~ + Space  (Might output the extra space on a Linux OS)
+	"\x7b": "\\x05\\x00\\x00\\x21\\x00\\x00\\x00\\x00",
+	"\x7c": "\\x05\\x00\\x00\\x23\\x00\\x00\\x00\\x00",
+	"\x7d": "\\x05\\x00\\x00\\x2e\\x00\\x00\\x00\\x00",
+	"\x7e": "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00",  # Removed as it is a composition char that mangles the next one
 	#SDLK_RETURN,0x28
 	"\x0a": "\\x00\\x00\\x00\\x28\\x00\\x00\\x00\\x00",
 	"\x0d": "\\x00\\x00\\x00\\x28\\x00\\x00\\x00\\x00"
@@ -309,7 +309,7 @@ dict_es = {
 	"\x0d": "\\x00\\x00\\x00\\x28\\x00\\x00\\x00\\x00"
 }
 dict_de = {
-# Symbols 
+# Symbols
 	"\x20": "\\x00\\x00\\x00\\x2c\\x00\\x00\\x00\\x00",
 	"\x21": "\\x20\\x00\\x00\\x1e\\x00\\x00\\x00\\x00",
     "\x22": "\\x20\\x00\\x00\\x1f\\x00\\x00\\x00\\x00",
@@ -322,7 +322,7 @@ dict_de = {
 	"\x29": "\\x20\\x00\\x00\\x26\\x00\\x00\\x00\\x00",
 	"\x2a": "\\x20\\x00\\x00\\x30\\x00\\x00\\x00\\x00",
 	"\x2b": "\\x00\\x00\\x00\\x30\\x00\\x00\\x00\\x00",
-	"\x2c": "\\x00\\x00\\x00\\x36\\x00\\x00\\x00\\x00",
+	"\x2c": "\\x20\\x00\\x00\\x36\\x00\\x00\\x00\\x00",
 	"\x2d": "\\x00\\x00\\x00\\x38\\x00\\x00\\x00\\x00",
 	"\x2e": "\\x00\\x00\\x00\\x37\\x00\\x00\\x00\\x00",
 	"\x2f": "\\x20\\x00\\x00\\x24\\x00\\x00\\x00\\x00",
@@ -374,7 +374,7 @@ dict_de = {
 	"\x5a": "\\x20\\x00\\x00\\x1c\\x00\\x00\\x00\\x00",
 # Symbols
 	"\x5b": "\\x05\\x00\\x00\\x25\\x00\\x00\\x00\\x00",
-	"\x5c": "\\x40\\x00\\x00\\x2d\\x00\\x00\\x00\\x00",
+	"\x5c": "\\x05\\x00\\x00\\x2d\\x00\\x00\\x00\\x00",
 	"\x5d": "\\x05\\x00\\x00\\x26\\x00\\x00\\x00\\x00",
 	"\x5e": "\\x00\\x00\\x00\\x35\\x00\\x00\\x00\\x00",
 	"\x5f": "\\x20\\x00\\x00\\x38\\x00\\x00\\x00\\x00",
@@ -632,7 +632,7 @@ dict_it = {
 	"\x0a": "\\x00\\x00\\x00\\x28\\x00\\x00\\x00\\x00",
 	"\x0d": "\\x00\\x00\\x00\\x28\\x00\\x00\\x00\\x00",
 }
-dict_uk = { 
+dict_uk = {
 	"\x20": "\\x00\\x00\\x00\\x2c\\x00\\x00\\x00\\x00",
 	"\x21": "\\x02\\x00\\x00\\x1e\\x00\\x00\\x00\\x00",
 	"\x22": "\\x02\\x00\\x00\\x1f\\x00\\x00\\x00\\x00",
@@ -1379,27 +1379,12 @@ def findinlist(byte, locale):
 	elif locale=="pt" : print '''echo -ne "''' +dict_pt[byte]+ '''" > /dev/hidg0'''
 	elif locale=="be" : print '''echo -ne "''' +dict_be[byte]+ '''" > /dev/hidg0'''
 	#else: print "#crap, couldn't find ["+byte +"]. Perhaps try adding it to the list."
-	print '''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''	
+	print '''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
 
-def findinlistduck(byte, locale):
-	if locale=="us" : ret='''echo -ne "''' +dict_us[byte]+ '''" > /dev/hidg0\n'''
-	elif locale=="fr" : ret='''echo -ne "''' +dict_fr[byte]+ '''" > /dev/hidg0\n'''
-	elif locale=="de" : ret='''echo -ne "''' +dict_de[byte]+ '''" > /dev/hidg0\n'''
-	elif locale=="es" : ret='''echo -ne "''' +dict_es[byte]+ '''" > /dev/hidg0\n'''
-	elif locale=="sv" : ret='''echo -ne "''' +dict_sv[byte]+ '''" > /dev/hidg0\n'''
-	elif locale=="it" : ret='''echo -ne "''' +dict_it[byte]+ '''" > /dev/hidg0\n'''
-	elif locale=="uk" : ret='''echo -ne "''' +dict_uk[byte]+ '''" > /dev/hidg0\n'''
-	elif locale=="ru" : ret='''echo -ne "''' +dict_ru[iso_ru[byte]]+ '''" > /dev/hidg0\n'''
-	elif locale=="dk" : ret='''echo -ne "''' +dict_dk[byte]+ '''" > /dev/hidg0\n'''
-	elif locale=="no" : ret='''echo -ne "''' +dict_no[byte]+ '''" > /dev/hidg0\n'''
-	elif locale=="pt" : ret='''echo -ne "''' +dict_pt[byte]+ '''" > /dev/hidg0\n'''
-	elif locale=="be" : ret='''echo -ne "''' +dict_be[byte]+ '''" > /dev/hidg0\n'''
-	#else: print "#crap, couldn't find ["+byte +"]. Perhaps try adding it to the list."
-	return ret+'''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n'''
-	
 def wincmd(locale):
 	print '''sleep 1'''
-	print '''echo left-meta | hid-keyboard /dev/hidg0 keyboard''' #Windows key
+	print '''echo -ne "\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
+	print '''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
 	print '''sleep 1'''
 	findinlist(str.encode("\x63"), locale) #c
 	print '''sleep 1'''
@@ -1416,19 +1401,42 @@ def wincmd(locale):
 
 def win7cmd_elevated(locale):
 	print '''sleep 1'''
-	print '''echo left-meta | hid-keyboard /dev/hidg0 keyboard''' #Windows key
+	print '''echo -ne "\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0''' #windows key
+	print '''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
 	print '''sleep 1'''
 	findinlist("\x63", locale) #c
-	print '''sleep 0.3'''
+	print '''sleep 1'''
 	findinlist("\x6d", locale) #m
-	print '''sleep 0.3'''
+	print '''sleep 1'''
 	findinlist("\x64", locale) #d
-	print '''sleep 0.3'''
-	print '''echo left-ctrl left-shift return | hid-keyboard /dev/hidg0 keyboard''' #As admin
-	print '''sleep 2'''
-	print '''echo left | hid-keyboard /dev/hidg0 keyboard''' #Accept UAC (left/enter)
-	print '''echo enter | hid-keyboard /dev/hidg0 keyboard'''
-	print '''sleep 2'''
+	print '''sleep 1'''
+    	print '''echo left-ctrl left-shift return | hid-keyboard /dev/hidg0 keyboard'''
+        print '''sleep 3'''
+	if (locale=="us"):
+	    	print '''echo left-alt y | hid-keyboard /dev/hidg0 keyboard'''
+	elif (locale=="fr"):
+	        print '''echo left-alt o | hid-keyboard /dev/hidg0 keyboard'''
+	elif (locale=="de"):
+		print '''echo left-alt j | hid-keyboard /dev/hidg0 keyboard'''
+	elif (locale=="es"):
+		print '''echo left-alt s | hid-keyboard /dev/hidg0 keyboard'''
+	elif (locale=="sv"):
+		print '''echo left-alt j | hid-keyboard /dev/hidg0 keyboard'''
+	elif (locale=="it"):
+		print '''echo left-alt s | hid-keyboard /dev/hidg0 keyboard'''
+	elif (locale=="uk"):
+		print '''echo left-alt y | hid-keyboard /dev/hidg0 keyboard'''
+	elif (locale=="ru"):
+		print '''echo left-alt d | hid-keyboard /dev/hidg0 keyboard'''
+	elif (locale=="dk"):
+		print '''echo left-alt j | hid-keyboard /dev/hidg0 keyboard'''
+	elif (locale=="no"):
+		print '''echo left-alt j | hid-keyboard /dev/hidg0 keyboard'''
+	elif (locale=="pt"):
+		print '''echo left-alt s | hid-keyboard /dev/hidg0 keyboard'''
+	elif (locale=="be"):
+		print '''echo left-alt o | hid-keyboard /dev/hidg0 keyboard'''
+	print '''sleep 3'''
 
 def win8cmd_elevated(locale):
 	print '''sleep 1'''
@@ -1462,9 +1470,31 @@ def win8cmd_elevated(locale):
 	print '''echo -ne "\\x00\\x00\\x00\\x28\\x00\\x00\\x00\\x00" > /dev/hidg0'''
 	print '''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
 	print '''sleep 2'''
-	print '''echo left | hid-keyboard /dev/hidg0 keyboard''' #Accept UAC (left/enter)
-	print '''echo enter | hid-keyboard /dev/hidg0 keyboard'''
-	print '''sleep 2'''
+	if (locale=="us"):
+                print '''echo left-alt y | hid-keyboard /dev/hidg0 keyboard'''
+        elif (locale=="fr"):
+                print '''echo left-alt o | hid-keyboard /dev/hidg0 keyboard'''
+        elif (locale=="de"):
+                print '''echo left-alt j | hid-keyboard /dev/hidg0 keyboard'''
+        elif (locale=="es"):
+                print '''echo left-alt s | hid-keyboard /dev/hidg0 keyboard'''
+        elif (locale=="sv"):
+                print '''echo left-alt j | hid-keyboard /dev/hidg0 keyboard'''
+        elif (locale=="it"):
+                print '''echo left-alt s | hid-keyboard /dev/hidg0 keyboard'''
+        elif (locale=="uk"):
+                print '''echo left-alt y | hid-keyboard /dev/hidg0 keyboard'''
+        elif (locale=="ru"):
+                print '''echo left-alt d | hid-keyboard /dev/hidg0 keyboard'''
+        elif (locale=="dk"):
+                print '''echo left-alt j | hid-keyboard /dev/hidg0 keyboard'''
+        elif (locale=="no"):
+                print '''echo left-alt j | hid-keyboard /dev/hidg0 keyboard'''
+        elif (locale=="pt"):
+                print '''echo left-alt s | hid-keyboard /dev/hidg0 keyboard'''
+        elif (locale=="be"):
+                print '''echo left-alt o | hid-keyboard /dev/hidg0 keyboard'''
+	print '''sleep 3'''
 
 def enterb():
 	print '''sleep 2'''
