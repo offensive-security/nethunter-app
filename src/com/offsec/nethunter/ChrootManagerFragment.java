@@ -807,7 +807,7 @@ public class ChrootManagerFragment extends Fragment {
                 // download the file
                 input = connection.getInputStream();
                 output = new FileOutputStream(zipFilePath);
-                byte data[] = new byte[8192];
+                byte data[] = new byte[50*1024];
                 long total = 0;
                 int count;
                 while ((count = input.read(data)) != -1 && isRunning) {
