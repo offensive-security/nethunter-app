@@ -32,6 +32,13 @@
                 android:textColor="#ffffffff" />
 
 
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Localhost Only"
+                android:id="@+id/vnc_checkBox"
+                android:checked="true"
+                android:onClick="vncLocalClick" />
 
             <LinearLayout
                 android:orientation="horizontal"

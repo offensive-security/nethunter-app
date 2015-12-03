@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.util.DisplayMetrics;
@@ -23,6 +24,8 @@ public class VNCFragment  extends Fragment {
     private static final String TAG = "VNCFragment";
     String xwidth;
     String xheight;
+    View.OnClickListener checkBoxListener;;
+    String localhostonly = "";
 
     NhPaths nh;
     private static final String ARG_SECTION_NUMBER = "section_number";
@@ -48,7 +51,6 @@ public class VNCFragment  extends Fragment {
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         final int screen_height = displaymetrics.heightPixels;
         final int screen_width = displaymetrics.widthPixels;
-        Log.d(TAG, "Real Height: " + screen_height + " Real Width: " + screen_width);
 
         // Because height and width changes on screen rotation, use the largest as width
         if (screen_height > screen_width){
@@ -58,12 +60,25 @@ public class VNCFragment  extends Fragment {
             xwidth = Integer.toString(screen_width);
             xheight = Integer.toString(screen_height);
         }
-        Log.d(TAG, "xHeight: " + xheight + " xWidth: " + xwidth);
 
         Button SetupVNCButton = (Button) rootView.findViewById(R.id.set_up_vnc);
         Button StartVNCButton = (Button) rootView.findViewById(R.id.start_vnc);
         Button StopVNCButton = (Button) rootView.findViewById(R.id.stop_vnc);
         Button OpenVNCButton = (Button) rootView.findViewById(R.id.vncClientStart);
+
+        // Checkbox for localhost only
+        final CheckBox localhostCheckBox = (CheckBox) rootView.findViewById(R.id.vnc_checkBox);
+        localhostCheckBox.setChecked(true);
+        checkBoxListener =new View.OnClickListener() {
+            public void onClick(View v) {
+                if(localhostCheckBox.isChecked()) {
+                    localhostonly = "-localhost ";
+                }else{
+                    localhostonly = "";
+                }
+            }
+        };
+        localhostCheckBox.setOnClickListener(checkBoxListener);
 
         addClickListener(SetupVNCButton, new View.OnClickListener() {
             public void onClick(View v) {
@@ -72,7 +87,8 @@ public class VNCFragment  extends Fragment {
         });
         addClickListener(StartVNCButton, new View.OnClickListener() {
             public void onClick(View v) {
-                intentClickListener_NH("vncserver :1 -localhost -geometry " + xwidth + "x" + xheight + " && echo \"Now you can exit, we can autoexit like in the vnc setup\""); // since is a kali command we can send it as is
+                intentClickListener_NH("vncserver :1 -geometry " + localhostonly + xwidth + "x" + xheight + " && echo \"Now you can exit, we can autoexit like in the vnc setup\""); // since is a kali command we can send it as is
+                Log.d(TAG, localhostonly);
             }
         });
         addClickListener(StopVNCButton, new View.OnClickListener() {
@@ -89,6 +105,7 @@ public class VNCFragment  extends Fragment {
 
         return rootView;
     }
+
 
     private void addClickListener(Button _button, View.OnClickListener onClickListener) {
         _button.setOnClickListener(onClickListener);
@@ -123,6 +140,7 @@ public class VNCFragment  extends Fragment {
             Toast.makeText(getActivity().getApplicationContext(), "NetHunter VNC not found!", Toast.LENGTH_SHORT).show();
         }
     }
+
     private void intentClickListener_NH(final String command) {
         try {
             Intent intent =
