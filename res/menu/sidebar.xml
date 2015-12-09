@@ -49,6 +49,10 @@
             android:icon="@drawable/ic_action_network_wifi"
             android:title="@string/drawertitlemana" />
         <item
+            android:id="@+id/mitmf_item"
+            android:icon="@drawable/ic_share_black_24dp"
+            android:title="@string/drawertitlemitmf" />
+        <item
             android:id="@+id/mpc_item"
             android:icon="@drawable/ic_memory_24dp"
             android:title="@string/drawertitlempc" />

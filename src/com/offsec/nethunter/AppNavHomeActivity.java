@@ -316,6 +316,13 @@ public class AppNavHomeActivity extends AppCompatActivity {
                                         .addToBackStack(null)
                                         .commit();
                                 break;
+                            case R.id.mitmf_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, MITMfFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
                             case R.id.vnc_item:
                                 fragmentManager
                                         .beginTransaction()
