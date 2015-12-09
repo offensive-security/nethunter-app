@@ -42,7 +42,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
         View rootView = inflater.inflate(R.layout.mitmf, container, false);
         TabsPagerAdapter = new TabsPagerAdapter(getActivity().getSupportFragmentManager());
 
-        mViewPager = (ViewPager) rootView.findViewById(R.id.pagerHid);
+        mViewPager = (ViewPager) rootView.findViewById(R.id.pagerMITMF);
         mViewPager.setAdapter(TabsPagerAdapter);
 
         mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
