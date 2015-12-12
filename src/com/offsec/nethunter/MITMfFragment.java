@@ -30,21 +30,64 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
     SharedPreferences sharedpreferences;
     View.OnClickListener checkBoxListener;;
 
-    // All MITMf command settings
-    String M_Interface;
-    String M_JSKeyLogger;
-    String M_FerretNG;
-    String M_BrowserProfiler;
-    String M_FilePWN;
-    String M_BeeF;
-    String M_SMB;
-    String M_SSLStrip;
-    String M_App_Poison;
-    String M_UpsideDown;
-    String M_ScreenShotter;
-    String M_ScreenInterval;
-    EditText M_ScreenIntervalTime;
+    /* All MITMf General Command Variables */
 
+    String M_Interface; // -i [interface from spinner]
+    String M_JSKeyLogger; // --jskeylogger
+    String M_FerretNG; // --ferretng
+    String M_BrowserProfiler; // --browserprofiler
+    String M_FilePWN; // --filepwn
+    String M_BeeF; // --beefauto
+    String M_SMB; // --smbauth
+    String M_SSLStrip; // --hsts
+    String M_App_Poison; // --appoison
+    String M_UpsideDown;  // --upsidedownternet
+    String M_ScreenShotter; // --screen
+    String M_ScreenInterval; // --interval [M_ScreenIntervalTime]
+    EditText M_ScreenIntervalTime; // Time for Screen interval
+
+    /* All MITMf Responder Command Variables */
+
+    String M_Responder; // --responder
+    String M_Responder_Analyze; // --analyze
+    String M_Responder_Fingerprint; // --fingerprint
+    String M_Responder_Downgrade; // --lm
+    String M_Responder_NBTNS; // --nbtns
+    String M_Responder_WPAD; // --wpad
+    String M_Responder_WRedir; // --wredir
+
+    /* All MITMf Injection Command Variables */
+
+    String M_Injection; // --injection
+    String M_Injection_Preserve_Cache; // --preserve-cache
+    String M_Injection_Per_Domain; // --per-domain
+    String M_Injection_JSURL; // --js-url [M_Injection_JSURL_Text]
+    EditText M_Injection_JSURL_Text; // URL STring
+    String M_Injection_HTMLURL; // --html-url [M_Injection_HTMLURL_Text]
+    EditText M_Injection_HTMLURL_Text; // URL String
+    String M_Injection_HTMLPAY; // --html-payload [EditText M_Injection_HTMLPAY_Text]
+    EditText M_Injection_HTMLPAY_Text; // HTML String
+    String M_Injection_Match; // --match-str [M_Injection_Match_Text]
+    EditText M_Injection_Match_Text; // Match String
+    String M_Injection_Rate_Limit; // --rate-limit [M_Injection_Rate_Limit_Text]
+    EditText M_Injection_Rate_Limit_Text; // Number of seconds
+    String M_Injection_Number; // --count-limit
+    EditText M_Injection_Number_Text; // Number of seconds
+    String M_Injection_Only_IP; // --white-ips [M_Injection_Only_IP_Text]
+    EditText M_Injection_Only_IP_Text; // IP
+    String M_Injection_Not_IP; // --black-ips [M_Injection_Not_IP_Text]
+    EditText M_Injection_Not_IP_Text; // IP
+
+    /* All MITMf Spoof Command Variables */
+    String M_Spoofer; // --spoof
+    String M_Spoofer_Redirect; // --arp | --icmp | --dhcp | --dns
+    String M_Spoofer_ARP_Mode; // --arpmode req | --arpmode rep
+    String M_Spoofer_Gateway; // --gateway [M_Spoofer_Gateway_Text]
+    EditText M_Spoofer_Gateway_Text; // IP of gateway
+    String M_Spoofer_Targets; // --targets [M_Spoofer_Targets_Text]
+    EditText M_Spoofer_Targets_Text; // IP of target
+    String M_Spoofer_Shellshock; // --shellshock [M_Spoofer_Shellshock_Text]
+    EditText M_Spoofer_Shellshock_Text; // Command to run after shellshock
 
     NhPaths nh;
     private static final String ARG_SECTION_NUMBER = "section_number";
@@ -111,6 +154,8 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                     return new MITMfResponder();
                 case 2:
                     return new MITMfInject();
+                case 3:
+                    return new MITMfSpoof();
                 default:
                     return new MITMfInject();
             }
@@ -123,7 +168,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
 
         @Override
@@ -135,6 +180,8 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                     return "Responder Settings";
                 case 2:
                     return "Inject Settings";
+                case 3:
+                    return "Spoof Settings";
                 default:
                     return "MITMf General";
             }
@@ -154,35 +201,32 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             View rootView = inflater.inflate(R.layout.mitmf_general, container, false);
 
             // Optional Presets Spinner
-            Spinner typeSpinner = (Spinner) rootView.findViewById(R.id.mitmf_interface);
-            ArrayAdapter<CharSequence> typeAdapter = ArrayAdapter.createFromResource(getActivity(),
+            Spinner interfaceSpinner = (Spinner) rootView.findViewById(R.id.mitmf_interface);
+            ArrayAdapter<CharSequence> interfaceAdapter = ArrayAdapter.createFromResource(getActivity(),
                     R.array.mitmf_interface_array, android.R.layout.simple_spinner_item);
-            typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            typeSpinner.setAdapter(typeAdapter);
-            typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            interfaceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            interfaceSpinner.setAdapter(interfaceAdapter);
+            interfaceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                     String selectedItemText = parent.getItemAtPosition(pos).toString();
                     Log.d("Slected: ", selectedItemText);
                     switch (pos) {
                         case 0:
-                            // Blank Interface
+                            // Interface: wlan0
+                            M_Interface = "-i wlan0 ";
                             break;
                         case 1:
-                            // Interface: wlan0
-                            M_Interface = "-i wlan0";
+                            // Interface: wlan1
+                            M_Interface = "-i wlan1 ";
                             break;
                         case 2:
-                            // Interface: wlan1
-                            M_Interface = "-i wlan1";
+                            // Interface: eth0
+                            M_Interface = "-i eth0 ";
                             break;
                         case 3:
-                            // Interface: eth0
-                            M_Interface = "-i eth0";
-                            break;
-                        case 4:
                             // Interface: rndis0
-                            M_Interface = "-i rndis0";
+                            M_Interface = "-i rndis0 ";
                             break;
                     }
                 }
@@ -372,6 +416,260 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.mitmf_inject, container, false);
+
+            // Checkbox for Injection Preserve Cache
+            final CheckBox InjectionPreserveCacheCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_inject_preservecache);
+            checkBoxListener =new View.OnClickListener() {
+                public void onClick(View v) {
+                    if(InjectionPreserveCacheCheckbox.isChecked()) {
+                        M_Injection_Preserve_Cache = "--preserve-cache ";
+                    }else{
+                        M_Injection_Preserve_Cache = "";
+                    }
+                }
+            };
+            InjectionPreserveCacheCheckbox.setOnClickListener(checkBoxListener);
+
+            // Checkbox for Injection Once Per Domain
+            final CheckBox InjectionPerDomainCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_inject_onceperdomain);
+            checkBoxListener =new View.OnClickListener() {
+                public void onClick(View v) {
+                    if(InjectionPerDomainCheckbox.isChecked()) {
+                        M_Injection_Per_Domain = "--per-domain ";
+                    }else{
+                        M_Injection_Per_Domain = "";
+                    }
+                }
+            };
+            InjectionPerDomainCheckbox.setOnClickListener(checkBoxListener);
+
+            // Textfield JS URL
+            M_Injection_JSURL_Text = (EditText) rootView.findViewById(R.id.mitmf_injectjs_url);
+            M_Injection_JSURL_Text.setEnabled(false);
+
+            // Checkbox for Injection JS URL
+            final CheckBox InjectionJSURLCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_injectjs);
+            checkBoxListener =new View.OnClickListener() {
+                public void onClick(View v) {
+                    if(InjectionJSURLCheckbox.isChecked()) {
+                        M_Injection_JSURL = "--js-url ";
+                        M_Injection_JSURL_Text.setFocusable(true);
+                        M_Injection_JSURL_Text.setEnabled(true);
+                    }else{
+                        M_Injection_JSURL = "";
+                        M_Injection_JSURL_Text.setFocusable(false);
+                        M_Injection_JSURL_Text.setEnabled(false);
+                    }
+                }
+            };
+            InjectionJSURLCheckbox.setOnClickListener(checkBoxListener);
+
+            // Textfield HTML URL
+            M_Injection_HTMLURL_Text = (EditText) rootView.findViewById(R.id.mitmf_injecthtml_url);
+            M_Injection_HTMLURL_Text.setEnabled(false);
+
+            // Checkbox for Injection HTML URL
+            final CheckBox InjectionHTMLURLCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_injecthtml);
+            checkBoxListener =new View.OnClickListener() {
+                public void onClick(View v) {
+                    if(InjectionHTMLURLCheckbox.isChecked()) {
+                        M_Injection_HTMLURL = "--html-url ";
+                        M_Injection_HTMLURL_Text.setFocusable(true);
+                        M_Injection_HTMLURL_Text.setEnabled(true);
+                    }else{
+                        M_Injection_HTMLURL = "";
+                        M_Injection_HTMLURL_Text.setFocusable(false);
+                        M_Injection_HTMLURL_Text.setEnabled(false);
+                    }
+                }
+            };
+            InjectionHTMLURLCheckbox.setOnClickListener(checkBoxListener);
+
+            // Textfield HTML Payload String
+            M_Injection_HTMLPAY_Text = (EditText) rootView.findViewById(R.id.mitmf_injecthtmlpay_text);
+            M_Injection_HTMLPAY_Text.setEnabled(false);
+
+            // Checkbox for Injection HTML Payload String
+            final CheckBox InjectionHTMLPAYCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_injecthtmlpay);
+            checkBoxListener =new View.OnClickListener() {
+                public void onClick(View v) {
+                    if(InjectionHTMLPAYCheckbox.isChecked()) {
+                        M_Injection_HTMLPAY = "--html-payload ";
+                        M_Injection_HTMLPAY_Text.setFocusable(true);
+                        M_Injection_HTMLPAY_Text.setEnabled(true);
+                    }else{
+                        M_Injection_HTMLPAY = "";
+                        M_Injection_HTMLPAY_Text.setFocusable(false);
+                        M_Injection_HTMLPAY_Text.setEnabled(false);
+                    }
+                }
+            };
+            InjectionHTMLPAYCheckbox.setOnClickListener(checkBoxListener);
+
+            // Textfield HTML Match String
+            M_Injection_Match_Text = (EditText) rootView.findViewById(R.id.mitmf_inject_match_string);
+            M_Injection_Match_Text.setEnabled(false);
+
+            // Checkbox for Injection Match HTML
+            final CheckBox InjectionMatchCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_inject_match);
+            checkBoxListener =new View.OnClickListener() {
+                public void onClick(View v) {
+                    if(InjectionMatchCheckbox.isChecked()) {
+                        M_Injection_Match = "--match-str  ";
+                        M_Injection_Match_Text.setFocusable(true);
+                        M_Injection_Match_Text.setEnabled(true);
+                    }else{
+                        M_Injection_Match = "";
+                        M_Injection_Match_Text.setFocusable(false);
+                        M_Injection_Match_Text.setEnabled(false);
+                    }
+                }
+            };
+            InjectionMatchCheckbox.setOnClickListener(checkBoxListener);
+
+            // Textfield for Injection Rate Limit
+            M_Injection_Rate_Limit_Text = (EditText) rootView.findViewById(R.id.mitmf_inject_rateseconds);
+            M_Injection_Rate_Limit_Text.setEnabled(false);
+
+            // Checkbox for Injection Rate Limit
+            final CheckBox InjectionRateLimitCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_inject_ratelimit);
+            checkBoxListener =new View.OnClickListener() {
+                public void onClick(View v) {
+                    if(InjectionRateLimitCheckbox.isChecked()) {
+                        M_Injection_Rate_Limit = "--rate-limit ";
+                        M_Injection_Rate_Limit_Text.setFocusable(true);
+                        M_Injection_Rate_Limit_Text.setEnabled(true);
+                    }else{
+                        M_Injection_Rate_Limit = "";
+                        M_Injection_Rate_Limit_Text.setFocusable(false);
+                        M_Injection_Rate_Limit_Text.setEnabled(false);
+                    }
+                }
+            };
+            InjectionRateLimitCheckbox.setOnClickListener(checkBoxListener);
+
+            // Textfield for Injection Count Limit
+            M_Injection_Number_Text = (EditText) rootView.findViewById(R.id.mitmf_inject_times_text);
+            M_Injection_Number_Text.setEnabled(false);
+
+            // Checkbox for Injection Count Limit
+            final CheckBox InjectionNumberCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_inject_times);
+            checkBoxListener =new View.OnClickListener() {
+                public void onClick(View v) {
+                    if(InjectionNumberCheckbox.isChecked()) {
+                        M_Injection_Number = "--count-limit ";
+                        M_Injection_Number_Text.setFocusable(true);
+                        M_Injection_Number_Text.setEnabled(true);
+                    }else{
+                        M_Injection_Number = "";
+                        M_Injection_Number_Text.setFocusable(false);
+                        M_Injection_Number_Text.setEnabled(false);
+                    }
+                }
+            };
+            InjectionNumberCheckbox.setOnClickListener(checkBoxListener);
+
+            // Textfield Inject Only IP
+            M_Injection_Only_IP_Text = (EditText) rootView.findViewById(R.id.mitmf_inject_ip_text);
+            M_Injection_Only_IP_Text.setEnabled(false);
+
+            // Checkbox for Injection Only Target IP
+            final CheckBox InjectionOnlyIPCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_inject_ip);
+            checkBoxListener =new View.OnClickListener() {
+                public void onClick(View v) {
+                    if(InjectionOnlyIPCheckbox.isChecked()) {
+                        M_Injection_Only_IP = "--white-ips ";
+                        M_Injection_Only_IP_Text.setFocusable(true);
+                        M_Injection_Only_IP_Text.setEnabled(true);
+                    }else{
+                        M_Injection_Only_IP = "";
+                        M_Injection_Only_IP_Text.setFocusable(false);
+                        M_Injection_Only_IP_Text.setEnabled(false);
+                    }
+                }
+            };
+            InjectionOnlyIPCheckbox.setOnClickListener(checkBoxListener);
+
+            // Textfield Inject Only IP
+            M_Injection_Not_IP_Text = (EditText) rootView.findViewById(R.id.mitmf_inject_noip_text);
+            M_Injection_Not_IP_Text.setEnabled(false);
+
+            // Checkbox for Injection Not IP
+            final CheckBox InjectionNotIPCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_inject_noip);
+            checkBoxListener =new View.OnClickListener() {
+                public void onClick(View v) {
+                    if(InjectionNotIPCheckbox.isChecked()) {
+                        M_Injection_Not_IP = "--white-ips ";
+                        M_Injection_Not_IP_Text.setFocusable(true);
+                        M_Injection_Not_IP_Text.setEnabled(true);
+                    }else{
+                        M_Injection_Not_IP = "";
+                        M_Injection_Not_IP_Text.setFocusable(false);
+                        M_Injection_Not_IP_Text.setEnabled(false);
+                    }
+                }
+            };
+            InjectionNotIPCheckbox.setOnClickListener(checkBoxListener);
+
+            // Checkbox for Injection
+            final CheckBox InjectionCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_enableinject);
+            checkBoxListener =new View.OnClickListener() {
+                public void onClick(View v) {
+                    if(InjectionCheckbox.isChecked()) {
+                        M_Injection = "--injection  ";
+                        /* Allow checkboxes to be enabled if Injection checkbox activated */
+                        InjectionPreserveCacheCheckbox.setEnabled(true);
+                        InjectionPerDomainCheckbox.setEnabled(true);
+                        InjectionJSURLCheckbox.setEnabled(true);
+                        InjectionHTMLURLCheckbox.setEnabled(true);
+                        InjectionHTMLPAYCheckbox.setEnabled(true);
+                        InjectionMatchCheckbox.setEnabled(true);
+                        InjectionRateLimitCheckbox.setEnabled(true);
+                        InjectionNumberCheckbox.setEnabled(true);
+                        InjectionOnlyIPCheckbox.setEnabled(true);
+                        InjectionNotIPCheckbox.setEnabled(true);
+                    }else{
+                        M_Injection = ""; // --injection
+                        M_Injection_Preserve_Cache = ""; // --preserve-cache
+                        M_Injection_Per_Domain = ""; // --per-domain
+                        M_Injection_JSURL = ""; // --js-url [M_Injection_JSURL_Text]
+                        M_Injection_HTMLURL = ""; // --html-url [M_Injection_HTMLURL_Text]
+                        M_Injection_HTMLPAY = ""; // --html-payload [EditText M_Injection_HTMLPAY_Text]
+                        M_Injection_Match = ""; // --match-str [M_Injection_Match_Text]
+                        M_Injection_Rate_Limit = ""; // --rate-limit [M_Injection_Rate_Limit_Text]
+                        M_Injection_Number = ""; // --count-limit
+                        M_Injection_Only_IP = ""; // --white-ips [M_Injection_Only_IP_Text]
+                        M_Injection_Not_IP = ""; // --black-ips [M_Injection_Not_IP_Text]
+
+                        /* Don't allow checkboxes to be enabled if Injection checkbox not activated */
+                        InjectionPreserveCacheCheckbox.setEnabled(false);
+                        InjectionPerDomainCheckbox.setEnabled(false);
+                        InjectionJSURLCheckbox.setEnabled(false);
+                        InjectionHTMLURLCheckbox.setEnabled(false);
+                        InjectionHTMLPAYCheckbox.setEnabled(false);
+                        InjectionMatchCheckbox.setEnabled(false);
+                        InjectionRateLimitCheckbox.setEnabled(false);
+                        InjectionNumberCheckbox.setEnabled(false);
+                        InjectionOnlyIPCheckbox.setEnabled(false);
+                        InjectionNotIPCheckbox.setEnabled(false);
+                  }
+                }
+            };
+            InjectionCheckbox.setOnClickListener(checkBoxListener);
+
+            /* Set Checkboxes off by default */
+            InjectionPreserveCacheCheckbox.setEnabled(false);
+            InjectionPerDomainCheckbox.setEnabled(false);
+            InjectionJSURLCheckbox.setEnabled(false);
+            InjectionHTMLURLCheckbox.setEnabled(false);
+            InjectionHTMLPAYCheckbox.setEnabled(false);
+            InjectionMatchCheckbox.setEnabled(false);
+            InjectionRateLimitCheckbox.setEnabled(false);
+            InjectionNumberCheckbox.setEnabled(false);
+            InjectionOnlyIPCheckbox.setEnabled(false);
+            InjectionNotIPCheckbox.setEnabled(false);
+
+
             return rootView;
         }
 
@@ -380,6 +678,203 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
 
         }
     }
+
+
+    public static class MITMfSpoof extends MITMfFragment implements View.OnClickListener {
+
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.mitmf_spoof, container, false);
+
+
+            // Redirecct Spinner
+            final Spinner redirectSpinner = (Spinner) rootView.findViewById(R.id.mitmf_spoof_redirectspin);
+            ArrayAdapter<CharSequence> redirectAdapter = ArrayAdapter.createFromResource(getActivity(),
+                    R.array.mitmf_spoof_type, android.R.layout.simple_spinner_item);
+            redirectAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            redirectSpinner.setAdapter(redirectAdapter);
+            redirectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                    String selectedItemText = parent.getItemAtPosition(pos).toString();
+                    Log.d("Slected: ", selectedItemText);
+                    switch (pos) {
+                        case 0:
+                            M_Spoofer_Redirect = "";
+                            break;
+                        case 1:
+                            // ARP
+                            M_Spoofer_Redirect = "--arp ";
+                            break;
+                        case 2:
+                            // ICMP
+                            M_Spoofer_Redirect = "--icmp ";
+                            break;
+                        case 3:
+                            // DHCP
+                            M_Spoofer_Redirect = "--dhcp ";
+                            break;
+                        case 4:
+                            // DNS
+                            M_Spoofer_Redirect = "--dns ";
+                            break;
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    //Another interface callback
+                }
+            });
+
+            // ARP Mode Spinner
+            final Spinner ARPSpinner = (Spinner) rootView.findViewById(R.id.mitmf_spoof_arpmodespin);
+            ArrayAdapter<CharSequence> arpAdapter = ArrayAdapter.createFromResource(getActivity(),
+                    R.array.mitmf_spoof_arpmode, android.R.layout.simple_spinner_item);
+            arpAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            ARPSpinner.setAdapter(arpAdapter);
+            ARPSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                    String selectedItemText = parent.getItemAtPosition(pos).toString();
+                    Log.d("Slected: ", selectedItemText);
+                    switch (pos) {
+                        case 0:
+                            // Nothing
+                            M_Spoofer_ARP_Mode = "";
+                            break;
+                        case 1:
+                            // ARP Request
+                            M_Spoofer_ARP_Mode = "--arpmode req ";
+                            break;
+                        case 2:
+                            // ARP Reply
+                            M_Spoofer_ARP_Mode = "--arpmode rep ";
+                            break;
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    //Another interface callback
+                }
+            });
+
+            // Textfield for Spoof Gateway
+            M_Spoofer_Gateway_Text = (EditText) rootView.findViewById(R.id.mitmf_spoof_gateway_text);
+            M_Spoofer_Gateway_Text.setEnabled(false);
+
+            // Checkbox for Spoof Gateway
+            final CheckBox SpoofGatewayIPCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_spoof_gateway);
+            checkBoxListener =new View.OnClickListener() {
+                public void onClick(View v) {
+                    if(SpoofGatewayIPCheckbox.isChecked()) {
+                        M_Spoofer_Gateway = "--gateway ";
+                        M_Spoofer_Gateway_Text.setFocusable(true);
+                        M_Spoofer_Gateway_Text.setEnabled(true);
+                    }else{
+                        M_Spoofer_Gateway = "";
+                        M_Spoofer_Gateway_Text.setFocusable(false);
+                        M_Spoofer_Gateway_Text.setEnabled(false);
+                    }
+                }
+            };
+            SpoofGatewayIPCheckbox.setOnClickListener(checkBoxListener);
+
+            // Textfield for Spoof Targets
+            M_Spoofer_Targets_Text = (EditText) rootView.findViewById(R.id.mitmf_spoof_targets_text);
+            M_Spoofer_Targets_Text.setEnabled(false);
+
+            final CheckBox SpoofSpecifyTargetCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_spoof_targets);
+            checkBoxListener =new View.OnClickListener() {
+                public void onClick(View v) {
+                    if(SpoofSpecifyTargetCheckbox.isChecked()) {
+                        M_Spoofer_Targets = "--targets ";
+                        M_Spoofer_Targets_Text.setFocusable(true);
+                        M_Spoofer_Targets_Text.setEnabled(true);
+                    }else{
+                        M_Spoofer_Targets = "";
+                        M_Spoofer_Targets_Text.setFocusable(false);
+                        M_Spoofer_Targets_Text.setEnabled(false);
+                    }
+                }
+            };
+            SpoofSpecifyTargetCheckbox.setOnClickListener(checkBoxListener);
+
+            // Textfield for Shellshock Command
+            M_Spoofer_Shellshock_Text = (EditText) rootView.findViewById(R.id.mitmf_spoof_shellshock_text);
+            M_Spoofer_Shellshock_Text.setEnabled(false);
+
+            final CheckBox SpoofShellshockCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_spoof_shellshock);
+            checkBoxListener =new View.OnClickListener() {
+                public void onClick(View v) {
+                    if(SpoofShellshockCheckbox.isChecked()) {
+                        M_Spoofer_Shellshock = "--shellshock ";
+                        M_Spoofer_Shellshock_Text.setFocusable(true);
+                        M_Spoofer_Shellshock_Text.setEnabled(true);
+                    }else{
+                        M_Spoofer_Shellshock = "";
+                        M_Spoofer_Shellshock_Text.setFocusable(false);
+                        M_Spoofer_Shellshock_Text.setEnabled(false);
+                    }
+                }
+            };
+            SpoofShellshockCheckbox.setOnClickListener(checkBoxListener);
+
+
+            // Checkbox for Injection
+            final CheckBox SpoofCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_enablespoof);
+            checkBoxListener =new View.OnClickListener() {
+                public void onClick(View v) {
+                    if(SpoofCheckbox.isChecked()) {
+                        M_Spoofer = "--injection  ";
+                        /* Allow checkboxes to be enabled if Spoof checkbox activated */
+                        redirectSpinner.setEnabled(true);
+                        ARPSpinner.setEnabled(true);
+                        SpoofGatewayIPCheckbox.setEnabled(true);
+                        SpoofSpecifyTargetCheckbox.setEnabled(true);
+                        SpoofShellshockCheckbox.setEnabled(true);
+                    }else{
+                        M_Spoofer = ""; // --spoof
+                        M_Spoofer_Redirect = ""; // --arp | --icmp | --dhcp | --dns
+                        M_Spoofer_ARP_Mode = ""; // --arpmode req | --arpmode rep
+                        M_Spoofer_Gateway = ""; // --gateway [M_Spoofer_Gateway_Text]
+                        M_Spoofer_Targets = ""; // --targets [M_Spoofer_Targets_Text]
+                        M_Spoofer_Shellshock = ""; // --shellshock [M_Spoofer_Shellshock_Text]
+
+                        /* Don't allow checkboxes to be enabled if Spoof checkbox not activated */
+                        redirectSpinner.setEnabled(false);
+                        ARPSpinner.setEnabled(false);
+                        SpoofGatewayIPCheckbox.setEnabled(false);
+                        SpoofSpecifyTargetCheckbox.setEnabled(false);
+                        SpoofShellshockCheckbox.setEnabled(false);
+                    }
+                }
+            };
+            SpoofCheckbox.setOnClickListener(checkBoxListener);
+
+            /* Enable by default until spoof button is clicked */
+            redirectSpinner.setEnabled(false);
+            ARPSpinner.setEnabled(false);
+            SpoofGatewayIPCheckbox.setEnabled(false);
+            SpoofSpecifyTargetCheckbox.setEnabled(false);
+            SpoofShellshockCheckbox.setEnabled(false);
+
+            return rootView;
+        }
+
+        @Override
+        public void onClick(View v) {
+
+        }
+    }
+
 
     public static class MITMfResponder extends MITMfFragment implements View.OnClickListener {
 
@@ -392,6 +887,127 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.mitmf_responder, container, false);
+
+            // Checkbox for Responder Analyze
+            final CheckBox ResponderAnalyzeCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_responder_analyze);
+            checkBoxListener =new View.OnClickListener() {
+                public void onClick(View v) {
+                    if(ResponderAnalyzeCheckbox.isChecked()) {
+                        M_Responder_Analyze = "--analyze ";
+                    }else{
+                        M_Responder_Analyze = "";
+                    }
+                }
+            };
+            ResponderAnalyzeCheckbox.setOnClickListener(checkBoxListener);
+
+            // Checkbox for Responder Fingerprint
+            final CheckBox ResponderFingerprintCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_responder_fingerprint);
+            checkBoxListener =new View.OnClickListener() {
+                public void onClick(View v) {
+                    if(ResponderFingerprintCheckbox.isChecked()) {
+                        M_Responder_Fingerprint = "--fingerprint ";
+                    }else{
+                        M_Responder_Fingerprint = "";
+                    }
+                }
+            };
+            ResponderFingerprintCheckbox.setOnClickListener(checkBoxListener);
+
+            // Checkbox for Responder Downgrade
+            final CheckBox ResponderDowngradeCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_responder_LM);
+            checkBoxListener =new View.OnClickListener() {
+                public void onClick(View v) {
+                    if(ResponderDowngradeCheckbox.isChecked()) {
+                        M_Responder_Downgrade = "--lm ";
+                    }else{
+                        M_Responder_Downgrade = "";
+                    }
+                }
+            };
+            ResponderDowngradeCheckbox.setOnClickListener(checkBoxListener);
+
+            // Checkbox for NBTNS
+            final CheckBox ResponderNBTNSCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_responder_NBTNS);
+            checkBoxListener =new View.OnClickListener() {
+                public void onClick(View v) {
+                    if(ResponderNBTNSCheckbox.isChecked()) {
+                        M_Responder_NBTNS = "--nbtns ";
+                    }else{
+                        M_Responder_NBTNS = "";
+                    }
+                }
+            };
+            ResponderNBTNSCheckbox.setOnClickListener(checkBoxListener);
+
+            // Checkbox for WAPD
+            final CheckBox ResponderWPADCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_responder_WPAD);
+            checkBoxListener =new View.OnClickListener() {
+                public void onClick(View v) {
+                    if(ResponderWPADCheckbox.isChecked()) {
+                        M_Responder_WPAD = "--wpad ";
+                    }else{
+                        M_Responder_WPAD = "";
+                    }
+                }
+            };
+            ResponderWPADCheckbox.setOnClickListener(checkBoxListener);
+
+            // Checkbox for Responder WREDIR
+            final CheckBox ResponderWRedirCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_responder_WREDIR);
+            checkBoxListener =new View.OnClickListener() {
+                public void onClick(View v) {
+                    if(ResponderWRedirCheckbox.isChecked()) {
+                        M_Responder_WRedir = "--wredir ";
+                    }else{
+                        M_Responder_WRedir = "";
+                    }
+                }
+            };
+            ResponderWRedirCheckbox.setOnClickListener(checkBoxListener);
+
+
+            // Checkbox for Responder
+            final CheckBox ResponderCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_responder);
+            checkBoxListener =new View.OnClickListener() {
+                public void onClick(View v) {
+                    if(ResponderCheckbox.isChecked()) {
+                        M_Responder = "--responder  ";
+                        /* Allow checkboxes to be enabled if Responder not activated */
+                        ResponderAnalyzeCheckbox.setEnabled(true);
+                        ResponderFingerprintCheckbox.setEnabled(true);
+                        ResponderDowngradeCheckbox.setEnabled(true);
+                        ResponderNBTNSCheckbox.setEnabled(true);
+                        ResponderWPADCheckbox.setEnabled(true);
+                        ResponderWRedirCheckbox.setEnabled(true);
+                    }else{
+                        M_Responder = "";
+                        M_Responder_Analyze = ""; // --analyze
+                        M_Responder_Fingerprint = ""; // --fingerprint
+                        M_Responder_Downgrade = ""; // --lm
+                        M_Responder_NBTNS = ""; // --nbtns
+                        M_Responder_WPAD = ""; // --wpad
+                        M_Responder_WRedir = ""; // --wredir
+                        /* Don't allow checkboxes to be enabled if Responder not activated */
+                        ResponderAnalyzeCheckbox.setEnabled(false);
+                        ResponderFingerprintCheckbox.setEnabled(false);
+                        ResponderDowngradeCheckbox.setEnabled(false);
+                        ResponderNBTNSCheckbox.setEnabled(false);
+                        ResponderWPADCheckbox.setEnabled(false);
+                        ResponderWRedirCheckbox.setEnabled(false);                    }
+                }
+            };
+            ResponderCheckbox.setOnClickListener(checkBoxListener);
+
+            /* Set default responder options to not activated */
+            ResponderAnalyzeCheckbox.setEnabled(false);
+            ResponderFingerprintCheckbox.setEnabled(false);
+            ResponderDowngradeCheckbox.setEnabled(false);
+            ResponderNBTNSCheckbox.setEnabled(false);
+            ResponderWPADCheckbox.setEnabled(false);
+            ResponderWRedirCheckbox.setEnabled(false);
+
+
             return rootView;
         }
 

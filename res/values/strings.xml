@@ -172,7 +172,6 @@
     <!-- MITMf -->
     <string name="mitmf_description">Written by @byt3bl33d3r, MITMf aims to provide a one-stop-shop for Man-In-The-Middle and network attacks while updating and improving existing attacks and techniques.</string>
     <string-array name="mitmf_interface_array">
-        <item>Interface</item>
         <item>wlan0</item>
         <item>wlan1</item>
         <item>eth0</item>
@@ -196,6 +195,7 @@
     </string-array>
     <string name="mitmf_FERRETNG">Enable Ferret-NG Cookie Capture Plugin</string>
     <string name="mitmf_FERRETPORT">Port:</string>
+    <string name="mitmf_Responder_Description">Responder allows you to poison LLMNR, NBT-NS and MDNS requests</string>
     <string name="mitmf_Responder">Enable Responder Plugin</string>
     <string name="mitmf_Responder_Analyze">Enable Analyze</string>
     <string name="mitmf_Responder_Wredir">Enable Wredir</string>
@@ -205,17 +205,17 @@
     <string name="mitmf_Responder_WPAD">WPAD Rogue Proxy Server</string>
     <string name="mitmf_spoof">Enable Spoof Plugin (redirect/modify traffic)</string>
     <string-array name="mitmf_spoof_type">
-        <item>Redirect Type</item>
+        <item>Select redirect type</item>
         <item>ARP</item>
         <item>ICMP</item>
         <item>DHCP</item>
         <item>DNS</item>
     </string-array>
-    <string name="mitmf_spoof_shellshock">Enable Spoof Plugin (redirect/modify traffic)</string>
+    <string name="mitmf_spoof_shellshock">Shellshock vuln when spoofing DHCP then launch command:</string>
     <string name="mitmf_spoof_gateway">Gateway IP: </string>
     <string name="mitmf_spoof_targets">Specify Target:</string>
     <string-array name="mitmf_spoof_arpmode">
-        <item>Arp Mode</item>
+        <item>Select ARP mode</item>
         <item>Requests</item>
         <item>Reply</item>
     </string-array>
