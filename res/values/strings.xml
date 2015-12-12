@@ -79,8 +79,11 @@
     <string name="start_dnsmasq">Start dnsmasq</string>
     <string name="stop_dnsmasq">Stop dnsmasq</string>
 
-    <string name="start_badusb">Start BadUSB attack</string>
-    <string name="stop_badusb">Stop BadUSB attack</string>
+    <string name="start_mitmf">Start BadUSB attack</string>
+    <string name="stop_mitmf">Stop BadUSB attack</string>
+
+    <string name="start_badusb">Start MITMf attack</string>
+    <string name="stop_badusb">Stop MITMf attack</string>
 
     <string name="KaliLauncherLabel">Kali Launcher</string>
     <string name="launch_kali_menu">Launch Kali Menu in Terminal</string>

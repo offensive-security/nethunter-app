@@ -13,6 +13,9 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -22,6 +25,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.offsec.nethunter.utils.NhPaths;
+import com.offsec.nethunter.utils.ShellExecuter;
 
 public class MITMfFragment extends Fragment implements ActionBar.TabListener {
 
@@ -123,7 +127,42 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
         return rootView;
     }
 
+    /* Start execution menu */
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.mitmf, menu);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.start_service:
+                start();
+                return true;
+            case R.id.stop_service:
+                stop();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void start() {
+        ShellExecuter exe = new ShellExecuter();
+        String[] command = new String[1];
+        exe.RunAsRoot(command);
+        nh.showMessage("MITMf Started!");
+    }
+
+    public void stop() {
+        ShellExecuter exe = new ShellExecuter();
+        String[] command = new String[1];
+        exe.RunAsRoot(command);
+        nh.showMessage("MITMf Stopped!");
+    }
+    /* Stop execution menu */
+
+    /* Start Tabs */
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
         mViewPager.setCurrentItem(tab.getPosition());
@@ -187,6 +226,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             }
         }
     }
+    /* Stop Tabs */
 
     public static class MITMfGeneral extends MITMfFragment implements View.OnClickListener {
 

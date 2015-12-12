@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/start_service"
+        android:title="@string/start_mitmf"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/stop_service"
+        android:title="@string/stop_mitmf"
+        app:showAsAction="never" />
+</menu>
