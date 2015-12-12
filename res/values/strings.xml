@@ -170,8 +170,8 @@
     <string name="createchroot_label">Kali chroot</string>
 
     <!-- MITMf -->
-    <string name="mitmf_description">MITMf, written by @byt3bl33d3r aims to provide a one-stop-shop for Man-In-The-Middle and network attacks while updating and improving existing attacks and techniques.</string>
-    <string-array name="mitmf_interface">
+    <string name="mitmf_description">Written by @byt3bl33d3r, MITMf aims to provide a one-stop-shop for Man-In-The-Middle and network attacks while updating and improving existing attacks and techniques.</string>
+    <string-array name="mitmf_interface_array">
         <item>Interface</item>
         <item>wlan0</item>
         <item>wlan1</item>
