@@ -190,8 +190,6 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
         @Override
         public Fragment getItem(int i) {
             switch (i) {
-                case 0:
-                    return new MITMfGeneral();
                 case 1:
                     return new MITMfResponder();
                 case 2:
@@ -216,8 +214,6 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
-                case 0:
-                    return "General Settings";
                 case 1:
                     return "Responder Settings";
                 case 2:
@@ -1074,6 +1070,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
     private String getCmd(){
 
         /* Not working */
+
         String HTMLURLtext = M_Injection_HTMLURL_Text.getText().toString();
         String HTMLPAYtext = M_Injection_HTMLPAY_Text.getText().toString();
         String SCREENTIMEtext = M_ScreenIntervalTime.getText().toString();
