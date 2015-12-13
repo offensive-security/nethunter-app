@@ -1,38 +1,36 @@
 package com.offsec.nethunter;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.offsec.nethunter.utils.BootKali;
 import com.offsec.nethunter.utils.NhPaths;
+import com.offsec.nethunter.utils.ShellExecuter;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+
 import java.util.ArrayList;
-
-import android.database.sqlite.SQLiteDatabase;
-import static android.database.DatabaseUtils.sqlEscapeString;
+import java.util.List;
 
 
 public class SearchSploitFragment extends Fragment {
 
-    SharedPreferences sharedpreferences;
     private Context mContext;
-    static NhPaths nh;
-    private static final String fileName = "/data/local/nhsystem/kali-armhf/usr/share/exploitdb/files.csv";
-    private static final String databasefileName = "/data/data/com.offsec.nethunter/databases/";
     private static final String TAG = "SearchSploitFragment";
     private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -40,7 +38,7 @@ public class SearchSploitFragment extends Fragment {
     private ArrayList<String> exploitList;
 
     // Create and handle database
-    private SearchSploitSQLiteHelper database;
+    private SearchSploitSQL database;
 
     public static SearchSploitFragment newInstance(int sectionNumber) {
         SearchSploitFragment fragment = new SearchSploitFragment();
@@ -54,101 +52,185 @@ public class SearchSploitFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         final View rootView = inflater.inflate(R.layout.searchsploit, container, false);
-        sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
         mContext = getActivity().getApplicationContext();
-        database = new SearchSploitSQLiteHelper(mContext);
+        database = new SearchSploitSQL(mContext);
 
         // Search List
-        searchSploitListView = (ListView) rootView.findViewById(R.id.searchResultsList);
+
 
 
         // Search Bar
         final SearchView searchStr = (SearchView) rootView.findViewById(R.id.searchSploit_searchbar);
 
-
-
-
+        final Button searchSearchSploit_git = (Button) rootView.findViewById(R.id.serchsploit_git);
+        searchSearchSploit_git.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intentClickListener_NH("cd /sdcard/nh_files && git clone https://github.com/offensive-security/exploit-database.git && echo \"DONE!\" && exit");
+            }
+        });
         // Load/reload database button
         final Button searchSearchSploit = (Button) rootView.findViewById(R.id.serchsploit_loadDB);
         searchSearchSploit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                File chrootfile = new File(fileName);
-                File databasefile = new File(databasefileName);
+                final ProgressDialog pd = new ProgressDialog(getActivity());
+                pd.setTitle("Feeding Exploit DB");
+                pd.setMessage("This can take a minute, wait...");
+                pd.setCancelable(false);
+                pd.show();
+                new Thread(new Runnable() {
+                    public void run() {
+                        final Boolean isFeeded = database.doDbFeed();
 
-                SearchSploitSQLiteHelper mDbHelper = new SearchSploitSQLiteHelper(getActivity());
-                SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
-                if (chrootfile.exists()) {
-                    Log.d(TAG, "files.csv found in chroot " + fileName);
-                    if (databasefile.exists()) {
-                        // If database exists, remove old table and create new one
-                        db.execSQL("DROP TABLE IF EXISTS ssploitdb");
-                        db.execSQL("CREATE TABLE ssploitdb ( _id INTEGER PRIMARY KEY, " +
-                                "file TEXT," +
-                                "description TEXT," +
-                                "date DATE," +
-                                "author TEXT," +
-                                "platform TEXT," +
-                                "type TEXT," +
-                                "port INTEGER)");
+                        searchSearchSploit.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                pd.dismiss();
+                                if (isFeeded) {
+                                    Toast.makeText(getActivity(),
+                                            "DB FEED DONE",
+                                            Toast.LENGTH_LONG).show();
+                                    main(rootView);
+                                } else {
+                                    Toast.makeText(getActivity(),
+                                            "Unable to find Searchsploit files.csv database. Install exploitdb in chroot",
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
                     }
-
-                    FileReader file = null;
-                    try {
-                        file = new FileReader(fileName);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                    BufferedReader buffer = new BufferedReader(file);
-                    try {
-                        buffer.readLine(); // Reads the first line (header) and throws away
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    String line = "";
-                    String tableName = "ssploitdb";
-                    String columns = "_id, file, description, date, author, platform, type, port";
-                    String str1 = "INSERT INTO " + tableName + " (" + columns + ") values(";
-                    String str2 = ");";
-
-                    db.beginTransaction();
-                    try {
-                        while ((line = buffer.readLine()) != null) {
-                            StringBuilder sb = new StringBuilder(str1);
-                            String[] str = line.split(",");
-                            sb.append("'" + str[0] + "',");
-                            sb.append("'" + str[1] + "',");
-
-                            //We need to escape single quotes in description
-                            String description = sqlEscapeString(str[2]);
-
-                            sb.append("" + description + ",");
-                            sb.append("'" + str[3] + "',");
-
-                            String author = sqlEscapeString(str[4]);
-
-                            sb.append("" + author + ",");
-                            sb.append("'" + str[5] + "',");
-                            sb.append("'" + str[6] + "',");
-                            sb.append("'" + str[7] + "'");
-                            sb.append(str2);
-                            db.execSQL(sb.toString());
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    db.setTransactionSuccessful();
-                    db.endTransaction();
-                } else {
-                    Toast.makeText(getActivity(), "Unable to find Searchsploit files.csv database." +
-                                    " Install exploitdb in chroot",
-                            Toast.LENGTH_LONG).show();
-                }
+                }).start();
             }
         });
-
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        main(rootView);
+                    }
+                }, 250);
         return rootView;
     }
+
+    private void main(final View rootView) {
+        searchSploitListView = (ListView) rootView.findViewById(R.id.searchResultsList);
+        List exploitList = database.getAllExploits();
+        ExploitLoader exploitAdapter = new ExploitLoader(mContext, exploitList);
+        searchSploitListView.setAdapter(exploitAdapter);
+    }
+    private void intentClickListener_NH(final String command) {
+        try {
+            Intent intent =
+                    new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+
+            intent.putExtra("com.offsec.nhterm.iInitialCommand", command);
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
+
+        }
+    }
+}
+class ExploitLoader extends BaseAdapter {
+
+    private final List<SearchSploit> _exploitList;
+    private Context _mContext;
+
+    private ShellExecuter exe = new ShellExecuter();
+
+
+    public ExploitLoader(Context context, List<SearchSploit> exploitList) {
+
+        _mContext = context;
+        _exploitList = exploitList;
+
+    }
+
+    static class ViewHolderItem {
+        // The switch
+        //Switch sw;
+        // the msg holder
+
+        TextView execmode;
+        TextView sendtocmd;
+        TextView runatboot;
+        // the service title
+        TextView cwTitle;
+        // run at boot checkbox
+        Button cwButton;
+    }
+
+    public int getCount() {
+        // return the number of services
+        return _exploitList.size();
+    }
+
+    // getView method is called for each item of ListView
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        // inflate the layout for each item of listView (our services)
+
+        ViewHolderItem vH;
+
+        if (convertView == null) {
+            LayoutInflater inflater = (LayoutInflater) _mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.searchsploit_item, parent, false);
+
+            // set up the ViewHolder
+            vH = new ViewHolderItem();
+            // get the reference of switch and the text view
+            vH.cwTitle = (TextView) convertView.findViewById(R.id.command_tag);
+            // vH.cwSwich = (Switch) convertView.findViewById(R.id.switch1);
+            vH.execmode = (TextView) convertView.findViewById(R.id.execmode);
+            vH.sendtocmd = (TextView) convertView.findViewById(R.id.sendtocmd);
+            vH.runatboot = (TextView) convertView.findViewById(R.id.custom_comands_runAtBoot_text);
+            vH.cwButton = (Button) convertView.findViewById(R.id.runCommand);
+            convertView.setTag(vH);
+            //System.out.println ("created row");
+        } else {
+            // recycle the items in the list if already exists
+            vH = (ViewHolderItem) convertView.getTag();
+        }
+
+        // remove listeners
+        final SearchSploit exploitItem = getItem(position);
+
+        final String _file = exploitItem.getFile();
+        String _desc = exploitItem.getDescription();
+        String _date = exploitItem.getDate();
+        String _author = exploitItem.getAuthor();
+        String _platform = exploitItem.getPlatform();
+        String _type = exploitItem.getType();
+        Integer _port = exploitItem.getPort();
+
+
+        vH.cwButton.setOnClickListener(null);
+        // set service name
+        vH.cwTitle.setText(_desc);
+        vH.execmode.setText(_platform);
+        vH.sendtocmd.setText(_type);
+        vH.runatboot.setText(_author);
+        vH.cwButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(_mContext, EditSourceActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.putExtra("path", "/sdcard/nh_files/exploit-database/" + _file);
+                _mContext.startActivity(i);
+
+            }
+        });
+        return convertView;
+
+    }
+
+    public SearchSploit getItem(int position) {
+        return _exploitList.get(position);
+    }
+
+    public long getItemId(int position) {
+        return position;
+    }
+
+
 }
