@@ -1059,14 +1059,6 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
         }
     }
 
-    private boolean isEmpty(EditText etText) {
-        if (etText.getText().toString().trim().length() > 0) {
-            return false; // Not Empty
-        } else {
-            return true; // Empty
-        }
-    }
-
     private String getCmd(){
 
         /* Not working */
