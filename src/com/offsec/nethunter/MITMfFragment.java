@@ -2,6 +2,7 @@ package com.offsec.nethunter;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
@@ -23,9 +24,12 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
+
+import java.util.ArrayList;
 
 public class MITMfFragment extends Fragment implements ActionBar.TabListener {
 
@@ -136,10 +140,10 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.start_service:
+            case R.id.mitmf_menu_start_service:
                 start();
                 return true;
-            case R.id.stop_service:
+            case R.id.mitmf_menu_stop_service:
                 stop();
                 return true;
             default:
@@ -148,9 +152,8 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
     }
 
     public void start() {
-        ShellExecuter exe = new ShellExecuter();
-        String[] command = new String[1];
-        exe.RunAsRoot(command);
+        Log.d("MITMfFragment", getCmd());
+        intentClickListener_NH("mitmf " + getCmd());
         nh.showMessage("MITMf Started!");
     }
 
@@ -196,7 +199,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                 case 3:
                     return new MITMfSpoof();
                 default:
-                    return new MITMfInject();
+                    return new MITMfGeneral();
             }
         }
 
@@ -222,7 +225,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                 case 3:
                     return "Spoof Settings";
                 default:
-                    return "MITMf General";
+                    return "General Settings";
             }
         }
     }
@@ -253,18 +256,22 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                     Log.d("Slected: ", selectedItemText);
                     switch (pos) {
                         case 0:
+                            // No interface
+                            M_Interface = "";
+                            break;
+                        case 1:
                             // Interface: wlan0
                             M_Interface = "-i wlan0 ";
                             break;
-                        case 1:
+                        case 2:
                             // Interface: wlan1
                             M_Interface = "-i wlan1 ";
                             break;
-                        case 2:
+                        case 3:
                             // Interface: eth0
                             M_Interface = "-i eth0 ";
                             break;
-                        case 3:
+                        case 4:
                             // Interface: rndis0
                             M_Interface = "-i rndis0 ";
                             break;
@@ -709,7 +716,6 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             InjectionOnlyIPCheckbox.setEnabled(false);
             InjectionNotIPCheckbox.setEnabled(false);
 
-
             return rootView;
         }
 
@@ -1054,6 +1060,62 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
         @Override
         public void onClick(View v) {
 
+        }
+    }
+
+    private boolean isEmpty(EditText etText) {
+        if (etText.getText().toString().trim().length() > 0) {
+            return false; // Not Empty
+        } else {
+            return true; // Empty
+        }
+    }
+
+    private String getCmd(){
+
+        /* Not working */
+        String HTMLURLtext = M_Injection_HTMLURL_Text.getText().toString();
+        String HTMLPAYtext = M_Injection_HTMLPAY_Text.getText().toString();
+        String SCREENTIMEtext = M_ScreenIntervalTime.getText().toString();
+        String MATCHtext = M_Injection_Match_Text.getText().toString();
+        String RATEtext = M_Injection_Rate_Limit_Text.getText().toString();
+        String NUMtext = M_Injection_Number_Text.getText().toString();
+        String NOTIPtext = M_Injection_Not_IP_Text.getText().toString();
+        String GATEtext = M_Spoofer_Gateway_Text.getText().toString();
+        String TARGETtext = M_Spoofer_Targets_Text.getText().toString();
+        String ONLYIPtext = M_Injection_Only_IP_Text.getText().toString();
+        String SHELLtext = M_Spoofer_Shellshock_Text.getText().toString();
+        String JSURLtext = M_Injection_JSURL_Text.getText().toString();
+
+        /*
+        http://stackoverflow.com/questions/4150233/remove-null-value-from-string-array-in-java
+        */
+        String[] commandArray = {
+                M_Interface,M_JSKeyLogger,M_FerretNG,M_BrowserProfiler,M_FilePWN,M_BeeF,M_SMB,M_SSLStrip,
+                M_App_Poison,M_UpsideDown,M_ScreenShotter,M_ScreenInterval,M_Responder, M_Responder_Analyze,M_Responder_Fingerprint,M_Responder_Downgrade,M_Responder_NBTNS,M_Responder_WPAD,
+                M_Responder_WRedir,M_Injection,M_Injection_Preserve_Cache,M_Injection_Per_Domain,M_Injection_JSURL,
+                M_Injection_HTMLURL,M_Injection_HTMLPAY,M_Injection_Match,M_Injection_Rate_Limit,M_Injection_Number,
+                M_Injection_Only_IP,M_Injection_Not_IP,M_Spoofer,M_Spoofer_Redirect,M_Spoofer_ARP_Mode,M_Spoofer_Gateway,M_Spoofer_Targets,
+                M_Spoofer_Shellshock,HTMLURLtext,HTMLPAYtext,SCREENTIMEtext,MATCHtext,RATEtext,NUMtext,NOTIPtext,GATEtext,TARGETtext,ONLYIPtext,SHELLtext,JSURLtext};
+        ArrayList<String> commandlist = new ArrayList<String>();
+        for (String s : commandArray)
+            if (!s.equals(""))
+                commandlist.add(s);
+        String command = android.text.TextUtils.join(" ", commandlist); // Break out filtered commands w/ space in between
+        Log.d("MITMfFragment", command); // debug command
+        return command;
+    }
+
+    private void intentClickListener_NH(final String command) {
+        try {
+            Intent intent =
+                    new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+
+            intent.putExtra("com.offsec.nhterm.iInitialCommand", command);
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
         }
     }
 }
