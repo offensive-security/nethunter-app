@@ -234,6 +234,7 @@
     <string name="drawertitlemacchanger">MAC Changer</string>
     <string name="drawertitlempc">Metasploit Payload Generator</string>
     <string name="drawertitlecheckupdate">Check App Update</string>
+    <string name="drawertitlesearchsploit">SearchSploit</string>
     <string name="InstallAndUpdateButtonText"><![CDATA[Install & Update]]></string>
     <string name="metapackagesExplanation">Choose some \"metapackages\". The chroot will also be upgraded (via \"apt-get update/dist-upgrade\").\n\nSelecting metapackages you already have installed (or no packages at all) simply update/upgrades without removing anything.\n\nDepending on what metapackages you select, you may be asked to do stuff (such as set passwords for services), so pay attention.</string>
     <string name="metapackagesAdditionalInfo">Local storage requirements may be in the 20+ GB range. This installation/update will be performed in a terminal, so watch for issues. When completed, press the back button.</string>
@@ -287,6 +288,11 @@
     </string-array>
     <string name="mpc_generateSDCARD">Generate to SDCARD</string>
     <string name="mpc_generateHTTP">Generate to HTTP</string>
+
+    <!-- SearchSploit -->
+    <string name="searchsploit_searchbutton">Search</string>
+    <string name="searchsploit_loadDB">Load/Reload Database</string>
+    <string name="searchsploit_searchbar">Search Exploits</string>
 
     <!-- Custom Launhcer -->
     <string name="add_button">Add a Button</string>
