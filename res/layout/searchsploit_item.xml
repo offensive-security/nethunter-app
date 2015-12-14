@@ -8,14 +8,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="CommandTag"
-        android:id="@+id/command_tag"
+        android:text="description"
+        android:id="@+id/description"
         android:paddingLeft="@dimen/base_listItem_LR"
         android:paddingRight="@dimen/base_listItem_LR"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:gravity="center_vertical"
-        android:layout_alignBottom="@+id/runCommand" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="14dp"
+        android:layout_marginTop="14dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -39,26 +41,35 @@
         android:layout_marginTop="-7dp"
         android:textColor="@color/accent_material_dark"
         android:paddingRight="@dimen/base_listItem_LR"
-        android:layout_below="@+id/command_tag"
+        android:layout_below="@+id/description"
         android:layout_alignParentStart="true" />
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="DATE"
+        android:id="@+id/textView5"
+        android:paddingLeft="@dimen/base_listItem_LR"
+        android:textColor="@color/accent_material_dark"
+        android:paddingRight="@dimen/base_listItem_LR"
+        android:layout_below="@+id/textView9"
+        android:layout_alignParentStart="true" />
     <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="View Source"
-        android:id="@+id/runCommand"
+        android:id="@+id/viewSource"
         android:layout_marginRight="@dimen/base_listItem_LR"
-        android:layout_marginTop="@dimen/base_listItem_LR"
         android:textColor="#ff95ff84"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_below="@+id/description"
+        android:layout_alignStart="@+id/openWeb" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="system"
-        android:id="@+id/sendtocmd"
+        android:text="type"
+        android:id="@+id/type"
         android:textColor="@color/accent_material_light"
         android:layout_above="@+id/textView8"
         android:layout_toEndOf="@+id/textView8" />
@@ -67,10 +78,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="mode"
-        android:id="@+id/execmode"
+        android:text="platform"
+        android:id="@+id/platform"
         android:textColor="@color/accent_material_light"
-        android:layout_below="@+id/sendtocmd"
+        android:layout_alignTop="@+id/textView8"
         android:layout_toEndOf="@+id/textView8" />
 
     <TextView
@@ -90,10 +101,29 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="YES/NO"
-        android:id="@+id/custom_comands_runAtBoot_text"
+        android:id="@+id/author"
         android:textColor="@color/accent_material_light"
         android:layout_below="@+id/textView8"
         android:layout_toEndOf="@+id/textView8" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="date"
+        android:id="@+id/exploit_date"
+        android:textColor="@color/accent_material_light"
+        android:layout_below="@+id/author"
+        android:layout_alignStart="@+id/author" />
 
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="View in www"
+        android:id="@+id/openWeb"
+        android:layout_marginRight="@dimen/base_listItem_LR"
+        android:textColor="#ff95ff84"
+        android:layout_below="@+id/viewSource"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

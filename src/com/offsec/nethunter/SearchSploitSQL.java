@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.offsec.nethunter.utils.BootKali;
 import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
 
@@ -71,25 +72,13 @@ class SearchSploitSQL extends SQLiteOpenHelper {
     public void doDrop(){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DROP TABLE IF EXISTS " + SearchSploit.TABLE);
-
     }
 
     public Boolean doDbFeed() {
- ;
-         // copy csv to /sdcard as temp (so we can read it)
-        String cmd = "csv2sqlite.py /usr/share/exploitdb/files.csv /sdcard/nh_files/SearchSploit "+ SearchSploit.TABLE + "&& exit";
+        // copy csv to /sdcard as temp (so we can read it)
+        String _cmd = "su -c bootkali custom_cmd csv2sqlite.py /usr/share/exploitdb/files.csv /sdcard/nh_files/SearchSploit "+ SearchSploit.TABLE;
         // move to app db folder
-        try {
-            Intent intent =
-                    new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
-            intent.addCategory(Intent.CATEGORY_DEFAULT);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra("com.offsec.nhterm.iInitialCommand", cmd);
-            context.startActivity(intent);
-        } catch (Exception e) {
-            Log.d(TAG, "ERROR CRATING DB WTF?");
-            return false;
-        }
+        exe.RunAsRootOutput(_cmd);
         return true;
     }
     public long getCount() {
@@ -113,7 +102,18 @@ class SearchSploitSQL extends SQLiteOpenHelper {
                 + " WHERE "+ SearchSploit.DESCRIPTION +" like ?" +
                 " and " + SearchSploit.PLATFORM + "='" + platform +"'"+
                 " and " + SearchSploit.TYPE +"='" + type +"'"+
-                " and " + SearchSploit.PORT +"='" + port +"'";
+                " and " + SearchSploit.PORT +"='" + port +"' GROUP BY " +SearchSploit.ID;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Log.d("QUERYYY", query);
+        Cursor cursor = db.rawQuery(query, new String[]{wildcard});
+        List<SearchSploit> _List = createExploitList(cursor);
+        db.close();
+        return _List;
+    }
+    public List<SearchSploit> getAllExploitsRaw(String filter) {
+        String wildcard = "%" + filter + "%";
+        String query = "SELECT * FROM " + SearchSploit.TABLE
+                + " WHERE "+ SearchSploit.DESCRIPTION +" like ? GROUP BY " +SearchSploit.ID;
         SQLiteDatabase db = this.getWritableDatabase();
         Log.d("QUERYYY", query);
         Cursor cursor = db.rawQuery(query, new String[]{wildcard});
@@ -158,16 +158,9 @@ class SearchSploitSQL extends SQLiteOpenHelper {
                 " ORDER BY "+ SearchSploit.PORT +" ASC";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
-        List<String> intList = new LinkedList<>();
-        if (cursor.moveToFirst()) {
-            do {
-                    intList.add(cursor.getString(0));
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-
+        List<String> _List = createStringList(cursor);
         db.close();
-        return intList;
+        return _List;
     }
     public List<String> getPlatforms() {
         String query = "SELECT DISTINCT "+ SearchSploit.PLATFORM +" FROM " + SearchSploit.TABLE  + " ORDER BY "+ SearchSploit.PLATFORM +" ASC";
