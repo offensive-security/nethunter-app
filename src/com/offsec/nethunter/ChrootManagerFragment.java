@@ -100,7 +100,7 @@ public class ChrootManagerFragment extends Fragment {
     private static final String SHA512_MINIMAL =
             "810a161e6d040a8d812ca1b07b69e7c83355e9b840637f99454fc7df73ed4a05d9a5f904e4fada6e4587d12bf37923cc66c8e2dd53c67f753af8421d57105a6c";
     private static final String SHA512_FULL =
-            "1c4d0c83446a1d8a70ad258ccef2fe57a921509589524804576fb881ce61392224ad59437e4e36ff87d9fec61cb6eed30a5520b96c828ffb19da962538c0804d";
+            "df6aad5bf79ae11fdcae4e8f1d3927a88dd0e0f1840dbb2af0ba3f15effa1169d743cdfd66b30fb062a00f1c163bc406363f47d842e88e1fb1a1b06a5441b8d3";
 
     private String SHA512;
     private String zipFilePath;
