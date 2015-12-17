@@ -2,16 +2,17 @@ package com.offsec.nethunter;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,7 +30,10 @@ import android.widget.Toast;
 import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 
 public class MITMfFragment extends Fragment implements ActionBar.TabListener {
 
@@ -96,6 +100,20 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
     EditText M_Spoofer_Targets_Text; // IP of target
     String M_Spoofer_Shellshock; // --shellshock [M_Spoofer_Shellshock_Text]
     EditText M_Spoofer_Shellshock_Text; // Command to run after shellshock
+
+    /* EditText getText toString */
+    String HTMLURLtext; // M_Injection_HTMLURL_Text.getText().toString();
+    String HTMLPAYtext; //M_Injection_HTMLPAY_Text.getText().toString();
+    String SCREENTIMEtext; // M_ScreenIntervalTime.getText().toString();
+    String MATCHtext; // M_Injection_Match_Text.getText().toString();
+    String RATEtext; // M_Injection_Rate_Limit_Text.getText().toString();
+    String NUMtext; // M_Injection_Number_Text.getText().toString();
+    String NOTIPtext; // M_Injection_Not_IP_Text.getText().toString();
+    String GATEtext; // M_Spoofer_Gateway_Text.getText().toString();
+    String TARGETtext; // M_Spoofer_Targets_Text.getText().toString();
+    String ONLYIPtext; // M_Injection_Only_IP_Text.getText().toString();
+    String SHELLtext; // M_Spoofer_Shellshock_Text.getText().toString();
+    String JSURLtext; // M_Injection_JSURL_Text.getText().toString();
 
     NhPaths nh;
     private static final String ARG_SECTION_NUMBER = "section_number";
@@ -190,6 +208,8 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
         @Override
         public Fragment getItem(int i) {
             switch (i) {
+                case 0:
+                    return new MITMfGeneral();
                 case 1:
                     return new MITMfResponder();
                 case 2:
@@ -197,7 +217,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                 case 3:
                     return new MITMfSpoof();
                 default:
-                    return new MITMfGeneral();
+                    return null;
             }
         }
 
@@ -286,6 +306,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                 public void onClick(View v) {
                     if(jskeylogCheckbox.isChecked()) {
                         M_JSKeyLogger = "--jskeylogger ";
+                        Log.d("MITMf:", M_JSKeyLogger);
                     }else{
                         M_JSKeyLogger = "";
                     }
@@ -510,6 +531,14 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             // Textfield HTML URL
             M_Injection_HTMLURL_Text = (EditText) rootView.findViewById(R.id.mitmf_injecthtml_url);
             M_Injection_HTMLURL_Text.setEnabled(false);
+            // EditText Listener to getText.toString
+            M_Injection_HTMLURL_Text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus) {
+                        HTMLURLtext = M_Injection_HTMLURL_Text.getText().toString();
+                        }
+                    }
+                });
 
             // Checkbox for Injection HTML URL
             final CheckBox InjectionHTMLURLCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_injecthtml);
@@ -523,6 +552,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                         M_Injection_HTMLURL = "";
                         M_Injection_HTMLURL_Text.setFocusable(false);
                         M_Injection_HTMLURL_Text.setEnabled(false);
+                        HTMLURLtext = "";
                     }
                 }
             };
@@ -1059,40 +1089,22 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
         }
     }
 
-    private String getCmd(){
+    public String getCmd(){
 
-        /* Not working */
-
-        String HTMLURLtext = M_Injection_HTMLURL_Text.getText().toString();
-        String HTMLPAYtext = M_Injection_HTMLPAY_Text.getText().toString();
-        String SCREENTIMEtext = M_ScreenIntervalTime.getText().toString();
-        String MATCHtext = M_Injection_Match_Text.getText().toString();
-        String RATEtext = M_Injection_Rate_Limit_Text.getText().toString();
-        String NUMtext = M_Injection_Number_Text.getText().toString();
-        String NOTIPtext = M_Injection_Not_IP_Text.getText().toString();
-        String GATEtext = M_Spoofer_Gateway_Text.getText().toString();
-        String TARGETtext = M_Spoofer_Targets_Text.getText().toString();
-        String ONLYIPtext = M_Injection_Only_IP_Text.getText().toString();
-        String SHELLtext = M_Spoofer_Shellshock_Text.getText().toString();
-        String JSURLtext = M_Injection_JSURL_Text.getText().toString();
-
-        /*
-        http://stackoverflow.com/questions/4150233/remove-null-value-from-string-array-in-java
-        */
-        String[] commandArray = {
-                M_Interface,M_JSKeyLogger,M_FerretNG,M_BrowserProfiler,M_FilePWN,M_BeeF,M_SMB,M_SSLStrip,
+        List<String> commandNames = Arrays.asList(M_Interface,M_JSKeyLogger,M_FerretNG,M_BrowserProfiler,M_FilePWN,M_BeeF,M_SMB,M_SSLStrip,
                 M_App_Poison,M_UpsideDown,M_ScreenShotter,M_ScreenInterval,M_Responder, M_Responder_Analyze,M_Responder_Fingerprint,M_Responder_Downgrade,M_Responder_NBTNS,M_Responder_WPAD,
                 M_Responder_WRedir,M_Injection,M_Injection_Preserve_Cache,M_Injection_Per_Domain,M_Injection_JSURL,
                 M_Injection_HTMLURL,M_Injection_HTMLPAY,M_Injection_Match,M_Injection_Rate_Limit,M_Injection_Number,
                 M_Injection_Only_IP,M_Injection_Not_IP,M_Spoofer,M_Spoofer_Redirect,M_Spoofer_ARP_Mode,M_Spoofer_Gateway,M_Spoofer_Targets,
-                M_Spoofer_Shellshock,HTMLURLtext,HTMLPAYtext,SCREENTIMEtext,MATCHtext,RATEtext,NUMtext,NOTIPtext,GATEtext,TARGETtext,ONLYIPtext,SHELLtext,JSURLtext};
-        ArrayList<String> commandlist = new ArrayList<String>();
-        for (String s : commandArray)
-            if (!s.equals(""))
-                commandlist.add(s);
-        String command = android.text.TextUtils.join(" ", commandlist); // Break out filtered commands w/ space in between
-        Log.d("MITMfFragment", command); // debug command
-        return command;
+                M_Spoofer_Shellshock,HTMLURLtext,HTMLPAYtext,SCREENTIMEtext,MATCHtext,RATEtext,NUMtext,NOTIPtext,GATEtext,TARGETtext,ONLYIPtext,SHELLtext,JSURLtext);
+
+        /* Remove null references */
+        commandNames.removeAll(Collections.singleton(null));
+
+        /* Add spaces */
+        String joined = TextUtils.join(" ", commandNames);
+
+        return joined;
     }
 
     private void intentClickListener_NH(final String command) {
