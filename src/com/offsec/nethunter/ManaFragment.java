@@ -136,32 +136,32 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                     case 0:
                         nh.showMessage("Starting MANA NAT FULL");
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            intentClickListener_NH("./usr/share/mana-toolkit/run-mana/start-nat-full-lollipop.sh");
+                            intentClickListener_NH(nh.makeTermTitle("MANA-FULL") + "/usr/share/mana-toolkit/run-mana/start-nat-full-lollipop.sh");
                         } else {
-                            intentClickListener_NH("./usr/share/mana-toolkit/run-mana/start-nat-full-kitkat.sh");
+                            intentClickListener_NH(nh.makeTermTitle("MANA-FULL") + "/usr/share/mana-toolkit/run-mana/start-nat-full-kitkat.sh");
                         }
                         break;
                     case 1:
                         nh.showMessage("Starting MANA NAT SIMPLE");
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            intentClickListener_NH("./usr/share/mana-toolkit/run-mana/start-nat-simple-lollipop.sh");
+                            intentClickListener_NH(nh.makeTermTitle("MANA-SIMPLE") + "/usr/share/mana-toolkit/run-mana/start-nat-simple-lollipop.sh");
                         } else {
-                            intentClickListener_NH("./usr/share/mana-toolkit/run-mana/start-nat-simple-kitkat.sh");
+                            intentClickListener_NH(nh.makeTermTitle("MANA-SIMPLE") + "/usr/share/mana-toolkit/run-mana/start-nat-simple-kitkat.sh");
                         }
                         break;
                     case 2:
                         nh.showMessage("Starting MANA NAT SIMPLE && BDF");
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            intentClickListener_NH("./usr/share/mana-toolkit/run-mana/start-nat-simple-bdf-lollipop.sh");
+                            intentClickListener_NH(nh.makeTermTitle("MANA-BDF") + "/usr/share/mana-toolkit/run-mana/start-nat-simple-bdf-lollipop.sh");
                         } else {
-                            intentClickListener_NH("./usr/share/mana-toolkit/run-mana/start-nat-simple-bdf-kitkat.sh");
+                            intentClickListener_NH(nh.makeTermTitle("MANA-BDF") + "/usr/share/mana-toolkit/run-mana/start-nat-simple-bdf-kitkat.sh");
                         }
-                        // we wait ~10 + 10 secs before launching msf
+                        // we wait ~10 secs before launching msf
                         new android.os.Handler().postDelayed(
                                 new Runnable() {
                                     public void run() {
                                         nh.showMessage("Starting MSF with BDF resource.rc");
-                                        intentClickListener_NH("sleep 10 ; msfconsole -q -r /usr/share/bdfproxy/bdfproxy_msf_resource.rc");
+                                        intentClickListener_NH(nh.makeTermTitle("MSF") + "msfconsole -q -r /usr/share/bdfproxy/bdfproxy_msf_resource.rc");
                                     }
                                 }, 10000);
                         break;
@@ -659,7 +659,6 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             Intent intent =
                     new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
-
             intent.putExtra("com.offsec.nhterm.iInitialCommand", command);
             startActivity(intent);
         } catch (Exception e) {
