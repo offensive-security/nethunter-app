@@ -794,13 +794,14 @@ public class ChrootManagerFragment extends Fragment {
             try {
                 URL url = new URL(sUrl[0]);
                 connection = PinningHelper.getPinnedHttpsURLConnection(context, pins, url);
-                connection = (HttpsURLConnection) url.openConnection();
+                //connection = (HttpsURLConnection) url.openConnection();
                 connection.connect();
 
                 if (connection.getResponseCode() != HttpsURLConnection.HTTP_OK) {
                     return "Server returned HTTP " + connection.getResponseCode()
                             + " " + connection.getResponseMessage();
                 }
+
                 int fileLength = connection.getContentLength();
                 humanSize = fileLength / 1000000; // in MiB
                 onePercent = humanSize / 100;
