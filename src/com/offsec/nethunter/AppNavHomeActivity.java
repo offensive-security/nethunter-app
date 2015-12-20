@@ -47,6 +47,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
     private MenuItem lastSelected;
     private static Context c;
     private Boolean weCheckedForRoot = false;
+    private final String BuildUser = "Kali";  // Change this to your name/username
 
     public static Context getAppContext() {
         return c;
@@ -98,7 +99,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
         TextView buildInfo1 = (TextView) navigationHeadView.findViewById(R.id.buildinfo1);
         TextView buildInfo2 = (TextView) navigationHeadView.findViewById(R.id.buildinfo2);
         buildInfo1.setText(String.format("Version: %s (%s)", BuildConfig.VERSION_NAME, android.os.Build.TAGS));
-        buildInfo2.setText(String.format("Built by %s at %s", BuildConfig.BUILD_NAME, buildTime));
+        buildInfo2.setText(String.format("Built by %s at %s", BuildUser, buildTime));
 
         if (navigationView != null) {
             setupDrawerContent(navigationView);
