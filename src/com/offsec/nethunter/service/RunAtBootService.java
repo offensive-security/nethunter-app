@@ -35,7 +35,7 @@ public class RunAtBootService extends Service {
                 n.setStyle(new Notification.BigTextStyle().bigText(contents))
                         .setContentTitle(title)
                 //.setContentText(contents)
-                .setSmallIcon(R.drawable.ic_action_settings_applications)
+                .setSmallIcon(R.drawable.ic_stat_ic_nh_notificaiton)
                 // .setContentIntent(pIntent)
                 .setAutoCancel(true);
         NotificationManager notificationManager =
