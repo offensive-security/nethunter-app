@@ -18,7 +18,7 @@ import com.offsec.nethunter.utils.ShellExecuter;
 
 public class RunAtBootService extends Service {
     public static final String CHROOT_INSTALLED_TAG = "CHROOT_INSTALLED_TAG";
-    public static final String TAG = "NH: RunAtBootServices";
+    public static final String TAG = "Nethunter: Startup";
     final ShellExecuter x = new ShellExecuter();
     SharedPreferences sharedpreferences;
     NhPaths nh;
