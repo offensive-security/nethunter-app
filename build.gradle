@@ -41,7 +41,7 @@ android {
     defaultConfig {
         minSdkVersion 17
         targetSdkVersion 22
-        versionCode 8
+        versionCode 9
         versionName "2.1 (beta)"
     }
 
