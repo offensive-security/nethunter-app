@@ -30,13 +30,16 @@ import android.widget.TextView;
 import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
 
+import org.json.JSONObject;
 import org.thoughtcrime.ssl.pinning.util.PinningHelper;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -95,13 +98,8 @@ public class ChrootManagerFragment extends Fragment {
     private static final String URI_MINIMAL = IMAGE_SERVER + FILENAME_MINIMAL;
     private static final String URI_FULL = IMAGE_SERVER + FILENAME_FULL;
 
-    //private static final String URI = "http://188.138.17.16/" + FILENAME;
-
-    private static final String SHA512_MINIMAL =
-            "810a161e6d040a8d812ca1b07b69e7c83355e9b840637f99454fc7df73ed4a05d9a5f904e4fada6e4587d12bf37923cc66c8e2dd53c67f753af8421d57105a6c";
-    private static final String SHA512_FULL =
-            "df6aad5bf79ae11fdcae4e8f1d3927a88dd0e0f1840dbb2af0ba3f15effa1169d743cdfd66b30fb062a00f1c163bc406363f47d842e88e1fb1a1b06a5441b8d3";
-
+    private String SHA512_MINIMAL = "";
+    private String SHA512_FULL = "";
     private String SHA512;
     private String zipFilePath;
     private String extracted_zipFilePath;
@@ -167,6 +165,8 @@ public class ChrootManagerFragment extends Fragment {
         checkforLegacyChroot();
         super.onActivityCreated(savedInstanceState);
     }
+
+
 
     private void checkforLegacyChroot() {
         // does old chroot directory exist?
@@ -353,7 +353,7 @@ public class ChrootManagerFragment extends Fragment {
     private void fullOrMinimal(final Boolean shouldDownload){
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
         adb.setTitle("Select Chroot Download:")
-                .setMessage("We recomend the full chroot, so you can enjoy all the nethunter features.\n\nIf you are installing from the SdCard, choose the type of chroot you copied to the SdCard.\n\nThe minimal is for testing/development")
+                .setMessage("*WIFI Recommended*\n\nFor the best experience, use full chroot so you can enjoy all the nethunter features.\n\nIf you are installing from the SdCard, choose the type of chroot you copied to the SdCard.\n\nThe minimal is for testing/development")
                 .setNeutralButton("Minimal Chroot", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -797,6 +797,14 @@ public class ChrootManagerFragment extends Fragment {
                 //connection = (HttpsURLConnection) url.openConnection();
                 connection.connect();
 
+                // Get SHA512 sum from JSON object
+                String jsonstring = getJSON("https://images.offensive-security.com/version.txt");
+                JSONObject jsonObject = new JSONObject(jsonstring);
+                SHA512_FULL = jsonObject.getString("chroot_sha512_full");
+                Log.d(TAG, "SHA512_FULL: " + SHA512_FULL );
+                SHA512_MINIMAL = jsonObject.getString("chroot_sha512_min");
+                Log.d(TAG, "SHA512_MINIMAL: " + SHA512_MINIMAL );
+
                 if (connection.getResponseCode() != HttpsURLConnection.HTTP_OK) {
                     return "Server returned HTTP " + connection.getResponseCode()
                             + " " + connection.getResponseMessage();
@@ -838,6 +846,47 @@ public class ChrootManagerFragment extends Fragment {
                     connection.disconnect();
             }
             return null;
+        }
+
+        private String getJSON(String url) {
+            {
+                HttpsURLConnection jsonconnection = null;
+                try {
+                    URL jsonurl = new URL(url);
+                    jsonconnection = PinningHelper.getPinnedHttpsURLConnection(getContext(), pins, jsonurl); // Add certificated pinning
+                    jsonconnection.setRequestMethod("GET");
+                    jsonconnection.setRequestProperty("Content-length", "0");
+                    jsonconnection.setUseCaches(false);
+                    jsonconnection.setAllowUserInteraction(false);
+                    int status = jsonconnection.getResponseCode();
+                    jsonconnection.connect();
+
+                    switch (status) {
+                        case 200:
+                        case 201:
+                            BufferedReader br = new BufferedReader(new InputStreamReader(jsonconnection.getInputStream()));
+                            StringBuilder sb = new StringBuilder();
+                            String line;
+                            while ((line = br.readLine()) != null) {
+                                sb.append(line).append("\n");
+                            }
+                            br.close();
+                            return sb.toString();
+                    }
+
+                } catch (IOException ex) {
+                    Log.d(TAG, "Exception with JSON connect");
+                } finally {
+                    if (jsonconnection != null) {
+                        try {
+                            jsonconnection.disconnect();
+                        } catch (Exception ex) {
+                            Log.d(TAG, "Error connecting with server/file");
+                        }
+                    }
+                }
+                return null;
+            }
         }
 
         @Override
