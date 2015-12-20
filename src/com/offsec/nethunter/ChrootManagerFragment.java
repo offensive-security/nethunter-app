@@ -106,7 +106,8 @@ public class ChrootManagerFragment extends Fragment {
     private String extracted_zipFilePath;
     private String installLogFile;
     private Boolean shouldLog = false;
-
+    // if is full or minimal
+    private Boolean isFull = false;
     private TextView statusText;
     private Button installButton;
     private Button updateButton;
@@ -363,6 +364,8 @@ public class ChrootManagerFragment extends Fragment {
                         extracted_zipFilePath = nh.SD_PATH + "/" + EXTRACTED_FILENAME_MINIMAL;
                         SHA512 = SHA512_MINIMAL;
                         if (shouldDownload) {
+                            // update value if is minimal
+                            isFull = false;
                             if (!startZipDownload(URI_MINIMAL)) {
                                 installButton.setEnabled(true);
                             }
@@ -380,6 +383,8 @@ public class ChrootManagerFragment extends Fragment {
                         zipFilePath = nh.SD_PATH + "/" + FILENAME_FULL;
                         extracted_zipFilePath = nh.SD_PATH + "/" + EXTRACTED_FILENAME_FULL;
                         if (shouldDownload) {
+                            // update value if is full
+                            isFull = true;
                             if (!startZipDownload(URI_FULL)) {
                                 installButton.setEnabled(true);
                             }
@@ -758,7 +763,7 @@ public class ChrootManagerFragment extends Fragment {
         double humanSize = 0.0;
         double onePercent = 0.0;
         double fineProgress = 0.0;
-
+        Boolean weHaveTheSha = false;
         public DownloadChroot(Context context) {
             this.context = context;
             mProgressDialog = new ProgressDialog(context);
@@ -798,20 +803,30 @@ public class ChrootManagerFragment extends Fragment {
                 //connection = (HttpsURLConnection) url.openConnection();
                 connection.connect();
 
-                // Get SHA512 sum from JSON object
-                String jsonstring = getJSON("https://images.offensive-security.com/version.txt");
-                JSONObject jsonObject = null;
-                try {
-                    jsonObject = new JSONObject(jsonstring);
-                    SHA512_FULL = jsonObject.getString("chroot_sha512_full");
-                    SHA512_MINIMAL = jsonObject.getString("chroot_sha512_min");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Log.e(TAG, "JSON exception");
+                if(!weHaveTheSha) {
+                    // Get SHA512 sum from JSON object ONLY 1 TIME!!!!
+                    String jsonstring = getJSON("https://images.offensive-security.com/version.txt");
+                    JSONObject jsonObject = null;
+                    try {
+                        jsonObject = new JSONObject(jsonstring);
+                        SHA512_FULL = jsonObject.getString("chroot_sha512_full");
+                        SHA512_MINIMAL = jsonObject.getString("chroot_sha512_min");
+                        if(isFull){
+                            // asign the value so the integryty check works ^^
+                            SHA512 = SHA512_FULL;
+                            Log.d(TAG, "IS_FULL");
+                            Log.d(TAG, "SHA512_FULL: " + SHA512_FULL);
+                        } else {
+                            SHA512 = SHA512_MINIMAL;
+                            Log.d(TAG, "IS_MINIMAL");
+                            Log.d(TAG, "SHA512_MINIMAL: " + SHA512_MINIMAL);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.e(TAG, "JSON exception");
+                    }
+                    weHaveTheSha = true;
                 }
-                Log.d(TAG, "SHA512_FULL: " + SHA512_FULL );
-                Log.d(TAG, "SHA512_MINIMAL: " + SHA512_MINIMAL );
-
                 if (connection.getResponseCode() != HttpsURLConnection.HTTP_OK) {
                     return "Server returned HTTP " + connection.getResponseCode()
                             + " " + connection.getResponseMessage();
