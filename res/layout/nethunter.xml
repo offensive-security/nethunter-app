@@ -43,12 +43,15 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/listViewNet" />
+
         <TextView
             android:id="@+id/editText1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:layout_row="1"
             android:inputType="none"
             android:paddingTop="8sp"
             android:layout_marginBottom="10dp"
@@ -59,18 +62,21 @@
             android:id="@+id/textView5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:layout_row="0"
             android:text="@string/nethunter_hid_detect"
+            android:layout_marginTop="15dp"
             android:textSize="18sp"
             android:textStyle="bold" />
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/listViewHid"
+            />
 
         <TextView
             android:id="@+id/editText3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:layout_row="1"
             android:inputType="none"
             android:paddingTop="8sp"
             android:layout_marginBottom="10dp"

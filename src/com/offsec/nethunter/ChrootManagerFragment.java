@@ -449,7 +449,7 @@ public class ChrootManagerFragment extends Fragment {
         try {
             Intent intent = new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
-            intent.putExtra("com.offsec.nhterm.iInitialCommand", "apt-get install " + packages);
+            intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "apt-get install " + packages);
             Log.d("PACKS:", "PACKS:" + packages);
             startActivity(intent);
 

@@ -1,12 +1,18 @@
 package com.offsec.nethunter;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.offsec.nethunter.utils.ShellExecuter;
 
@@ -109,6 +115,8 @@ public class NetHunterFragment extends Fragment {
         // 1 thread, 2 commands
         final TextView netIfaces = (TextView) rootView.findViewById(R.id.editText1); // NET IFACES
         final TextView hidIfaces = (TextView) rootView.findViewById(R.id.editText3); // HID IFACES
+        final ListView netList = (ListView) rootView.findViewById(R.id.listViewNet);
+        final ListView hidList = (ListView) rootView.findViewById(R.id.listViewHid);
         // Dont move this inside the thread. (Will throw a null pointer.)
         netIfaces.setText("Detecting Network interfaces...");
         hidIfaces.setText("Detecting HID interfaces...");
@@ -116,34 +124,86 @@ public class NetHunterFragment extends Fragment {
         new Thread(new Runnable() {
             public void run() {
                     ShellExecuter exe = new ShellExecuter();
-                    String commandNET[] = {"sh", "-c", "netcfg |grep UP |grep -v ^lo|awk -F\" \" '{print $1\"\t\" $3}'"};
+                    String commandNET[] = {"sh", "-c", "ip -o addr show | awk '/inet/ {print $2, $3, $4}'"};
                     String commandHID[] = {"sh", "-c", "ls /dev/hidg*"};
 
                     final String outputNET = exe.Executer(commandNET);
                     final String outputHID = exe.Executer(commandHID);
-                    exe.Executer(new String[]{"sh", "-c", ""});
 
-
+                    final String[] netArray = outputNET.split("\n");
+                    final String[] hidArray = outputHID.split("\n");
                     netIfaces.post(new Runnable() {
                         @Override
                         public void run() {
                             if (outputNET.equals("")) {
-                                netIfaces.setText("No interfaces detected");
+                                netIfaces.setVisibility(View.VISIBLE);
+                                netList.setVisibility(View.GONE);
+                                netIfaces.setText("No network interfaces detected");
+                                netIfaces.setFocusable(false);
                             } else {
-                                netIfaces.setText(outputNET);
+                                netIfaces.setVisibility(View.GONE);
+                                netList.setVisibility(View.VISIBLE);
+                                ArrayAdapter<String> aaNET = new ArrayAdapter<>(getContext(), R.layout.nethunter_item, netArray);
+                                netList.setAdapter(aaNET);
+                                fixListHeight(netList, aaNET);
+                                netList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                                    @Override
+                                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                                        Log.d("CLCIKEDD", netList.getItemAtPosition(position).toString());
+                                        String itemData = netList.getItemAtPosition(position).toString();
+                                        String _itemData = itemData.split("\\s+")[2];
+                                        doCopy(_itemData);
+                                        return false;
+                                    }
+                                });
                             }
-                            netIfaces.setFocusable(false);
                             if (outputHID.equals("")) {
-                                hidIfaces.setText("No interfaces detected");
+                                hidIfaces.setVisibility(View.VISIBLE);
+                                hidList.setVisibility(View.GONE);
+                                hidIfaces.setText("No HID interfaces detected");
+                                hidIfaces.setFocusable(false);
                             } else {
-                                hidIfaces.setText(outputHID);
+                                hidIfaces.setVisibility(View.GONE);
+                                hidList.setVisibility(View.VISIBLE);
+                                ArrayAdapter<String> aaHID = new ArrayAdapter<>(getContext(), R.layout.nethunter_item, hidArray);
+                                hidList.setAdapter(aaHID);
+                                fixListHeight(hidList, aaHID);
+                                hidList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                                    @Override
+                                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                                        Log.d("CLCIKEDD", hidList.getItemAtPosition(position).toString());
+                                        String itemData = hidList.getItemAtPosition(position).toString();
+                                        doCopy(itemData);
+                                        return false;
+                                    }
+                                });
                             }
-                            hidIfaces.setFocusable(false);
-
                         }
                     });
                 }
         }).start();
     }
-
+    private void fixListHeight(ListView theListView, ArrayAdapter theAdapter){
+        int totalHeight = 0;
+        for (int i = 0; i < theAdapter.getCount(); i++) {
+            View listItem = theAdapter.getView(i, null, theListView);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = theListView.getLayoutParams();
+        params.height = totalHeight + (theListView.getDividerHeight() * (theAdapter.getCount() - 1));
+        theListView.setLayoutParams(params);
+        theListView.requestLayout();
+    }
+    // Now we can copy and address from networks!!!!!! Surprise! ;)
+    private void doCopy(String text) {
+        try {
+            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+            android.content.ClipData clip = android.content.ClipData.newPlainText("WordKeeper", text);
+            clipboard.setPrimaryClip(clip);
+            Toast.makeText(getContext(), "Copied: " + text, Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(getContext(), "Error copying: " + text, Toast.LENGTH_SHORT).show();
+        }
+    }
 }
