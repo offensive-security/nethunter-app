@@ -12,7 +12,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -30,10 +29,10 @@ import android.widget.Toast;
 import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 
 public class MITMfFragment extends Fragment implements ActionBar.TabListener {
 
@@ -170,8 +169,8 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
     }
 
     public void start() {
-        Log.d("MITMfFragment", getCmd());
         intentClickListener_NH("mitmf " + getCmd());
+        Log.d("MITMfFragment", getCmd());
         nh.showMessage("MITMf Started!");
     }
 
@@ -422,15 +421,25 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             M_ScreenIntervalTime = (EditText) rootView.findViewById(R.id.mitmf_screen_interval);
             M_ScreenIntervalTime.setText("10");
             M_ScreenIntervalTime.setEnabled(false);
+            // EditText getText on focus change
+            M_ScreenIntervalTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus) {
+                        SCREENTIMEtext = M_ScreenIntervalTime.getText().toString();
+                    }
+                }
+            });
 
             // Checkbox for ScreenShotter Interval
             final CheckBox ScreenShotterIntCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_screenhot_int_enable);
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
                     if(ScreenShotterIntCheckbox.isChecked()) {
-                        M_ScreenInterval = "--interval " + M_ScreenIntervalTime.getText(); // Need to do this better, only updates when checkbox selected
+                        M_ScreenInterval = "--interval "; // Need to do this better, only updates when checkbox selected
+                        SCREENTIMEtext = M_ScreenIntervalTime.getText().toString();
                     }else{
                         M_ScreenInterval = "";
+                        SCREENTIMEtext = "";
                     }
                 }
             };
@@ -510,6 +519,13 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             // Textfield JS URL
             M_Injection_JSURL_Text = (EditText) rootView.findViewById(R.id.mitmf_injectjs_url);
             M_Injection_JSURL_Text.setEnabled(false);
+            M_Injection_JSURL_Text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus) {
+                        JSURLtext = M_Injection_JSURL_Text.getText().toString();
+                    }
+                }
+            });
 
             // Checkbox for Injection JS URL
             final CheckBox InjectionJSURLCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_injectjs);
@@ -523,6 +539,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                         M_Injection_JSURL = "";
                         M_Injection_JSURL_Text.setFocusable(false);
                         M_Injection_JSURL_Text.setEnabled(false);
+                        JSURLtext = "";
                     }
                 }
             };
@@ -561,6 +578,13 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             // Textfield HTML Payload String
             M_Injection_HTMLPAY_Text = (EditText) rootView.findViewById(R.id.mitmf_injecthtmlpay_text);
             M_Injection_HTMLPAY_Text.setEnabled(false);
+            M_Injection_HTMLPAY_Text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus) {
+                        HTMLPAYtext = M_Injection_HTMLPAY_Text.getText().toString();
+                    }
+                }
+            });
 
             // Checkbox for Injection HTML Payload String
             final CheckBox InjectionHTMLPAYCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_injecthtmlpay);
@@ -574,6 +598,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                         M_Injection_HTMLPAY = "";
                         M_Injection_HTMLPAY_Text.setFocusable(false);
                         M_Injection_HTMLPAY_Text.setEnabled(false);
+                        HTMLPAYtext = "";
                     }
                 }
             };
@@ -582,6 +607,13 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             // Textfield HTML Match String
             M_Injection_Match_Text = (EditText) rootView.findViewById(R.id.mitmf_inject_match_string);
             M_Injection_Match_Text.setEnabled(false);
+            M_Injection_Match_Text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus) {
+                        MATCHtext = M_Injection_Match_Text.getText().toString();
+                    }
+                }
+            });
 
             // Checkbox for Injection Match HTML
             final CheckBox InjectionMatchCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_inject_match);
@@ -595,6 +627,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                         M_Injection_Match = "";
                         M_Injection_Match_Text.setFocusable(false);
                         M_Injection_Match_Text.setEnabled(false);
+                        MATCHtext = "";
                     }
                 }
             };
@@ -603,6 +636,13 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             // Textfield for Injection Rate Limit
             M_Injection_Rate_Limit_Text = (EditText) rootView.findViewById(R.id.mitmf_inject_rateseconds);
             M_Injection_Rate_Limit_Text.setEnabled(false);
+            M_Injection_Rate_Limit_Text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus) {
+                        RATEtext = M_Injection_Rate_Limit_Text.getText().toString();
+                    }
+                }
+            });
 
             // Checkbox for Injection Rate Limit
             final CheckBox InjectionRateLimitCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_inject_ratelimit);
@@ -616,6 +656,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                         M_Injection_Rate_Limit = "";
                         M_Injection_Rate_Limit_Text.setFocusable(false);
                         M_Injection_Rate_Limit_Text.setEnabled(false);
+                        RATEtext = "";
                     }
                 }
             };
@@ -624,6 +665,13 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             // Textfield for Injection Count Limit
             M_Injection_Number_Text = (EditText) rootView.findViewById(R.id.mitmf_inject_times_text);
             M_Injection_Number_Text.setEnabled(false);
+            M_Injection_Number_Text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus) {
+                        NUMtext = M_Injection_Number_Text.getText().toString();
+                    }
+                }
+            });
 
             // Checkbox for Injection Count Limit
             final CheckBox InjectionNumberCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_inject_times);
@@ -637,6 +685,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                         M_Injection_Number = "";
                         M_Injection_Number_Text.setFocusable(false);
                         M_Injection_Number_Text.setEnabled(false);
+                        NUMtext = "";
                     }
                 }
             };
@@ -645,6 +694,13 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             // Textfield Inject Only IP
             M_Injection_Only_IP_Text = (EditText) rootView.findViewById(R.id.mitmf_inject_ip_text);
             M_Injection_Only_IP_Text.setEnabled(false);
+            M_Injection_Only_IP_Text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus) {
+                        ONLYIPtext = M_Injection_Only_IP_Text.getText().toString();
+                    }
+                }
+            });
 
             // Checkbox for Injection Only Target IP
             final CheckBox InjectionOnlyIPCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_inject_ip);
@@ -658,6 +714,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                         M_Injection_Only_IP = "";
                         M_Injection_Only_IP_Text.setFocusable(false);
                         M_Injection_Only_IP_Text.setEnabled(false);
+                        ONLYIPtext = "";
                     }
                 }
             };
@@ -666,6 +723,13 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             // Textfield Inject Only IP
             M_Injection_Not_IP_Text = (EditText) rootView.findViewById(R.id.mitmf_inject_noip_text);
             M_Injection_Not_IP_Text.setEnabled(false);
+            M_Injection_Not_IP_Text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus) {
+                        NOTIPtext = M_Injection_Not_IP_Text.getText().toString();
+                    }
+                }
+            });
 
             // Checkbox for Injection Not IP
             final CheckBox InjectionNotIPCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_inject_noip);
@@ -679,6 +743,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                         M_Injection_Not_IP = "";
                         M_Injection_Not_IP_Text.setFocusable(false);
                         M_Injection_Not_IP_Text.setEnabled(false);
+                        NOTIPtext = "";
                     }
                 }
             };
@@ -841,6 +906,13 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             // Textfield for Spoof Gateway
             M_Spoofer_Gateway_Text = (EditText) rootView.findViewById(R.id.mitmf_spoof_gateway_text);
             M_Spoofer_Gateway_Text.setEnabled(false);
+            M_Spoofer_Gateway_Text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus) {
+                        GATEtext = M_Spoofer_Gateway_Text.getText().toString();
+                    }
+                }
+            });
 
             // Checkbox for Spoof Gateway
             final CheckBox SpoofGatewayIPCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_spoof_gateway);
@@ -854,6 +926,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                         M_Spoofer_Gateway = "";
                         M_Spoofer_Gateway_Text.setFocusable(false);
                         M_Spoofer_Gateway_Text.setEnabled(false);
+                        GATEtext = "";
                     }
                 }
             };
@@ -862,6 +935,13 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             // Textfield for Spoof Targets
             M_Spoofer_Targets_Text = (EditText) rootView.findViewById(R.id.mitmf_spoof_targets_text);
             M_Spoofer_Targets_Text.setEnabled(false);
+            M_Spoofer_Targets_Text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus) {
+                        TARGETtext = M_Spoofer_Targets_Text.getText().toString();
+                    }
+                }
+            });
 
             final CheckBox SpoofSpecifyTargetCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_spoof_targets);
             checkBoxListener =new View.OnClickListener() {
@@ -874,6 +954,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                         M_Spoofer_Targets = "";
                         M_Spoofer_Targets_Text.setFocusable(false);
                         M_Spoofer_Targets_Text.setEnabled(false);
+                        TARGETtext = "";
                     }
                 }
             };
@@ -882,6 +963,14 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             // Textfield for Shellshock Command
             M_Spoofer_Shellshock_Text = (EditText) rootView.findViewById(R.id.mitmf_spoof_shellshock_text);
             M_Spoofer_Shellshock_Text.setEnabled(false);
+            M_Spoofer_Shellshock_Text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus) {
+                        SHELLtext = M_Spoofer_Shellshock_Text.getText().toString();
+                    }
+                }
+            });
+
 
             final CheckBox SpoofShellshockCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_spoof_shellshock);
             checkBoxListener =new View.OnClickListener() {
@@ -894,6 +983,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                         M_Spoofer_Shellshock = "";
                         M_Spoofer_Shellshock_Text.setFocusable(false);
                         M_Spoofer_Shellshock_Text.setEnabled(false);
+                        SHELLtext = "";
                     }
                 }
             };
@@ -1089,22 +1179,34 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
         }
     }
 
-    public String getCmd(){
+    private String getCmd(){
+        /* None of this works */
 
-        List<String> commandNames = Arrays.asList(M_Interface,M_JSKeyLogger,M_FerretNG,M_BrowserProfiler,M_FilePWN,M_BeeF,M_SMB,M_SSLStrip,
-                M_App_Poison,M_UpsideDown,M_ScreenShotter,M_ScreenInterval,M_Responder, M_Responder_Analyze,M_Responder_Fingerprint,M_Responder_Downgrade,M_Responder_NBTNS,M_Responder_WPAD,
-                M_Responder_WRedir,M_Injection,M_Injection_Preserve_Cache,M_Injection_Per_Domain,M_Injection_JSURL,
-                M_Injection_HTMLURL,M_Injection_HTMLPAY,M_Injection_Match,M_Injection_Rate_Limit,M_Injection_Number,
-                M_Injection_Only_IP,M_Injection_Not_IP,M_Spoofer,M_Spoofer_Redirect,M_Spoofer_ARP_Mode,M_Spoofer_Gateway,M_Spoofer_Targets,
-                M_Spoofer_Shellshock,HTMLURLtext,HTMLPAYtext,SCREENTIMEtext,MATCHtext,RATEtext,NUMtext,NOTIPtext,GATEtext,TARGETtext,ONLYIPtext,SHELLtext,JSURLtext);
+        /* Create list of all commands */
+        List<String> commandList = new ArrayList<>(Arrays.asList(
+                M_Interface, M_JSKeyLogger, M_FerretNG, M_BrowserProfiler, M_FilePWN, M_BeeF, M_SMB, M_SSLStrip,
+                M_App_Poison, M_UpsideDown, M_ScreenShotter, M_ScreenInterval, M_Responder, M_Responder_Analyze, M_Responder_Fingerprint, M_Responder_Downgrade, M_Responder_NBTNS, M_Responder_WPAD,
+                M_Responder_WRedir, M_Injection, M_Injection_Preserve_Cache, M_Injection_Per_Domain, M_Injection_JSURL,
+                M_Injection_HTMLURL, M_Injection_HTMLPAY, M_Injection_Match, M_Injection_Rate_Limit, M_Injection_Number,
+                M_Injection_Only_IP, M_Injection_Not_IP, M_Spoofer, M_Spoofer_Redirect, M_Spoofer_ARP_Mode, M_Spoofer_Gateway, M_Spoofer_Targets,
+                M_Spoofer_Shellshock, HTMLURLtext, HTMLPAYtext, SCREENTIMEtext, MATCHtext, RATEtext, NUMtext, NOTIPtext, GATEtext, TARGETtext, ONLYIPtext, SHELLtext, JSURLtext));
 
         /* Remove null references */
-        commandNames.removeAll(Collections.singleton(null));
+        commandList.removeAll(Collections.singleton(null));
+        commandList.removeAll(Collections.singleton(""));
 
-        /* Add spaces */
-        String joined = TextUtils.join(" ", commandNames);
+        /* Convert from list to array -> string */
+        String[] commandArray = commandList.toArray(new String[commandList.size()]);
+        StringBuilder builder = new StringBuilder();
+        for(String s : commandArray) {
+            builder.append(s);
+        }
 
-        return joined;
+        String commands = builder.toString();
+
+        Log.d("MITMF CMD OUTPUT: ", commands);
+
+        return null;
     }
 
     private void intentClickListener_NH(final String command) {
