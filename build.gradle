@@ -41,7 +41,7 @@ android {
     defaultConfig {
         minSdkVersion 17
         targetSdkVersion 22
-        versionCode 9
+        versionCode 10
         versionName "2.1 (beta)"
     }
 
@@ -94,9 +94,9 @@ android {
         }
         release {
             signingConfig signingConfigs.release
-            //minifyEnabled true
+            minifyEnabled true
             shrinkResources true
-            //proguardFiles getDefaultProguardFile('proguard-android.txt')
+            proguardFiles getDefaultProguardFile('proguard-android.txt')
             debuggable false
             jniDebuggable false
             zipAlignEnabled true

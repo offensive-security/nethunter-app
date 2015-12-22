@@ -282,20 +282,6 @@ public class AppNavHomeActivity extends AppCompatActivity {
                                         .addToBackStack(null)
                                         .commit();
                                 break;
-                            case R.id.dnsmasq_item:
-                                fragmentManager
-                                        .beginTransaction()
-                                        .replace(R.id.container, DnsmasqFragment.newInstance(itemId))
-                                        .addToBackStack(null)
-                                        .commit();
-                                break;
-                            case R.id.iptables_item:
-                                fragmentManager
-                                        .beginTransaction()
-                                        .replace(R.id.container, IptablesFragment.newInstance(itemId))
-                                        .addToBackStack(null)
-                                        .commit();
-                                break;
                             case R.id.macchanger_item:
                                 fragmentManager
                                         .beginTransaction()

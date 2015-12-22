@@ -44,10 +44,6 @@
     <string name="mana_noupstream">The Mana no-upstream run script.</string>
     <string name="mana_noupstream_eap">The Mana no-upstream EAP run script.</string>
 
-    <string name="dnsmasq_label">Dnsmasq Service</string>
-    <string name="dnsmasq_headline">Dnsmasq Config</string>
-    <string name="dnsmasq_description">Dnsmasq is a lightweight DNS forwarder and DHCP server that can easily be configured to provide DNS and DHCP services to a small network.</string>
-
     <string name="hostapd_label">Hostapd Service</string>
     <string name="hostapd_headline">Hostapd Config</string>
     <string name="hostapd_description">hostapd is a user space daemon for wireless access point and authentication servers. You can use hostapd to easily create a wireless access point using these configuration options:</string>
@@ -59,10 +55,6 @@
     <string name="duckPreviewRefresh">Refresh</string>
     <string name="duck_hunter_headline">The DuckHunter script can easily convert "USB Rubber Ducky" scripts into NetHunter HID format.  You can generate preconfigured scripts at the incredibly useful <a href="http://www.ducktoolkit.com/Home.jsp">Ducky Toolkit</a> site, or check out the Rubber Ducky script syntax from the official <a href="https://github.com/hak5darren/USB-Rubber-Ducky/wiki/Duckyscript">README</a></string>
 
-    <string name="iptables_label">Iptables Configuration</string>
-    <string name="iptables_headline">Iptables Setup Config</string>
-    <string name="iptables_description">Easily set up NAT or use iptables rules to route traffic.</string>
-
     <string name="payload_select">Please select</string>
     <string-array name="payloads">
         <item>windows/meterpreter/reverse_http</item>
@@ -72,12 +64,6 @@
     <string name="source">Edit source</string>
     <string name="start_service">Start hostapd</string>
     <string name="stop_service">Stop hostapd</string>
-
-    <string name="run_iptables">Run iptables</string>
-    <string name="flush">Flush</string>
-
-    <string name="start_dnsmasq">Start dnsmasq</string>
-    <string name="stop_dnsmasq">Stop dnsmasq</string>
 
     <string name="start_badusb">Start BadUSB attack</string>
     <string name="stop_badusb">Stop BadUSB attack</string>
