@@ -12,6 +12,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -435,16 +437,25 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             M_ScreenIntervalTime = (EditText) rootView.findViewById(R.id.mitmf_screen_interval);
             M_ScreenIntervalTime.setText("10");
             M_ScreenIntervalTime.setEnabled(false);
-            // EditText getText on focus change
-            M_ScreenIntervalTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        removeFromCmd(M_ScreenInterval + SCREENTIMEtext); // Clear previous command
-                        M_ScreenInterval = " --interval "; // Define --interval
-                        SCREENTIMEtext = M_ScreenIntervalTime.getText().toString(); // Get new number
-                        addToCmd(M_ScreenInterval + SCREENTIMEtext);
-                        Log.d("ChangeDetectInterval: ", SCREENTIMEtext);
-                    }
+            // Detect changes to TextField
+            M_ScreenIntervalTime.addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s)
+                {
+                    removeFromCmd(M_ScreenInterval + SCREENTIMEtext); // Clear previous command
+                    M_ScreenInterval = " --interval "; // Define --interval [num]
+                    SCREENTIMEtext = M_ScreenIntervalTime.getText().toString(); // Get [num]
+                    addToCmd(M_ScreenInterval + SCREENTIMEtext); // AddToCmd --interval [num]
+                    Log.d("ChangeDetectInterval: ", SCREENTIMEtext); // Debug
                 }
             });
 
@@ -478,6 +489,8 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                         M_ScreenIntervalTime.setEnabled(true);
                     } else {
                         removeFromCmd(M_ScreenShotter);
+                        removeFromCmd(M_ScreenInterval);
+                        removeFromCmd(SCREENTIMEtext);
                         ScreenShotterIntCheckbox.setEnabled(false);
                         M_ScreenIntervalTime.setFocusable(false);
                         M_ScreenIntervalTime.setEnabled(false);
