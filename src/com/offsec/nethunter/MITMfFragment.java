@@ -271,7 +271,6 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                     String selectedItemText = parent.getItemAtPosition(pos).toString();
-                    Log.d("Slected: ", selectedItemText);
                     switch (pos) {
                         case 0:
                             // Interface: wlan0
@@ -439,10 +438,12 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             // EditText getText on focus change
             M_ScreenIntervalTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 public void onFocusChange(View v, boolean hasFocus) {
-
                     if (!hasFocus) {
-                        SCREENTIMEtext = M_ScreenIntervalTime.getText().toString();
-                        addToCmd(SCREENTIMEtext);
+                        removeFromCmd(M_ScreenInterval + SCREENTIMEtext); // Clear previous command
+                        M_ScreenInterval = " --interval "; // Define --interval
+                        SCREENTIMEtext = M_ScreenIntervalTime.getText().toString(); // Get new number
+                        addToCmd(M_ScreenInterval + SCREENTIMEtext);
+                        Log.d("ChangeDetectInterval: ", SCREENTIMEtext);
                     }
                 }
             });
@@ -772,7 +773,6 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                         M_Injection_Not_IP_Text.setEnabled(true);
                     }else{
                         removeFromCmd(M_Injection_Not_IP + NOTIPtext);
-
                         M_Injection_Not_IP_Text.setFocusable(false);
                         M_Injection_Not_IP_Text.setEnabled(false);
 
@@ -878,20 +878,22 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                     switch (pos) {
                         case 0:
                             removeFromCmd(M_Spoofer_Redirect);
-                            M_Spoofer_Redirect = "";
                             break;
                         case 1:
                             // ARP
+                            removeFromCmd(M_Spoofer_Redirect);
                             M_Spoofer_Redirect = " --arp";
                             addToCmd(M_Spoofer_Redirect);
                             break;
                         case 2:
                             // ICMP
+                            removeFromCmd(M_Spoofer_Redirect);
                             M_Spoofer_Redirect = " --icmp";
                             addToCmd(M_Spoofer_Redirect);
                             break;
                         case 3:
                             // DHCP
+                            removeFromCmd(M_Spoofer_Redirect);
                             M_Spoofer_Redirect = " --dhcp";
                             addToCmd(M_Spoofer_Redirect);
                             break;
@@ -924,15 +926,16 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                         case 0:
                             // Nothing
                             removeFromCmd(M_Spoofer_ARP_Mode);
-                            M_Spoofer_ARP_Mode = "";
                             break;
                         case 1:
                             // ARP Request REQ
+                            removeFromCmd(M_Spoofer_ARP_Mode);
                             M_Spoofer_ARP_Mode = " --arpmode req";
                             addToCmd(M_Spoofer_ARP_Mode);
                             break;
                         case 2:
                             // ARP Reply REP
+                            removeFromCmd(M_Spoofer_ARP_Mode);
                             M_Spoofer_ARP_Mode = " --arpmode rep";
                             addToCmd(M_Spoofer_ARP_Mode);
                             break;
