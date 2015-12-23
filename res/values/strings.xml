@@ -302,7 +302,7 @@
     <string name="drawertitleiptables">IP Tables</string>
     <string name="drawertitlemacchanger">MAC Changer</string>
     <string name="drawertitlempc">Metasploit Payload Generator</string>
-    <string name="drawertitlemitmf">MTIMf</string>
+    <string name="drawertitlemitmf">MITMf</string>
     <string name="drawertitlecheckupdate">Check App Update</string>
     <string name="drawertitlesearchsploit">SearchSploit</string>
     <string name="InstallAndUpdateButtonText"><![CDATA[Install & Update]]></string>
