@@ -441,6 +441,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (!hasFocus) {
                         SCREENTIMEtext = M_ScreenIntervalTime.getText().toString();
+                        addToCmd(SCREENTIMEtext);
                     }
                 }
             });
@@ -450,7 +451,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
                     if(ScreenShotterIntCheckbox.isChecked()) {
-                        M_ScreenInterval = "--interval "; // Need to do this better, only updates when checkbox selected
+                        M_ScreenInterval = " --interval"; // Need to do this better, only updates when checkbox selected
                         SCREENTIMEtext = M_ScreenIntervalTime.getText().toString();
                     }else{
                         M_ScreenInterval = "";
@@ -466,7 +467,8 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
                     if(ScreenShotterCheckbox.isChecked()) {
-                        M_ScreenShotter = "--screen  ";
+                        M_ScreenShotter = " --screen";
+                        addToCmd(M_ScreenShotter);
                         ScreenShotterIntCheckbox.setEnabled(true);
                         M_ScreenIntervalTime.setFocusable(true);
                         M_ScreenIntervalTime.setEnabled(true);
@@ -549,7 +551,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
                     if(InjectionJSURLCheckbox.isChecked()) {
-                        M_Injection_JSURL = "--js-url ";
+                        M_Injection_JSURL = " --js-url";
                         M_Injection_JSURL_Text.setFocusable(true);
                         M_Injection_JSURL_Text.setEnabled(true);
                         addToCmd(M_Injection_JSURL);
@@ -581,7 +583,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
                     if(InjectionHTMLURLCheckbox.isChecked()) {
-                        M_Injection_HTMLURL = "--html-url ";
+                        M_Injection_HTMLURL = " --html-url";
                         M_Injection_HTMLURL_Text.setFocusable(true);
                         M_Injection_HTMLURL_Text.setEnabled(true);
                         addToCmd(M_Injection_HTMLURL);
@@ -602,6 +604,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (!hasFocus) {
                         HTMLPAYtext = M_Injection_HTMLPAY_Text.getText().toString();
+                        addToCmd(HTMLPAYtext);
                     }
                 }
             });
@@ -611,7 +614,8 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
                     if(InjectionHTMLPAYCheckbox.isChecked()) {
-                        M_Injection_HTMLPAY = "--html-payload ";
+                        M_Injection_HTMLPAY = " --html-payload";
+                        addToCmd(M_Injection_HTMLPAY);
                         M_Injection_HTMLPAY_Text.setFocusable(true);
                         M_Injection_HTMLPAY_Text.setEnabled(true);
                     }else{
@@ -640,7 +644,8 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
                     if(InjectionMatchCheckbox.isChecked()) {
-                        M_Injection_Match = "--match-str  ";
+                        M_Injection_Match = " --match-str";
+                        addToCmd(M_Injection_Match);
                         M_Injection_Match_Text.setFocusable(true);
                         M_Injection_Match_Text.setEnabled(true);
                     }else{
@@ -660,6 +665,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (!hasFocus) {
                         RATEtext = M_Injection_Rate_Limit_Text.getText().toString();
+                        addToCmd(RATEtext);
                     }
                 }
             });
@@ -669,7 +675,8 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
                     if(InjectionRateLimitCheckbox.isChecked()) {
-                        M_Injection_Rate_Limit = "--rate-limit ";
+                        M_Injection_Rate_Limit = " --rate-limit";
+                        addToCmd(M_Injection_Rate_Limit);
                         M_Injection_Rate_Limit_Text.setFocusable(true);
                         M_Injection_Rate_Limit_Text.setEnabled(true);
                     }else{
@@ -689,6 +696,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (!hasFocus) {
                         NUMtext = M_Injection_Number_Text.getText().toString();
+                        addToCmd(NUMtext);
                     }
                 }
             });
@@ -698,7 +706,8 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
                     if(InjectionNumberCheckbox.isChecked()) {
-                        M_Injection_Number = "--count-limit ";
+                        M_Injection_Number = " --count-limit";
+                        addToCmd(M_Injection_Number);
                         M_Injection_Number_Text.setFocusable(true);
                         M_Injection_Number_Text.setEnabled(true);
                     }else{
@@ -718,6 +727,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (!hasFocus) {
                         ONLYIPtext = M_Injection_Only_IP_Text.getText().toString();
+                        addToCmd(ONLYIPtext);
                     }
                 }
             });
@@ -727,7 +737,8 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
                     if(InjectionOnlyIPCheckbox.isChecked()) {
-                        M_Injection_Only_IP = "--white-ips ";
+                        M_Injection_Only_IP = " --white-ips";
+                        addToCmd(M_Injection_Only_IP);
                         M_Injection_Only_IP_Text.setFocusable(true);
                         M_Injection_Only_IP_Text.setEnabled(true);
                     }else{
@@ -747,6 +758,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (!hasFocus) {
                         NOTIPtext = M_Injection_Not_IP_Text.getText().toString();
+                        addToCmd(NOTIPtext);
                     }
                 }
             });
@@ -756,7 +768,8 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
                     if(InjectionNotIPCheckbox.isChecked()) {
-                        M_Injection_Not_IP = "--white-ips ";
+                        M_Injection_Not_IP = " --white-ips";
+                        addToCmd(M_Injection_Not_IP);
                         M_Injection_Not_IP_Text.setFocusable(true);
                         M_Injection_Not_IP_Text.setEnabled(true);
                     }else{
@@ -774,7 +787,8 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
                     if(InjectionCheckbox.isChecked()) {
-                        M_Injection = "--injection  ";
+                        M_Injection = " --injection";
+                        addToCmd(M_Injection);
                         /* Allow checkboxes to be enabled if Injection checkbox activated */
                         InjectionPreserveCacheCheckbox.setEnabled(true);
                         InjectionPerDomainCheckbox.setEnabled(true);
@@ -936,6 +950,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (!hasFocus) {
                         GATEtext = M_Spoofer_Gateway_Text.getText().toString();
+                        addToCmd(GATEtext);
                     }
                 }
             });
@@ -945,7 +960,8 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
                     if(SpoofGatewayIPCheckbox.isChecked()) {
-                        M_Spoofer_Gateway = "--gateway ";
+                        M_Spoofer_Gateway = "--gateway";
+                        addToCmd(M_Spoofer_Gateway);
                         M_Spoofer_Gateway_Text.setFocusable(true);
                         M_Spoofer_Gateway_Text.setEnabled(true);
                     }else{
@@ -965,6 +981,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (!hasFocus) {
                         TARGETtext = M_Spoofer_Targets_Text.getText().toString();
+                        addToCmd(TARGETtext);
                     }
                 }
             });
@@ -973,7 +990,8 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
                     if(SpoofSpecifyTargetCheckbox.isChecked()) {
-                        M_Spoofer_Targets = "--targets ";
+                        M_Spoofer_Targets = " --targets";
+                        addToCmd(M_Spoofer_Targets);
                         M_Spoofer_Targets_Text.setFocusable(true);
                         M_Spoofer_Targets_Text.setEnabled(true);
                     }else{
@@ -993,6 +1011,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (!hasFocus) {
                         SHELLtext = M_Spoofer_Shellshock_Text.getText().toString();
+                        addToCmd(SHELLtext);
                     }
                 }
             });
@@ -1002,7 +1021,8 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
                     if(SpoofShellshockCheckbox.isChecked()) {
-                        M_Spoofer_Shellshock = "--shellshock ";
+                        M_Spoofer_Shellshock = " --shellshock";
+                        addToCmd(M_Spoofer_Shellshock);
                         M_Spoofer_Shellshock_Text.setFocusable(true);
                         M_Spoofer_Shellshock_Text.setEnabled(true);
                     }else{
@@ -1021,7 +1041,8 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
                     if(SpoofCheckbox.isChecked()) {
-                        M_Spoofer = "--injection  ";
+                        M_Spoofer = " --injection";
+                        addToCmd(M_Spoofer);
                         /* Allow checkboxes to be enabled if Spoof checkbox activated */
                         redirectSpinner.setEnabled(true);
                         ARPSpinner.setEnabled(true);
@@ -1081,7 +1102,8 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
                     if(ResponderAnalyzeCheckbox.isChecked()) {
-                        M_Responder_Analyze = "--analyze ";
+                        M_Responder_Analyze = " --analyze";
+                        addToCmd(M_Responder_Analyze);
                     }else{
                         M_Responder_Analyze = "";
                     }
@@ -1094,7 +1116,8 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
                     if(ResponderFingerprintCheckbox.isChecked()) {
-                        M_Responder_Fingerprint = "--fingerprint ";
+                        M_Responder_Fingerprint = " --fingerprint";
+                        addToCmd(M_Responder_Fingerprint);
                     }else{
                         M_Responder_Fingerprint = "";
                     }
@@ -1107,7 +1130,8 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
                     if(ResponderDowngradeCheckbox.isChecked()) {
-                        M_Responder_Downgrade = "--lm ";
+                        M_Responder_Downgrade = " --lm";
+                        addToCmd(M_Responder_Downgrade);
                     }else{
                         M_Responder_Downgrade = "";
                     }
