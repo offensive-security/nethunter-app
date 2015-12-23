@@ -83,7 +83,7 @@ android {
     buildTypes {
 
         debug {
-            minifyEnabled true
+            minifyEnabled false
             buildConfigField "java.util.Date", "BUILD_TIME", "new java.util.Date(" + getDate() + "L)"
             buildConfigField "String", "BUILD_NAME", "\"" + System.getenv("USER") + "\"";
             return true
