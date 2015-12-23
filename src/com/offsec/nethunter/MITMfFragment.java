@@ -274,27 +274,26 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                     Log.d("Slected: ", selectedItemText);
                     switch (pos) {
                         case 0:
-                            // No interface
-                            removeFromCmd(M_Interface);
-                            M_Interface = "";
-                            break;
-                        case 1:
                             // Interface: wlan0
+                            removeFromCmd(M_Interface);
                             M_Interface = " -i wlan0";
                             addToCmd(M_Interface);
                             break;
-                        case 2:
+                        case 1:
                             // Interface: wlan1
+                            removeFromCmd(M_Interface);
                             M_Interface = " -i wlan1";
                             addToCmd(M_Interface);
                             break;
-                        case 3:
+                        case 2:
                             // Interface: eth0
+                            removeFromCmd(M_Interface);
                             M_Interface = " -i eth0";
                             addToCmd(M_Interface);
                             break;
-                        case 4:
+                        case 3:
                             // Interface: rndis0
+                            removeFromCmd(M_Interface);
                             M_Interface = " -i rndis0";
                             addToCmd(M_Interface);
                             break;
