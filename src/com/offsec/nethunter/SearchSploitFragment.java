@@ -33,6 +33,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
 import java.util.List;
+import java.util.Objects;
 
 
 public class SearchSploitFragment extends Fragment {
@@ -51,7 +52,7 @@ public class SearchSploitFragment extends Fragment {
     AlertDialog adi;
     Boolean isLoaded = false;
     private ListView searchSploitListView;
-
+    List<SearchSploit> full_exploitList;
     // Create and handle database
     private SearchSploitSQL database;
     private NhPaths nh;
@@ -286,12 +287,18 @@ public class SearchSploitFragment extends Fragment {
             if(withFilters){
                 exploitList = database.getAllExploitsFiltered(sel_search, sel_platform, sel_type, sel_port);
             } else {
-                exploitList = database.getAllExploitsRaw(sel_search);
+                if(sel_search.equals("")){
+                    exploitList = full_exploitList;
+                } else{
+                    exploitList = database.getAllExploitsRaw(sel_search);
+                }
             }
             numex.setText(String.format("%d results", exploitList.size()));
             ExploitLoader exploitAdapter = new ExploitLoader(mContext, exploitList);
             searchSploitListView.setAdapter(exploitAdapter);
             if(!isLoaded){
+                // preloading the long list lets see if is more performant
+                full_exploitList =  database.getAllExploitsRaw("");
                 adi.dismiss();
                 isLoaded = true;
             }
