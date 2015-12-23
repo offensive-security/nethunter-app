@@ -121,4 +121,7 @@ public class NhPaths {
         }
         return null;
     }
+    public String makeTermTitle(String title) {
+        return "echo -ne \"\\033]0;"+ title +"\\007\" && clear;";
+    }
 }

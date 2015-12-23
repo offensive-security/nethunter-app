@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.offsec.nethunter.utils.NhPaths;
+
 public class KaliLauncherFragment extends Fragment {
     /**
      * The fragment argument representing the section number for this
@@ -16,6 +18,7 @@ public class KaliLauncherFragment extends Fragment {
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final String TAG = "KaliLauncherFragment";
+    private NhPaths nh;
     /**
      * Returns a new instance of this fragment for the given section
      * number.
@@ -36,7 +39,7 @@ public class KaliLauncherFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+        nh = new NhPaths();
         View rootView = inflater.inflate(R.layout.kali_launcher, container, false);
         addClickListener(R.id.button_start_kali, new View.OnClickListener() {
             public void onClick(View v) {
@@ -45,12 +48,12 @@ public class KaliLauncherFragment extends Fragment {
         }, rootView);
         addClickListener(R.id.button_start_su, new View.OnClickListener() {
             public void onClick(View v) {
-                intentClickListener_SU(""); // pops SU shell in term
+                intentClickListener_SU(nh.makeTermTitle("SU Shell")); // pops SU shell in term
             }
         }, rootView);
         addClickListener(R.id.button_start_android, new View.OnClickListener() {
             public void onClick(View v) {
-                intentClickListener_ANDROID(""); // pops andrid default shell
+                intentClickListener_ANDROID(nh.makeTermTitle("Android Shell")); // pops andrid default shell
             }
         }, rootView);
         /**
@@ -58,7 +61,7 @@ public class KaliLauncherFragment extends Fragment {
          */
         addClickListener(R.id.button_start_kalimenu, new View.OnClickListener() {
             public void onClick(View v) {
-                intentClickListener_NH("kalimenu"); // since is a kali command we can send it as is
+                intentClickListener_NH(nh.makeTermTitle("Kali Menu") + "kalimenu"); // since is a kali command we can send it as is
             }
         }, rootView);
         /**
@@ -66,7 +69,7 @@ public class KaliLauncherFragment extends Fragment {
          */
         addClickListener(R.id.update_kali_chroot, new View.OnClickListener() {
             public void onClick(View v) {
-                intentClickListener_NH("/usr/bin/start-update.sh");  // file in kali, exec it
+                intentClickListener_NH(nh.makeTermTitle("Kali Update") + "/usr/bin/start-update.sh");  // file in kali, exec it
             }
         }, rootView);
         /**
@@ -74,7 +77,7 @@ public class KaliLauncherFragment extends Fragment {
          */
         addClickListener(R.id.button_launch_wifite, new View.OnClickListener() {
             public void onClick(View v) {
-                intentClickListener_SU("bootkali wifite"); // todo move out bootkali
+                intentClickListener_SU(nh.makeTermTitle("WIFITE") + "bootkali wifite"); // todo move out bootkali
             }
         }, rootView);
         /**
@@ -90,21 +93,12 @@ public class KaliLauncherFragment extends Fragment {
          */
         addClickListener(R.id.kali_dumpmifare, new View.OnClickListener() {
             public void onClick(View v) {
-                intentClickListener_SU("bootkali dumpmifare"); // todo move out bootkali
+                intentClickListener_SU(nh.makeTermTitle("Dump Mifare") + "bootkali dumpmifare"); // todo move out bootkali
             }
         }, rootView);
 
         return rootView;
     }
-
-/*   public void getTerminalApp() {
-        try {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=jackpal.androidterm"))); // todo move out jackpal link
-        } catch (android.content.ActivityNotFoundException anfe2) {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=jackpal.androidterm"))); // todo move out jackpal link
-        }
-    }
-*/
     private void addClickListener(int buttonId, View.OnClickListener onClickListener, View rootView) {
         rootView.findViewById(buttonId).setOnClickListener(onClickListener);
     }

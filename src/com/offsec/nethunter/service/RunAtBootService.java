@@ -18,7 +18,7 @@ import com.offsec.nethunter.utils.ShellExecuter;
 
 public class RunAtBootService extends Service {
     public static final String CHROOT_INSTALLED_TAG = "CHROOT_INSTALLED_TAG";
-    public static final String TAG = "NH: RunAtBootServices";
+    public static final String TAG = "Nethunter: Startup";
     final ShellExecuter x = new ShellExecuter();
     SharedPreferences sharedpreferences;
     NhPaths nh;
@@ -35,7 +35,7 @@ public class RunAtBootService extends Service {
                 n.setStyle(new Notification.BigTextStyle().bigText(contents))
                         .setContentTitle(title)
                 //.setContentText(contents)
-                .setSmallIcon(R.drawable.ic_action_settings_applications)
+                .setSmallIcon(R.drawable.ic_stat_ic_nh_notificaiton)
                 // .setContentIntent(pIntent)
                 .setAutoCancel(true);
         NotificationManager notificationManager =

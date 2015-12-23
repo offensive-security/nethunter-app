@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -130,38 +131,45 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
         builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String[] command = new String[1];
                 switch (selectedScriptIndex) {
+                    // launching mana on the terminal so it doesnt die suddenly
                     case 0:
+                        nh.showMessage("Starting MANA NAT FULL");
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali mana-full-lollipop start'";
+                            intentClickListener_NH(nh.makeTermTitle("MANA-FULL") + "/usr/share/mana-toolkit/run-mana/start-nat-full-lollipop.sh");
                         } else {
-                            command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali mana-full-kitkat start'";
+                            intentClickListener_NH(nh.makeTermTitle("MANA-FULL") + "/usr/share/mana-toolkit/run-mana/start-nat-full-kitkat.sh");
                         }
                         break;
                     case 1:
+                        nh.showMessage("Starting MANA NAT SIMPLE");
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali mana-simple-lollipop start'";
+                            intentClickListener_NH(nh.makeTermTitle("MANA-SIMPLE") + "/usr/share/mana-toolkit/run-mana/start-nat-simple-lollipop.sh");
                         } else {
-                            command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali mana-simple-kitkat start'";
+                            intentClickListener_NH(nh.makeTermTitle("MANA-SIMPLE") + "/usr/share/mana-toolkit/run-mana/start-nat-simple-kitkat.sh");
                         }
                         break;
                     case 2:
+                        nh.showMessage("Starting MANA NAT SIMPLE && BDF");
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali mana-bdf-lollipop start'";
-                            nh.showMessage("Starting BDFPROXY in the background...");
-                            intentClickListener_NH("sleep 10 ; msfconsole -q -r /usr/share/bdfproxy/bdfproxy_msf_resource.rc");
+                            intentClickListener_NH(nh.makeTermTitle("MANA-BDF") + "/usr/share/mana-toolkit/run-mana/start-nat-simple-bdf-lollipop.sh");
                         } else {
-                            command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali mana-bdf-kitkat start'";
+                            intentClickListener_NH(nh.makeTermTitle("MANA-BDF") + "/usr/share/mana-toolkit/run-mana/start-nat-simple-bdf-kitkat.sh");
                         }
+                        // we wait ~10 secs before launching msf
+                        new android.os.Handler().postDelayed(
+                                new Runnable() {
+                                    public void run() {
+                                        nh.showMessage("Starting MSF with BDF resource.rc");
+                                        intentClickListener_NH(nh.makeTermTitle("MSF") + "msfconsole -q -r /usr/share/bdfproxy/bdfproxy_msf_resource.rc");
+                                    }
+                                }, 10000);
                         break;
                     default:
                         nh.showMessage("Invalid script!");
                         return;
                 }
-                ShellExecuter exe = new ShellExecuter();
-                exe.RunAsRoot(command);
-                nh.showMessage("Attack executed!");
+                nh.showMessage("Attack Launched!");
             }
         });
         builder.setNegativeButton("Quit", new DialogInterface.OnClickListener() {
@@ -577,9 +585,9 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             String description = getResources().getString(R.string.bdfproxy_cfg);
             TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
-
+            // use the good one?
             configFilePath = nh.APP_SD_FILES_PATH + "/configs/bdfproxy.cfg";
-
+            Log.d("BDFPATH", configFilePath);
             EditText source = (EditText) rootView.findViewById(R.id.source);
             ShellExecuter exe = new ShellExecuter();
             exe.ReadFile_ASYNC(configFilePath, source);
@@ -651,7 +659,6 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             Intent intent =
                     new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
-
             intent.putExtra("com.offsec.nhterm.iInitialCommand", command);
             startActivity(intent);
         } catch (Exception e) {

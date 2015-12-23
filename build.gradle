@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.5.0-beta3'
+        classpath 'com.android.tools.build:gradle:2.0.0-alpha3'
     }
 }
 
@@ -40,8 +40,8 @@ android {
 
     defaultConfig {
         minSdkVersion 17
-        targetSdkVersion 22
-        versionCode 8
+        targetSdkVersion 23
+        versionCode 10
         versionName "2.1 (beta)"
     }
 
@@ -80,23 +80,19 @@ android {
         }
     }
 
-    task wrapper(type: Wrapper) {
-        gradleVersion = '2.8'
-    }
-
-
     buildTypes {
 
         debug {
+            minifyEnabled true
             buildConfigField "java.util.Date", "BUILD_TIME", "new java.util.Date(" + getDate() + "L)"
             buildConfigField "String", "BUILD_NAME", "\"" + System.getenv("USER") + "\"";
             return true
         }
         release {
             signingConfig signingConfigs.release
-            //minifyEnabled true
+            minifyEnabled false
             shrinkResources true
-            //proguardFiles getDefaultProguardFile('proguard-android.txt')
+            proguardFiles getDefaultProguardFile('proguard-project.txt')
             debuggable false
             jniDebuggable false
             zipAlignEnabled true

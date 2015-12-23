@@ -30,13 +30,17 @@ import android.widget.TextView;
 import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.thoughtcrime.ssl.pinning.util.PinningHelper;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -95,19 +99,15 @@ public class ChrootManagerFragment extends Fragment {
     private static final String URI_MINIMAL = IMAGE_SERVER + FILENAME_MINIMAL;
     private static final String URI_FULL = IMAGE_SERVER + FILENAME_FULL;
 
-    //private static final String URI = "http://188.138.17.16/" + FILENAME;
-
-    private static final String SHA512_MINIMAL =
-            "810a161e6d040a8d812ca1b07b69e7c83355e9b840637f99454fc7df73ed4a05d9a5f904e4fada6e4587d12bf37923cc66c8e2dd53c67f753af8421d57105a6c";
-    private static final String SHA512_FULL =
-            "df6aad5bf79ae11fdcae4e8f1d3927a88dd0e0f1840dbb2af0ba3f15effa1169d743cdfd66b30fb062a00f1c163bc406363f47d842e88e1fb1a1b06a5441b8d3";
-
+    private String SHA512_MINIMAL = "";
+    private String SHA512_FULL = "";
     private String SHA512;
     private String zipFilePath;
     private String extracted_zipFilePath;
     private String installLogFile;
     private Boolean shouldLog = false;
-
+    // if is full or minimal
+    private Boolean isFull = false;
     private TextView statusText;
     private Button installButton;
     private Button updateButton;
@@ -329,6 +329,7 @@ public class ChrootManagerFragment extends Fragment {
         }).start();
     }
     private void downloadOrSdcard(){
+
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
         adb.setTitle("Select Chroot install mode:")
                 .setMessage("Download is the prefered mode. Get the latest chroot from the offsec servers.\n\n Also you can place a custom\nkalifs-[minimal|full].tar.xz in /sdcard\nand skip the download.")
@@ -350,6 +351,7 @@ public class ChrootManagerFragment extends Fragment {
         ad.setCancelable(false);
         ad.show();
     }
+
     private void fullOrMinimal(final Boolean shouldDownload){
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
         adb.setTitle("Select Chroot Download:")
@@ -362,6 +364,8 @@ public class ChrootManagerFragment extends Fragment {
                         extracted_zipFilePath = nh.SD_PATH + "/" + EXTRACTED_FILENAME_MINIMAL;
                         SHA512 = SHA512_MINIMAL;
                         if (shouldDownload) {
+                            // update value if is minimal
+                            isFull = false;
                             if (!startZipDownload(URI_MINIMAL)) {
                                 installButton.setEnabled(true);
                             }
@@ -379,6 +383,8 @@ public class ChrootManagerFragment extends Fragment {
                         zipFilePath = nh.SD_PATH + "/" + FILENAME_FULL;
                         extracted_zipFilePath = nh.SD_PATH + "/" + EXTRACTED_FILENAME_FULL;
                         if (shouldDownload) {
+                            // update value if is full
+                            isFull = true;
                             if (!startZipDownload(URI_FULL)) {
                                 installButton.setEnabled(true);
                             }
@@ -443,7 +449,7 @@ public class ChrootManagerFragment extends Fragment {
         try {
             Intent intent = new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
-            intent.putExtra("com.offsec.nhterm.iInitialCommand", "apt-get install " + packages);
+            intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "apt-get install " + packages);
             Log.d("PACKS:", "PACKS:" + packages);
             startActivity(intent);
 
@@ -757,7 +763,7 @@ public class ChrootManagerFragment extends Fragment {
         double humanSize = 0.0;
         double onePercent = 0.0;
         double fineProgress = 0.0;
-
+        Boolean weHaveTheSha = false;
         public DownloadChroot(Context context) {
             this.context = context;
             mProgressDialog = new ProgressDialog(context);
@@ -794,13 +800,38 @@ public class ChrootManagerFragment extends Fragment {
             try {
                 URL url = new URL(sUrl[0]);
                 connection = PinningHelper.getPinnedHttpsURLConnection(context, pins, url);
-                connection = (HttpsURLConnection) url.openConnection();
+                //connection = (HttpsURLConnection) url.openConnection();
                 connection.connect();
 
+                if(!weHaveTheSha) {
+                    // Get SHA512 sum from JSON object ONLY 1 TIME!!!!
+                    String jsonstring = getJSON("https://images.offensive-security.com/version.txt");
+                    JSONObject jsonObject = null;
+                    try {
+                        jsonObject = new JSONObject(jsonstring);
+                        SHA512_FULL = jsonObject.getString("chroot_sha512_full");
+                        SHA512_MINIMAL = jsonObject.getString("chroot_sha512_min");
+                        if(isFull){
+                            // asign the value so the integryty check works ^^
+                            SHA512 = SHA512_FULL;
+                            Log.d(TAG, "IS_FULL");
+                            Log.d(TAG, "SHA512_FULL: " + SHA512_FULL);
+                        } else {
+                            SHA512 = SHA512_MINIMAL;
+                            Log.d(TAG, "IS_MINIMAL");
+                            Log.d(TAG, "SHA512_MINIMAL: " + SHA512_MINIMAL);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.e(TAG, "JSON exception");
+                    }
+                    weHaveTheSha = true;
+                }
                 if (connection.getResponseCode() != HttpsURLConnection.HTTP_OK) {
                     return "Server returned HTTP " + connection.getResponseCode()
                             + " " + connection.getResponseMessage();
                 }
+
                 int fileLength = connection.getContentLength();
                 humanSize = fileLength / 1000000; // in MiB
                 onePercent = humanSize / 100;
@@ -837,6 +868,47 @@ public class ChrootManagerFragment extends Fragment {
                     connection.disconnect();
             }
             return null;
+        }
+
+        private String getJSON(String url) {
+            {
+                HttpsURLConnection jsonconnection = null;
+                try {
+                    URL jsonurl = new URL(url);
+                    jsonconnection = PinningHelper.getPinnedHttpsURLConnection(getContext(), pins, jsonurl); // Add certificated pinning
+                    jsonconnection.setRequestMethod("GET");
+                    jsonconnection.setRequestProperty("Content-length", "0");
+                    jsonconnection.setUseCaches(false);
+                    jsonconnection.setAllowUserInteraction(false);
+                    int status = jsonconnection.getResponseCode();
+                    jsonconnection.connect();
+
+                    switch (status) {
+                        case 200:
+                        case 201:
+                            BufferedReader br = new BufferedReader(new InputStreamReader(jsonconnection.getInputStream()));
+                            StringBuilder sb = new StringBuilder();
+                            String line;
+                            while ((line = br.readLine()) != null) {
+                                sb.append(line).append("\n");
+                            }
+                            br.close();
+                            return sb.toString();
+                    }
+
+                } catch (IOException ex) {
+                    Log.d(TAG, "Exception with JSON connect");
+                } finally {
+                    if (jsonconnection != null) {
+                        try {
+                            jsonconnection.disconnect();
+                        } catch (Exception ex) {
+                            Log.d(TAG, "Error connecting with server/file");
+                        }
+                    }
+                }
+                return null;
+            }
         }
 
         @Override

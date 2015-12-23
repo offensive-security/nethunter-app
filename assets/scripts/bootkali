@@ -150,31 +150,7 @@ fi
    		$busybox chroot $mnt sh /sdcard/nh_files/iptables.conf
    	fi
 
-   	#MANA
-
-   	if [ "$1" == "mana-full-lollipop" ] && [ "$2" == "start" ]; then
-   		$busybox chroot $mnt /usr/bin/start-mana-full-lollipop
-   	fi
-
-   	if [ "$1" == "mana-full-kitkat" ] && [ "$2" == "start" ]; then
-   		$busybox chroot $mnt /usr/bin/start-mana-full-kitkat
-   	fi
-
-   	if [ "$1" == "mana-simple-lollipop" ] && [ "$2" == "start" ]; then
-   		$busybox chroot $mnt /usr/bin/start-mana-simple-lollipop
-   	fi
-
-   	if [ "$1" == "mana-simple-kitkat" ] && [ "$2" == "start" ]; then
-   		$busybox chroot $mnt /usr/bin/start-mana-simple-kitkat
-   	fi
-
-      	if [ "$1" == "mana-bdf-lollipop" ] && [ "$2" == "start" ]; then
-         	$busybox chroot $mnt /usr/bin/start-mana-bdf-lollipop
-      	fi
-
-      	if [ "$1" == "mana-bdf-kitkat" ] && [ "$2" == "start" ]; then
-         	$busybox chroot $mnt /usr/bin/start-mana-bdf-kitkat
-      	fi
+   	#MANA (is now using only the stop scripts)
 
    	if [ "$1" == "mana-lollipop" ] && [ "$2" == "stop" ]; then
    		$busybox chroot $mnt /usr/bin/stop-mana-lollipop
