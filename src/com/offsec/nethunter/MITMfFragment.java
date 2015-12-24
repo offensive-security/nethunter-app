@@ -5,7 +5,6 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
@@ -32,9 +31,6 @@ import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 public class MITMfFragment extends Fragment implements ActionBar.TabListener {
 
@@ -141,6 +137,8 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
 
         mViewPager = (ViewPager) rootView.findViewById(R.id.pagerMITMF);
         mViewPager.setAdapter(TabsPagerAdapter);
+
+        nh = new NhPaths();
 
         mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
