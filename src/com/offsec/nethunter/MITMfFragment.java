@@ -70,7 +70,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
 
     /* All MITMf Injection Command Variables */
 
-    String M_Injection; // --injection
+    String M_Injection; // --inject
     String M_Injection_Preserve_Cache; // --preserve-cache
     String M_Injection_Per_Domain; // --per-domain
     String M_Injection_JSURL; // --js-url [M_Injection_JSURL_Text]
@@ -887,7 +887,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
                     if(InjectionCheckbox.isChecked()) {
-                        M_Injection = " --injection";
+                        M_Injection = " --inject";
                         addToCmd(M_Injection);
                         /* Allow checkboxes to be enabled if Injection checkbox activated */
                         InjectionPreserveCacheCheckbox.setEnabled(true);
@@ -1185,12 +1185,12 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             SpoofShellshockCheckbox.setOnClickListener(checkBoxListener);
 
 
-            // Checkbox for Injection
+            // Checkbox for Spoofer
             final CheckBox SpoofCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_enablespoof);
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
                     if(SpoofCheckbox.isChecked()) {
-                        M_Spoofer = " --injection";
+                        M_Spoofer = " --spoof";
                         addToCmd(M_Spoofer);
                         /* Allow checkboxes to be enabled if Spoof checkbox activated */
                         redirectSpinner.setEnabled(true);
