@@ -1,13 +1,17 @@
 package com.offsec.nethunter;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -48,7 +52,8 @@ public class AppNavHomeActivity extends AppCompatActivity {
     private static Context c;
     private Boolean weCheckedForRoot = false;
     private final String BuildUser = "Kali";  // Change this to your name/username
-
+    private Integer permsNum = 6;
+    private Integer permsCurrent = 1;
     public static Context getAppContext() {
         return c;
     }
@@ -60,8 +65,12 @@ public class AppNavHomeActivity extends AppCompatActivity {
         // ************************************************
             c = getApplication(); //* DONT REMOVE ME *
         // ************************************************
-        CheckForRoot mytask = new CheckForRoot(this);
-        mytask.execute();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            askMarshmallowPerms(permsCurrent);
+        } else {
+            CheckForRoot mytask = new CheckForRoot(this);
+            mytask.execute();
+        }
 
 
         setContentView(R.layout.base_layout);
@@ -98,7 +107,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
         final String buildTime = sdf.format(BuildConfig.BUILD_TIME);
         TextView buildInfo1 = (TextView) navigationHeadView.findViewById(R.id.buildinfo1);
         TextView buildInfo2 = (TextView) navigationHeadView.findViewById(R.id.buildinfo2);
-        buildInfo1.setText(String.format("Version: %s (%s)", BuildConfig.VERSION_NAME, android.os.Build.TAGS));
+        buildInfo1.setText(String.format("Version: %s (%s)", BuildConfig.VERSION_NAME, Build.TAGS));
         buildInfo2.setText(String.format("Built by %s at %s", BuildUser, buildTime));
 
         if (navigationView != null) {
@@ -370,6 +379,74 @@ public class AppNavHomeActivity extends AppCompatActivity {
         }
         restoreActionBar();
     }
+    private void askMarshmallowPerms(Integer permnum){
+        if(permnum == 1){
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        1);
+            }
+        }
+        if(permnum == 2){
+            if (ContextCompat.checkSelfPermission(this,
+                    "com.offsec.nhterm.permission.RUN_SCRIPT")
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{"com.offsec.nhterm.permission.RUN_SCRIPT"},
+                        2);
+            }}
+        if(permnum == 3){
+            if (ContextCompat.checkSelfPermission(this,
+                    "com.offsec.nhterm.permission.RUN_SCRIPT_SU")
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{"com.offsec.nhterm.permission.RUN_SCRIPT_SU"},
+                        3);
+            }}
+        if(permnum == 4){
+            if (ContextCompat.checkSelfPermission(this,
+                    "com.offsec.nhterm.permission.RUN_SCRIPT_NH")
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{"com.offsec.nhterm.permission.RUN_SCRIPT_NH"},
+                        4);
+            }
+        }
+        if(permnum == 5){
+            if (ContextCompat.checkSelfPermission(this,
+                    "com.offsec.nhterm.permission.RUN_SCRIPT_NH_LOGIN")
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{"com.offsec.nhterm.permission.RUN_SCRIPT_NH_LOGIN"},
+                        5);
+            }
+        }
+        if(permnum == 6) {
+            if (ContextCompat.checkSelfPermission(this,
+                    "com.offsec.nhvnc.permission.OPEN_VNC_CONN")
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{"com.offsec.nhvnc.permission.OPEN_VNC_CONN"},
+                        6);
+            }
+        }
 
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if(permsCurrent < permsNum){
+                        permsCurrent = permsCurrent+1;
+                        askMarshmallowPerms(permsCurrent);
+                    } else {
+                        CheckForRoot mytask = new CheckForRoot(this);
+                        mytask.execute();
+                    }
+                } else {
+                    askMarshmallowPerms(permsCurrent);
+                }
+    }
 }
 
