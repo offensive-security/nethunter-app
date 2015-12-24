@@ -221,6 +221,7 @@
     <string name="mitmf_inject_COUNTLIMIT">Number of times to inject:</string>
     <string name="mitmf_inject_INJECTIP">Inject only IP:</string>
     <string name="mitmf_inject_NOINJECTIP">Do NOT inject IP:</string>
+    <string name="mitmf_config">The MITMf configuration file.</string>
 
 
     <!-- chroot stuff -->

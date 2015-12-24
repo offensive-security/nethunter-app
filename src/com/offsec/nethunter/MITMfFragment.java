@@ -22,9 +22,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.offsec.nethunter.utils.NhPaths;
@@ -115,7 +117,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
     String SHELLtext; // M_Spoofer_Shellshock_Text.getText().toString();
     String JSURLtext; // M_Injection_JSURL_Text.getText().toString();
 
-    NhPaths nh;
+    static NhPaths nh;
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -218,6 +220,8 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                     return new MITMfInject();
                 case 3:
                     return new MITMfSpoof();
+                case 4:
+                    return new MITMfConfigFragment();
                 default:
                     return null;
             }
@@ -230,7 +234,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
 
         @Override
         public int getCount() {
-            return 4;
+            return 5;
         }
 
         @Override
@@ -242,6 +246,8 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                     return "Inject Settings";
                 case 3:
                     return "Spoof Settings";
+                case 4:
+                    return "MITMf Configuration";
                 default:
                     return "General Settings";
             }
@@ -1395,6 +1401,40 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
         @Override
         public void onClick(View v) {
 
+        }
+    }
+
+    public static class MITMfConfigFragment extends Fragment {
+
+        private String configFilePath = nh.CHROOT_PATH +"/etc/mitmf/mitmf.conf";
+        ShellExecuter exe = new ShellExecuter();
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            final View rootView = inflater.inflate(R.layout.source_short, container, false);
+
+            String description = getResources().getString(R.string.mitmf_config);
+            TextView desc = (TextView) rootView.findViewById(R.id.description);
+            desc.setText(description);
+
+
+            EditText source = (EditText) rootView.findViewById(R.id.source);
+            exe.ReadFile_ASYNC(configFilePath, source);
+            Button button = (Button) rootView.findViewById(R.id.update);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    EditText source = (EditText) rootView.findViewById(R.id.source);
+                    Boolean isSaved = exe.SaveFileContents(source.getText().toString(), configFilePath);
+                    if(isSaved){
+                        nh.showMessage("Source updated");
+                    } else {
+                        nh.showMessage("Source not updated");
+                    }
+                }
+            });
+            return rootView;
         }
     }
 
