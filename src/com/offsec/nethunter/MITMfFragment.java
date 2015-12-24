@@ -116,6 +116,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
     String JSURLtext; // M_Injection_JSURL_Text.getText().toString();
 
     NhPaths nh;
+
     private static final String ARG_SECTION_NUMBER = "section_number";
 
     public MITMfFragment() {
@@ -1195,6 +1196,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                         /* Allow checkboxes to be enabled if Spoof checkbox activated */
                         redirectSpinner.setEnabled(true);
                         ARPSpinner.setEnabled(true);
+                        SpoofGatewayIPCheckbox.setChecked(true);
                         SpoofGatewayIPCheckbox.setEnabled(true);
                         SpoofSpecifyTargetCheckbox.setEnabled(true);
                         SpoofShellshockCheckbox.setEnabled(true);
