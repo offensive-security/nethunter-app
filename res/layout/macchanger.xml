@@ -19,7 +19,7 @@
             android:gravity="center"
             android:padding="4dp"
             android:text="@string/macchanger_description"
-            android:textColor="@color/highlighted_text_material_dark" />
+             />
 
         <TextView
             android:layout_width="match_parent"
