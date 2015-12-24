@@ -555,13 +555,27 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             // Textfield JS URL
             M_Injection_JSURL_Text = (EditText) rootView.findViewById(R.id.mitmf_injectjs_url);
             M_Injection_JSURL_Text.setEnabled(false);
-            M_Injection_JSURL_Text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        JSURLtext = M_Injection_JSURL_Text.getText().toString();
-                    }
+            // Detect changes to TextField
+            M_Injection_JSURL_Text.addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s)
+                {
+                    removeFromCmd(M_Injection_JSURL + JSURLtext);
+                    M_Injection_JSURL = " --js-url ";
+                    JSURLtext = M_Injection_JSURL_Text.getText().toString();
+                    addToCmd(M_Injection_JSURL + JSURLtext);
                 }
             });
+
 
             // Checkbox for Injection JS URL
             final CheckBox InjectionJSURLCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_injectjs);
@@ -585,12 +599,24 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             // Textfield HTML URL
             M_Injection_HTMLURL_Text = (EditText) rootView.findViewById(R.id.mitmf_injecthtml_url);
             M_Injection_HTMLURL_Text.setEnabled(false);
-            // EditText Listener to getText.toString
-            M_Injection_HTMLURL_Text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        HTMLURLtext = M_Injection_HTMLURL_Text.getText().toString();
-                    }
+            // Detect changes to TextField
+            M_Injection_HTMLURL_Text.addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s)
+                {
+                    removeFromCmd(M_Injection_HTMLURL + HTMLURLtext);
+                    M_Injection_HTMLURL = " --html-url ";
+                    HTMLURLtext = M_Injection_HTMLURL_Text.getText().toString();
+                    addToCmd(M_Injection_HTMLURL + HTMLURLtext);
                 }
             });
 
@@ -615,12 +641,24 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             // Textfield HTML Payload String
             M_Injection_HTMLPAY_Text = (EditText) rootView.findViewById(R.id.mitmf_injecthtmlpay_text);
             M_Injection_HTMLPAY_Text.setEnabled(false);
-            M_Injection_HTMLPAY_Text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        HTMLPAYtext = M_Injection_HTMLPAY_Text.getText().toString();
+            // Detect changes to TextField
+            M_Injection_HTMLPAY_Text.addTextChangedListener(new TextWatcher() {
 
-                    }
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s)
+                {
+                    removeFromCmd(M_Injection_HTMLPAY + HTMLPAYtext);
+                    M_Injection_HTMLPAY = " --html-payload ";
+                    HTMLPAYtext = M_Injection_HTMLPAY_Text.getText().toString();
+                    addToCmd(M_Injection_HTMLPAY + HTMLPAYtext);
                 }
             });
 
@@ -646,11 +684,24 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             // Textfield HTML Match String
             M_Injection_Match_Text = (EditText) rootView.findViewById(R.id.mitmf_inject_match_string);
             M_Injection_Match_Text.setEnabled(false);
-            M_Injection_Match_Text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        MATCHtext = M_Injection_Match_Text.getText().toString();
-                    }
+            // Detect changes to TextField
+            M_Injection_Match_Text.addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s)
+                {
+                    removeFromCmd(M_Injection_Match + MATCHtext);
+                    M_Injection_Match = " --match-str ";
+                    MATCHtext = M_Injection_Match_Text.getText().toString();
+                    addToCmd(M_Injection_Match + MATCHtext);
                 }
             });
 
@@ -676,12 +727,24 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             // Textfield for Injection Rate Limit
             M_Injection_Rate_Limit_Text = (EditText) rootView.findViewById(R.id.mitmf_inject_rateseconds);
             M_Injection_Rate_Limit_Text.setEnabled(false);
-            M_Injection_Rate_Limit_Text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        RATEtext = M_Injection_Rate_Limit_Text.getText().toString();
+            // Detect changes to TextField
+            M_Injection_Rate_Limit_Text.addTextChangedListener(new TextWatcher() {
 
-                    }
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s)
+                {
+                    removeFromCmd(M_Injection_Rate_Limit + RATEtext);
+                    M_Injection_Rate_Limit = " --rate-limit ";
+                    RATEtext = M_Injection_Rate_Limit_Text.getText().toString();
+                    addToCmd(M_Injection_Rate_Limit + RATEtext);
                 }
             });
 
@@ -706,12 +769,24 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             // Textfield for Injection Count Limit
             M_Injection_Number_Text = (EditText) rootView.findViewById(R.id.mitmf_inject_times_text);
             M_Injection_Number_Text.setEnabled(false);
-            M_Injection_Number_Text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        NUMtext = M_Injection_Number_Text.getText().toString();
+            // Detect changes to TextField
+            M_Injection_Number_Text.addTextChangedListener(new TextWatcher() {
 
-                    }
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s)
+                {
+                    removeFromCmd(M_Injection_Number + NUMtext);
+                    M_Injection_Number = " --count-limit ";
+                    NUMtext = M_Injection_Number_Text.getText().toString();
+                    addToCmd(M_Injection_Number + NUMtext);
                 }
             });
 
@@ -725,6 +800,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                         M_Injection_Number_Text.setFocusable(true);
                         M_Injection_Number_Text.setEnabled(true);
                     }else{
+                        removeFromCmd(M_Injection_Number + NUMtext);
                         M_Injection_Number = "";
                         M_Injection_Number_Text.setFocusable(false);
                         M_Injection_Number_Text.setEnabled(false);
@@ -737,11 +813,24 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             // Textfield Inject Only IP
             M_Injection_Only_IP_Text = (EditText) rootView.findViewById(R.id.mitmf_inject_ip_text);
             M_Injection_Only_IP_Text.setEnabled(false);
-            M_Injection_Only_IP_Text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        ONLYIPtext = M_Injection_Only_IP_Text.getText().toString();
-                    }
+            // Detect changes to TextField
+            M_Injection_Only_IP_Text.addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s)
+                {
+                    removeFromCmd(M_Injection_Only_IP + ONLYIPtext);
+                    M_Injection_Only_IP = " --white-ips ";
+                    ONLYIPtext = M_Injection_Only_IP_Text.getText().toString();
+                    addToCmd(M_Injection_Only_IP + ONLYIPtext);
                 }
             });
 
@@ -764,14 +853,27 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             };
             InjectionOnlyIPCheckbox.setOnClickListener(checkBoxListener);
 
-            // Textfield Inject Only IP
+            // Textfield Inject Not IP
             M_Injection_Not_IP_Text = (EditText) rootView.findViewById(R.id.mitmf_inject_noip_text);
             M_Injection_Not_IP_Text.setEnabled(false);
-            M_Injection_Not_IP_Text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        NOTIPtext = M_Injection_Not_IP_Text.getText().toString();
-                    }
+            // Detect changes to TextField
+            M_Injection_Not_IP_Text.addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s)
+                {
+                    removeFromCmd(M_Injection_Not_IP + NOTIPtext);
+                    M_Injection_Not_IP = " --black-ips ";
+                    NOTIPtext = M_Injection_Not_IP_Text.getText().toString();
+                    addToCmd(M_Injection_Not_IP + NOTIPtext);
                 }
             });
 
@@ -780,7 +882,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
                     if(InjectionNotIPCheckbox.isChecked()) {
-                        M_Injection_Not_IP = " --white-ips ";
+                        M_Injection_Not_IP = " --black-ips ";
                         addToCmd(M_Injection_Not_IP + NOTIPtext);
                         M_Injection_Not_IP_Text.setFocusable(true);
                         M_Injection_Not_IP_Text.setEnabled(true);
@@ -964,12 +1066,24 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             // Textfield for Spoof Gateway
             M_Spoofer_Gateway_Text = (EditText) rootView.findViewById(R.id.mitmf_spoof_gateway_text);
             M_Spoofer_Gateway_Text.setEnabled(false);
-            M_Spoofer_Gateway_Text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        GATEtext = M_Spoofer_Gateway_Text.getText().toString();
+            // Detect changes to TextField
+            M_Spoofer_Gateway_Text.addTextChangedListener(new TextWatcher() {
 
-                    }
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s)
+                {
+                    removeFromCmd(M_Spoofer_Gateway + GATEtext);
+                    M_Spoofer_Gateway = "--gateway ";
+                    GATEtext = M_Spoofer_Gateway_Text.getText().toString();
+                    addToCmd(M_Spoofer_Gateway + GATEtext);
                 }
             });
 
@@ -995,12 +1109,24 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             // Textfield for Spoof Targets
             M_Spoofer_Targets_Text = (EditText) rootView.findViewById(R.id.mitmf_spoof_targets_text);
             M_Spoofer_Targets_Text.setEnabled(false);
-            M_Spoofer_Targets_Text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        TARGETtext = M_Spoofer_Targets_Text.getText().toString();
-                        addToCmd(TARGETtext);
-                    }
+            // Detect changes to TextField
+            M_Spoofer_Targets_Text.addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s)
+                {
+                    removeFromCmd(M_Spoofer_Targets + TARGETtext);
+                    M_Spoofer_Targets = " --targets ";
+                    TARGETtext = M_Spoofer_Targets_Text.getText().toString();
+                    addToCmd(M_Spoofer_Targets + TARGETtext);
                 }
             });
 
@@ -1025,15 +1151,26 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             // Textfield for Shellshock Command
             M_Spoofer_Shellshock_Text = (EditText) rootView.findViewById(R.id.mitmf_spoof_shellshock_text);
             M_Spoofer_Shellshock_Text.setEnabled(false);
-            M_Spoofer_Shellshock_Text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        SHELLtext = M_Spoofer_Shellshock_Text.getText().toString();
-                        addToCmd(SHELLtext);
-                    }
+            // Detect changes to TextField
+            M_Spoofer_Shellshock_Text.addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s)
+                {
+                    removeFromCmd(M_Spoofer_Shellshock + SHELLtext);
+                    M_Spoofer_Shellshock = " --shellshock ";
+                    SHELLtext = M_Spoofer_Shellshock_Text.getText().toString();
+                    addToCmd(M_Spoofer_Shellshock + SHELLtext);
                 }
             });
-
 
             final CheckBox SpoofShellshockCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_spoof_shellshock);
             checkBoxListener =new View.OnClickListener() {
