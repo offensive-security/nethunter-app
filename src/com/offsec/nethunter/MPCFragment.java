@@ -64,43 +64,43 @@ public class MPCFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id){
                 String selectedItemText = parent.getItemAtPosition(pos).toString();
                 Log.d("Slected: ", selectedItemText);
-                //use swich!
-
-                if(selectedItemText.equals("ASP")) {
-                    typeVar = "asp";
-                }
-                else if(selectedItemText.equals("ASPX")) {
-                    typeVar = "aspx";
-                }
-                else if(selectedItemText.equals("Bash [.sh]")) {
-                    typeVar = "bash";
-                }
-                else if(selectedItemText.equals("Java [.jsp]")) {
-                    typeVar = "java";
-                }
-                else if(selectedItemText.equals("Linux [.elf]")) {
-                    typeVar = "linux";
-                }
-                else if(selectedItemText.equals("OSX [.macho]")) {
-                    typeVar = "osx";
-                }
-                else if(selectedItemText.equals("Perl [.pl]")) {
-                    typeVar = "perl";
-                }
-                else if(selectedItemText.equals("PHP")) {
-                    typeVar = "php";
-                }
-                else if(selectedItemText.equals("Powershell [.ps1]")) {
-                    typeVar = "powershell";
-                }
-                else if(selectedItemText.equals("Python [.py]")) {
-                    typeVar = "tomcat";
-                }
-                else if(selectedItemText.equals("Tomcat [.war]")) {
-                    typeVar = "windows";
-                }
-                else if(selectedItemText.equals("Windows [.exe]")) {
-                    typeVar = "asp";
+                switch (pos) {
+                    case 0:
+                        typeVar = "asp";
+                        break;
+                    case 1:
+                        typeVar = "aspx";
+                        break;
+                    case 2:
+                        typeVar = "bash";
+                        break;
+                    case 3:
+                        typeVar = "java";
+                        break;
+                    case 4:
+                        typeVar = "linux";
+                        break;
+                    case 5:
+                        typeVar = "osx";
+                        break;
+                    case 6:
+                        typeVar = "perl";
+                        break;
+                    case 7:
+                        typeVar = "php";
+                        break;
+                    case 8:
+                        typeVar = "powershell";
+                        break;
+                    case 9:
+                        typeVar = "python";
+                        break;
+                    case 10:
+                        typeVar = "tomcat";
+                        break;
+                    case 11:
+                        typeVar = "windows";
+                        break;
                 }
             }
             @Override
@@ -245,15 +245,15 @@ public class MPCFragment extends Fragment {
         // Buttons
         addClickListener(R.id.mpc_GenerateSDCARD, new View.OnClickListener() {
             public void onClick(View v) {
-                Log.d("thecmd", "cd /sdcard/; mpc " + getCmd(rootView));
-                intentClickListener_NH("cd /sdcard/; mpc " + getCmd(rootView)); // since is a kali command we can send it as is
+                Log.d("thecmd", "cd /sdcard/; msfpc " + getCmd(rootView));
+                intentClickListener_NH("cd /sdcard/; msfpc " + getCmd(rootView)); // since is a kali command we can send it as is
             }
         }, rootView);
 
         addClickListener(R.id.mpc_GenerateHTTP, new View.OnClickListener() {
             public void onClick(View v) {
-                Log.d("thecmd", "cd /var/www/html; mpc " + getCmd(rootView));
-                intentClickListener_NH("cd /var/www/html; mpc " + getCmd(rootView)); // since is a kali command we can send it as is
+                Log.d("thecmd", "cd /var/www/html; msfpc " + getCmd(rootView));
+                intentClickListener_NH("cd /var/www/html; msfpc " + getCmd(rootView)); // since is a kali command we can send it as is
             }
         }, rootView);
 
