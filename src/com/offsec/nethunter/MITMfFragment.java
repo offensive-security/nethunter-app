@@ -1354,13 +1354,21 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                         ResponderWRedirCheckbox.setEnabled(true);
                     }else{
                         removeFromCmd(M_Responder);
-                        M_Responder = "";
-                        M_Responder_Analyze = ""; // --analyze
-                        M_Responder_Fingerprint = ""; // --fingerprint
-                        M_Responder_Downgrade = ""; // --lm
-                        M_Responder_NBTNS = ""; // --nbtns
-                        M_Responder_WPAD = ""; // --wpad
-                        M_Responder_WRedir = ""; // --wredir
+                        removeFromCmd(M_Responder_Analyze);
+                        removeFromCmd(M_Responder_Fingerprint);
+                        removeFromCmd(M_Responder_Downgrade);
+                        removeFromCmd(M_Responder_NBTNS);
+                        removeFromCmd(M_Responder_WPAD);
+                        removeFromCmd(M_Responder_WRedir);
+
+                        /* Uncheck all responder checkboxes */
+                        ResponderAnalyzeCheckbox.setChecked(false);
+                        ResponderFingerprintCheckbox.setChecked(false);
+                        ResponderDowngradeCheckbox.setChecked(false);
+                        ResponderNBTNSCheckbox.setChecked(false);
+                        ResponderWPADCheckbox.setChecked(false);
+                        ResponderWRedirCheckbox.setChecked(false);
+
                         /* Don't allow checkboxes to be enabled if Responder not activated */
                         ResponderAnalyzeCheckbox.setEnabled(false);
                         ResponderFingerprintCheckbox.setEnabled(false);
