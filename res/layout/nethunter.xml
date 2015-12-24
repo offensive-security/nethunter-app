@@ -37,8 +37,6 @@
             android:id="@+id/current_interfaces"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:layout_row="0"
             android:text="@string/nethunter_current_interfaces"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -87,19 +85,16 @@
             android:id="@+id/external_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_column="1"
             android:layout_gravity="end"
-            android:layout_row="0"
             android:text="@string/nethunter_external_ip"
+            android:layout_marginTop="15dp"
             android:textSize="18sp"
             android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_column="1"
             android:layout_gravity="end"
-            android:layout_row="1"
             android:orientation="horizontal">
 
             <TextView
@@ -123,7 +118,8 @@
                 android:gravity="center"
                 android:layout_weight="1"
                 android:text="@string/get_external_ip"
-                android:textSize="11dp" />
+                android:textSize="12sp" />
+
         </LinearLayout>
 
 
