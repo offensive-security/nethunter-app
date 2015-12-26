@@ -16,6 +16,9 @@ def getDate() {
 
 repositories {
     mavenCentral()
+    maven {
+        url "https://jitpack.io"
+    }
 }
 
 
@@ -26,6 +29,8 @@ dependencies {
     compile 'com.google.guava:guava:19.0-rc2'
     compile project(':androidwversionmanager')
     compile 'org.thoughtcrime.ssl.pinning:AndroidPinning:1.0.0'
+    compile 'org.tukaani:xz:1.5'
+    compile 'com.github.fenjuly:ToggleExpandLayout:774e497692'
 }
 
 android {
