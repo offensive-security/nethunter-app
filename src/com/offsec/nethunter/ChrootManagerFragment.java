@@ -33,9 +33,7 @@ import com.offsec.nethunter.utils.ShellExecuter;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.thoughtcrime.ssl.pinning.util.PinningHelper;
-import org.tukaani.xz.XZInputStream;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -711,24 +709,7 @@ public class ChrootManagerFragment extends Fragment {
                     return false;
                 }
                 publishProgress(getActivity().getString(R.string.extract_part1));
-
-                try {
-                    FileInputStream fin = new FileInputStream(zipFilePath); // Input
-                    BufferedInputStream in = new BufferedInputStream(fin);
-                    FileOutputStream out = new FileOutputStream(extracted_zipFilePath);
-                    XZInputStream xzIn = new XZInputStream(in);
-
-                    final byte[] buffer = new byte[8192];
-                    int n = 0;
-                    while (-1 != (n = xzIn.read(buffer))) {
-                        out.write(buffer, 0, n);
-                    }
-                    out.close();
-                    xzIn.close();
-                }
-                catch(Exception e) {
-                    Log.e("Decompress", "unzip", e);
-                }
+                x.RunAsRootWithException("busybox xz -df '" + zipFilePath + "'");
 
                 // Second: Extract and Deploy the chroot to Destination.
                 publishProgress(getActivity().getString(R.string.extract_part2));
