@@ -21,12 +21,9 @@ import android.widget.Spinner;
 import android.widget.Switch;
 
 import com.offsec.nethunter.utils.NhPaths;
-
-import com.thomashaertel.widget.*;
+import com.thomashaertel.widget.MultiSpinner;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class NmapFragment  extends Fragment {
 
@@ -285,6 +282,8 @@ public class NmapFragment  extends Fragment {
         return rootView;
     }
 
+    // MultiSpinner example:
+    // https://github.com/thomashaertel/MultiSpinner/blob/master/samples/multispinner/src/main/java/com/thomashaertel/samples/multispinner/MainActivity.java
     private MultiSpinner.MultiSpinnerListener onSelectedListener = new MultiSpinner.MultiSpinnerListener() {
         public void onItemsSelected(boolean[] selected) {
 
