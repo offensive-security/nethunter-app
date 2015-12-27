@@ -29,6 +29,7 @@ dependencies {
     compile 'com.google.guava:guava:19.0-rc2'
     compile project(':androidwversionmanager')
     compile 'org.thoughtcrime.ssl.pinning:AndroidPinning:1.0.0'
+    compile 'com.thomashaertel:multispinner:0.1.1'
 }
 
 android {

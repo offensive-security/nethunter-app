@@ -61,7 +61,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
-            android:id="@+id/nmap_int_spinner" />
+            android:id="@+id/nmap_int_spinner"
+            android:paddingBottom="10dp" />
 
         <CheckBox
             android:layout_width="wrap_content"
@@ -74,6 +75,13 @@
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/nmap_osdetectenable"
+            android:id="@+id/nmap_osonly_check"
+            android:checked="false" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/nmap_ipv6"
             android:id="@+id/nmap_ipv6_check" />
 
@@ -82,12 +90,28 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/nmap_timing_template"
-            android:id="@+id/textView24" />
+            android:id="@+id/textView24"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp" />
 
         <Spinner
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/nmap_timing_spinner" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/nmap_scan_technique"
+            android:id="@+id/textView23"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp" />
+
+        <com.thomashaertel.widget.MultiSpinner
+            android:id="@+id/ScanTechMulti"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 

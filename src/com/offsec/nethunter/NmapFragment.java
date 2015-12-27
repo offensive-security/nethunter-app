@@ -22,7 +22,11 @@ import android.widget.Switch;
 
 import com.offsec.nethunter.utils.NhPaths;
 
+import com.thomashaertel.widget.*;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class NmapFragment  extends Fragment {
 
@@ -33,10 +37,18 @@ public class NmapFragment  extends Fragment {
     Switch advswitch;
     View.OnClickListener checkBoxListener;
 
+    // Building command line
     static ArrayList<String> CommandComposed = new ArrayList<>();
+
+    // Multi-dropdown spinner
+    private MultiSpinner tech_spinner;
+    private ArrayAdapter<String> options;
+
+    // Nmap switches
     String net_interface;
     String time_template;
     String All;
+    String OSdetect;
     String ipv6check;
     String MySearch;
 
@@ -134,6 +146,7 @@ public class NmapFragment  extends Fragment {
             }
         });
 
+
         // NMAP Timming Spinner
         Spinner timeSpinner = (Spinner) rootView.findViewById(R.id.nmap_timing_spinner);
         ArrayAdapter<CharSequence> timeAdapter = ArrayAdapter.createFromResource(getActivity(),
@@ -186,6 +199,26 @@ public class NmapFragment  extends Fragment {
             }
         });
 
+        // Spinner for Scan Technique Selection
+
+        options = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item);
+        options.add("TCP SYN");
+        options.add("Connect()");
+        options.add("ACK");
+        options.add("Windows");
+        options.add("Maimon");
+        options.add("UDP Scan");
+        options.add("TCP Null");
+        options.add("FIN");
+        options.add("XMAS");
+
+        // get spinner and set adapter
+        tech_spinner = (MultiSpinner) rootView.findViewById(R.id.ScanTechMulti);
+        tech_spinner.setAdapter(options, false, onSelectedListener);
+        boolean[] selectedItems = new boolean[options.getCount()];
+        selectedItems[0] = true; // // selected first item
+        tech_spinner.setSelected(selectedItems);
+
         // Checkbox for ALL Version/OS Checkbox
         final CheckBox allCheckbox = (CheckBox) rootView.findViewById(R.id.nmap_A_check);
         checkBoxListener = new View.OnClickListener() {
@@ -214,6 +247,21 @@ public class NmapFragment  extends Fragment {
         };
         ipv6box.setOnClickListener(checkBoxListener);
 
+
+        // Checkbox for OS Detect
+        final CheckBox osdetectbox = (CheckBox) rootView.findViewById(R.id.nmap_osonly_check);
+        checkBoxListener = new View.OnClickListener() {
+            public void onClick(View v) {
+                if(osdetectbox.isChecked()) {
+                    OSdetect = " -O";
+                    addToCmd(OSdetect);
+                }else{
+                    removeFromCmd(OSdetect);
+                }
+            }
+        };
+        osdetectbox.setOnClickListener(checkBoxListener);
+
         searchBar = (EditText) rootView.findViewById(R.id.nmap_searchbar);
         searchBar.addTextChangedListener(new TextWatcher() {
 
@@ -236,6 +284,20 @@ public class NmapFragment  extends Fragment {
 
         return rootView;
     }
+
+    private MultiSpinner.MultiSpinnerListener onSelectedListener = new MultiSpinner.MultiSpinnerListener() {
+        public void onItemsSelected(boolean[] selected) {
+
+            StringBuilder builder = new StringBuilder();
+
+            for (int i = 0; i < selected.length; i++) {
+                if (selected[i]) {
+                    builder.append(options.getItem(i)).append(" ");
+                }
+                Log.d(TAG, builder.toString());
+            }
+        }
+    };
 
     private String getCmd(){
         String genCmd = "";
