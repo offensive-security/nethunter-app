@@ -381,7 +381,7 @@
         <item>eth0</item>
         <item>rndis0</item>
     </string-array>
-    <string name="nmap_all">Enable os, script scan, and traceroute</string>
+    <string name="nmap_all">Enable OS version detect, script scan, and traceroute</string>
     <string name="nmap_ipv6">Enable IPv6</string>
     <string name="nmap_timing_template">Timing Template</string>
     <string-array name="nmap_timing_array">

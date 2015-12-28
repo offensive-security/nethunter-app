@@ -270,22 +270,21 @@ public class NmapFragment  extends Fragment {
             }
         });
 
-
-        // Checkbox for All Scan only
         final CheckBox allCheckbox = (CheckBox) rootView.findViewById(R.id.nmap_all_check);
-        checkBoxListener = new View.OnClickListener() {
-            public void onClick(View v) {
-                if(allCheckbox.isChecked()) {
+        allCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (buttonView.isChecked()) {
                     searchall = " -A";
                     addToCmd(searchall);
                     Log.d(TAG, searchall);
-                }else{
+                } else {
                     removeFromCmd(searchall);
                     Log.d(TAG, searchall);
                 }
+
             }
-        };
-        allCheckbox.setOnClickListener(checkBoxListener);
+        });
 
         // Checkbox for Fastmode
         final CheckBox fastmodeCheckbox = (CheckBox) rootView.findViewById(R.id.nmap_fastmode_check);
