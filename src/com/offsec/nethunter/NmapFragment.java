@@ -102,6 +102,7 @@ public class NmapFragment  extends Fragment {
                     }
                 });
 
+
         // NMAP Interface Spinner
         Spinner typeSpinner = (Spinner) rootView.findViewById(R.id.nmap_int_spinner);
         ArrayAdapter<CharSequence> typeAdapter = ArrayAdapter.createFromResource(getActivity(),
@@ -115,46 +116,88 @@ public class NmapFragment  extends Fragment {
                 String selectedItemText = parent.getItemAtPosition(pos).toString();
                 switch (pos) {
                     case 0:
+                        removeFromCmd(net_interface);
+                        break;
+                    case 1:
+                        removeFromCmd(net_interface);
+                        net_interface = " -e wlan0";
+                        addToCmd(net_interface);
+                        break;
+                    case 2:
+                        removeFromCmd(net_interface);
+                        net_interface = " -e wlan1";
+                        addToCmd(net_interface);
+                        break;
+                    case 3:
+                        removeFromCmd(net_interface);
+                        net_interface = " -e eth0";
+                        addToCmd(net_interface);
+                        break;
+                    case 4:
+                        removeFromCmd(net_interface);
+                        net_interface = " -e rndis0";
+                        addToCmd(net_interface);
+                        break;
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent){
+                //Another interface callback
+            }
+        });
+
+        // NMAP Technique Spinner
+        Spinner techSpinner = (Spinner) rootView.findViewById(R.id.nmap_scan_tech_spinner);
+        ArrayAdapter<CharSequence> techAdapter = ArrayAdapter.createFromResource(getActivity(),
+                R.array.nmap_scantechnique_array, android.R.layout.simple_spinner_item);
+        typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        techSpinner.setAdapter(techAdapter);
+        techSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id){
+                String selectedItemText = parent.getItemAtPosition(pos).toString();
+                switch (pos) {
+                    case 0:
                         removeFromCmd(technique);
                         break;
                     case 1:
                         removeFromCmd(technique);
-                        net_interface = " -sS";
+                        technique = " -sS";
                         addToCmd(technique);
                         break;
                     case 2:
                         removeFromCmd(technique);
-                        net_interface = " -sT";
+                        technique = " -sT";
                         addToCmd(technique);
                         break;
                     case 3:
                         removeFromCmd(technique);
-                        net_interface = " -sA";
+                        technique = " -sA";
                         addToCmd(technique);
                         break;
                     case 4:
                         removeFromCmd(technique);
-                        net_interface = " -sW";
+                        technique = " -sW";
                         addToCmd(technique);
                         break;
                     case 5:
                         removeFromCmd(technique);
-                        net_interface = " -sM";
+                        technique = " -sM";
                         addToCmd(technique);
                         break;
                     case 6:
                         removeFromCmd(technique);
-                        net_interface = " -sN";
+                        technique = " -sN";
                         addToCmd(technique);
                         break;
                     case 7:
                         removeFromCmd(technique);
-                        net_interface = " -sF";
+                        technique = " -sF";
                         addToCmd(technique);
                         break;
                     case 8:
                         removeFromCmd(technique);
-                        net_interface = " -sX";
+                        technique = " -sX";
                         addToCmd(technique);
                         break;
                 }
