@@ -333,6 +333,13 @@ public class AppNavHomeActivity extends AppCompatActivity {
                                         .addToBackStack(null)
                                         .commit();
                                 break;
+                            case R.id.nmap_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, NmapFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
                             case R.id.checkforupdate_item:
                                 checkUpdate();
                                 break;

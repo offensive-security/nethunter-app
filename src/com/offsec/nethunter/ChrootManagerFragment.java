@@ -710,6 +710,7 @@ public class ChrootManagerFragment extends Fragment {
                 }
                 publishProgress(getActivity().getString(R.string.extract_part1));
                 x.RunAsRootWithException("busybox xz -df '" + zipFilePath + "'");
+
                 // Second: Extract and Deploy the chroot to Destination.
                 publishProgress(getActivity().getString(R.string.extract_part2));
                 x.RunAsRootWithException("busybox tar -xf '" + extracted_zipFilePath + "' -C '" + nh.NH_SYSTEM_PATH + "'");
@@ -833,7 +834,8 @@ public class ChrootManagerFragment extends Fragment {
                 }
 
                 int fileLength = connection.getContentLength();
-                humanSize = fileLength / 1000000; // in MiB
+                humanSize = fileLength / 1000000; // in MB
+                //humanSize = fileLength / 1048576; // in MiB
                 onePercent = humanSize / 100;
                 // download the file
                 input = connection.getInputStream();
@@ -914,18 +916,13 @@ public class ChrootManagerFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            // if the user clicks the notif, bring back the app screen to top.
-            Intent newIntent = new Intent(getContext(), AppNavHomeActivity.class);
-            PendingIntent pIntent = PendingIntent.getActivity(getContext(), 0, newIntent, 0);
-            mBuilder.setContentIntent(pIntent);
-            mBuilder.setContentTitle("Downloading Chroot")
-                    .setContentText("Starting download...")
-                    .setSmallIcon(R.drawable.ic_action_refresh);
             // instantiate it within the onCreate method
             mProgressDialog.setTitle("Starting Chroot download.");
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mProgressDialog.setMax(100);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setCanceledOnTouchOutside(false);
             // take CPU lock to prevent CPU from going off if the user
             // presses the power button during download
             PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
@@ -933,6 +930,14 @@ public class ChrootManagerFragment extends Fragment {
                     getClass().getName());
             mWakeLock.acquire();
             mProgressDialog.show();
+            // if the user clicks the notif, bring back the app screen to top.
+            // TODO: Add something to bring back progress dialogue or add cancel button in notification bar
+            Intent newIntent = new Intent(getContext(), AppNavHomeActivity.class);
+            PendingIntent pIntent = PendingIntent.getActivity(getContext(), 0, newIntent, 0);
+            mBuilder.setContentIntent(pIntent);
+            mBuilder.setContentTitle("Downloading Chroot")
+                    .setContentText("Starting download...")
+                    .setSmallIcon(R.drawable.ic_action_refresh);
         }
 
         @Override
@@ -945,8 +950,8 @@ public class ChrootManagerFragment extends Fragment {
                 // Notification
 
                 mBuilder.setProgress(100, progress[0], false)
-                        .setContentTitle("Downloading Chroot: " + last_perc + "%")
-                        .setContentText("So far " + ttDownloaded + " MiB of " + humanSize + " MiB downloaded.");
+                        .setContentTitle("Downloading Kali Chroot: " + last_perc + "%")
+                        .setContentText("So far " + ttDownloaded + " MB of " + humanSize + " MB downloaded.");
                 mNotifyManager.notify(1, mBuilder.build());
                 // Dialog
                 mProgressDialog.setIndeterminate(false);
@@ -985,7 +990,7 @@ public class ChrootManagerFragment extends Fragment {
                 ad.show();
             } else {
                 mProgressDialog.dismiss();
-                statusLog("Chroot download completed: Total " + humanSize + " MiB.");
+                statusLog("Chroot download completed: Total " + humanSize + " MB.");
                 mBuilder.setContentTitle("Chroot download completed.").setContentText("Chroot download completed")
                         // Removes the progress bar
                         .setProgress(0, 0, false);

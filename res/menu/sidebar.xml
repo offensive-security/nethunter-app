@@ -53,6 +53,10 @@
             android:icon="@drawable/ic_share_black_24dp"
             android:title="@string/drawertitlemitmf" />
         <item
+            android:id="@+id/nmap_item"
+            android:icon="@drawable/ic_cast_connected_black_24dp"
+            android:title="@string/drawertitlenmap" />
+        <item
             android:id="@+id/mpc_item"
             android:icon="@drawable/ic_memory_24dp"
             android:title="@string/drawertitlempc" />

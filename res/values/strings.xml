@@ -289,6 +289,7 @@
     <string name="drawertitlemitmf">MITMf</string>
     <string name="drawertitlecheckupdate">Check App Update</string>
     <string name="drawertitlesearchsploit">SearchSploit</string>
+    <string name="drawertitlenmap">Nmap</string>
     <string name="InstallAndUpdateButtonText"><![CDATA[Install & Update]]></string>
     <string name="metapackagesExplanation">Choose some \"metapackages\". The chroot will also be upgraded (via \"apt-get update/dist-upgrade\").\n\nSelecting metapackages you already have installed (or no packages at all) simply update/upgrades without removing anything.\n\nDepending on what metapackages you select, you may be asked to do stuff (such as set passwords for services), so pay attention.</string>
     <string name="metapackagesAdditionalInfo">Local storage requirements may be in the 20+ GB range. This installation/update will be performed in a terminal, so watch for issues. When completed, press the back button.</string>
@@ -354,7 +355,7 @@
     <string name="add_lauchner_btn_command">Command: </string>
     <string name="toast_error_launcher">Invalid call of function!</string>
     <string name="toast_input_error_launcher">Invalid arguments given!</string>
-    <string name="installing_notice">Installing Chroot...</string>
+    <string name="installing_notice">Installing Chroot…</string>
     <string name="drawer_opened">Drawer opened</string>
     <string name="drawer_closed">Drawer closed</string>
     <string name="readme">README</string>
@@ -367,8 +368,64 @@
         <item>ANDROID</item>
     </string-array>
     <string name="cancel">Cancel</string>
-    <string name="extract_part1">Uncompressing the Chroot... (~10 min)</string>
-    <string name="extract_part2">Deploying the Chroot... (~5-10 min)</string>
+    <string name="extract_part1">Uncompressing the Chroot… (~10 min)</string>
+    <string name="extract_part2">Deploying the Chroot… (~5–10 min)</string>
+
+    <!-- Start NMAP -->
+    <string name="nmap_hint">scanme.nmap.org, 192.168.0.1; 10.0.0-255.1-254</string>
+    <string name="nmap_interface">Interface</string>
+    <string-array name="nmap_interface_array">
+        <item>Select interface</item>
+        <item>wlan0</item>
+        <item>wlan1</item>
+        <item>eth0</item>
+        <item>rndis0</item>
+    </string-array>
+    <string name="nmap_all">Enable OS version detect, script scan, and traceroute</string>
+    <string name="nmap_ipv6">Enable IPv6</string>
+    <string name="nmap_timing_template">Timing Template</string>
+    <string-array name="nmap_timing_array">
+        <item>Select timing template</item>
+        <item>Paranoid</item>
+        <item>Sneaky</item>
+        <item>Polite</item>
+        <item>Normal</item>
+        <item>Aggressive</item>
+        <item>Insane</item>
+    </string-array>
+    <string name="nmap_ports">Ports</string>
+    <string name="nmap_excludeports">Exclude Ports</string>
+    <string name="nmap_fastmode">Fast mode (fewer ports)</string>
+    <string name="nmap_dontrandomize">Don\'t randomize port scan</string>
+    <string name="nmap_topports">Top 20 Ports</string>
+    <string name="nmap_osdetect">OS Detection</string>
+    <string name="nmap_osdetectenable">Enable OS detection</string>
+    <string name="nmap_servicedetect">Service/Version Detection</string>
+    <string name="nmap_probeports">Probe open ports for service/version info</string>
+    <string name="nmap_probeports_light">Limit to most likey</string>
+    <string name="nmap_probeports_all">Try all probes</string>
+    <string name="nmap_hostdiscovery">Host Discovery</string>
+    <string name="nmap_hostdiscovery_ping">Ping Scan</string>
+    <string name="nmap_hostdiscovery_nodns">Never do DNS resolution</string>
+    <string name="nmap_hostdiscovery_dns">Always do DNS resolution</string>
+    <string name="nmap_hostdiscovery_skiphost">Skip Host Discover</string>
+    <string name="nmap_hostdiscovery_icmp">ICMP echo</string>
+    <string name="nmap_scan_technique">Scan Techniques</string>
+    <string-array name="nmap_scantechnique_array">
+        <item>Select scan technique</item>
+        <item>TCP SYN</item>
+        <item>Connect()</item>
+        <item>ACK</item>
+        <item>Windows</item>
+        <item>Maimon</item>
+        <item>TCP Null</item>
+        <item>FIN</item>
+        <item>XMAS</item>
+    </string-array>
+    <string name="nmap_udpscan">UDP Scan</string>
+
+
+    <!-- End NMAP -->
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
