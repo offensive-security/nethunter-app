@@ -75,6 +75,12 @@
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/nmap_servicedetect"
+            android:id="@+id/nmap_SV_checkbox" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/nmap_osdetectenable"
             android:id="@+id/nmap_osonly_check"
             android:checked="false" />
@@ -84,6 +90,41 @@
             android:layout_height="wrap_content"
             android:text="@string/nmap_ipv6"
             android:id="@+id/nmap_ipv6_check" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/nmap_ports"
+            android:id="@+id/textView25"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp" />
+
+        <EditText
+            android:layout_width="229dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:digits="0123456789-,:"
+            android:ems="10"
+            android:id="@+id/nmap_ports" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nmap_topports"
+            android:id="@+id/nmap_top_ports_check" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nmap_fastmode"
+            android:id="@+id/nmap_fastmode_check" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nmap_dontrandomize"
+            android:id="@+id/nmap_dontran_check" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -108,10 +149,17 @@
             android:paddingTop="10dp"
             android:paddingBottom="10dp" />
 
-        <com.thomashaertel.widget.MultiSpinner
-            android:id="@+id/ScanTechMulti"
+        <Spinner
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:id="@+id/nmap_scan_tech_spinner" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nmap_udpscan"
+            android:id="@+id/nmap_udp_checkbox" />
+
 
     </LinearLayout>
 

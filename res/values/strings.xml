@@ -412,16 +412,18 @@
     <string name="nmap_hostdiscovery_icmp">ICMP echo</string>
     <string name="nmap_scan_technique">Scan Techniques</string>
     <string-array name="nmap_scantechnique_array">
+        <item>Select scan technique</item>
         <item>TCP SYN</item>
         <item>Connect()</item>
         <item>ACK</item>
         <item>Windows</item>
         <item>Maimon</item>
-        <item>UDP Scan</item>
         <item>TCP Null</item>
         <item>FIN</item>
         <item>XMAS</item>
     </string-array>
+    <string name="nmap_udpscan">UDP Scan</string>
+
 
     <!-- End NMAP -->
 

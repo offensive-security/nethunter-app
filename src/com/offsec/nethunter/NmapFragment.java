@@ -21,7 +21,6 @@ import android.widget.Spinner;
 import android.widget.Switch;
 
 import com.offsec.nethunter.utils.NhPaths;
-import com.thomashaertel.widget.MultiSpinner;
 
 import java.util.ArrayList;
 
@@ -37,19 +36,22 @@ public class NmapFragment  extends Fragment {
     // Building command line
     static ArrayList<String> CommandComposed = new ArrayList<>();
 
-    // Multi-dropdown spinner
-    private MultiSpinner tech_spinner;
-    private ArrayAdapter<String> options;
-
     // Nmap switches
     String net_interface;
     String time_template;
     String All;
     String OSdetect;
+    String udpscan;
     String ipv6check;
+    String technique;
+    String sv;
     String MySearch;
+    String Ports;
+    String fastmode;
+    String topports;
 
     EditText searchBar;
+    EditText portsBar;
 
     NhPaths nh;
 
@@ -113,27 +115,47 @@ public class NmapFragment  extends Fragment {
                 String selectedItemText = parent.getItemAtPosition(pos).toString();
                 switch (pos) {
                     case 0:
-                        removeFromCmd(net_interface);
+                        removeFromCmd(technique);
                         break;
                     case 1:
-                        removeFromCmd(net_interface);
-                        net_interface = " -e wlan0";
-                        addToCmd(net_interface);
+                        removeFromCmd(technique);
+                        net_interface = " -sS";
+                        addToCmd(technique);
                         break;
                     case 2:
-                        removeFromCmd(net_interface);
-                        net_interface = " -e wlan1";
-                        addToCmd(net_interface);
+                        removeFromCmd(technique);
+                        net_interface = " -sT";
+                        addToCmd(technique);
                         break;
                     case 3:
-                        removeFromCmd(net_interface);
-                        net_interface = " -e eth0";
-                        addToCmd(net_interface);
+                        removeFromCmd(technique);
+                        net_interface = " -sA";
+                        addToCmd(technique);
                         break;
                     case 4:
-                        removeFromCmd(net_interface);
-                        net_interface = " -e rndis0";
-                        addToCmd(net_interface);
+                        removeFromCmd(technique);
+                        net_interface = " -sW";
+                        addToCmd(technique);
+                        break;
+                    case 5:
+                        removeFromCmd(technique);
+                        net_interface = " -sM";
+                        addToCmd(technique);
+                        break;
+                    case 6:
+                        removeFromCmd(technique);
+                        net_interface = " -sN";
+                        addToCmd(technique);
+                        break;
+                    case 7:
+                        removeFromCmd(technique);
+                        net_interface = " -sF";
+                        addToCmd(technique);
+                        break;
+                    case 8:
+                        removeFromCmd(technique);
+                        net_interface = " -sX";
+                        addToCmd(technique);
                         break;
                 }
             }
@@ -144,7 +166,7 @@ public class NmapFragment  extends Fragment {
         });
 
 
-        // NMAP Timming Spinner
+        // NMAP Timing Spinner
         Spinner timeSpinner = (Spinner) rootView.findViewById(R.id.nmap_timing_spinner);
         ArrayAdapter<CharSequence> timeAdapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.nmap_timing_array, android.R.layout.simple_spinner_item);
@@ -196,25 +218,6 @@ public class NmapFragment  extends Fragment {
             }
         });
 
-        // Spinner for Scan Technique Selection
-
-        options = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item);
-        options.add("TCP SYN");
-        options.add("Connect()");
-        options.add("ACK");
-        options.add("Windows");
-        options.add("Maimon");
-        options.add("UDP Scan");
-        options.add("TCP Null");
-        options.add("FIN");
-        options.add("XMAS");
-
-        // get spinner and set adapter
-        tech_spinner = (MultiSpinner) rootView.findViewById(R.id.ScanTechMulti);
-        tech_spinner.setAdapter(options, false, onSelectedListener);
-        boolean[] selectedItems = new boolean[options.getCount()];
-        selectedItems[0] = true; // // selected first item
-        tech_spinner.setSelected(selectedItems);
 
         // Checkbox for ALL Version/OS Checkbox
         final CheckBox allCheckbox = (CheckBox) rootView.findViewById(R.id.nmap_A_check);
@@ -230,6 +233,49 @@ public class NmapFragment  extends Fragment {
         };
         allCheckbox.setOnClickListener(checkBoxListener);
 
+        // Checkbox for Fastmode
+        final CheckBox fastmodeCheckbox = (CheckBox) rootView.findViewById(R.id.nmap_fastmode_check);
+        checkBoxListener = new View.OnClickListener() {
+            public void onClick(View v) {
+                if(fastmodeCheckbox.isChecked()) {
+                    fastmode = " -F";
+                    addToCmd(fastmode);
+                }else{
+                    removeFromCmd(fastmode);
+                }
+            }
+        };
+        fastmodeCheckbox.setOnClickListener(checkBoxListener);
+
+        // Checkbox for Top Ports
+        final CheckBox topportsCheckbox = (CheckBox) rootView.findViewById(R.id.nmap_top_ports_check);
+        checkBoxListener = new View.OnClickListener() {
+            public void onClick(View v) {
+                if(topportsCheckbox.isChecked()) {
+                    topports = " --top-ports";
+                    addToCmd(topports);
+                }else{
+                    removeFromCmd(topports);
+                }
+            }
+        };
+        topportsCheckbox.setOnClickListener(checkBoxListener);
+
+        // Checkbox for UDP Scan
+        final CheckBox udpCheckbox = (CheckBox) rootView.findViewById(R.id.nmap_udp_checkbox);
+        checkBoxListener = new View.OnClickListener() {
+            public void onClick(View v) {
+                if(udpCheckbox.isChecked()) {
+                    udpscan = " -sU";
+                    addToCmd(udpscan);
+                }else{
+                    removeFromCmd(udpscan);
+                }
+            }
+        };
+        allCheckbox.setOnClickListener(checkBoxListener);
+
+
         // Checkbox for IPv6
         final CheckBox ipv6box = (CheckBox) rootView.findViewById(R.id.nmap_ipv6_check);
         checkBoxListener = new View.OnClickListener() {
@@ -244,6 +290,19 @@ public class NmapFragment  extends Fragment {
         };
         ipv6box.setOnClickListener(checkBoxListener);
 
+        // Checkbox for Service Version
+        final CheckBox svbox = (CheckBox) rootView.findViewById(R.id.nmap_SV_checkbox);
+        checkBoxListener = new View.OnClickListener() {
+            public void onClick(View v) {
+                if(svbox.isChecked()) {
+                    sv = " -sV";
+                    addToCmd(sv);
+                }else{
+                    removeFromCmd(sv);
+                }
+            }
+        };
+        svbox.setOnClickListener(checkBoxListener);
 
         // Checkbox for OS Detect
         final CheckBox osdetectbox = (CheckBox) rootView.findViewById(R.id.nmap_osonly_check);
@@ -279,24 +338,29 @@ public class NmapFragment  extends Fragment {
             }
         });
 
+        // Ports text field
+        portsBar = (EditText) rootView.findViewById(R.id.nmap_ports);
+        portsBar.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s)
+            {
+                removeFromCmd(" -p" + Ports);
+                Ports = portsBar.getText().toString();
+                addToCmd(" -p" + Ports);
+            }
+        });
+
         return rootView;
     }
-
-    // MultiSpinner example:
-    // https://github.com/thomashaertel/MultiSpinner/blob/master/samples/multispinner/src/main/java/com/thomashaertel/samples/multispinner/MainActivity.java
-    private MultiSpinner.MultiSpinnerListener onSelectedListener = new MultiSpinner.MultiSpinnerListener() {
-        public void onItemsSelected(boolean[] selected) {
-
-            StringBuilder builder = new StringBuilder();
-
-            for (int i = 0; i < selected.length; i++) {
-                if (selected[i]) {
-                    builder.append(options.getItem(i)).append(" ");
-                }
-                Log.d(TAG, builder.toString());
-            }
-        }
-    };
 
     private String getCmd(){
         String genCmd = "";
