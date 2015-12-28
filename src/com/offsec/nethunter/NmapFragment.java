@@ -1,6 +1,7 @@
 package com.offsec.nethunter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.offsec.nethunter.utils.NhPaths;
 
@@ -39,7 +41,7 @@ public class NmapFragment  extends Fragment {
     // Nmap switches
     String net_interface;
     String time_template;
-    String All;
+    String searchall;
     String OSdetect;
     String udpscan;
     String ipv6check;
@@ -54,8 +56,6 @@ public class NmapFragment  extends Fragment {
     EditText portsBar;
 
     NhPaths nh;
-
-    // get IP: ip addr show wlan0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1
 
     public NmapFragment() {
     }
@@ -210,6 +210,13 @@ public class NmapFragment  extends Fragment {
             }
         });
 
+        // Search button
+        addClickListener(R.id.nmap_scan_button, new View.OnClickListener() {
+            public void onClick(View v) {
+                intentClickListener_NH("nmap " + getCmd());
+            }
+        }, rootView);
+
 
         // NMAP Timing Spinner
         Spinner timeSpinner = (Spinner) rootView.findViewById(R.id.nmap_timing_spinner);
@@ -264,15 +271,17 @@ public class NmapFragment  extends Fragment {
         });
 
 
-        // Checkbox for ALL Version/OS Checkbox
-        final CheckBox allCheckbox = (CheckBox) rootView.findViewById(R.id.nmap_A_check);
+        // Checkbox for All Scan only
+        final CheckBox allCheckbox = (CheckBox) rootView.findViewById(R.id.nmap_all_check);
         checkBoxListener = new View.OnClickListener() {
             public void onClick(View v) {
                 if(allCheckbox.isChecked()) {
-                    All = " -A";
-                    addToCmd(All);
+                    searchall = " -A";
+                    addToCmd(searchall);
+                    Log.d(TAG, searchall);
                 }else{
-                    removeFromCmd(All);
+                    removeFromCmd(searchall);
+                    Log.d(TAG, searchall);
                 }
             }
         };
@@ -311,7 +320,7 @@ public class NmapFragment  extends Fragment {
         checkBoxListener = new View.OnClickListener() {
             public void onClick(View v) {
                 if(topportsCheckbox.isChecked()) {
-                    topports = " --top-ports";
+                    topports = " --top-ports 20";
                     addToCmd(topports);
                 }else{
                     removeFromCmd(topports);
@@ -391,9 +400,9 @@ public class NmapFragment  extends Fragment {
             @Override
             public void afterTextChanged(Editable s)
             {
-                removeFromCmd(MySearch);
+                removeFromCmd(" " + MySearch);
                 MySearch = searchBar.getText().toString();
-                addToCmd(MySearch);
+                addToCmd(" " + MySearch);
             }
         });
 
@@ -426,7 +435,8 @@ public class NmapFragment  extends Fragment {
         for (int j = CommandComposed.size()-1; j >= 0; j--) {
             genCmd = genCmd + CommandComposed.get(j);
         }
-        Log.d("NMAP CMD OUTPUT: ", "nmap -oX /tmp/tmp_to_sql.xml " + genCmd);
+        //Log.d("NMAP SQL:", "nmap --script sqlite-output --script-args=dbname=/tmp/scan.sqlite,dbtable=scandata " + genCmd);
+        Log.d("NMAP CMD OUTPUT: ", "nmap " + genCmd);
 
         return genCmd;
     }
@@ -442,6 +452,21 @@ public class NmapFragment  extends Fragment {
         for (int j = CommandComposed.size()-1; j >= 0; j--) {
             if(CommandComposed.get(j).equals(opt))
                 CommandComposed.remove(j);
+        }
+    }
+    private void addClickListener(int buttonId, View.OnClickListener onClickListener, View rootView) {
+        rootView.findViewById(buttonId).setOnClickListener(onClickListener);
+    }
+    private void intentClickListener_NH(final String command) {
+        try {
+            Intent intent =
+                    new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+
+            intent.putExtra("com.offsec.nhterm.iInitialCommand", command);
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
         }
     }
 }

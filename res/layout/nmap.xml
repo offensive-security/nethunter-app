@@ -74,16 +74,14 @@
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/nmap_hostdiscovery_ping"
-                android:id="@+id/nmap_ping_check" />
+                android:text="@string/nmap_all"
+                android:id="@+id/nmap_all_check" />
 
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:text="@string/nmap_all"
-                android:id="@+id/nmap_A_check"
-                android:layout_weight="27" />
+                android:text="@string/nmap_hostdiscovery_ping"
+                android:id="@+id/nmap_ping_check" />
 
             <CheckBox
                 android:layout_width="wrap_content"
