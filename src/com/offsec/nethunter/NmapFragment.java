@@ -55,6 +55,8 @@ public class NmapFragment  extends Fragment {
 
     NhPaths nh;
 
+    // get IP: ip addr show wlan0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1
+
     public NmapFragment() {
     }
 
@@ -289,6 +291,20 @@ public class NmapFragment  extends Fragment {
             }
         };
         fastmodeCheckbox.setOnClickListener(checkBoxListener);
+
+        // Checkbox for Ping Scan only
+        final CheckBox pingCheckbox = (CheckBox) rootView.findViewById(R.id.nmap_ping_check);
+        checkBoxListener = new View.OnClickListener() {
+            public void onClick(View v) {
+                if(pingCheckbox.isChecked()) {
+                    fastmode = " -sn";
+                    addToCmd(fastmode);
+                }else{
+                    removeFromCmd(fastmode);
+                }
+            }
+        };
+        pingCheckbox.setOnClickListener(checkBoxListener);
 
         // Checkbox for Top Ports
         final CheckBox topportsCheckbox = (CheckBox) rootView.findViewById(R.id.nmap_top_ports_check);
