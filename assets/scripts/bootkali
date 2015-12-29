@@ -21,7 +21,6 @@ if [ "$perm" != "0" ];then echo "ROOT NOT DETECTED! Type: su or install SuperSU 
 }
 
 #########  EXPORT #########
-#$busybox mount -o rw,remount /system
 export bin=/system/bin
 export mnt=/data/local/nhsystem/kali-armhf
 PRESERVED_PATH=$PATH
@@ -58,8 +57,16 @@ if [ "$($busybox mountpoint $mnt/dev)" == "$mnt/dev is a mountpoint" ]; then
 else
 	f_checkforroot
 
-	$busybox mount -o bind /system $mnt/system
-	$busybox mount -o bind /sdcard $mnt/sdcard
+	$busybox mount -r -o bind /system $mnt/system
+
+	if [ -d "/storage/emulated/0" ]; then
+        $busybox mount -o bind /storage/emulated/0 $mnt/sdcard
+	elif [ -d "/storage/emulated/legacy"]; then
+        $busybox mount -o bind /storage/emulated/legacy $mnt/sdcard
+    else
+        $busybox mount -o bind /sdcard $mnt/sdcard
+	fi
+
 	$busybox mount -o bind /storage/usbdisk $mnt/mnt/usbdisk
 	$busybox mount -o bind /dev $mnt/dev
 	$busybox mount -t devpts devpts $mnt/dev/pts
@@ -231,7 +238,7 @@ fi
             echo "File not found"
          else
             echo "File /data/local/nhsystem/kali-armhf$2 found"
-            $busybox chroot $mnt $2
+            $busybox chroot $mnt /bin/bash $2
          fi
       fi
 

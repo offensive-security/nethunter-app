@@ -16,9 +16,6 @@ def getDate() {
 
 repositories {
     mavenCentral()
-    maven {
-        url "https://jitpack.io"
-    }
 }
 
 
@@ -44,7 +41,7 @@ android {
     defaultConfig {
         minSdkVersion 17
         targetSdkVersion 23
-        versionCode 11
+        versionCode 12
         versionName "2.1 (beta)"
     }
 
