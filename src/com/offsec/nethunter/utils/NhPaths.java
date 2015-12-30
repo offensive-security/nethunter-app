@@ -61,7 +61,8 @@ public class NhPaths {
 
     public NhPaths() {
         // App base path () /data/data/com.offsec.....
-        this.APP_PATH = getAppContext().getFilesDir().toString();
+        this.APP_PATH = "/data/data/com.offsec.nethunter/files";
+        //this.APP_PATH = getAppContext().getFilesDir().toString();
         doSetup(this);
         /*  this one how should be called from inside android app context
         *   (anywhere but BOOTSERVICE):
