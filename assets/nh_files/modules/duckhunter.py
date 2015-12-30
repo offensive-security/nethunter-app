@@ -82,8 +82,7 @@ if __name__ == "__main__":
         r'MOUSE RIGHTCLICK' : '--b2',
         r'MOUSE LEFTCLICK' : '--b1',
         r'MOUSE leftCLICK' : '--b1', # Regex is lowering LEFT to left so we need to catch it.
-        r'DELAY' : 'sleep',
-        r'DEFAULT_DELAY' : '"sleep', # We need to add this in between each line if it's set. For debugging
+        r'DEFAULT_DELAY' : '"defaultdelay', # We need to add this in between each line if it's set. For debugging
         r'REPEAT' : '"'}
 
 
@@ -111,7 +110,14 @@ if __name__ == "__main__":
     src = open('tmp.txt', 'r')
     for line in src:
 
-        if line.startswith('sleep'):
+        if line.startswith('SLEEP') or line.startswith('sleep'):
+            line = line.split()
+            seconds = (Decimal(line[1]) / Decimal(1000)) % 60
+            line[1] = str(seconds)
+            line = ' '.join(line)
+            dest.write('%s\n' % line.rstrip('\n').strip().lower())
+
+        if line.startswith('DEFAULTDELAY') or line.startswith('DEFAULT_DELAY'):
             line = line.split()
             seconds = (Decimal(line[1]) / Decimal(1000)) % 60
             line[1] = str(seconds)
@@ -304,7 +310,8 @@ if __name__ == "__main__":
                     dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n') # releases key
                     dest.write('sleep 0.1 \n') # Slow things down
         else:
-            dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
+            if not line.startswith('sleep'):
+                dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
 
     src.close()
     dest.close()
