@@ -1,6 +1,115 @@
 #!/usr/bin/python
 
 # Formats payload to HID Keyboard sequences. Real rough poc for testing basic payloads.
+
+dict_us_bin = {
+	# Symbols
+	"\x20": "space",
+	"\x21": "left-shift 1", # !
+	"\x22": "left-shift quote", # "
+	"\x23": "hash", # hashtag nethunter
+	"\x24": "left-shift 2", # $
+	"\x25": "left-shift 5", # %
+	"\x26": "left-shift 7", # &
+	"\x27": "quote", # '
+	"\x28": "left-shift 9", # (
+	"\x29": "left-shift 0", # )
+	"\x2a": "left-shift 8", # *
+	"\x2b": "left-shift equals", # +
+	"\x2c": "comma", # ,
+	"\x2d": "minus", # -
+	"\x2e": "period", # .
+	"\x2f": "slash",
+	# Numbers
+	"\x30": "0",
+	"\x31": "1",
+	"\x32": "2",
+	"\x33": "3",
+	"\x34": "4",
+	"\x35": "5",
+	"\x36": "6",
+	"\x37": "7",
+	"\x38": "8",
+	"\x39": "9",
+	# Symbols
+	"\x3a": "colon",             # :
+	"\x3b": "semicolon",         # ;
+	"\x3c": "left-shift comma",  # <
+	"\x3d": "equals",            # =
+	"\x3e": "left-shift period", # >
+	"\x3f": "left-shift slash",  # ?
+	"\x40": "left-shift 2",      # @
+	# Uppercase
+	"\x41": "left-shift a",
+	"\x42": "left-shift b",
+	"\x43": "left-shift c",
+	"\x44": "left-shift d",
+	"\x45": "left-shift e",
+	"\x46": "left-shift f",
+	"\x47": "left-shift g",
+	"\x48": "left-shift h",
+	"\x49": "left-shift i",
+	"\x4a": "left-shift j",
+	"\x4b": "left-shift k",
+	"\x4c": "left-shift l",
+	"\x4d": "left-shift m",
+	"\x4e": "left-shift n",
+	"\x4f": "left-shift o",
+	"\x50": "left-shift p",
+	"\x51": "left-shift q",
+	"\x52": "left-shift r",
+	"\x53": "left-shift s",
+	"\x54": "left-shift t",
+	"\x55": "left-shift u",
+	"\x56": "left-shift v",
+	"\x57": "left-shift w",
+	"\x58": "left-shift x",
+	"\x59": "left-shift y",
+	"\x5a": "left-shift z",
+	# Symbols
+	"\x5b": "lbracket",        # [
+	"\x5c": "backslash",       # \
+	"\x5d": "rbracket",        # ]
+	"\x5e": "left-shift 6",    # ^
+	"\x5f": "left-shift dash", # _
+	"\x60": "tilde",           # `
+	# Lowercase
+	"\x61": "a",
+	"\x62": "b",
+	"\x63": "c",
+	"\x64": "d",
+	"\x65": "e",
+	"\x66": "f",
+	"\x67": "g",
+	"\x68": "h",
+	"\x69": "i",
+	"\x6a": "j",
+	"\x6b": "k",
+	"\x6c": "l",
+	"\x6d": "m",
+	"\x6e": "n",
+	"\x6f": "o",
+	"\x70": "p",
+	"\x71": "q",
+	"\x72": "r",
+	"\x73": "s",
+	"\x74": "t",
+	"\x75": "u",
+	"\x76": "v",
+	"\x77": "w",
+	"\x78": "x",
+	"\x79": "y",
+	"\x7a": "z",
+	#Shift chars
+	"\x7b": "left-shift lbracket",  # {
+	"\x7c": "left-shif backslash",  # |
+	"\x7d": "left-shift rbracket",  # }
+	"\x7e": "left-shift tilde",     # ~
+	#SDLK_RETURN,0x28
+    "\x0a": "\\x00\\x00\\x00\\x28\\x00\\x00\\x00\\x00",
+    "\x0d": "\\x00\\x00\\x00\\x28\\x00\\x00\\x00\\x00"
+}
+
 dict_us = {
 	# Symbols 
 	"\x20": "\\x00\\x00\\x00\\x2c\\x00\\x00\\x00\\x00",
@@ -73,14 +182,14 @@ dict_us = {
 	"\x5f": "\\x00\\x00\\x00\\x2d\\x00\\x00\\x00\\x00",
 	"\x60": "\\x00\\x00\\x00\\x35\\x00\\x00\\x00\\x00",
 	# Lowercase
-	"\x61": "\\x00\\x00\\x00\\x04\\x00\\x00\\x00\\x00",
-	"\x62": "\\x00\\x00\\x00\\x05\\x00\\x00\\x00\\x00",
-	"\x63": "\\x00\\x00\\x00\\x06\\x00\\x00\\x00\\x00",
-	"\x64": "\\x00\\x00\\x00\\x07\\x00\\x00\\x00\\x00",
-	"\x65": "\\x00\\x00\\x00\\x08\\x00\\x00\\x00\\x00",
-	"\x66": "\\x00\\x00\\x00\\x09\\x00\\x00\\x00\\x00",
-	"\x67": "\\x00\\x00\\x00\\x0a\\x00\\x00\\x00\\x00",
-	"\x68": "\\x00\\x00\\x00\\x0b\\x00\\x00\\x00\\x00",
+	"\x61": "\\x00\\x00\\x00\\x04\\x00\\x00\\x00\\x00", # a
+	"\x62": "\\x00\\x00\\x00\\x05\\x00\\x00\\x00\\x00", # b
+	"\x63": "\\x00\\x00\\x00\\x06\\x00\\x00\\x00\\x00", # c
+	"\x64": "\\x00\\x00\\x00\\x07\\x00\\x00\\x00\\x00", # d
+	"\x65": "\\x00\\x00\\x00\\x08\\x00\\x00\\x00\\x00", # e
+	"\x66": "\\x00\\x00\\x00\\x09\\x00\\x00\\x00\\x00", # f
+	"\x67": "\\x00\\x00\\x00\\x0a\\x00\\x00\\x00\\x00", # g
+	"\x68": "\\x00\\x00\\x00\\x0b\\x00\\x00\\x00\\x00", # e
 	"\x69": "\\x00\\x00\\x00\\x0c\\x00\\x00\\x00\\x00",
 	"\x6a": "\\x00\\x00\\x00\\x0d\\x00\\x00\\x00\\x00",
 	"\x6b": "\\x00\\x00\\x00\\x0e\\x00\\x00\\x00\\x00",
