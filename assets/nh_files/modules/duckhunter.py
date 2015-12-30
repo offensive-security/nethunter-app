@@ -275,8 +275,8 @@ if __name__ == "__main__":
                     dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
                 else:
                     dest.write('%s%s%s\n' % (prefixinput, line.rstrip('\n').strip(), prefixoutput))
+                    dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n') # releases key
 
-                dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n') # releases key
                 dest.write('sleep 0.1 \n') # Slow things down
 
         # TEXT to type and NOT pass \n as ENTER.  Allows text to stay put.
@@ -301,8 +301,8 @@ if __name__ == "__main__":
                     dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
                 else:
                     dest.write('%s%s%s\n' % (prefixinput, line.rstrip('\n').strip(), prefixoutput))
+                    dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n') # releases key
 
-                dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n') # releases key
                 dest.write('sleep 0.1 \n') # Slow things down
         else:
             dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
