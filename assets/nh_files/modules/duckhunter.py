@@ -255,7 +255,7 @@ if __name__ == "__main__":
 
         # STRING to type and reads \n as ENTER
         elif line.startswith('STRING'):
-            line = line.strip('STRING ')
+            line = line[7:]
             for char in line:
 
                 if args.layout=="us" : line = dict_us_bin[char]
@@ -280,7 +280,8 @@ if __name__ == "__main__":
 
         # TEXT to type and NOT pass \n as ENTER.  Allows text to stay put.
         elif line.startswith('TEXT'):
-            line = line.rstrip('\n').strip('TEXT ')
+            line = line.rstrip('\n')
+            line = line[5:]
             for char in line:
 
                 if args.layout=="us" : line = dict_us_bin[char]
