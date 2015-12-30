@@ -11,7 +11,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -25,9 +24,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Button;
+
+import com.offsec.nethunter.utils.NhPaths;
+import com.offsec.nethunter.utils.ShellExecuter;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -45,10 +47,12 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     final static CharSequence[] languages = {"American English", "French", "German", "Spanish", "Swedish", "Italian", "British English", "Russian", "Danish", "Norwegian", "Portugese", "Belgian"};
 
     private static final String ARG_SECTION_NUMBER = "section_number";
-
+    private static final String TAG = "DuckHunterFragment";
+    static NhPaths nh;
     public DuckHunterFragment() {
 
     }
+
     public static DuckHunterFragment newInstance(int sectionNumber) {
         DuckHunterFragment fragment = new DuckHunterFragment();
         Bundle args = new Bundle();
@@ -60,7 +64,11 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
+
+        if (isAdded()) {
+
+            nh = new NhPaths();
+        }
     }
 
     @Override
@@ -75,9 +83,6 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
         mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                if (position == 1) {
-
-                }
                 getActivity().invalidateOptionsMenu();
             }
         });
@@ -111,8 +116,8 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
         switch (item.getItemId()) {
             case R.id.duckConvertUpdate:
                 try {
-                    File sdcard = Environment.getExternalStorageDirectory();
-                    File myFile = new File(sdcard, DuckHunterConvertFragment.configFilePath);
+
+                    File myFile = new File(nh.APP_SD_FILES_PATH, DuckHunterConvertFragment.configFilePath);
                     myFile.createNewFile();
                     FileOutputStream fOut = new FileOutputStream(myFile);
                     OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
@@ -120,49 +125,69 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                     myOutWriter.append(source.getText());
                     myOutWriter.close();
                     fOut.close();
-                    ((AppNavHomeActivity) getActivity()).showMessage("Source updated");
+                    nh.showMessage("Source updated");
                 } catch (Exception e) {
-                    ((AppNavHomeActivity) getActivity()).showMessage(e.getMessage());
+                    nh.showMessage(e.getMessage());
                 }
                 return true;
             case R.id.duckConvertConvert:
                 int keyboardLayoutIndex = sharedpreferences.getInt("DuckHunterLanguageIndex", 0);
                 String lang;
                 switch (keyboardLayoutIndex) {
-                    case 1:  lang = "fr";
+                    case 1:
+                        lang = "fr";
                         break;
-                    case 2:  lang = "de";
+                    case 2:
+                        lang = "de";
                         break;
-                    case 3:  lang = "es";
+                    case 3:
+                        lang = "es";
                         break;
-                    case 4:  lang = "sv";
+                    case 4:
+                        lang = "sv";
                         break;
-                    case 5:  lang = "it";
+                    case 5:
+                        lang = "it";
                         break;
-                    case 6:  lang = "uk";
+                    case 6:
+                        lang = "uk";
                         break;
-                    case 7:  lang = "ru";
+                    case 7:
+                        lang = "ru";
                         break;
-                    case 8:  lang = "dk";
+                    case 8:
+                        lang = "dk";
                         break;
-                    case 9:  lang = "no";
+                    case 9:
+                        lang = "no";
                         break;
-                    case 10:  lang = "pt";
+                    case 10:
+                        lang = "pt";
                         break;
-                    case 11:  lang = "be";
+                    case 11:
+                        lang = "be";
                         break;
-                    default: lang = "us";
+                    default:
+                        lang = "us";
                         break;
                 }
                 String[] command = new String[1];
-                command[0] = "su -c \"bootkali duck-hunt-convert " + lang + " /sdcard/" + DuckHunterConvertFragment.configFilePath + " /opt/" + DuckHunterPreviewFragment.configFileFilename + "\"";
+                command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali duck-hunt-convert " + lang +
+                        " /sdcard/nh_files/modules/duckconvert.txt " + "/opt/" +
+                        DuckHunterPreviewFragment.configFileFilename + "'";
+                String command_string = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali duck-hunt-convert " + lang +
+                        " /sdcard/nh_files/modules/duckconvert.txt " + " /opt/" +
+                        DuckHunterPreviewFragment.configFileFilename + "'";
+                Log.d(TAG, command_string);
                 ShellExecuter exe = new ShellExecuter();
                 exe.RunAsRoot(command);
-                ((AppNavHomeActivity) getActivity()).showMessage("converting started");
+                nh.showMessage("converting started");
                 return true;
             case R.id.duckPreviewRefresh:
-                TextView source = (TextView) getView().findViewById(R.id.source);
-                source.setText(DuckHunterPreviewFragment.readFileForPreview());
+                if(getView() != null){
+                    TextView source = (TextView) getView().findViewById(R.id.source);
+                    source.setText(DuckHunterPreviewFragment.readFileForPreview());
+                }
                 return true;
             case R.id.start_service:
                 start();
@@ -177,17 +202,17 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
     private void start() {
         String[] command = new String[1];
-        command[0] = "su -c 'bootkali duck-hunt-run /opt/duckout.sh'";
+        command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali duck-hunt-run /opt/duckout.sh'";
+        String command_string = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali duck-hunt-run /opt/duckout.sh'";
+        Log.d(TAG, command_string);
         ShellExecuter exe = new ShellExecuter();
         exe.RunAsRoot(command);
-        ((AppNavHomeActivity) getActivity()).showMessage("Attack started");
+        nh.showMessage("Attack started");
     }
-
-
 
     public void openLanguageDialog() {
 
-        int	keyboardLayoutIndex = sharedpreferences.getInt("DuckHunterLanguageIndex", 0);
+        int keyboardLayoutIndex = sharedpreferences.getInt("DuckHunterLanguageIndex", 0);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Language:");
@@ -205,7 +230,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
             public void onClick(DialogInterface dialog, int which) {
                 Editor editor = sharedpreferences.edit();
                 editor.putInt("DuckHunterLanguageIndex", which);
-                editor.commit();
+                editor.apply();
             }
         });
         builder.show();
@@ -266,8 +291,9 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
     public static class DuckHunterConvertFragment extends Fragment implements View.OnClickListener{
 
-        public static String configFilePath = "files/modules/duckconvert.txt";
-        public static String loadFilePath = "files/scripts/ducky/";
+        public static String configFilePath = "/modules/duckconvert.txt";
+        //public static String configFilePath = "/configs/modules/duckconvert.txt";
+        public static String loadFilePath = "/scripts/ducky/";
         private static final int PICKFILE_RESULT_CODE = 1;
 
         @Override
@@ -280,8 +306,8 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
             t2.setMovementMethod(LinkMovementMethod.getInstance());
 
             EditText source = (EditText) rootView.findViewById(R.id.editSource);
-            File sdcard = Environment.getExternalStorageDirectory();
-            File file = new File(sdcard, configFilePath);
+            //File appFolder = getActivity().getFilesDir();
+            File file = new File(nh.APP_SD_FILES_PATH, configFilePath);
             StringBuilder text = new StringBuilder();
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file));
@@ -307,24 +333,24 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
             switch (v.getId()) {
                 case R.id.duckyLoad:
                     try {
-                        File sdcard = Environment.getExternalStorageDirectory();
-                        File scriptsDir = new File(sdcard,loadFilePath);
+
+                        File scriptsDir = new File(nh.APP_SD_FILES_PATH,loadFilePath);
                         if(!scriptsDir.exists()) scriptsDir.mkdirs();
                     } catch (Exception e) {
-                        ((AppNavHomeActivity) getActivity()).showMessage(e.getMessage());
+                        nh.showMessage(e.getMessage());
                     }
                     Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                    Uri selectedUri = Uri.parse(Environment.getExternalStorageDirectory() +"/"+ loadFilePath);
+                    Uri selectedUri = Uri.parse(nh.APP_SD_FILES_PATH + loadFilePath);
                     intent.setDataAndType(selectedUri, "file/*");
                     startActivityForResult(intent, PICKFILE_RESULT_CODE);
                     break;
                 case R.id.duckySave:
                     try {
-                        File sdcard = Environment.getExternalStorageDirectory();
-                        File scriptsDir = new File(sdcard,loadFilePath);
+
+                        File scriptsDir = new File(nh.APP_SD_FILES_PATH,loadFilePath);
                         if(!scriptsDir.exists()) scriptsDir.mkdirs();
                     } catch (Exception e) {
-                        ((AppNavHomeActivity) getActivity()).showMessage(e.getMessage());
+                        nh.showMessage(e.getMessage());
                     }
                     AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
 
@@ -338,30 +364,31 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                     alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             String value = input.getText().toString();
-                            if(value != null && value.length() >0){
+                            if(value.length() > 0){
                                 //Save file (ask name)
-                                File sdcard = Environment.getExternalStorageDirectory();
-                                File scriptFile = new File(sdcard + File.separator + loadFilePath + File.separator +  value +".conf");
+                                File scriptFile = new File(nh.APP_SD_FILES_PATH + loadFilePath + File.separator +  value +".conf");
                                 System.out.println(scriptFile.getAbsolutePath());
                                 if(!scriptFile.exists()){
                                     try {
-                                        EditText source = (EditText) getView().findViewById(R.id.editSource);
-                                        String text = source.getText().toString();
-                                        scriptFile.createNewFile();
-                                        FileOutputStream fOut = new FileOutputStream(scriptFile);
-                                        OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-                                        myOutWriter.append(text);
-                                        myOutWriter.close();
-                                        fOut.close();
-                                        ((AppNavHomeActivity) getActivity()).showMessage("Script saved");
+                                        if(getView() != null) {
+                                            EditText source = (EditText) getView().findViewById(R.id.editSource);
+                                            String text = source.getText().toString();
+                                            scriptFile.createNewFile();
+                                            FileOutputStream fOut = new FileOutputStream(scriptFile);
+                                            OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+                                            myOutWriter.append(text);
+                                            myOutWriter.close();
+                                            fOut.close();
+                                            nh.showMessage("Script saved");
+                                        }
                                     } catch (Exception e) {
-                                        ((AppNavHomeActivity) getActivity()).showMessage(e.getMessage());
+                                        nh.showMessage(e.getMessage());
                                     }
                                 }else{
-                                    ((AppNavHomeActivity) getActivity()).showMessage("File already exists");
+                                    nh.showMessage("File already exists");
                                 }
                             }else{
-                                ((AppNavHomeActivity) getActivity()).showMessage("Wrong name provided");
+                                nh.showMessage("Wrong name provided");
                             }
                         }
                     });
@@ -374,7 +401,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                     alert.show();
                     break;
                 default:
-                    ((AppNavHomeActivity) getActivity()).showMessage("Unknown click");
+                    nh.showMessage("Unknown click");
                     break;
             }
         }
@@ -384,6 +411,9 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
             switch (requestCode) {
                 case PICKFILE_RESULT_CODE:
                     if (resultCode == Activity.RESULT_OK) {
+                        if(getView() == null){
+                            return;
+                        }
                         String FilePath = data.getData().getPath();
                         EditText source = (EditText) getView().findViewById(R.id.editSource);
                         try {
@@ -395,9 +425,9 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                             }
                             br.close();
                             source.setText(text);
-                            ((AppNavHomeActivity) getActivity()).showMessage("Script loaded");
+                            nh.showMessage("Script loaded");
                         } catch (Exception e) {
-                            ((AppNavHomeActivity) getActivity()).showMessage(e.getMessage());
+                            nh.showMessage(e.getMessage());
                         }
                         break;
                     }
@@ -410,7 +440,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
     public static class DuckHunterPreviewFragment extends Fragment{
 
-        public static String configFilePath = "/data/local/kali-armhf/opt/";
+        public static String configFilePath = nh.CHROOT_PATH + "/opt/";
         public static String configFileFilename = "duckout.sh";
 
         @Override
@@ -427,31 +457,31 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
         @Override
         public void setUserVisibleHint(boolean isVisibleToUser) {
             super.setUserVisibleHint(isVisibleToUser);
-            if (isVisibleToUser) {
-
-            }
         }
 
         public void onResume() {
             super.onResume();
         }
 
-        public static String readFileForPreview()
-        {
+        public static String readFileForPreview() {
             File file = new File(configFilePath, configFileFilename);
-            StringBuilder text = new StringBuilder();
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file));
-                String line;
-                while ((line = br.readLine()) != null) {
-                    text.append(line);
-                    text.append('\n');
+            if(file.exists()) {
+                StringBuilder text = new StringBuilder();
+                try {
+                    BufferedReader br = new BufferedReader(new FileReader(file));
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        text.append(line);
+                        text.append('\n');
+                    }
+                    br.close();
+                } catch (IOException e) {
+                    Log.e("Nethunter", "exception", e);
                 }
-                br.close();
-            } catch (IOException e) {
-                Log.e("Nethunter", "exception", e);
+                return text.toString();
+            } else {
+                return "duckout.sh is generated when a duckyscript is made";
             }
-            return text.toString();
         }
     }
 }

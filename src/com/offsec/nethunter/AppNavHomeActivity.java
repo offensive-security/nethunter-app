@@ -1,252 +1,459 @@
 package com.offsec.nethunter;
 
-import android.app.ActionBar;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.v4.app.FragmentActivity;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
-import android.view.Gravity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
-import android.widget.ImageView;
-import android.widget.Toast;
+import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+import java.util.Stack;
 
-//import android.app.Fragment;
-//import android.app.FragmentManager;
+import com.offsec.nethunter.utils.CheckForRoot;
+import com.winsontan520.wversionmanager.library.WVersionManager;
 
-public class AppNavHomeActivity extends FragmentActivity
-        implements SideMenu.NavigationDrawerCallbacks {
+public class AppNavHomeActivity extends AppCompatActivity {
 
-    public final static int NETHUNTER_FRAGMENT = 0;
-    public final static int KALILAUNCHER_FRAGMENT = 1;
-    public final static int KALISERVICES_FRAGMENT = 2;
-    public final static int HIDE_FRAGMENT = 3;
-    public final static int DUCKHUNTER_FRAGMENT = 4;
-    public final static int BADUSB_FRAGMENT = 5;
-    public final static int MANA_FRAGMENT = 6;
-    public final static int DNSMASQ_FRAGMENT = 7;
-    public final static int IPTABLES_FRAGMENT = 8;
+    public final static String TAG = "AppNavHomeActivity";
+    public static final String CHROOT_INSTALLED_TAG = "CHROOT_INSTALLED_TAG";
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
-
-    private SideMenu mNavigationDrawerFragment;
-    private String[] activityNames;
-
-    /**
-     * Used to store the last screen title. For use in {@link #restoreActionBar()}.
-     */
-    private CharSequence mTitle;
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private NavigationView navigationView;
+    private CharSequence mTitle = "NetHunter";
+    private Stack<String> titles = new Stack<>();
+    private SharedPreferences prefs;
+    private MenuItem lastSelected;
+    private static Context c;
+    private Boolean weCheckedForRoot = false;
+    private final String BuildUser = "Kali";  // Change this to your name/username
+    private Integer permsNum = 6;
+    private Integer permsCurrent = 1;
+    public static Context getAppContext() {
+        return c;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        // ************************************************
+            c = getApplication(); //* DONT REMOVE ME *
+        // ************************************************
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            askMarshmallowPerms(permsCurrent);
+        } else {
+            CheckForRoot mytask = new CheckForRoot(this);
+            mytask.execute();
+        }
 
 
         setContentView(R.layout.base_layout);
+
         //set kali wallpaper as background
-        String imageInSD = Environment.getExternalStorageDirectory().getAbsolutePath() + "/kali-nh/wallpaper/kali-nh-2183x1200.png";
-        Bitmap bitmap = BitmapFactory.decodeFile(imageInSD);
-        ImageView myImageView = (ImageView) findViewById(R.id.bgHome);
-        myImageView.setImageBitmap(bitmap);
+        ActionBar ab = getSupportActionBar();
+        if (ab != null) {
+            ab.setHomeButtonEnabled(true);
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LinearLayout navigationHeadView = (LinearLayout) inflater.inflate(R.layout.sidenav_header, null);
+        navigationView.addHeaderView(navigationHeadView);
 
-        if (Build.VERSION.SDK_INT >= 21) {
+        FloatingActionButton readmeButton = (FloatingActionButton) navigationHeadView.findViewById(R.id.info_fab);
+        readmeButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                //checkUpdate();
+                showLicense();
+                return false;
+            }
+        });
+
+        /// moved build info to the menu
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd KK:mm:ss a zzz",
+                Locale.US);
+
+        prefs = getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
+
+        final String buildTime = sdf.format(BuildConfig.BUILD_TIME);
+        TextView buildInfo1 = (TextView) navigationHeadView.findViewById(R.id.buildinfo1);
+        TextView buildInfo2 = (TextView) navigationHeadView.findViewById(R.id.buildinfo2);
+        buildInfo1.setText(String.format("Version: %s (%s)", BuildConfig.VERSION_NAME, Build.TAGS));
+        buildInfo2.setText(String.format("Built by %s at %s", BuildUser, buildTime));
+
+        if (navigationView != null) {
+            setupDrawerContent(navigationView);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // detail for android 5 devices
-            getWindow().setStatusBarColor(getResources().getColor(R.color.darkTitle));
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.darkTitle));
         }
 
-        mNavigationDrawerFragment = (SideMenu)
-                getFragmentManager().findFragmentById(R.id.navigation_drawer);
 
-        String[][] activitiesInfo = mNavigationDrawerFragment.getMenuInfo();
-        activityNames = activitiesInfo[0];
-        mTitle = getTitle();
+//        new ShellExecuter().RunAsRootOutput("/system/bin/bootkali");
+        // now pop in the default fragment
 
-        // Set up the drawer.
-        mNavigationDrawerFragment.setUp(
-                R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout));
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container, NetHunterFragment.newInstance(R.id.nethunter_item))
+                .commit();
+
+        // and put the title in the queue for when you need to back through them
+        titles.push(navigationView.getMenu().getItem(0).getTitle().toString());
+        // if the nav bar hasn't been seen, let's show it
+        if (!prefs.getBoolean("seenNav", false)) {
+            mDrawerLayout.openDrawer(GravityCompat.START);
+            SharedPreferences.Editor ed = prefs.edit();
+            ed.putBoolean("seenNav", true);
+            ed.commit();
+        }
+
+        if(lastSelected == null){ // only in the 1st create
+            lastSelected = navigationView.getMenu().getItem(0);
+            lastSelected.setChecked(true);
+        }
+        mDrawerToggle = new ActionBarDrawerToggle(this,
+                mDrawerLayout, R.string.drawer_opened, R.string.drawer_closed);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        mDrawerLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    setDrawerOptions();
+                }
+            }
+        });
+        mDrawerToggle.syncState();
+        // pre-set the drawer options
+        setDrawerOptions();
+
     }
 
+    public void setDrawerOptions() {
+        Menu menuNav = navigationView.getMenu();
+        if (prefs.getBoolean(CHROOT_INSTALLED_TAG, false)) {
+            menuNav.setGroupEnabled(R.id.chrootDependentGroup, true);
+        } else {
+            menuNav.setGroupEnabled(R.id.chrootDependentGroup, false);
+        }
+    }
+    public void checkUpdate(){
+        WVersionManager versionManager = new WVersionManager(this);
+        versionManager.setVersionContentUrl("https://images.offensive-security.com/version.txt");
+        versionManager.setUpdateUrl("https://images.offensive-security.com/latest.apk");
+        versionManager.checkVersion();
+        versionManager.setUpdateNowLabel("Update");
+        versionManager.setIgnoreThisVersionLabel("Ignore");
+    }
+
+    public void showLicense() {
+        // @binkybear here goes the changelog etc... \n\n%s
+        String readmeData = String.format("%s\n\n%s",
+                getResources().getString(R.string.licenseInfo),
+                getResources().getString(R.string.nhwarning));
+
+        AlertDialog.Builder adb = new AlertDialog.Builder(this);
+        adb.setTitle("README INFO")
+                .setMessage(readmeData)
+                .setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                }); //nhwarning
+        AlertDialog ad = adb.create();
+        ad.setCancelable(false);
+        ad.getWindow().getAttributes().windowAnimations = R.style.DialogStyle;
+        ad.show();
+    }
+    /* if the chroot isn't set up, don't show the chroot options */
     @Override
-    public void onNavigationDrawerItemSelected(int position, String activity) {
-        //Log.d("POSI", String.valueOf(position));
-        // This is called from the sidemenu as callback when a item  is clickled
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-
-        switch (position) {
-            case NETHUNTER_FRAGMENT:
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container, NetHunterFragment.newInstance(position))
-                        .addToBackStack(null)
-                        .commit();
-                break;
-            case KALILAUNCHER_FRAGMENT:
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container, KaliLauncherFragment.newInstance(position))
-                        .addToBackStack(null)
-                        .commit();
-                break;
-            case KALISERVICES_FRAGMENT:
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container, KaliServicesFragment.newInstance(position))
-                        .addToBackStack(null)
-                        .commit();
-                break;
-            case HIDE_FRAGMENT:
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container, HidFragment.newInstance(position))
-                        .addToBackStack(null)
-                        .commit();
-                break;
-            case DUCKHUNTER_FRAGMENT:
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container, DuckHunterFragment.newInstance(position))
-                        .addToBackStack(null)
-                        .commit();
-                break;
-            case BADUSB_FRAGMENT:
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container, BadusbFragment.newInstance(position))
-                        .addToBackStack(null)
-                        .commit();
-                break;
-            case MANA_FRAGMENT:
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container, ManaFragment.newInstance(position))
-                        .addToBackStack(null)
-                        .commit();
-                break;
-            case DNSMASQ_FRAGMENT:
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container, DnsmasqFragment.newInstance(position))
-                        .addToBackStack(null)
-                        .commit();
-                break;
-            case IPTABLES_FRAGMENT:
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container, IptablesFragment.newInstance(position))
-                        .addToBackStack(null)
-                        .commit();
-                break;
-            default:
-                // Start activity as usually // REMOVE THIS SOON no needed
-                Intent target = new Intent();
-                target.setClassName(getApplicationContext(), activity);
-                startActivity(target);
-                break;
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
         }
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    mDrawerLayout.closeDrawers();
+                } else {
+                    mDrawerLayout.openDrawer(GravityCompat.START);
+                }
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
+    private void setupDrawerContent(NavigationView navigationView) {
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        // only change it if is no the same as the last one
+                        if(lastSelected != menuItem){
+                            //remove last
+                            lastSelected.setChecked(false);
+                            // udpate for the next
+                            lastSelected = menuItem;
+                        }
+                        //set checked
+                        menuItem.setChecked(true);
+                        mDrawerLayout.closeDrawers();
+                        mTitle = menuItem.getTitle();
+                        titles.push(mTitle.toString());
 
-    public void onSectionAttached(int position) {
-        // restore title
-        mTitle = activityNames[position];
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        int itemId = menuItem.getItemId();
+                        switch (itemId) {
+                            case R.id.nethunter_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, NetHunterFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.kalilauncher_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, KaliLauncherFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.kaliservices_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, KaliServicesFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.custom_commands_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, CustomCommandsFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.hid_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, HidFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.duckhunter_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, DuckHunterFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.badusb_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, BadusbFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.mana_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, ManaFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.macchanger_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, MacchangerFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.createchroot_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, ChrootManagerFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.mpc_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, MPCFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.mitmf_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, MITMfFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.vnc_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, VNCFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.searchsploit_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, SearchSploitFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.nmap_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, NmapFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.checkforupdate_item:
+                                checkUpdate();
+                                break;
+                        }
+                        restoreActionBar();
+                        return true;
+                    }
+                });
     }
 
     public void restoreActionBar() {
-        ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(mTitle);
+        ActionBar ab = getSupportActionBar();
+        if (ab != null) {
+            ab.setDisplayShowTitleEnabled(true);
+            ab.setTitle(mTitle);
+
+        }
     }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        restoreActionBar();
-        return super.onCreateOptionsMenu(menu);
-    }
-
 
     @Override
     public void onBackPressed() {
-        //Handle back button for fragments && menu
-        //FragmentManager fragmentManager = getFragmentManager();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        if (mNavigationDrawerFragment.isDrawerOpen()) {
-            mNavigationDrawerFragment.closeDrawer();
-        }
-        if (fragmentManager.getBackStackEntryCount() <= 1) {
-            finish();
-
-            return;
-        }
         super.onBackPressed();
-    }
-
-    public void showMessage(String message) {
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(this, message, duration);
-        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
-        toast.show();
-    }
-
-
-    public String readConfigFile(String configFilePath) {
-
-
-        File sdcard = Environment.getExternalStorageDirectory();
-        File file = new File(sdcard, configFilePath);
-        StringBuilder text = new StringBuilder();
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = br.readLine()) != null) {
-                text.append(line);
-                text.append('\n');
+        if (titles.size() > 1) {
+            titles.pop();
+            mTitle = titles.peek();
+        }
+        Menu menuNav = navigationView.getMenu();
+        int i=0;
+        int mSize = menuNav.size();
+        while (i<mSize) {
+            if(menuNav.getItem(i).getTitle() == mTitle){
+                MenuItem _current = menuNav.getItem(i);
+                if(lastSelected != _current){
+                    //remove last
+                    lastSelected.setChecked(false);
+                    // udpate for the next
+                    lastSelected = _current;
+                }
+                //set checked
+                _current.setChecked(true);
+                i = mSize;
             }
-            br.close();
-        } catch (IOException e) {
-            Log.e("Nethunter", "exception", e);
-            Logger Logger = new Logger();
-            Logger.appendLog(e.getMessage());
+            i++;
         }
-        return text.toString();
+        restoreActionBar();
     }
-
-    public boolean updateConfigFile(String configFilePath, String source) {
-        try {
-            File sdcard = Environment.getExternalStorageDirectory();
-            File myFile = new File(sdcard, configFilePath);
-            myFile.createNewFile();
-            FileOutputStream fOut = new FileOutputStream(myFile);
-            OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-            myOutWriter.append(source);
-            myOutWriter.close();
-            fOut.close();
-            return true;
-        } catch (Exception e) {
-            showMessage(e.getMessage());
-            Logger Logger = new Logger();
-            Logger.appendLog(e.getMessage());
-            return false;
+    private void askMarshmallowPerms(Integer permnum){
+        if(permnum == 1){
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        1);
+            }
         }
+        if(permnum == 2){
+            if (ContextCompat.checkSelfPermission(this,
+                    "com.offsec.nhterm.permission.RUN_SCRIPT")
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{"com.offsec.nhterm.permission.RUN_SCRIPT"},
+                        2);
+            }}
+        if(permnum == 3){
+            if (ContextCompat.checkSelfPermission(this,
+                    "com.offsec.nhterm.permission.RUN_SCRIPT_SU")
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{"com.offsec.nhterm.permission.RUN_SCRIPT_SU"},
+                        3);
+            }}
+        if(permnum == 4){
+            if (ContextCompat.checkSelfPermission(this,
+                    "com.offsec.nhterm.permission.RUN_SCRIPT_NH")
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{"com.offsec.nhterm.permission.RUN_SCRIPT_NH"},
+                        4);
+            }
+        }
+        if(permnum == 5){
+            if (ContextCompat.checkSelfPermission(this,
+                    "com.offsec.nhterm.permission.RUN_SCRIPT_NH_LOGIN")
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{"com.offsec.nhterm.permission.RUN_SCRIPT_NH_LOGIN"},
+                        5);
+            }
+        }
+        if(permnum == 6) {
+            if (ContextCompat.checkSelfPermission(this,
+                    "com.offsec.nhvnc.permission.OPEN_VNC_CONN")
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{"com.offsec.nhvnc.permission.OPEN_VNC_CONN"},
+                        6);
+            }
+        }
+
     }
-
-
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if(permsCurrent < permsNum){
+                        permsCurrent = permsCurrent+1;
+                        askMarshmallowPerms(permsCurrent);
+                    } else {
+                        CheckForRoot mytask = new CheckForRoot(this);
+                        mytask.execute();
+                    }
+                } else {
+                    askMarshmallowPerms(permsCurrent);
+                }
+    }
 }
 

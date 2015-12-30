@@ -1,0 +1,154 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:orientation="vertical"
+        android:focusableInTouchMode="true">
+
+        <ImageView
+            android:layout_gravity="center_horizontal"
+            android:paddingTop="10px"
+            android:paddingBottom="20px"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:src="@android:drawable/divider_horizontal_bright" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Inject Settings"
+            android:id="@+id/textView18" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mitmf_inject"
+            android:id="@+id/mitmf_enableinject" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mitmf_inject_PRESERVER"
+            android:id="@+id/mitmf_inject_preservecache"
+            android:checked="false" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mitmf_inject_ONCE"
+            android:id="@+id/mitmf_inject_onceperdomain"
+            android:checked="false" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mitmf_inject_JS"
+                android:id="@+id/mitmf_injectjs"
+                android:layout_gravity="left" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/mitmf_injectjs_url" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mitmf_inject_HTML"
+                android:id="@+id/mitmf_injecthtml"
+                android:layout_gravity="top" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/mitmf_injecthtml_url" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mitmf_inject_HTMLPAY"
+                android:id="@+id/mitmf_injecthtmlpay" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/mitmf_injecthtmlpay_text" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mitmf_inject_MATCH"
+                android:id="@+id/mitmf_inject_match"
+                android:checked="false" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/mitmf_inject_match_string" />
+
+        </LinearLayout>
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mitmf_inject_RATELIMIT"
+            android:id="@+id/mitmf_inject_ratelimit"
+            android:checked="false" />
+
+        <EditText
+            android:layout_width="82dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/mitmf_inject_rateseconds"
+            android:inputType="number" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mitmf_inject_COUNTLIMIT"
+            android:id="@+id/mitmf_inject_times"
+            android:checked="false" />
+
+        <EditText
+            android:layout_width="92dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/mitmf_inject_times_text"
+            android:inputType="number" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mitmf_inject_INJECTIP"
+            android:id="@+id/mitmf_inject_ip"
+            android:checked="false" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/mitmf_inject_ip_text" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mitmf_inject_NOINJECTIP"
+            android:id="@+id/mitmf_inject_noip"
+            android:checked="false" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/mitmf_inject_noip_text" />
+
+
+    </LinearLayout>
+    </ScrollView>

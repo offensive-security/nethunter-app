@@ -1,0 +1,195 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:orientation="vertical"
+        android:focusableInTouchMode="true">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/mitmf_description"
+            android:layout_gravity="center_horizontal|center"
+            android:gravity="center"
+            android:padding="4dp" />
+
+        <ImageView
+            android:paddingTop="10px"
+            android:paddingBottom="5px"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:src="@android:drawable/divider_horizontal_bright"
+            android:id="@+id/imageView3" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="599dp"
+            android:layout_gravity="center_horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Interface"
+                android:id="@+id/textView19" />
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/mitmf_interface"
+                android:spinnerMode="dropdown" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="General Settings"
+                android:id="@+id/textView17" />
+
+            <ImageView
+                android:paddingTop="10px"
+                android:paddingBottom="5px"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:src="@android:drawable/divider_horizontal_bright"
+                android:id="@+id/imageView" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mitmf_javascriptkeylogger"
+                android:id="@+id/mitmf_jskey"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mitmf_FERRETNG"
+                android:id="@+id/mitmf_ferretng"
+                android:checked="false"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mitmf_browserprofiler"
+                android:id="@+id/mitmf_browserprofile"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mitmf_filepwn"
+                android:id="@+id/mitmf_filepwn"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mitmf_beefautorun"
+                android:id="@+id/mitmf_beef"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mitmf_smbauth"
+                android:id="@+id/mitmf_smb"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mitmf_sslstripplus"
+                android:id="@+id/mitmf_sslstrip"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mitmf_appcache"
+                android:id="@+id/mitmf_app_poison"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mitmf_upsidedown"
+                android:id="@+id/mitmf_upsidedown"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
+
+            <ImageView
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10px"
+                android:paddingBottom="5px"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:src="@android:drawable/divider_horizontal_bright" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="ScreenShotter"
+                android:id="@+id/textView11" />
+
+            <ImageView
+                android:paddingTop="10px"
+                android:paddingBottom="5px"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:src="@android:drawable/divider_horizontal_bright"
+                android:id="@+id/imageView2" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mitmf_screenshotter"
+                android:id="@+id/mitmf_screenshotter"
+                android:checked="false"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mitmf_screenshotter_interval"
+                    android:id="@+id/mitmf_screenhot_int_enable"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp" />
+
+                <EditText
+                    android:layout_width="91dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:ems="10"
+                    android:id="@+id/mitmf_screen_interval"
+                    android:maxLines="1" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

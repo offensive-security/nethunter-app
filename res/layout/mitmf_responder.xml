@@ -1,0 +1,87 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:orientation="vertical"
+        android:focusableInTouchMode="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mitmf_Responder_Description"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:padding="4dp"
+            android:id="@+id/textView20" />
+
+        <ImageView
+            android:layout_gravity="center_horizontal"
+            android:paddingTop="10px"
+            android:paddingBottom="20px"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:src="@android:drawable/divider_horizontal_bright" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Responder Settings"
+            android:id="@+id/textView18" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mitmf_Responder"
+            android:id="@+id/mitmf_responder"
+            android:checked="false" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mitmf_Responder_Analyze"
+            android:id="@+id/mitmf_responder_analyze"
+            android:checked="false" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mitmf_Responder_Fingerprint"
+            android:id="@+id/mitmf_responder_fingerprint"
+            android:checked="false" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mitmf_Responder_LM"
+            android:id="@+id/mitmf_responder_LM"
+            android:checked="false" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mitmf_Responder_NBTNS"
+            android:id="@+id/mitmf_responder_NBTNS"
+            android:checked="false" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mitmf_Responder_WPAD"
+            android:id="@+id/mitmf_responder_WPAD"
+            android:checked="false" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mitmf_Responder_Wredir"
+            android:id="@+id/mitmf_responder_WREDIR"
+            android:checked="false" />
+
+    </LinearLayout>
+</ScrollView>

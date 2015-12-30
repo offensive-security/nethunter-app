@@ -1,0 +1,100 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:orientation="vertical"
+        android:focusableInTouchMode="true">
+
+        <ImageView
+            android:layout_gravity="center_horizontal"
+            android:paddingTop="10px"
+            android:paddingBottom="20px"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:src="@android:drawable/divider_horizontal_bright" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Spoof Settings"
+            android:id="@+id/textView18" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mitmf_spoof"
+            android:id="@+id/mitmf_enablespoof" />
+
+        <ImageView
+            android:paddingTop="10px"
+            android:paddingBottom="5px"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:src="@android:drawable/divider_horizontal_bright"
+            android:id="@+id/imageView4" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Redirect Using:"
+            android:id="@+id/textView21" />
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/mitmf_spoof_redirectspin" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="ARP Mode:"
+            android:id="@+id/textView22" />
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/mitmf_spoof_arpmodespin" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mitmf_spoof_gateway"
+            android:id="@+id/mitmf_spoof_gateway" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/mitmf_spoof_gateway_text" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mitmf_spoof_targets"
+            android:id="@+id/mitmf_spoof_targets" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/mitmf_spoof_targets_text" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mitmf_spoof_shellshock"
+            android:id="@+id/mitmf_spoof_shellshock" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/mitmf_spoof_shellshock_text" />
+
+    </LinearLayout>
+</ScrollView>

@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">NetHunter Android</string>
-    <string name="app_nav_home_label">NetHunter Home</string>
+    <string name="app_name">NetHunter</string>
+    <string name="app_nav_home_label">NetHunter</string>
 
 
     <string name="hometitle">Kali Linux NetHunter</string>
     <string name="nethunter_label">Nethunter Panel Home</string>
-    <string name="nethunter_description">Welcome to Kali Linux NetHunter, by Offensive Security! This application is designed to make it easier to execute attacks and control services. The navigation menu contains links to useful commands, settings, macros, and attack configuration pages. Most configurations work out of the box but some may require some minimal tweaking.</string>
-    <string name="nethunter_current_interfaces">Current interfaces</string>
-    <string name="nethunter_external_ip">External IP address</string>
+    <string name="nethunter_description">Welcome to Kali Linux NetHunter by Offensive Security! This application is designed to make it easier to execute attacks and control services. The navigation menu contains links to useful commands, settings, macros, and attack configuration pages. Most configurations work out of the box but some may require some minimal tweaking.</string>
+    <string name="nethunter_current_interfaces">Network Interfaces</string>
+    <string name="nethunter_external_ip">External IP</string>
+    <string name="nethunter_hid_detect">HID Interfaces</string>
+
 
     <string name="kali_services_label">Kali Service Control</string>
     <string name="kali_services_description">Various Kali network services can be started and stopped via the buttons in this part of the interface.</string>
@@ -42,10 +44,6 @@
     <string name="mana_noupstream">The Mana no-upstream run script.</string>
     <string name="mana_noupstream_eap">The Mana no-upstream EAP run script.</string>
 
-    <string name="dnsmasq_label">Dnsmasq Service</string>
-    <string name="dnsmasq_headline">Dnsmasq Config</string>
-    <string name="dnsmasq_description">Dnsmasq is a lightweight DNS forwarder and DHCP server that can easily be configured to provide DNS and DHCP services to a small network.</string>
-
     <string name="hostapd_label">Hostapd Service</string>
     <string name="hostapd_headline">Hostapd Config</string>
     <string name="hostapd_description">hostapd is a user space daemon for wireless access point and authentication servers. You can use hostapd to easily create a wireless access point using these configuration options:</string>
@@ -57,10 +55,6 @@
     <string name="duckPreviewRefresh">Refresh</string>
     <string name="duck_hunter_headline">The DuckHunter script can easily convert "USB Rubber Ducky" scripts into NetHunter HID format.  You can generate preconfigured scripts at the incredibly useful <a href="http://www.ducktoolkit.com/Home.jsp">Ducky Toolkit</a> site, or check out the Rubber Ducky script syntax from the official <a href="https://github.com/hak5darren/USB-Rubber-Ducky/wiki/Duckyscript">README</a></string>
 
-    <string name="iptables_label">Iptables Configuration</string>
-    <string name="iptables_headline">Iptables Setup Config</string>
-    <string name="iptables_description">Easily set up NAT or use iptables rules to route traffic.</string>
-
     <string name="payload_select">Please select</string>
     <string-array name="payloads">
         <item>windows/meterpreter/reverse_http</item>
@@ -71,11 +65,8 @@
     <string name="start_service">Start hostapd</string>
     <string name="stop_service">Stop hostapd</string>
 
-    <string name="run_iptables">Run iptables</string>
-    <string name="flush">Flush</string>
-
-    <string name="start_dnsmasq">Start dnsmasq</string>
-    <string name="stop_dnsmasq">Stop dnsmasq</string>
+    <string name="start_mitmf">Start MITMf attack</string>
+    <string name="stop_mitmf">Stop MITMf attack</string>
 
     <string name="start_badusb">Start BadUSB attack</string>
     <string name="stop_badusb">Stop BadUSB attack</string>
@@ -90,10 +81,6 @@
     <string name="shutdown_kali">Unmount Kali</string>
     <string name="kali_dumpmifare">Dump Mifare</string>
 
-    <string name="add_button">Add a Button</string>
-
-    <string name="add_lauchner_btn_label">Button label: </string>
-    <string name="add_lauchner_btn_command">Command: </string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -110,7 +97,7 @@
     <string name="ip_address">IP address</string>
     <string name="bssid">BSSID</string>
     <string name="ssid">SSID</string>
-    <string name="chanel">Chanel</string>
+    <string name="chanel">Channel</string>
     <string name="enable_karma">Enable karma</string>
     <string name="admin">UAC Bypass</string>
     <string name="choose_language">Keyboard Layout</string>
@@ -135,9 +122,311 @@
     <string name="ps_port">Port (LPORT)</string>
     <string name="ps_payload_url">URL to payload</string>
 
-    <string name="toast_error_launcher">Invalid call of function!</string>
-    <string name="toast_input_error_launcher">Invalid arguments given!</string>
     <string name="toast_install_terminal">Error launching intent. Install Android Terminal!</string>
     <string name="descriptiontext" />
 
+    <string name="macchanger_description">Change the MAC of any network interface.\n\nIt can be randomly generated or manually typed. \n\nThe MAC must contain 6 pair of combinations using the charset: [0–9|A-F|a-f] something like:\n\n 00:11:22:ab:cd:ef </string>
+    <string name="interface_select">Pick an interface:</string>
+    <string name="macchanger_select">Select macchanger mode:</string>
+    <string name="macchanger_label">Macchanger</string>
+    <string name="saved_mac">Load MAC</string>
+    <string name="load_saved_mac">Load saved MAC</string>
+    <string name="save_mac">Save current MAC</string>
+    <string name="reset_mac">Reset wlan0 MAC address</string>
+    <string name="wlan0ResetInfo">This will reset the wlan0 MAC to his original state.\n\nAfter the reset the phone will be rebooted.\n\n This is useful if the wifi is stuck with a incompatible MAC address.</string>
+    <string name="wlanNote">The wlan0 interface does not support every combination of MAC addresses, so this feature is disabled for wlan0.\n\nIf your wifi gets stuck, reset the MAC with the menu option.</string>
+    <string name="currentmac">Current MAC:</string>
+    <string name="TwoMACDigits">XX</string>
+    <string name="macSeparator">:</string>
+    <string name="changeMAC">Change MAC</string>
+    <string name="reloadMAC">Reload MAC</string>
+    <string name="randomMAC">Random MAC</string>
+    <string name="customMAC">Custom MAC</string>
+    <string name="autorunningscripts">Nethunter: auto-running startup scripts</string>
+    <string name="toastForNoBusybox">Uh oh!  Nethunter can\'t find busybox!</string>
+    <string-array name="macchanger_opts">
+        <item>Random MAC</item>
+        <item>Custom MAC</item>
+    </string-array>
+    <string-array name="interface_opts">
+        <item>wlan0 (Internal wireless card)</item>
+        <item>wlan1 (External wireless USB)</item>
+        <item>rmnet0 (3G)</item>
+        <item>eth0 (Ethernet)</item>
+        <item>rndis0 (USB > Ethernet)</item>
+        <item>usb0 (USB > Ethernet for the Nexus7 2013 when tethering | badusb)</item>
+    </string-array>
+    <string name="createchroot_label">Kali chroot</string>
+
+    <!-- MITMf -->
+    <string name="mitmf_description">Written by @byt3bl33d3r, MITMf aims to provide a one-stop-shop for Man-In-The-Middle and network attacks while updating and improving existing attacks and techniques.</string>
+    <string-array name="mitmf_interface_array">
+        <item>wlan0</item>
+        <item>wlan1</item>
+        <item>eth0</item>
+        <item>rndis0</item>
+    </string-array>
+    <string name="mitmf_javascriptkeylogger">JavaScript Keylogger</string>
+    <string name="mitmf_browserprofiler">Browser Profiler</string>
+    <string name="mitmf_filepwn">FilePWN (BDFPROXY) </string>
+    <string name="mitmf_beefautorun">BeEEF Autorun</string>
+    <string name="mitmf_smbauth">SMB challenge-response auth attempts</string>
+    <string name="mitmf_browsersniper">BrowserSniper (attack plugins)</string>
+    <string name="mitmf_sslstripplus">SSLStrip+</string>
+    <string name="mitmf_appcache">App Cache Poison</string>
+    <string name="mitmf_cachekill">Cachekill</string>
+    <string name="mitmf_upsidedown">Enable Upsidedowninternet</string>
+    <string-array name="mitmf_sslSTRIPlog">
+        <item>SSLSTRIP Log Type</item>
+        <item>Post</item>
+        <item>SSL</item>
+        <item>ALL</item>
+    </string-array>
+    <string name="mitmf_FERRETNG">Enable Ferret-NG Cookie Capture Plugin</string>
+    <string name="mitmf_FERRETPORT">Port:</string>
+    <string name="mitmf_Responder_Description">Responder allows you to poison LLMNR, NBT-NS and MDNS requests</string>
+    <string name="mitmf_Responder">Enable Responder Plugin</string>
+    <string name="mitmf_Responder_Analyze">Enable Analyze</string>
+    <string name="mitmf_Responder_Wredir">Enable Wredir</string>
+    <string name="mitmf_Responder_NBTNS">Enable NBTNS</string>
+    <string name="mitmf_Responder_Fingerprint">Fingerprint Host</string>
+    <string name="mitmf_Responder_LM">Force LM hash downgrade</string>
+    <string name="mitmf_Responder_WPAD">WPAD Rogue Proxy Server</string>
+    <string name="mitmf_spoof">Enable Spoof Plugin (redirect/modify traffic)</string>
+    <string-array name="mitmf_spoof_type">
+        <item>Select redirect type</item>
+        <item>ARP</item>
+        <item>ICMP</item>
+        <item>DHCP</item>
+        <item>DNS</item>
+    </string-array>
+    <string name="mitmf_spoof_shellshock">Shellshock vuln when spoofing DHCP then launch command:</string>
+    <string name="mitmf_spoof_gateway">Gateway IP: </string>
+    <string name="mitmf_spoof_targets">Specify Target:</string>
+    <string-array name="mitmf_spoof_arpmode">
+        <item>Select ARP mode</item>
+        <item>Requests</item>
+        <item>Reply</item>
+    </string-array>
+    <string name="mitmf_screenshotter">Enable ScreenShotter Plugin</string>
+    <string name="mitmf_screenshotter_interval">Interval (in seconds) to screenshot:</string>
+    <string name="mitmf_inject">Enable Inject Plugin</string>
+    <string name="mitmf_inject_JS">JavaScript to inject URL:</string>
+    <string name="mitmf_inject_HTML">HTML to inject URL:</string>
+    <string name="mitmf_inject_HTMLPAY">HTML Payload to inject:</string>
+    <string name="mitmf_inject_MATCH">Match String:</string>
+    <string name="mitmf_inject_PRESERVER">Preserve Cache</string>
+    <string name="mitmf_inject_ONCE">Inject once per domain</string>
+    <string name="mitmf_inject_RATELIMIT">Rate Limit (seconds):</string>
+    <string name="mitmf_inject_COUNTLIMIT">Number of times to inject:</string>
+    <string name="mitmf_inject_INJECTIP">Inject only IP:</string>
+    <string name="mitmf_inject_NOINJECTIP">Do NOT inject IP:</string>
+    <string name="mitmf_config">The MITMf configuration file.</string>
+
+
+    <!-- chroot stuff -->
+    <string name="uninstallchrootwarning">Warning: Uninstalling the Nethunter app <u>without FIRST removing the chroot</u> will result in an <i>incomplete</i> removal of the app.</string>
+    <string name="thechroottitle">The Kali chroot</string>
+    <string name="installkalichrootbutton">Install Kali Chroot</string>
+    <string name="removekalichrootbutton">Remove Chroot</string>
+    <string name="MaintainChrootInTerminal">Add Metapackages</string>
+    <string name="existingchrootfound">An existing Kali chroot directory was found!</string>
+    <string name="nokalichrootfound">No Kali chroot directory was found.</string>
+    <string name="reallyremovechroot">Really remove the chroot?</string>
+    <string name="nogoingback">There\'s no going back.  You lose everything in your chroot.  Forever-ever.\n\nNOTE:  To fully ensure the chroot is not mounted and no processes are using it, <b><u>THE DEVICE WILL NOW BE REBOOTED</u></b>, then the chroot will be deleted.</string>
+    <string name="rebootbutton">Reboot and remove chroot</string>
+    <string name="chickenoutbutton">Forget it</string>
+    <string name="rebootingdialogtitle">Rebooting the device&#8230;</string>
+    <string name="rebootingdialogbody">The device is being restarted. (No complaining.  You were just told this would happen!)</string>
+    <string name="filelooksgood">The file looks good, so no need to re-download it.</string>
+    <string name="deletingforroom">Deleting to make room for download&#8230;</string>
+    <string name="oldfiledeleted">Old file deleted.</string>
+    <string name="problemdeletingoldfile">Problem deleting old file.  Just sayin\'.</string>
+    <string name="startingdownload">Starting download.  Standby&#8230;</string>
+    <string name="unwritablestorageerror">Nowhere to write to.  Make sure you have your external storage mounted and available.</string>
+    <string name="downloadingdescription">Downloading base Kali chroot</string>
+    <string name="downloadsuccessful">Download completed successfully.</string>
+    <string name="downloaderrormissingfile">ERROR: couldn\'t find downloaded file.</string>
+    <string name="downloadfailedtryagain">Download failed.  Check your network connection and external storage and try again.</string>
+    <string name="extractinglogtext">Extracting to chroot.  Standby&#8230;</string>
+    <string name="extractingdialogtitle">Extracting&#8230;</string>
+    <string name="extractingdialogmessage">The chroot is being extracted.  This could take a bit.  If it goes more than 15 minutes, please panic.</string>
+    <string name="existsalready">" exists already."</string>
+    <string name="checkingforchroot">"Checking for chroot at "</string>
+    <string name="toastchrootmountedwarning">Kali chroot is mounted and NOT deleted.  Reboot again to remove!!</string>
+    <string name="toastchrootrenamemountedwarning">Kali chroot is mounted and NOT yet migrated.  Reboot again to try again!!</string>
+    <string name="toastdeletingchroot">Deleting Kali chroot&#8230;</string>
+    <string name="toastdeletedchroot">Kali chroot has been deleted.</string>
+    <string name="toastmigratingchroot">Migrating Kali chroot&#8230;</string>
+    <string name="toastmigratedchroot">Kali chroot has been migrated.</string>
+    <string name="downloadingchroot">Downloading chroot&#8230;</string>
+    <string name="downloadingstandby">The chroot is being downloaded.  This could take a while&#8230;</string>
+    <string name="unzippinguntarringdone">Unzipping &amp; untarring done.</string>
+    <string name="unzippinganduntarring">Unzipping and untarring....</string>
+    <string name="therewasanerror">There was an error :(</string>
+    <string name="inflating">Inflating&#8230;</string>
+    <string name="couldntfindfile">ERROR: couldn\'t find downloaded file.</string>
+    <string name="downloadfailscheck">Something went wrong verifying the downloaded file.  Whoops.  Try again.</string>
+    <string name="aboutchroot">The \"chroot\" is a full installation of Kali Linux that shares processing, networking, storage, and other resources with Android. It resides in your internal app storage area and requires about 400MB for the minimal core installation.</string>
+
+
+    <string name="nhwarning">Nethunter installs and uses a standard Kali Linux distribution \"under the hood\".  To support this functionality, some <u>standard Android security features such as Security Enhanced Linux (selinux) are disabled</u>.  Moreover, Kali\'s Linux processes may run with full root privileges and can therefore access system functionality well beyond the normal Android security model.  Consider therefore that this device, as a hybrid, may not be as secure as either standard Kali Linux OR standard Android, and you are advised not to install or use Nethunter on \"daily driver\" devices or devices which store or access sensitive/private data.</string>
+    <string name="unknown">Unknown</string>
+    <string name="statusText">Status:</string>
+    <string name="licenseInfo">Nethunter is licensed under the <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html">GPLv2</a> and source is available at <a href="https://github.com/offensive-security">github.com/offensive-security</a>.  Some icons are licensed from Google, Inc. under <a href="https://creativecommons.org/licenses/by/4.0">CC BY 4.0</a>. Android-WVersionManager and jTar is licensed under Apache 2.0.  </string>
+
+    <!-- sidebar menu item titles -->
+    <string name="drawertitlenethunter">Home</string>
+    <string name="drawertitlecreatechroot">Kali Chroot Manager</string>
+    <string name="drawertitlekalilauncher">Kali Launcher</string>
+    <string name="drawertitlekaliservices">Kali Services</string>
+    <string name="drawertitlehid">HID</string>
+    <string name="drawertitleduckhunter">Duckhunter</string>
+    <string name="drawertitlebadusb">Bad USB</string>
+    <string name="drawertitlemana">Mana</string>
+    <string name="drawertitlemacchanger">MAC Changer</string>
+    <string name="drawertitlempc">Metasploit Payload Generator</string>
+    <string name="drawertitlemitmf">MITMf</string>
+    <string name="drawertitlecheckupdate">Check App Update</string>
+    <string name="drawertitlesearchsploit">SearchSploit</string>
+    <string name="drawertitlenmap">Nmap</string>
+    <string name="InstallAndUpdateButtonText"><![CDATA[Install & Update]]></string>
+    <string name="metapackagesExplanation">Choose some \"metapackages\". The chroot will also be upgraded (via \"apt-get update/dist-upgrade\").\n\nSelecting metapackages you already have installed (or no packages at all) simply update/upgrades without removing anything.\n\nDepending on what metapackages you select, you may be asked to do stuff (such as set passwords for services), so pay attention.</string>
+    <string name="metapackagesAdditionalInfo">Local storage requirements may be in the 20+ GB range. This installation/update will be performed in a terminal, so watch for issues. When completed, press the back button.</string>
+    <string name="rootdialogmessage">Whoopsy daisy!  Nethunter requires elevated administrator (root) privileges.\n\nMake sure root access is available.\n\nIf you touched the deny button by error, go to SuperSU app, find NetHunter in the APPS tab, and allow access (grant).\n\nDepending on your version of Android, this may require a \"rooting\" procedure to install the <tt>su</tt> binary.\n\nOn CyanogenMod or CM-based Android, you may need to go to your device <b>Settings</b>, and under <b>Developer Options</b>, enable <b>Root access</b> for <b>Apps</b>.\n\nAdditionally, you will need to make sure <tt>busybox</tt> is installed, usually to <tt>/system/xbin/busybox</tt>.</string>
+    <string name="rootdialogtitle">Missing root/busybox</string>
+    <string name="rootdialogposbutton">Try again</string>
+    <string name="rootdialognegbutton">Quit</string>
+
+    <string name="legacychroottitle">Legacy chroot found!</string>
+    <string name="legacychrootmessage">You appear to already have an existing Kali chroot from an older version of Nethunter.\n\nMigrating it to its new location requires a reboot.\n\n Or, you can leave the old chroot alone and install a new chroot.  If you choose this option, make sure you have enough storage for both.</string>
+    <string name="legacychrootposbutton">Migrate (reboot)</string>
+    <string name="legacychrootnegbutton">Ignore current</string>
+
+    <!-- MPC -->
+    <string name="mpc_description">Msfvenom Payload Creator (MPC) is a wrapper written by g0tmi1k to generate multiple types of payloads, based on users choice. The idea is to be as simple as possible (only requiring one input) to produce their payload.</string>
+    <string name="mpc_type">Type:</string>
+    <string-array name="mpc_type_array">
+        <item>ASP</item>
+        <item>ASPX</item>
+        <item>Bash [.sh]</item>
+        <item>Java [.jsp]</item>
+        <item>Linux [.elf]</item>
+        <item>OSX [.macho]</item>
+        <item>Perl [.pl]</item>
+        <item>PHP</item>
+        <item>Powershell [.ps1]</item>
+        <item>Python [.py]</item>
+        <item>Tomcat [.war]</item>
+        <item>Windows [.exe]</item>
+    </string-array>
+    <string name="mpc_port">Port:</string>
+    <string name="mpc_ip_address">IP Address:</string>
+    <string name="mpc_payload">Payload Options:</string>
+    <string-array name="mpc_payload_array">
+        <item>MSF</item>
+        <item>CMD</item>
+    </string-array>
+    <string-array name="mpc_callback_array">
+        <item>Reverse</item>
+        <item>Bind</item>
+    </string-array>
+    <string-array name="mpc_stage_array">
+        <item>Staged</item>
+        <item>Stageless</item>
+    </string-array>
+    <string-array name="mpc_callbacktype_array">
+        <item>TCP</item>
+        <item>HTTP</item>
+        <item>HTTPS</item>
+        <item>Find Port</item>
+    </string-array>
+    <string name="mpc_generateSDCARD">Generate to SDCARD</string>
+    <string name="mpc_generateHTTP">Generate to HTTP</string>
+
+    <!-- SearchSploit -->
+    <string name="searchsploit_searchbutton">Search</string>
+    <string name="searchsploit_loadDB">Load/Reload Database</string>
+    <string name="searchsploit_searchbar">Search Exploits</string>
+
+    <!-- Custom Launhcer -->
+    <string name="add_button">Add a Button</string>
+    <string name="add_lauchner_btn_label">Label: </string>
+    <string name="add_lauchner_btn_command">Command: </string>
+    <string name="toast_error_launcher">Invalid call of function!</string>
+    <string name="toast_input_error_launcher">Invalid arguments given!</string>
+    <string name="installing_notice">Installing Chroot…</string>
+    <string name="drawer_opened">Drawer opened</string>
+    <string name="drawer_closed">Drawer closed</string>
+    <string name="readme">README</string>
+    <string-array name="exec_mode">
+        <item>BACKGROUND</item>
+        <item>INTERACTIVE</item>
+    </string-array>
+    <string-array name="run_in_shell">
+        <item>KALI</item>
+        <item>ANDROID</item>
+    </string-array>
+    <string name="cancel">Cancel</string>
+    <string name="extract_part1">Uncompressing the Chroot… (~10 min)</string>
+    <string name="extract_part2">Deploying the Chroot… (~5–10 min)</string>
+
+    <!-- Start NMAP -->
+    <string name="nmap_hint">scanme.nmap.org, 192.168.0.1; 10.0.0-255.1-254</string>
+    <string name="nmap_interface">Interface</string>
+    <string-array name="nmap_interface_array">
+        <item>Select interface</item>
+        <item>wlan0</item>
+        <item>wlan1</item>
+        <item>eth0</item>
+        <item>rndis0</item>
+    </string-array>
+    <string name="nmap_all">Enable OS version detect, script scan, and traceroute</string>
+    <string name="nmap_ipv6">Enable IPv6</string>
+    <string name="nmap_timing_template">Timing Template</string>
+    <string-array name="nmap_timing_array">
+        <item>Select timing template</item>
+        <item>Paranoid</item>
+        <item>Sneaky</item>
+        <item>Polite</item>
+        <item>Normal</item>
+        <item>Aggressive</item>
+        <item>Insane</item>
+    </string-array>
+    <string name="nmap_ports">Ports</string>
+    <string name="nmap_excludeports">Exclude Ports</string>
+    <string name="nmap_fastmode">Fast mode (fewer ports)</string>
+    <string name="nmap_dontrandomize">Don\'t randomize port scan</string>
+    <string name="nmap_topports">Top 20 Ports</string>
+    <string name="nmap_osdetect">OS Detection</string>
+    <string name="nmap_osdetectenable">Enable OS detection</string>
+    <string name="nmap_servicedetect">Service/Version Detection</string>
+    <string name="nmap_probeports">Probe open ports for service/version info</string>
+    <string name="nmap_probeports_light">Limit to most likey</string>
+    <string name="nmap_probeports_all">Try all probes</string>
+    <string name="nmap_hostdiscovery">Host Discovery</string>
+    <string name="nmap_hostdiscovery_ping">Ping Scan</string>
+    <string name="nmap_hostdiscovery_nodns">Never do DNS resolution</string>
+    <string name="nmap_hostdiscovery_dns">Always do DNS resolution</string>
+    <string name="nmap_hostdiscovery_skiphost">Skip Host Discover</string>
+    <string name="nmap_hostdiscovery_icmp">ICMP echo</string>
+    <string name="nmap_scan_technique">Scan Techniques</string>
+    <string-array name="nmap_scantechnique_array">
+        <item>Select scan technique</item>
+        <item>TCP SYN</item>
+        <item>Connect()</item>
+        <item>ACK</item>
+        <item>Windows</item>
+        <item>Maimon</item>
+        <item>TCP Null</item>
+        <item>FIN</item>
+        <item>XMAS</item>
+    </string-array>
+    <string name="nmap_udpscan">UDP Scan</string>
+
+
+    <!-- End NMAP -->
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

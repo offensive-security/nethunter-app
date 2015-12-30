@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Command"
+            android:id="@+id/addCommand"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="false" />
+
+        <SearchView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/searchCommand"
+            android:hint="search command"
+            android:queryHint="search command"
+            android:iconifiedByDefault="false"
+            android:baselineAligned="false"
+            android:measureWithLargestChild="true"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/addCommand" />
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:id="@+id/customComandsInfo"
+        android:layout_gravity="center_horizontal|center"
+		android:gravity="center"
+        android:text="Long press to manage a command, dont forget to backup!. Use double quotes if needed." />
+
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/commandList"
+        android:divider="#333"
+        android:dividerHeight="1dp" />
+
+
+
+</LinearLayout>

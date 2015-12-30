@@ -4,14 +4,21 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import com.offsec.nethunter.utils.NhPaths;
+import com.offsec.nethunter.utils.ShellExecuter;
+
+import java.io.File;
 
 public class KaliServicesFragment extends Fragment {
     /**
@@ -21,30 +28,12 @@ public class KaliServicesFragment extends Fragment {
     private String[][] KaliServices;
     private static final String ARG_SECTION_NUMBER = "section_number";
     boolean updateStatuses = false;
-
-
-
-
-
+    NhPaths nh;
     public KaliServicesFragment() {
-        KaliServices = new String[][]{
 
-                // name, check  cmd, start cmd, stop cmd, state
-
-                {"SSH", "sh /system/xbin/check-kalissh", "su -c 'bootkali ssh start'", "su -c 'bootkali ssh stop'"},
-                {"Dnsmasq", "sh /system/xbin/check-kalidnsmq", "su -c 'bootkali dnsmasq start'", "su -c 'bootkali dnsmasq stop'"},
-                {"Hostapd", "sh /system/xbin/check-kalihostapd", "su -c 'bootkali hostapd start'", "su -c 'bootkali hostapd stop'"},
-                {"OpenVPN", "sh /system/xbin/check-kalivpn", "su -c 'bootkali openvpn start'", "su -c 'bootkali openvpn stop'"},
-                {"Apache", "sh /system/xbin/check-kaliapache", "su -c 'bootkali apache start'", "su -c 'bootkali apache stop'"},
-                {"Metasploit", "sh /system/xbin/check-kalimetasploit", "su -c 'bootkali msf start'", "su -c 'bootkali msf stop'"},
-                //{"DHCP", "sh /system/xbin/check-kalidhcp","su -c 'bootkali dhcp start'","su -c 'bootkali dhcp stop'"},
-                {"BeEF Framework", "sh /system/xbin/check-kalibeef-xss","su -c 'bootkali beef-xss start'","su -c 'bootkali beef-xss stop'"},
-                {"Y-cable Charging", "sh /system/xbin/check-ycable","su -c 'bootkali ycable start'","su -c 'bootkali ycable stop'"},
-                //{"Fruity WiFi", "sh /system/xbin/check-fruity-wifi","su -c start-fruity-wifi","su -c  stop-fruity-wifi"}
-                // the stop script isnt working well, doing a raw cmd instead to stop vnc
-                // {"VNC", "sh /system/xbin/check-kalivnc", "bootkali\nvncserver", "bootkali\nkill $(ps aux | grep 'Xtightvnc' | awk '{print $2}');CT=0;for x in $(ps aux | grep 'Xtightvnc' | awk '{print $2}'); do CT=$[$CT +1];tightvncserver -kill :$CT; done;rm /root/.vnc/*.log;rm -r /tmp/.X*"},
-        };
     }
+
+
     /**
      * Returns a new instance of this fragment for the given section
      * number.
@@ -62,99 +51,150 @@ public class KaliServicesFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.kali_services, container, false);
         checkServices(rootView);
         return rootView;
+
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((AppNavHomeActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
+
+        if (isAdded()) {
+
+            nh = new NhPaths();
+            KaliServices = new String[][]{
+
+                    // {name, check_cmd, start_cmd, stop_cmd, init_service_filename}
+
+                    {"SSH", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalissh", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali ssh start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali ssh stop'", "70ssh"},
+                    {"Dnsmasq", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalidnsmq", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali dnsmasq start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali dnsmasq stop'", "70dnsmasq"},
+                    {"Hostapd", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalihostapd", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali hostapd start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali hostapd stop'", "70hostapd"},
+                    {"OpenVPN", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalivpn", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali openvpn start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali openvpn stop'", "70openvpn"},
+                    {"Apache", "sh " + nh.APP_SCRIPTS_PATH + "/check-kaliapache", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali apache start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali apache stop'", "70apache"},
+                    {"Metasploit", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalimetasploit", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali msf start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali msf stop'", "70msf"},
+                    //{"DHCP", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalidhcp","su -c '" + cachedir + "/bootkali dhcp start'","su -c '" + cachedir + "/bootkali dhcp stop'", "70dhcp"},
+                    {"BeEF Framework", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalibeef-xss", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali beef-xss start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali beef-xss stop'", "70beef"},
+                    {"Y-cable Charging", "sh " + nh.APP_SCRIPTS_PATH + "/check-ycable","su -c 'bootkali ycable start'","su -c 'bootkali ycable stop'", "70ycable"},
+                    //{"Fruity WiFi", "sh " + nh.APP_SCRIPTS_PATH + "/check-fruity-wifi","su -c start-fruity-wifi","su -c  stop-fruity-wifi", "70fruity"}
+                    // the stop script isnt working well, doing a raw cmd instead to stop vnc
+                    // {"VNC", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalivnc", "" + cachedir + "/bootkali\nvncserver", "" + cachedir + "/bootkali\nkill $(ps aux | grep 'Xtightvnc' | awk '{print $2}');CT=0;for x in $(ps aux | grep 'Xtightvnc' | awk '{print $2}'); do CT=$[$CT +1];tightvncserver -kill :$CT; done;rm /root/.vnc/*.log;rm -r /tmp/.X*", "70vnc"},
+            };
+        }
     }
-    
+
     public void onResume()
     {
-    	super.onResume();
-    	updateStatuses = true;
+        super.onResume();
+        updateStatuses = true;
     }
-    
+
     public void onPause()
     {
-    	super.onPause();
-    	updateStatuses = false;
+        super.onPause();
+        updateStatuses = false;
     }
-    
+
     public void onStop()
     {
-    	super.onStop();
-    	updateStatuses = false;
+        super.onStop();
+        updateStatuses = false;
     }
-    
+
 
     private void checkServices(final View rootView) {
 
-    	
-    	new Thread(new Runnable() {
+        new Thread(new Runnable() {
+
             public void run() {
+
                 ShellExecuter exe = new ShellExecuter();
-                Logger Logger = new Logger();
-                //int c = 0;
-                //while (updateStatuses) {
-                    try {
-                  //  	if (c > 0) {
-                  // 		Thread.sleep(10000);
-                  //  	} else {
-                  //  		c++;
-                  // 	}
-                        final ListView servicesList = (ListView) rootView.findViewById(R.id.servicesList);
-                        String checkCmd = "";
-                        for (String[] KaliService : KaliServices) {
-                            checkCmd += KaliService[1] + ";";
-                        }
-                        final String outp1 = exe.RunAsRootOutput(checkCmd);
-                        //Logger.appendLog(outp1);
-                        servicesList.post(new Runnable() {
-                            @Override
-                            public void run() {
-                            	servicesList.setAdapter(new SwichLoader(getActivity().getApplicationContext(), outp1, KaliServices));
-                            }
-                        });
-                    } catch (Exception e) {
-                    	Logger.appendLog(e.getMessage());
+                final ListView servicesList = (ListView) rootView.findViewById(R.id.servicesList);
+                String checkCmd = "";
+                String checkBootStates = "";
+                final String bootScriptPath = nh.APP_INITD_PATH;
+                for (String[] KaliService : KaliServices) {
+                    File checkBootFile = new File(bootScriptPath + "/" + KaliService[4]);
+                    if (checkBootFile.exists()) {
+                        checkBootStates += "1";
+                    } else {
+                        checkBootStates += "0";
                     }
+                    checkCmd += KaliService[1] + ";";
                 }
-            //}
+
+                final String serviceStates = exe.RunAsRootOutput(checkCmd);
+                final String finalCheckBootStates = checkBootStates;
+                servicesList.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        servicesList.setAdapter(new KaliServicesLoader(getActivity().getApplicationContext(), serviceStates, finalCheckBootStates, KaliServices, bootScriptPath));
+                    }
+                });
+
+            }
         }).start();
     }
+
 }
 
 
 // This class is the main for the services
 
 
-class SwichLoader extends BaseAdapter {
+class KaliServicesLoader extends BaseAdapter {
 
     private Context mContext;
-    private ShellExecuter sExec = new ShellExecuter();
-    private String[] curstats;
+    private String[] _serviceStates;
+    private String[] _serviceBootStates;
     private String services[][];
+    private String bootScriptPath;
+    private String shebang;
+    private ShellExecuter exe = new ShellExecuter();
 
-    public SwichLoader(Context context, String serviceStates, String[][] KaliServices) {
-        services = KaliServices;
+
+    public KaliServicesLoader(Context context, String serviceStates, String bootStates, String[][] KaliServices, String _bootScriptPath) {
+
         mContext = context;
-        curstats = serviceStates.split("(?!^)");
+
+        services = KaliServices;
+        _serviceStates = serviceStates.split("(?!^)");
+        _serviceBootStates = bootStates.split("(?!^)");
+
+        bootScriptPath = _bootScriptPath;
+        shebang = "#!/system/bin/sh\n\n# Init at boot kaliSevice: ";
+
     }
 
     static class ViewHolderItem {
-        // The swich
+        // The switch
         Switch sw;
-        // the text holder
+        // the msg holder
         TextView swholder;
+        // the service title
+        TextView swTitle;
+        // run at boot checkbox
+        CheckBox swBootCheckbox;
     }
 
     public int getCount() {
         // return the number of services
         return services.length;
     }
+    public void addBootService(int serviceId) {
+        String bootServiceFile = bootScriptPath + "/" + services[serviceId][4];
+        String fileContents = shebang + services[serviceId][0] + "\n" + services[serviceId][2];
+        exe.RunAsRoot(new String[]{
+            "echo '"+ fileContents +"' > " +  bootServiceFile,
+            "chmod 700 " + bootServiceFile
+        });
 
+        // return the number of services
+
+    }
+    public void removeBootService(int serviceId) {
+        // return the number of services
+        String bootServiceFile = bootScriptPath + "/" + services[serviceId][4];
+        exe.RunAsRoot(new String[]{ "rm -rf " +  bootServiceFile });
+    }
     // getView method is called for each item of ListView
     public View getView(final int position, View convertView, ViewGroup parent) {
         // inflate the layout for each item of listView (our services)
@@ -163,42 +203,57 @@ class SwichLoader extends BaseAdapter {
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.swich_item, parent, false);
+            convertView = inflater.inflate(R.layout.kali_services_item, parent, false);
 
             // set up the ViewHolder
             vH = new ViewHolderItem();
             // get the reference of switch and the text view
+            vH.swTitle = (TextView) convertView.findViewById(R.id.switchTitle);
             vH.sw = (Switch) convertView.findViewById(R.id.switch1);
             vH.swholder = (TextView) convertView.findViewById(R.id.switchHolder);
+            vH.swBootCheckbox = (CheckBox) convertView.findViewById(R.id.initAtBoot);
             convertView.setTag(vH);
             //System.out.println ("created row");
         } else {
             // recycle the items in the list is already exists
             vH = (ViewHolderItem) convertView.getTag();
-
-
+        }
+        if (position >= _serviceStates.length) {
+            // out of range, return ,do nothing
+            return convertView;
         }
         // remove listeners
         vH.sw.setOnCheckedChangeListener(null);
+        vH.swBootCheckbox.setOnCheckedChangeListener(null);
         // set service name
-        vH.sw.setText(services[position][0]);
+        vH.swTitle.setText(services[position][0]);
         // clear state
         vH.sw.setChecked(false);
+        vH.swBootCheckbox.setChecked(false);
         // check it
 
-        if (position>=curstats.length) {
-            return convertView;
-        }
-        if (curstats[position].equals("1")) {
+        // running services
+        if (_serviceStates[position].equals("1")) {
             vH.sw.setChecked(true);
-            vH.sw.setTextColor(mContext.getResources().getColor(R.color.blue));
-            vH.swholder.setText(services[position][0] + " Service is currently UP");
+            vH.swTitle.setTextColor(mContext.getResources().getColor(R.color.blue));
+            vH.swholder.setText(services[position][0] + " Service is UP");
             vH.swholder.setTextColor(mContext.getResources().getColor(R.color.blue));
         } else {
             vH.sw.setChecked(false);
-            vH.sw.setTextColor(mContext.getResources().getColor(R.color.clearTitle));
-            vH.swholder.setText(services[position][0] + " Service is currently DOWN");
+
+            vH.swTitle.setTextColor(mContext.getResources().getColor(R.color.clearTitle));
+            vH.swholder.setText(services[position][0] + " Service is DOWN");
             vH.swholder.setTextColor(mContext.getResources().getColor(R.color.clearText));
+        }
+        // services enabled at boot
+        if (_serviceBootStates[position].equals("1")) {
+            // is enabled
+            vH.swBootCheckbox.setChecked(true);
+            vH.swBootCheckbox.setTextColor(mContext.getResources().getColor(R.color.blue));
+        } else {
+            // is not :)
+            vH.swBootCheckbox.setChecked(false);
+            vH.swBootCheckbox.setTextColor(mContext.getResources().getColor(R.color.clearTitle));
         }
 
         // add listeners
@@ -207,17 +262,54 @@ class SwichLoader extends BaseAdapter {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    sExec.RunAsRoot(new String[]{services[position][2]});
-                    curstats[position] = "1";
+                    new Thread(new Runnable() {
+                        public void run() {
+                            exe.RunAsRoot(new String[]{services[position][2]});
+                        }
+
+                    }).start();
+                    _serviceStates[position] = "1";
                     finalVH.swholder.setText(services[position][0] + " Service Started");
-                    finalVH.sw.setTextColor(mContext.getResources().getColor(R.color.blue));
+                    finalVH.swTitle.setTextColor(mContext.getResources().getColor(R.color.blue));
                     finalVH.swholder.setTextColor(mContext.getResources().getColor(R.color.blue));
+
                 } else {
-                    sExec.RunAsRoot(new String[]{services[position][3]});
-                    curstats[position] = "0";
+                    new Thread(new Runnable() {
+                        public void run() {
+                            exe.RunAsRoot(new String[]{services[position][3]});
+                        }
+
+                    }).start();
+                    _serviceStates[position] = "0";
                     finalVH.swholder.setText(services[position][0] + " Service Stopped");
-                    finalVH.sw.setTextColor(mContext.getResources().getColor(R.color.clearTitle));
+                    finalVH.swTitle.setTextColor(mContext.getResources().getColor(R.color.clearTitle));
                     finalVH.swholder.setTextColor(mContext.getResources().getColor(R.color.clearText));
+
+                }
+            }
+        });
+        vH.swBootCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    new Thread(new Runnable() {
+                        public void run() {
+                            Log.d("bootservice","ADD " + services[position][4]);
+                            addBootService(position);
+                        }
+                    }).start();
+                    _serviceBootStates[position] = "1";
+                    finalVH.swBootCheckbox.setTextColor(mContext.getResources().getColor(R.color.blue));
+                } else {
+                    new Thread(new Runnable() {
+                        public void run() {
+                            Log.d("bootservice", "REMOVE " + services[position][4]);
+                            removeBootService(position);
+                        }
+                    }).start();
+                    _serviceBootStates[position] = "0";
+                    finalVH.swBootCheckbox.setTextColor(mContext.getResources().getColor(R.color.clearTitle));
+
                 }
             }
         });
@@ -228,7 +320,7 @@ class SwichLoader extends BaseAdapter {
 
         return services[position];
     }
-    
+
     public long getItemId(int position) {
 
         return position;

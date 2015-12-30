@@ -43,19 +43,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/load"
-                android:id="@+id/windowsCmdLoad" />
+                android:id="@+id/windowsCmdLoad"
+                style="?android:attr/buttonBarButtonStyle"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/save"
-                android:id="@+id/windowsCmdSave" />
+                android:id="@+id/windowsCmdSave"
+                style="?android:attr/buttonBarButtonStyle"/>
 
             <Button
                 android:id="@+id/windowsCmdUpdate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/update" />
+                android:text="@string/update"
+                style="?android:attr/buttonBarButtonStyle"/>
         </LinearLayout>
 
     </LinearLayout>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group>
+        <item
+            android:id="@+id/nethunter_item"
+            android:icon="@drawable/ic_action_home"
+            android:title="@string/drawertitlenethunter" />
+        <item
+            android:id="@+id/createchroot_item"
+            android:icon="@drawable/ic_action_android"
+            android:title="@string/drawertitlecreatechroot" />
+        <item
+            android:id="@+id/checkforupdate_item"
+            android:icon="@drawable/ic_system_update_black_36dp"
+            android:title="@string/drawertitlecheckupdate" />
+    </group>
+    <group android:id="@+id/chrootDependentGroup">
+        <item
+            android:id="@+id/kalilauncher_item"
+            android:icon="@drawable/ic_action_launch"
+            android:title="@string/drawertitlekalilauncher" />
+        <item
+            android:id="@+id/kaliservices_item"
+            android:icon="@drawable/ic_action_settings_applications"
+            android:title="@string/drawertitlekaliservices" />
+        <item
+            android:id="@+id/custom_commands_item"
+            android:icon="@drawable/ic_action_play"
+            android:title="Custom Commands" />
+        <item
+            android:id="@+id/vnc_item"
+            android:icon="@drawable/ic_action_home"
+            android:title="VNC Manager" />
+        <item
+            android:id="@+id/hid_item"
+            android:icon="@drawable/ic_action_keyboard"
+            android:title="@string/drawertitlehid" />
+        <item
+            android:id="@+id/duckhunter_item"
+            android:icon="@drawable/ic_action_keyboard"
+            android:title="@string/drawertitleduckhunter" />
+        <item
+            android:id="@+id/badusb_item"
+            android:icon="@drawable/ic_action_usb"
+            android:title="@string/drawertitlebadusb" />
+        <item
+            android:id="@+id/mana_item"
+            android:icon="@drawable/ic_action_network_wifi"
+            android:title="@string/drawertitlemana" />
+        <item
+            android:id="@+id/mitmf_item"
+            android:icon="@drawable/ic_share_black_24dp"
+            android:title="@string/drawertitlemitmf" />
+        <item
+            android:id="@+id/nmap_item"
+            android:icon="@drawable/ic_cast_connected_black_24dp"
+            android:title="@string/drawertitlenmap" />
+        <item
+            android:id="@+id/mpc_item"
+            android:icon="@drawable/ic_memory_24dp"
+            android:title="@string/drawertitlempc" />
+        <item
+            android:id="@+id/searchsploit_item"
+            android:icon="@drawable/ic_bug_report_black_24dp"
+            android:title="@string/drawertitlesearchsploit" />
+        <item
+            android:id="@+id/macchanger_item"
+            android:icon="@drawable/ic_action_perm_device_information"
+            android:title="@string/drawertitlemacchanger" />
+    </group>
+
+</menu>
