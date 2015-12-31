@@ -110,7 +110,7 @@ if __name__ == "__main__":
     src = open('tmp.txt', 'r')
     for line in src:
 
-        if line.startswith('SLEEP') or line.startswith('sleep'):
+        if line.startswith('SLEEP') or line.startswith('DELAY'):
             line = line.split()
             seconds = (Decimal(line[1]) / Decimal(1000)) % 60
             line[1] = str(seconds)
@@ -277,6 +277,9 @@ if __name__ == "__main__":
                 elif args.layout=="pt" : line = dict_pt[char]
                 elif args.layout=="be" : line = dict_be[char]
 
+                if char == "\n":  # Add enter if new line automagically
+                    dest.write('echo enter | hid-keyboard /dev/hidg0 keyboard\n')
+                    
                 if args.layout=="us":
                     dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
                 else:
@@ -310,7 +313,7 @@ if __name__ == "__main__":
                     dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n') # releases key
                     dest.write('sleep 0.1 \n') # Slow things down
         else:
-            if not line.startswith('sleep'):
+            if not line.startswith('SLEEP') or line.startswith('DELAY'):
                 dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
 
     src.close()

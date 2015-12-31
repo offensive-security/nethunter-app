@@ -1,0 +1,7 @@
+REM This is a comment
+STRING Hello world!
+STRING Example of typing to computer. Nethunter is awesome!
+REM To sleep for five seconds use miliseconds
+SLEEP 5000
+STRING I'm awake!
+ENTER

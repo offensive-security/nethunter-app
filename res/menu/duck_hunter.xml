@@ -1,29 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-	
-	<item
-        android:id="@+id/duckConvertUpdate"
-        android:icon="@drawable/ic_action_save"
-        android:title="@string/duckConvertUpdate"
-        app:showAsAction="ifRoom|withText"  />
+
     <item
         android:id="@+id/duckConvertConvert"
         android:icon="@drawable/ic_action_play"
         android:title="@string/duckConvertConvert"
         app:showAsAction="ifRoom|withText"  />
-            
-	<item
-        android:id="@+id/duckPreviewRefresh"
-        android:icon="@drawable/ic_action_refresh"
-        android:title="@string/duckPreviewRefresh"
-        app:showAsAction="ifRoom|withText"  />
-        
 	<item
         android:id="@+id/chooseLanguage"
         android:title="@string/select_language"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/start_service"
-        android:title="@string/execute_attack"
         app:showAsAction="never" />
 </menu>
