@@ -117,6 +117,8 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
     String SHELLtext; // M_Spoofer_Shellshock_Text.getText().toString();
     String JSURLtext; // M_Injection_JSURL_Text.getText().toString();
 
+    CheckBox ScreenShotterCheckbox;
+
     static NhPaths nh;
 
     private static final String ARG_SECTION_NUMBER = "section_number";
@@ -443,11 +445,13 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                 }
             };
             UpsideDownCheckbox.setOnClickListener(checkBoxListener);
+
             // ScreenShotter Interval Time
             M_ScreenIntervalTime = (EditText) rootView.findViewById(R.id.mitmf_screen_interval);
             M_ScreenIntervalTime.setText("10");
+            SCREENTIMEtext = "10";
             M_ScreenIntervalTime.setEnabled(false);
-            // Detect changes to TextField
+
             M_ScreenIntervalTime.addTextChangedListener(new TextWatcher() {
 
                 @Override
@@ -461,45 +465,28 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                 @Override
                 public void afterTextChanged(Editable s)
                 {
-                    removeFromCmd(M_ScreenInterval + SCREENTIMEtext); // Clear previous command
-                    M_ScreenInterval = " --interval "; // Define --interval [num]
-                    SCREENTIMEtext = M_ScreenIntervalTime.getText().toString(); // Get [num]
-                    addToCmd(M_ScreenInterval + SCREENTIMEtext); // AddToCmd --interval [num]
+                    if(ScreenShotterCheckbox.isChecked()) {
+                        removeFromCmd(M_ScreenShotter);
+                        SCREENTIMEtext = M_ScreenIntervalTime.getText().toString(); // Get [num]
+                        M_ScreenShotter = " --screen --interval " + SCREENTIMEtext;
+                        addToCmd(M_ScreenShotter);
+                    }
                 }
             });
 
-            // Checkbox for ScreenShotter Interval
-            final CheckBox ScreenShotterIntCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_screenhot_int_enable);
-            checkBoxListener =new View.OnClickListener() {
-                public void onClick(View v) {
-                    if(ScreenShotterIntCheckbox.isChecked()) {
-                        M_ScreenInterval = " --interval "; // Need to do this better, only updates when checkbox selected
-                        SCREENTIMEtext = M_ScreenIntervalTime.getText().toString();
-                        addToCmd(M_ScreenInterval + SCREENTIMEtext);
-                    }else{
-                        removeFromCmd(M_ScreenInterval + SCREENTIMEtext);
-                    }
-                }
-            };
-            ScreenShotterIntCheckbox.setEnabled(false);
-            ScreenShotterIntCheckbox.setOnClickListener(checkBoxListener);
 
             // Checkbox for ScreenShotter
-            final CheckBox ScreenShotterCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_screenshotter);
+            ScreenShotterCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_screenshotter);
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
                     if(ScreenShotterCheckbox.isChecked()) {
-                        M_ScreenShotter = " --screen";
+                        M_ScreenShotter = " --screen --interval " + SCREENTIMEtext;
                         addToCmd(M_ScreenShotter);
-                        ScreenShotterIntCheckbox.setEnabled(true);
-                        ScreenShotterIntCheckbox.setChecked(true);
                         M_ScreenIntervalTime.setFocusable(true);
                         M_ScreenIntervalTime.setEnabled(true);
                     } else {
                         removeFromCmd(M_ScreenShotter);
                         removeFromCmd(M_ScreenInterval + SCREENTIMEtext);
-                        ScreenShotterIntCheckbox.setChecked(false);
-                        ScreenShotterIntCheckbox.setEnabled(false);
                         M_ScreenIntervalTime.setFocusable(false);
                         M_ScreenIntervalTime.setEnabled(false);
                     }

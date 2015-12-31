@@ -165,18 +165,17 @@
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/mitmf_screenshotter_interval"
+                android:id="@+id/textView28" />
+
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
-                <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/mitmf_screenshotter_interval"
-                    android:id="@+id/mitmf_screenhot_int_enable"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp" />
 
                 <EditText
                     android:layout_width="91dp"
