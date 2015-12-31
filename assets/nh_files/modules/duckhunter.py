@@ -110,7 +110,7 @@ if __name__ == "__main__":
     src = open('tmp.txt', 'r')
     for line in src:
 
-        if line.startswith('SLEEP'):
+        if line.startswith('SLEEP') or line.startswith('DELAY'):
             line = line.split()
             seconds = (Decimal(line[1]) / Decimal(1000)) % 60
             line[1] = str(seconds)
@@ -313,7 +313,7 @@ if __name__ == "__main__":
                     dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n') # releases key
                     dest.write('sleep 0.1 \n') # Slow things down
         else:
-            if not line.startswith('SLEEP'):
+            if not line.startswith('SLEEP') or line.startswith('DELAY'):
                 dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
 
     src.close()
