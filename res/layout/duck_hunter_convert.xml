@@ -20,6 +20,26 @@
             android:layout_gravity="center_horizontal|center" 
             android:gravity="center"
             android:padding="4dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Example presets"
+            android:id="@+id/textView26" />
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/duckhunter_preset_spinner" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Preview"
+            android:id="@+id/textView27" />
+
         <EditText
             android:id="@+id/editSource"
             android:layout_width="match_parent"
