@@ -165,6 +165,7 @@
         <item>wlan1</item>
         <item>eth0</item>
         <item>rndis0</item>
+        <item>usb0</item>
     </string-array>
     <string name="mitmf_javascriptkeylogger">JavaScript Keylogger</string>
     <string name="mitmf_browserprofiler">Browser Profiler</string>

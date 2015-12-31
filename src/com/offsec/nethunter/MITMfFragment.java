@@ -302,6 +302,12 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                             M_Interface = " -i rndis0";
                             addToCmd(M_Interface);
                             break;
+                        case 4:
+                            // Interface: usb0
+                            removeFromCmd(M_Interface);
+                            M_Interface = " -i usb0";
+                            addToCmd(M_Interface);
+                            break;
                     }
                 }
 
