@@ -277,6 +277,9 @@ if __name__ == "__main__":
                 elif args.layout=="pt" : line = dict_pt[char]
                 elif args.layout=="be" : line = dict_be[char]
 
+                if char == "\n":  # Add enter if new line automagically
+                    dest.write('echo enter | hid-keyboard /dev/hidg0 keyboard\n')
+                    
                 if args.layout=="us":
                     dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
                 else:
