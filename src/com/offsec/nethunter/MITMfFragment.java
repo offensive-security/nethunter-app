@@ -1197,6 +1197,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                         ARPSpinner.setEnabled(true);
                         SpoofGatewayIPCheckbox.setChecked(true);
                         SpoofGatewayIPCheckbox.setEnabled(true);
+                        M_Spoofer_Gateway_Text.setEnabled(true);
                         SpoofSpecifyTargetCheckbox.setEnabled(true);
                         SpoofShellshockCheckbox.setEnabled(true);
                     }else{
