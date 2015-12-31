@@ -3,5 +3,10 @@ STRING Hello world!
 STRING Example of typing to computer. Nethunter is awesome!
 REM To sleep for five seconds use miliseconds
 SLEEP 5000
-STRING I'm awake!
+STRING I slept for 5 seconds, now I'm awake!
+STRING abcdefghijklmnopqrstuvwxyz
+STRING ABCDEFGHIJKLMNOPQRSTUVWXYZ
+STRING 1234567890-=!@#$%^&*()_+
+STRING []\;',./{}|:"<>?`~
+MOUSE 300 300
 ENTER

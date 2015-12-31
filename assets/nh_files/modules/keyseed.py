@@ -7,8 +7,8 @@ dict_us_bin = {
 	"\x20": "space",
 	"\x21": "left-shift 1", # !
 	"\x22": "left-shift quote", # "
-	"\x23": "hash", # hashtag nethunter
-	"\x24": "left-shift 2", # $
+	"\x23": "left-shift 3", # hashtag nethunter
+	"\x24": "left-shift 4", # $
 	"\x25": "left-shift 5", # %
 	"\x26": "left-shift 7", # &
 	"\x27": "quote", # '
@@ -32,13 +32,13 @@ dict_us_bin = {
 	"\x38": "8",
 	"\x39": "9",
 	# Symbols
-	"\x3a": "colon",             # :
-	"\x3b": "semicolon",         # ;
-	"\x3c": "left-shift comma",  # <
-	"\x3d": "equals",            # =
-	"\x3e": "left-shift period", # >
-	"\x3f": "left-shift slash",  # ?
-	"\x40": "left-shift 2",      # @
+	"\x3a": "left-shift semicolon", # :
+	"\x3b": "semicolon",            # ;
+	"\x3c": "left-shift comma",     # <
+	"\x3d": "equals",               # =
+	"\x3e": "left-shift period",    # >
+	"\x3f": "left-shift slash",     # ?
+	"\x40": "left-shift 2",         # @
 	# Uppercase
 	"\x41": "left-shift a",
 	"\x42": "left-shift b",
@@ -102,7 +102,7 @@ dict_us_bin = {
 	"\x7a": "z",
 	#Shift chars
 	"\x7b": "left-shift lbracket",  # {
-	"\x7c": "left-shif backslash",  # |
+	"\x7c": "left-shift backslash",  # |
 	"\x7d": "left-shift rbracket",  # }
 	"\x7e": "left-shift tilde",     # ~
 	#SDLK_RETURN,0x28

