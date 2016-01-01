@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -29,20 +30,28 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp">
+        android:layout_marginBottom="10dp"
+        android:padding="10dp">
 
         <Switch
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Advanced Options"
             android:id="@+id/nmap_adv_switch"
-            android:textAlignment="center" />
+            android:gravity="top" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send to Anroid terminal"
+            android:id="@+id/nmap_sendto_term"
+            android:checked="false" />
 
     </LinearLayout>
 
@@ -61,8 +70,9 @@
             android:clickable="true"
             android:id="@+id/nmap_adv_layout"
             android:weightSum="1"
-            android:paddingEnd="10dp"
-            android:paddingStart="10dp">
+            android:paddingEnd="20dp"
+            android:paddingStart="10dp"
+            android:gravity="fill">
 
             <Spinner
                 android:layout_width="wrap_content"
@@ -175,11 +185,16 @@
         </LinearLayout>
     </ScrollView>
 
-    <ExpandableListView
-        android:layout_width="match_parent"
+    <ScrollView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/expandableListView"
-        android:layout_gravity="center_horizontal" />
+        android:id="@+id/scrollView6" >
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/nmap_results_listview" />
+    </ScrollView>
 
 
 </LinearLayout>

@@ -3,6 +3,7 @@ package com.offsec.nethunter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -23,6 +24,7 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.offsec.nethunter.utils.NhPaths;
+import com.offsec.nethunter.utils.ShellExecuter;
 
 import java.util.ArrayList;
 
@@ -51,11 +53,15 @@ public class NmapFragment  extends Fragment {
     String Ports;
     String fastmode;
     String topports;
+    Boolean sendtoterminal = false; // Send to terminal is default off
 
     EditText searchBar;
     EditText portsBar;
 
+    // Nethunter paths and executer
     NhPaths nh;
+    private final ShellExecuter exe = new ShellExecuter();
+
 
     public NmapFragment() {
     }
@@ -93,17 +99,6 @@ public class NmapFragment  extends Fragment {
                 }
             }
         });
-
-        final Button searchButton = (Button) rootView.findViewById(R.id.nmap_scan_button);
-        searchButton.setOnClickListener(
-                new View.OnClickListener()
-                {
-                    public void onClick(View view)
-                    {
-                        getCmd();
-                    }
-                });
-
 
         // NMAP Interface Spinner
         Spinner typeSpinner = (Spinner) rootView.findViewById(R.id.nmap_int_spinner);
@@ -211,9 +206,15 @@ public class NmapFragment  extends Fragment {
         });
 
         // Search button
+        final Button searchButton = (Button) rootView.findViewById(R.id.nmap_scan_button);
         addClickListener(R.id.nmap_scan_button, new View.OnClickListener() {
             public void onClick(View v) {
+                if(sendtoterminal){
                 intentClickListener_NH("nmap " + getCmd());
+                } else {
+                    ExecuteNmap mytask = new ExecuteNmap();
+                    mytask.execute();
+                }
             }
         }, rootView);
 
@@ -342,6 +343,18 @@ public class NmapFragment  extends Fragment {
         };
         allCheckbox.setOnClickListener(checkBoxListener);
 
+        // Checkbox for Send to Terminal
+        final CheckBox send2termbox = (CheckBox) rootView.findViewById(R.id.nmap_sendto_term);
+        checkBoxListener = new View.OnClickListener() {
+            public void onClick(View v) {
+                if(send2termbox.isChecked()) {
+                    sendtoterminal = true;
+                }else{
+                    sendtoterminal = false;
+                }
+            }
+        };
+        send2termbox.setOnClickListener(checkBoxListener);
 
         // Checkbox for IPv6
         final CheckBox ipv6box = (CheckBox) rootView.findViewById(R.id.nmap_ipv6_check);
@@ -468,4 +481,23 @@ public class NmapFragment  extends Fragment {
             Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
         }
     }
+
+    public class ExecuteNmap extends AsyncTask<Void, Void, String> {
+        protected void onPreExecute() {
+            // Check for existing db
+        }
+        protected String doInBackground(Void... params) {
+            /*
+            Run nmap with output to XML.  When that is finished we convert to sql file and pass database to /sdcard/
+             */
+            String nmap_command = "nmap -oX /tmp/scan.xml " + getCmd();
+            exe.RunAsRootOutput(nmap_command);
+            // Create Database
+            return "message";
+        }
+        protected void onPostExecute(String msg) {
+            // Use `msg` in code
+        }
+    }
+
 }
