@@ -10,7 +10,7 @@ import argparse
 from decimal import Decimal #for conversion milliseconds -> seconds
 
 parser = argparse.ArgumentParser(description='Converts USB rubber ducky scripts to a Nethunter format', epilog="Quack Quack")
-parser.add_argument('-l', type=str, dest='layout', choices=['us', 'fr', 'de', 'es','sv', 'it', 'uk', 'ru','dk','no','pt','be'], help='Keyboard layout')
+parser.add_argument('-l', type=str, dest='layout', choices=['us', 'fr', 'de', 'es','sv', 'it', 'uk', 'ru', 'dk', 'no', 'pt', 'be'], help='Keyboard layout')
 parser.add_argument('duckyscript', help='Ducky script to convert')
 parser.add_argument('hunterscript', help='Output script')
 
@@ -27,7 +27,7 @@ def duckyRules (source):
 
     for (k,v) in rules.items():
         regex = re.compile(k)
-        tmpfile  = regex.sub(v, tmpfile)
+        tmpfile = regex.sub(v, tmpfile)
 
     return tmpfile
 
@@ -110,14 +110,14 @@ if __name__ == "__main__":
     src = open('tmp.txt', 'r')
     for line in src:
 
-        if line.startswith('SLEEP') or line.startswith('DELAY'):
+        if line.startswith('SLEEP ') or line.startswith('DELAY '):
             line = line.split()
             seconds = (Decimal(line[1]) / Decimal(1000)) % 60
             line[1] = str(seconds)
             line = ' '.join(line)
             dest.write('%s\n' % line.rstrip('\n').strip().lower())
 
-        if line.startswith('DEFAULTDELAY') or line.startswith('DEFAULT_DELAY'):
+        if line.startswith('DEFAULTDELAY ') or line.startswith('DEFAULT_DELAY '):
             line = line.split()
             seconds = (Decimal(line[1]) / Decimal(1000)) % 60
             line[1] = str(seconds)
@@ -125,15 +125,15 @@ if __name__ == "__main__":
             dest.write('%s\n' % line.rstrip('\n').strip())
 
         elif line.startswith('REM'):
-            line = '#' + line.rstrip('\n').strip('REM')
+            line = '#' + line.rstrip('\n')[4:]
             dest.write('%s\n' % line.rstrip('\n').strip())
 
         # Mouse commands
         elif line.startswith('--b'):
             dest.write('%s%s%s\n' % (prefixmouse, line.rstrip('\n').strip(), suffixmouse))
 
-        elif line.startswith('MOUSE'):
-            line = line.strip('MOUSE ')
+        elif line.startswith('MOUSE '):
+            line = line[6:]
             dest.write('%s%s%s\n' % (prefixmouse, line.rstrip('\n').strip(), suffixmouse))
 
         # Shortcuts to Windows Command Line
@@ -260,60 +260,44 @@ if __name__ == "__main__":
             dest.write('sleep 3\n')
 
         # STRING to type and reads \n as ENTER
-        elif line.startswith('STRING'):
+        elif line.startswith('STRING '):
             line = line[7:]
             for char in line:
 
-                if args.layout=="us" : line = dict_us_bin[char]
-                elif args.layout=="fr" : line = dict_fr_bin[char]
-                elif args.layout=="de" : line = dict_de[char]
-                elif args.layout=="es" : line = dict_es[char]
-                elif args.layout=="sv" : line = dict_sv[char]
-                elif args.layout=="it" : line = dict_it[char]
-                elif args.layout=="uk" : line = dict_uk[char]
-                elif args.layout=="ru" : line = dict_ru[iso_ru[char]]
-                elif args.layout=="dk" : line = dict_dk[char]
-                elif args.layout=="no" : line = dict_no[char]
-                elif args.layout=="pt" : line = dict_pt[char]
-                elif args.layout=="be" : line = dict_be[char]
-
                 if char == "\n":  # Add enter if new line automagically
                     dest.write('echo enter | hid-keyboard /dev/hidg0 keyboard\n')
-                    
-                if args.layout=="us" or args.layout=="fr":
-                    dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
                 else:
-                    dest.write('%s%s%s\n' % (prefixinput, line.rstrip('\n').strip(), prefixoutput))
-                    dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n') # releases key
-                    dest.write('sleep 0.03 \n') # Slow things down
+                    if args.layout=="ru":
+                        char = iso_ru[char]
+
+                    line = dicts[args.layout+'_bin'].get(char)
+                    if line not is None:
+                        dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
+                    else:
+                        line = dicts[args.layout][char]
+                        dest.write('%s%s%s\n' % (prefixinput, line.rstrip('\n').strip(), prefixoutput))
+                        dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n') # releases key
+                        dest.write('sleep 0.03 \n') # Slow things down
 
         # TEXT to type and NOT pass \n as ENTER.  Allows text to stay put.
-        elif line.startswith('TEXT'):
+        elif line.startswith('TEXT '):
             line = line.rstrip('\n')
             line = line[5:]
             for char in line:
 
-                if args.layout=="us" : line = dict_us_bin[char]
-                elif args.layout=="fr" : line = dict_fr[char]
-                elif args.layout=="de" : line = dict_de[char]
-                elif args.layout=="es" : line = dict_es[char]
-                elif args.layout=="sv" : line = dict_sv[char]
-                elif args.layout=="it" : line = dict_it[char]
-                elif args.layout=="uk" : line = dict_uk[char]
-                elif args.layout=="ru" : line = dict_ru[iso_ru[char]]
-                elif args.layout=="dk" : line = dict_dk[char]
-                elif args.layout=="no" : line = dict_no[char]
-                elif args.layout=="pt" : line = dict_pt[char]
-                elif args.layout=="be" : line = dict_be[char]
+                if args.layout=="ru":
+                    char = iso_ru[char]
 
-                if args.layout=="us":
+                line = dicts[args.layout+'_bin'].get(char)
+                if line not is None:
                     dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
                 else:
+                    line = dicts[args.layout][char]
                     dest.write('%s%s%s\n' % (prefixinput, line.rstrip('\n').strip(), prefixoutput))
                     dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n') # releases key
                     dest.write('sleep 0.03 \n') # Slow things down
         else:
-            if not line.startswith('SLEEP') or line.startswith('DELAY'):
+            if not line.startswith('SLEEP ') or line.startswith('DELAY '):
                 dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
 
     src.close()
