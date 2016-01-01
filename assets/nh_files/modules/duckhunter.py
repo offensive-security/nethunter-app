@@ -39,6 +39,7 @@ if __name__ == "__main__":
         r'WINDOWS' : 'left-meta',
         r'COMMAND' : 'left-meta',
         r'ALT' : 'left-alt',
+        r'ALTGR' : 'right-alt',
         r'CONTROL' : 'left-ctrl',
         r'CTRL' : 'left-ctrl',
         r'SHIFT' : 'left-shift',
@@ -79,6 +80,8 @@ if __name__ == "__main__":
         r'BREAK' : 'pause',
         r'PAUSE' : 'pause',
         r'SCROLLLOCK' : 'scrolllock',
+        r'BACKSPACE' : 'backspace',
+        r'MOUSE MIDDLECLICK' : '--b3',
         r'MOUSE RIGHTCLICK' : '--b2',
         r'MOUSE LEFTCLICK' : '--b1',
         r'MOUSE leftCLICK' : '--b1', # Regex is lowering LEFT to left so we need to catch it.
@@ -126,7 +129,7 @@ if __name__ == "__main__":
 
         elif line.startswith('REM'):
             line = '#' + line.rstrip('\n')[4:]
-            dest.write('%s\n' % line.rstrip('\n').strip())
+            dest.write('%s\n' % line.strip())
 
         # Mouse commands
         elif line.startswith('--b'):
@@ -172,29 +175,29 @@ if __name__ == "__main__":
             dest.write('sleep 1\n')
             dest.write('echo left-ctrl left-shift return | hid-keyboard /dev/hidg0 keyboard\n')
             dest.write('sleep 2\n')
-            if (args.layout=="us"):
+            if (args.layout == "us"):
                 dest.write('echo left-alt y | hid-keyboard /dev/hidg0 keyboard\n')
-            elif (args.layout=="fr"):
+            elif (args.layout == "fr"):
                 dest.write('echo left-alt o | hid-keyboard /dev/hidg0 keyboard\n')
-            elif (args.layout=="de"):
+            elif (args.layout == "de"):
                 dest.write('echo left-alt j | hid-keyboard /dev/hidg0 keyboard\n')
-            elif (args.layout=="es"):
+            elif (args.layout == "es"):
                 dest.write('echo left-alt s | hid-keyboard /dev/hidg0 keyboard\n')
-            elif (args.layout=="sv"):
+            elif (args.layout == "sv"):
                 dest.write('echo left-alt j | hid-keyboard /dev/hidg0 keyboard\n')
-            elif (args.layout=="it"):
+            elif (args.layout == "it"):
                 dest.write('echo left-alt s | hid-keyboard /dev/hidg0 keyboard\n')
-            elif (args.layout=="uk"):
+            elif (args.layout == "uk"):
                 dest.write('echo left-alt y | hid-keyboard /dev/hidg0 keyboard\n')
-            elif (args.layout=="ru"):
+            elif (args.layout == "ru"):
                 dest.write('echo left-alt d | hid-keyboard /dev/hidg0 keyboard\n')
-            elif (args.layout=="dk"):
+            elif (args.layout == "dk"):
                 dest.write('echo left-alt j | hid-keyboard /dev/hidg0 keyboard\n')
-            elif (args.layout=="no"):
+            elif (args.layout == "no"):
                 dest.write('echo left-alt j | hid-keyboard /dev/hidg0 keyboard\n')
-            elif (args.layout=="pt"):
+            elif (args.layout == "pt"):
                 dest.write('echo left-alt s | hid-keyboard /dev/hidg0 keyboard\n')
-            elif (args.layout=="be"):
+            elif (args.layout == "be"):
                 dest.write('echo left-alt o | hid-keyboard /dev/hidg0 keyboard\n')
             dest.write('sleep 3\n')
 
@@ -233,29 +236,29 @@ if __name__ == "__main__":
             dest.write('echo -ne "\\x00\\x00\\x00\\x28\\x00\\x00\\x00\\x00" > /dev/hidg0\n')
             dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n')
             dest.write('sleep 2\n')
-            if (args.layout=="us"):
+            if (args.layout == "us"):
                 dest.write('echo left-alt y | hid-keyboard /dev/hidg0 keyboard\n')
-            elif (args.layout=="fr"):
+            elif (args.layout == "fr"):
                 dest.write('echo left-alt o | hid-keyboard /dev/hidg0 keyboard\n')
-            elif (args.layout=="de"):
+            elif (args.layout == "de"):
                 dest.write('echo left-alt j | hid-keyboard /dev/hidg0 keyboard\n')
-            elif (args.layout=="es"):
+            elif (args.layout == "es"):
                 dest.write('echo left-alt s | hid-keyboard /dev/hidg0 keyboard\n')
-            elif (args.layout=="sv"):
+            elif (args.layout == "sv"):
                 dest.write('echo left-alt j | hid-keyboard /dev/hidg0 keyboard\n')
-            elif (args.layout=="it"):
+            elif (args.layout == "it"):
                 dest.write('echo left-alt s | hid-keyboard /dev/hidg0 keyboard\n')
-            elif (args.layout=="uk"):
+            elif (args.layout == "uk"):
                 dest.write('echo left-alt y | hid-keyboard /dev/hidg0 keyboard\n')
-            elif (args.layout=="ru"):
+            elif (args.layout == "ru"):
                 dest.write('echo left-alt d | hid-keyboard /dev/hidg0 keyboard\n')
-            elif (args.layout=="dk"):
+            elif (args.layout == "dk"):
                 dest.write('echo left-alt j | hid-keyboard /dev/hidg0 keyboard\n')
-            elif (args.layout=="no"):
+            elif (args.layout == "no"):
                 dest.write('echo left-alt j | hid-keyboard /dev/hidg0 keyboard\n')
-            elif (args.layout=="pt"):
+            elif (args.layout == "pt"):
                 dest.write('echo left-alt s | hid-keyboard /dev/hidg0 keyboard\n')
-            elif (args.layout=="be"):
+            elif (args.layout == "be"):
                 dest.write('echo left-alt o | hid-keyboard /dev/hidg0 keyboard\n')
             dest.write('sleep 3\n')
 
@@ -267,7 +270,7 @@ if __name__ == "__main__":
                 if char == "\n":  # Add enter if new line automagically
                     dest.write('echo enter | hid-keyboard /dev/hidg0 keyboard\n')
                 else:
-                    if args.layout=="ru":
+                    if args.layout == "ru":
                         char = iso_ru[char]
 
                     line = dicts[args.layout+'_bin'].get(char)
@@ -285,17 +288,18 @@ if __name__ == "__main__":
             line = line[5:]
             for char in line:
 
-                if args.layout=="ru":
-                    char = iso_ru[char]
+                if char != '\n':
+                    if args.layout == "ru":
+                        char = iso_ru[char]
 
-                line = dicts[args.layout+'_bin'].get(char)
-                if line not is None:
-                    dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
-                else:
-                    line = dicts[args.layout][char]
-                    dest.write('%s%s%s\n' % (prefixinput, line.rstrip('\n').strip(), prefixoutput))
-                    dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n') # releases key
-                    dest.write('sleep 0.03 \n') # Slow things down
+                    line = dicts[args.layout+'_bin'].get(char)
+                    if line not is None:
+                        dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
+                    else:
+                        line = dicts[args.layout][char]
+                        dest.write('%s%s%s\n' % (prefixinput, line.rstrip('\n').strip(), prefixoutput))
+                        dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n') # releases key
+                        dest.write('sleep 0.03 \n') # Slow things down
         else:
             if not line.startswith('SLEEP ') or line.startswith('DELAY '):
                 dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
