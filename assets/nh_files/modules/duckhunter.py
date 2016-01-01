@@ -274,7 +274,7 @@ if __name__ == "__main__":
                         char = iso_ru[char]
 
                     line = dicts[args.layout+'_bin'].get(char)
-                    if line not is None:
+                    if line is not None:
                         dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
                     else:
                         line = dicts[args.layout][char]
@@ -293,7 +293,7 @@ if __name__ == "__main__":
                         char = iso_ru[char]
 
                     line = dicts[args.layout+'_bin'].get(char)
-                    if line not is None:
+                    if line is not None:
                         dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
                     else:
                         line = dicts[args.layout][char]
