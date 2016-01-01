@@ -251,9 +251,9 @@ dict_fr_bin = {
 	# Symbols
 	"\x3a": "period",               # :
 	"\x3b": "comma",                # ;
-	"\x3c": "left-shift comma", # <
+	"\x3c": "\\x00\\x00\\x00\\x64\\x00\\x00\\x00\\x00", # <
 	"\x3d": "equals",               # =
-	"\x3e": "left-shift period", # >
+	"\x3e": "\\x20\\x00\\x00\\x64\\x00\\x00\\x00\\x00", # >
 	"\x3f": "left-shift m",         # ?
 	"\x40": "right-alt 0",          # @
 	# Uppercase
