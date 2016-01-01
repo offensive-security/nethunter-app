@@ -265,7 +265,7 @@ if __name__ == "__main__":
             for char in line:
 
                 if args.layout=="us" : line = dict_us_bin[char]
-                elif args.layout=="fr" : line = dict_fr[char]
+                elif args.layout=="fr" : line = dict_fr_bin[char]
                 elif args.layout=="de" : line = dict_de[char]
                 elif args.layout=="es" : line = dict_es[char]
                 elif args.layout=="sv" : line = dict_sv[char]
@@ -280,7 +280,7 @@ if __name__ == "__main__":
                 if char == "\n":  # Add enter if new line automagically
                     dest.write('echo enter | hid-keyboard /dev/hidg0 keyboard\n')
                     
-                if args.layout=="us":
+                if args.layout=="us" or args.layout=="fr":
                     dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
                 else:
                     dest.write('%s%s%s\n' % (prefixinput, line.rstrip('\n').strip(), prefixoutput))
