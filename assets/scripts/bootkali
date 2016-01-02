@@ -290,14 +290,16 @@ fi
       #
       # Usage: bootkali macchanger random <interface>
 
-      if [ "$1" == "macchanger" ] && [ "$2" == "random" ]; then
-         $busybox chroot $mnt sudo /usr/bin/macchanger --random $3
+      if [ "$1" == "macchanger_random" ]; then
+         $busybox chroot $mnt sudo /usr/bin/macchanger --random $2
       fi
 
       if [ "$1" == "macchanger_custom" ]; then
          $busybox chroot $mnt sudo /usr/bin/macchanger --mac=$2 $3
       fi
-
+      if [ "$1" == "macchanger_original" ]; then
+         $busybox chroot $mnt sudo /usr/bin/macchanger --permanent $2
+      fi
       #KALIMENU
 
       if [ "$1" == "kalimenu" ]; then
