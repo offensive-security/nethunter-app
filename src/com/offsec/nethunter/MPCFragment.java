@@ -53,8 +53,8 @@ public class MPCFragment extends Fragment {
         // Payload Type Spinner
         Spinner typeSpinner = (Spinner) rootView.findViewById(R.id.mpc_type_spinner);
         ArrayAdapter<CharSequence> typeAdapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.mpc_type_array, android.R.layout.simple_spinner_item);
-        typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                R.array.mpc_type_array, R.layout.payload_maker_item);
+        //typeAdapter.setDropDownViewResource(R.layout.payload_maker_item);
         typeSpinner.setAdapter(typeAdapter);
         //Give it a initial value: this value stands until onItemSelected is fired
         // usually the 1st value of spinner
@@ -112,8 +112,8 @@ public class MPCFragment extends Fragment {
         // Payload Spinner
         Spinner payloadSpinner = (Spinner) rootView.findViewById(R.id.mpc_payload_spinner);
         ArrayAdapter<CharSequence> payloadAdapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.mpc_payload_array, android.R.layout.simple_spinner_item);
-        typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                R.array.mpc_payload_array, R.layout.payload_maker_item);
+        //typeAdapter.setDropDownViewResource(R.layout.payload_maker_item);
         payloadSpinner.setAdapter(payloadAdapter);
         //Give it a initial value: this value stands until onItemSelected is fired
         payloadVar = "msf";
@@ -139,8 +139,8 @@ public class MPCFragment extends Fragment {
         // Callback Spinner
         Spinner callbackSpinner = (Spinner) rootView.findViewById(R.id.mpc_callback_spinner);
         ArrayAdapter<CharSequence> callbackAdapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.mpc_callback_array, android.R.layout.simple_spinner_item);
-        typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                R.array.mpc_callback_array, R.layout.payload_maker_item);
+        //typeAdapter.setDropDownViewResource(R.layout.payload_maker_item);
         callbackSpinner.setAdapter(callbackAdapter);
         //Give it a initial value: this value stands until onItemSelected is fired
         callbackVar = "reverse";
@@ -165,8 +165,8 @@ public class MPCFragment extends Fragment {
         // Stager Spinner
         Spinner stageSpinner = (Spinner) rootView.findViewById(R.id.mpc_stage_spinner);
         ArrayAdapter<CharSequence> stagerAdapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.mpc_stage_array, android.R.layout.simple_spinner_item);
-        typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                R.array.mpc_stage_array, R.layout.payload_maker_item);
+        //typeAdapter.setDropDownViewResource(R.layout.payload_maker_item);
         stageSpinner.setAdapter(stagerAdapter);
         //Give it a initial value: this value stands until onItemSelected is fired
         stagerVar = "staged";
@@ -192,8 +192,8 @@ public class MPCFragment extends Fragment {
         // Callback Type SPinner
         Spinner callbackTypeSpinner = (Spinner) rootView.findViewById(R.id.mpc_callbacktype_spinner);
         ArrayAdapter<CharSequence> callbackTypeAdapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.mpc_callbacktype_array, android.R.layout.simple_spinner_item);
-        typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                R.array.mpc_callbacktype_array, R.layout.payload_maker_item);
+        //typeAdapter.setDropDownViewResource(R.layout.payload_maker_item);
         callbackTypeSpinner.setAdapter(callbackTypeAdapter);
         //Give it a initial value: this value stands until onItemSelected is fired
         callbackTypeVar = "tcp";
