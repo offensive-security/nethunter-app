@@ -219,7 +219,6 @@ public class MacchangerFragment extends Fragment {
                 final String macsArray = getMacValues();
                 final ShellExecuter exe = new ShellExecuter();
                 if (macModeSpinner.getSelectedItem().toString().equals("Random MAC")) {
-
                     if (selectedDevice.equals("wlan0")) {
                         // random wlan0
                         command = "settings put global airplane_mode_on 1"+
@@ -267,9 +266,13 @@ public class MacchangerFragment extends Fragment {
                 }
 
                 if (macModeSpinner.getSelectedItem().toString().equals("Custom MAC")) {
-
+                    if (macsArray != null) {
+                        if(macsArray.length() != 17){
+                            nh.showMessage("Invalid custom MAC. Review it.");
+                            return;
+                        }
+                    }
                     if (selectedDevice.equals("wlan0")) {
-
                         command = "settings put global airplane_mode_on 1"+
                                 " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true"+
                                 " && sleep 3"+
