@@ -1605,7 +1605,7 @@ iso_ru = {
 }
 
 def findinlist(byte, locale):
-    if dicts[locale].get(byte) : print "#crap, couldn't find ["+byte +"]. Perhaps try adding it to the list."
+	if dicts[locale].get(byte) : print "#crap, couldn't find ["+byte +"]. Perhaps try adding it to the list."
 	else : print '''echo -ne "''' +dicts[locale][byte]+ '''" > /dev/hidg0'''
 	print '''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
 
@@ -1761,4 +1761,4 @@ def enterb():
 #	win7cmd_elevated("fr")
 
 #if __name__ == "__main__":
-#    main()
+#	main()
