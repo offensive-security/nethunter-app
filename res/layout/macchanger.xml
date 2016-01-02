@@ -33,7 +33,6 @@
             android:id="@+id/interface_opts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:entries="@array/interface_opts"
             android:prompt="@string/interface_select"
             android:textSize="18sp" />
 
@@ -118,9 +117,9 @@
                 android:id="@+id/mac1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:digits="0123456789ABCDEF"
+                android:digits="0123456789abcdef"
                 android:hint="@string/TwoMACDigits"
-                android:inputType="textNoSuggestions|textCapCharacters"
+                android:inputType="textNoSuggestions"
                 android:maxLength="2" />
 
             <TextView
@@ -133,9 +132,9 @@
                 android:id="@+id/mac2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:digits="0123456789ABCDEF"
+                android:digits="0123456789abcdef"
                 android:hint="@string/TwoMACDigits"
-                android:inputType="textNoSuggestions|textCapCharacters"
+                android:inputType="textNoSuggestions"
                 android:maxLength="2" />
 
             <TextView
@@ -148,9 +147,9 @@
                 android:id="@+id/mac3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:digits="0123456789ABCDEF"
+                android:digits="0123456789abcdef"
                 android:hint="@string/TwoMACDigits"
-                android:inputType="textNoSuggestions|textCapCharacters"
+                android:inputType="textNoSuggestions"
                 android:maxLength="2" />
 
             <TextView
@@ -163,9 +162,9 @@
                 android:id="@+id/mac4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:digits="0123456789ABCDEF"
+                android:digits="0123456789abcdef"
                 android:hint="@string/TwoMACDigits"
-                android:inputType="textNoSuggestions|textCapCharacters"
+                android:inputType="textNoSuggestions"
                 android:maxLength="2" />
 
             <TextView
@@ -178,9 +177,9 @@
                 android:id="@+id/mac5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:digits="0123456789ABCDEF"
+                android:digits="0123456789abcdef"
                 android:hint="@string/TwoMACDigits"
-                android:inputType="textNoSuggestions|textCapCharacters"
+                android:inputType="textNoSuggestions"
                 android:maxLength="2" />
 
             <TextView
@@ -193,9 +192,9 @@
                 android:id="@+id/mac6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:digits="0123456789ABCDEF"
+                android:digits="0123456789abcdef"
                 android:hint="@string/TwoMACDigits"
-                android:inputType="textNoSuggestions|textCapCharacters"
+                android:inputType="textNoSuggestions"
                 android:maxLength="2" />
         </LinearLayout>
 
