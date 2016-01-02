@@ -175,10 +175,14 @@
                 android:id="@+id/nmap_scan_tech_spinner" />
 
             <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="109dp"
+                android:layout_height="48dp"
                 android:text="@string/nmap_udpscan"
                 android:id="@+id/nmap_udp_checkbox" />
+
+            <Space
+                android:layout_width="1dp"
+                android:layout_height="30dp"/>
 
 
         </LinearLayout>
