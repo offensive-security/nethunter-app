@@ -1,13 +1,12 @@
 package com.offsec.nethunter;
 
 
-import android.app.Activity;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -21,6 +20,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -30,15 +30,18 @@ import android.widget.TextView;
 import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 
 public class MacchangerFragment extends Fragment {
 
 
     SharedPreferences sharedpreferences;
-
-
     NhPaths nh;
     private static final String ARG_SECTION_NUMBER = "section_number";
+
     public MacchangerFragment() {
 
     }
@@ -50,18 +53,40 @@ public class MacchangerFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (isAdded()) {
-            nh = new NhPaths(null);
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.macchanger, menu);
+
+    }
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        if(getView() == null){
+            return;
+        }
+        View v = getView();
+        final Spinner interfaceSpinner = (Spinner) v.findViewById(R.id.interface_opts);
+        String selectedInterface = interfaceSpinner.getSelectedItem().toString();
+        String cleanInterface = selectedInterface.split(" ")[0];
+        menu.findItem(R.id.reset_mac).setTitle(String.format("Reset %s MAC", cleanInterface));
+
+
+    }
+    // menu options
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.reset_mac:
+                resetMac();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+        nh = new NhPaths();
         setHasOptionsMenu(true);
         View rootView = inflater.inflate(R.layout.macchanger, container, false);
         // get views
@@ -69,15 +94,15 @@ public class MacchangerFragment extends Fragment {
         final Spinner macModeSpinner = (Spinner) rootView.findViewById(R.id.macchanger_opts);
         final Button setMacButton = (Button) rootView.findViewById(R.id.set_mac_button);
         final View mac_layout = rootView.findViewById(R.id.mac_lay1);
+        String[] ifacesList = getResources().getStringArray(R.array.interface_opts);
+        if(getDeviceName().equalsIgnoreCase("flo") || getDeviceName().equalsIgnoreCase("deb") || getDeviceName().equalsIgnoreCase("mako")){
+            ifacesList = delFromArray(ifacesList,ifacesList.length-2);
+        } else {
+            ifacesList = delFromArray(ifacesList, ifacesList.length -1);
 
-        // edittext for the custom MAC addr
-        final EditText mac1 = (EditText) rootView.findViewById(R.id.mac1);
-        final EditText mac2 = (EditText) rootView.findViewById(R.id.mac2);
-        final EditText mac3 = (EditText) rootView.findViewById(R.id.mac3);
-        final EditText mac4 = (EditText) rootView.findViewById(R.id.mac4);
-        final EditText mac5 = (EditText) rootView.findViewById(R.id.mac5);
-        final EditText mac6 = (EditText) rootView.findViewById(R.id.mac6);
-
+        }
+        interfaceSpinner.setAdapter(new ArrayAdapter<>(getContext(),
+                R.layout.macchanger_ifaces_item, ifacesList));
         final TextView macResult = (TextView) rootView.findViewById(R.id.macResult);
 
         final TextView currMac = (TextView) rootView.findViewById(R.id.currMac);
@@ -126,10 +151,10 @@ public class MacchangerFragment extends Fragment {
                 // update the button text
 
                 if (macModeSpinner.getSelectedItem().toString().equals("Random MAC")) {
-                    setMacButton.setText("Set Random MAC on " + cleanInterface);
+                    setMacButton.setText(String.format("Set Random MAC on %s", cleanInterface));
                 }
                 if (macModeSpinner.getSelectedItem().toString().equals("Custom MAC")) {
-                    setMacButton.setText("Set Custom MAC on " + cleanInterface);
+                    setMacButton.setText(String.format("Set Custom MAC on %s", cleanInterface));
                 }
             }
 
@@ -155,7 +180,7 @@ public class MacchangerFragment extends Fragment {
 
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-
+                Log.d("randMac", randomMACAddress());
                 // update sharedpreferences
                 String items = macModeSpinner.getSelectedItem().toString();
                 Editor editor = sharedpreferences.edit();
@@ -164,13 +189,13 @@ public class MacchangerFragment extends Fragment {
 
                 // update button
                 if (items.equals(getResources().getString(R.string.randomMAC))) {
-                    setMacButton.setText("Set Random MAC on " + interfaceSpinner.getSelectedItem().toString().split(" ")[0]);
+                    setMacButton.setText(String.format("Set Random MAC on %s", interfaceSpinner.getSelectedItem().toString().split(" ")[0]));
                     mac_layout.setVisibility(View.GONE); // hide the linear layout
                     macResult.setText("");
                 }
 
                 if (items.equals(getResources().getString(R.string.customMAC))) {
-                    setMacButton.setText("Set Custom MAC on " + interfaceSpinner.getSelectedItem().toString().split(" ")[0]);
+                    setMacButton.setText(String.format("Set Custom MAC on %s", interfaceSpinner.getSelectedItem().toString().split(" ")[0]));
                     mac_layout.setVisibility(View.VISIBLE); // show the linear layout
                     macResult.setText("");
 
@@ -191,23 +216,50 @@ public class MacchangerFragment extends Fragment {
                 // Usage: bootkali macchanger <mac address> <interface> || Random: bootkali macchanger random <interface>
                 String command;
                 final String selectedDevice = interfaceSpinner.getSelectedItem().toString().split(" ")[0];
-                final String[] macsArray = getMacValues();
+                final String macsArray = getMacValues();
                 final ShellExecuter exe = new ShellExecuter();
                 if (macModeSpinner.getSelectedItem().toString().equals("Random MAC")) {
 
                     if (selectedDevice.equals("wlan0")) {
-                        macResult.setText(getResources().getString(R.string.wlanNote));
+                        // random wlan0
+                        command = "settings put global airplane_mode_on 1"+
+                                " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true"+
+                                " && sleep 3"+
+                                " && ip link set dev wlan0 address "+
+                                randomMACAddress() +
+                                " && settings put global airplane_mode_on 0"+
+                                " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false";
+                        final String finalCommand = command;
+                        new Thread(new Runnable() {
+                            public void run() {
+                                exe.RunAsRootWithException(finalCommand);
+                                macModeSpinner.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        new android.os.Handler().postDelayed(
+                                                new Runnable() {
+                                                    public void run() {
+                                                        nh.showMessage("Refreshing the current MAC.");
+                                                        refreshMAc();
+                                                    }
+                                                }, 1000);
+                                    }
+                                });
+                            }
+                        }).start();
                     } else {
-                        exe.Executer("su -c 'busybox ifconfig " + selectedDevice + " down'");
+                        exe.RunAsRootWithException("busybox ifconfig " + selectedDevice + " down");
 
-                        command = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali macchanger random '" + selectedDevice;
-                        macResult.setText(exe.Executer(command));
+                        command = "bootkali macchanger_random " + selectedDevice;
+                        exe.RunAsRootWithException(command);
+                        // macResult.setText();
 
                         new android.os.Handler().postDelayed(
                                 new Runnable() {
                                     public void run() {
-                                        exe.Executer("su -c 'busybox ifconfig " + selectedDevice + " up'");
-                                        nh.showMessage("Refresh the current MAC.");
+                                        exe.RunAsRootWithException("busybox ifconfig " + selectedDevice + " up");
+                                        nh.showMessage("Refreshing the current MAC.");
+                                        refreshMAc();
                                     }
                                 }, 500);
                     }
@@ -217,49 +269,45 @@ public class MacchangerFragment extends Fragment {
                 if (macModeSpinner.getSelectedItem().toString().equals("Custom MAC")) {
 
                     if (selectedDevice.equals("wlan0")) {
-                        if (getDeviceName().equals("A0001")) {
-                            macResult.setText("Spoofing the wlan0 MAC in your device is not supported yet.");
-                            return;
-                        }
-                        WifiManager wifi = (WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE);
-                        if (wifi.isWifiEnabled()) {
-                            wifi.setWifiEnabled(false);
-                        }
-                        if (macsArray[0].length() != 17) {
-                            macResult.setText("MAC incomplete, review it.");
-                            return;
-                        }
 
-                        command = "echo -ne \"" + macsArray[1] + "\" > /persist/wifi/.macaddr && chmod 644 /persist/wifi/.macaddr"; // pipe the new mac to a file and chmod it.
-
-
-                        exe.RunAsRootOutput(command);
-
-                        new android.os.Handler().postDelayed(
-                                new Runnable() {
+                        command = "settings put global airplane_mode_on 1"+
+                                " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true"+
+                                " && sleep 3"+
+                                " && ip link set dev wlan0 address "+
+                                macsArray+
+                                " && settings put global airplane_mode_on 0"+
+                                " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false";
+                        final String finalCommand = command;
+                        new Thread(new Runnable() {
+                            public void run() {
+                                exe.RunAsRootWithException(finalCommand);
+                                macModeSpinner.post(new Runnable() {
+                                    @Override
                                     public void run() {
-
-                                        WifiManager wifi = (WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE);
-                                        wifi.setWifiEnabled(true);
-                                        macResult.setText("MAC changed on " + selectedDevice + " to " + macsArray[0] + "\n\n You can refresh the current MAC once the WIFI conection is restored.");
+                                        new android.os.Handler().postDelayed(
+                                                new Runnable() {
+                                                    public void run() {
+                                                        nh.showMessage("Refreshing the current MAC.");
+                                                        refreshMAc();
+                                                    }
+                                                }, 1000);
                                     }
-                                }, 2000);
+                                });
+                            }
+                        }).start();
 
                     } else {
-
-
-                        exe.Executer("su -c busybox ifconfig " + selectedDevice + " down");
-
-                        command = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali macchanger_custom " + macsArray[0] + " " + selectedDevice;
-                        macResult.setText(exe.RunAsRootOutput(command));
+                        exe.RunAsRootWithException("busybox ifconfig " + selectedDevice + " down");
+                        command = "bootkali macchanger_custom " + macsArray + " " + selectedDevice;
+                        exe.RunAsRootWithException(command);
+                        // macResult.setText();
 
                         new android.os.Handler().postDelayed(
                                 new Runnable() {
                                     public void run() {
-
-                                        exe.Executer("su -c 'busybox ifconfig " + selectedDevice + " up'");
-                                        nh.showMessage("Refresh the current MAC");
-
+                                        exe.RunAsRootWithException("busybox ifconfig " + selectedDevice + " up");
+                                        nh.showMessage("Refreshing the current MAC.");
+                                        refreshMAc();
                                     }
                                 }, 500);
 
@@ -267,76 +315,64 @@ public class MacchangerFragment extends Fragment {
                 }
             }
 
-            private String[] getMacValues() {
-                String delimiter_nexus = "\\x";
-                String delimiter_default = ":";
 
-                String _m1 = mac1.getText().toString();
-                String _m2 = mac2.getText().toString();
-                String _m3 = mac3.getText().toString();
-                String _m4 = mac4.getText().toString();
-                String _m5 = mac5.getText().toString();
-                String _m6 = mac6.getText().toString();
-                // weird "no cat" mac
-                String nexusMac = delimiter_nexus +
-                        _m1 + delimiter_nexus +
-                        _m2 + delimiter_nexus +
-                        _m3 + delimiter_nexus +
-                        _m4 + delimiter_nexus +
-                        _m5 + delimiter_nexus +
-                        _m6;
-                // beautifyed mac
-                String defaultMac = _m1 + delimiter_default +
-                        _m2 + delimiter_default +
-                        _m3 + delimiter_default +
-                        _m4 + delimiter_default +
-                        _m5 + delimiter_default +
-                        _m6;
-
-                return new String[]{defaultMac, nexusMac};
-            }
         });
-        if (!getDeviceName().equals("A0001")) {
-            doInitialSetup(rootView);
-        }
+
         return rootView;
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.macchanger, menu);
-    }
-
-
-    public void onPrepareOptionsMenu(Menu menu) {
-
-
-        getActivity().invalidateOptionsMenu();
-    }
-
-    // menu options
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.load_saved_mac:
-                loadSavedMacDialog();
-                return true;
-            case R.id.save_mac:
-                saveMacDialog();
-                return true;
-            case R.id.reset_mac:
-                resetMac();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+    private String[] delFromArray(String[] originalArr, int itemid){
+        List<String> templist = new ArrayList<>();
+        for(int i= 0; i<originalArr.length; i++) {
+            if(itemid != i) {
+                templist.add(originalArr[i]);
+            }
         }
+       return templist.toArray(new String[templist.size()]);
     }
+    private String getMacValues() {
+        if(getView() == null){
+            return null;
+        }
+        View v = getView();
+        // edittext for the custom MAC addr
+        final EditText mac1 = (EditText) v.findViewById(R.id.mac1);
+        final EditText mac2 = (EditText) v.findViewById(R.id.mac2);
+        final EditText mac3 = (EditText) v.findViewById(R.id.mac3);
+        final EditText mac4 = (EditText) v.findViewById(R.id.mac4);
+        final EditText mac5 = (EditText) v.findViewById(R.id.mac5);
+        final EditText mac6 = (EditText) v.findViewById(R.id.mac6);
+
+        String delimiter_default = ":";
+
+        return mac1.getText().toString() + delimiter_default +
+                mac2.getText().toString() + delimiter_default +
+                mac3.getText().toString() + delimiter_default +
+                mac4.getText().toString() + delimiter_default +
+                mac5.getText().toString() + delimiter_default +
+                mac6.getText().toString();
+    }
+
+    private void refreshMAc(){
+        if(getView() == null){
+            return;
+        }
+        final Spinner interfaceSpinner = (Spinner) getView().findViewById(R.id.interface_opts);
+        final TextView currMac = (TextView) getView().findViewById(R.id.currMac);
+        final Button setMacButton = (Button) getView().findViewById(R.id.set_mac_button);
+        String selectedInterface = interfaceSpinner.getSelectedItem().toString();
+        String cleanInterface = selectedInterface.split(" ")[0];
+        getCurrentMac(cleanInterface, currMac, setMacButton);
+    }
+
+
+
+
 
     public void getCurrentMac(final String theDevice, final TextView currMac, final Button setMacButton) {
         //in the bg
 
-        currMac.setText("Reading " + theDevice);
+        currMac.setText(String.format("Reading %s", theDevice));
 
         new Thread(new Runnable() {
             public void run() {
@@ -350,15 +386,15 @@ public class MacchangerFragment extends Fragment {
                     String fileMac = "/sys/class/net/" + theDevice + "/address";
                     final String _res;
 
-
                     _res = exe.ReadFile_SYNC(fileMac); // get the response
 
                     currMac.post(new Runnable() {
                         public void run() {
                             if (_res.equals("")) {
-                                currMac.setText("MAC not found");
+                                String notFound = "MAC not found";
+                                currMac.setText(notFound);
                                 setMacButton.setEnabled(false);
-                                setMacButton.setText("Device or MAC not detected"); //interface is down
+                                setMacButton.setText(String.format("%s not detected", theDevice)); //interface is down| not plugged etc
                             } else {
 
                                 setMacButton.setEnabled(true);
@@ -370,11 +406,11 @@ public class MacchangerFragment extends Fragment {
 
                                 // update button
                                 if (slt.equals("Random MAC")) {
-                                    setMacButton.setText("Set Random MAC on " + theDevice);
+                                    setMacButton.setText(String.format("Set Random MAC on %s", theDevice));
                                 }
 
                                 if (slt.equals("Custom MAC")) {
-                                    setMacButton.setText("Set Custom MAC on " + theDevice);
+                                    setMacButton.setText(String.format("Set Custom MAC on %s", theDevice));
 
                                 }
                             }
@@ -385,7 +421,7 @@ public class MacchangerFragment extends Fragment {
                 } catch (final Exception e) {
                     currMac.post(new Runnable() {
                         public void run() {
-                            currMac.setText("Error getting " + theDevice + " MAC: " + e);
+                            currMac.setText(String.format("Error getting %s MAC: %s", theDevice, e));
                         }
                     });
                 }
@@ -395,138 +431,74 @@ public class MacchangerFragment extends Fragment {
     }
 
     public void resetMac() {
-
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Macchanger Setup:");
-        builder.setMessage(R.string.wlan0ResetInfo);
-        builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                ShellExecuter exe = new ShellExecuter();
-                String command2 = "rm -rf /persist/wifi && reboot";  //reset original device mac && reboot
-                exe.RunAsRootOutput(command2);
-
-            }
-
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-
-        builder.show();
-
-    }
-
-    public void doInitialSetup(final View rootView) {
-        new Thread(new Runnable() {
-
-            public void run() {
-
-                final ShellExecuter exe = new ShellExecuter();
-                final String command = "if [ -d /persist/wifi/ ];then echo 1; fi"; //check the dir existence
-                final String _res = exe.RunAsRootOutput(command);
-                rootView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!_res.equals("1")) {
-
-                            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                            builder.setTitle("Macchanger Setup:");
-                            builder.setMessage("To make this setup you only need the wifi up and connected to a network.\n\nTHE APP WILL DO THE REST\n\nWe need to create a folder and a file to get the service working well, this also saves a copy of the original mac.\n\nLocation:\n/sdcard/kali-nh/device_mac_backup\n\nAfter this, the device will be rebooted.\n\nThe setup is only needed one time");
-                            builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
-
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                    makeWifiDir();
-
-                                }
-
-                            });
-                            builder.show();
-
-                        }
-                    }
-                });
-
-            }
-
-        }).start();
-
-
-
-    }
-
-    public void makeWifiDir() {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        final AlertDialog stepsDialog = builder.create();
-        stepsDialog.setMessage("Creating needed folders...");
-        stepsDialog.show();
-        try {
-
-            final ShellExecuter exe = new ShellExecuter();
-            stepsDialog.setMessage("CDM: \nmkdir -p /persist/wifi");
-            String command2 = "mkdir -p /persist/wifi";  //create a dir
-            exe.RunAsRootOutput(command2);
-            stepsDialog.setMessage("Directory creation: OK");
-
-            new android.os.Handler().postDelayed(
-                    new Runnable() {
-                        public void run() {
-                            Log.i("tag", "This'll run 500 milliseconds later");
-                            backupMac(stepsDialog);
-
-                        }
-                    }, 1000);
-
-        } catch (final Exception e) {
-
-            stepsDialog.setMessage("Error initial setup in @checkDir: \n\n" + e);
-
+        if(getView() == null){
+            return;
         }
+        View v = getView();
+        final Spinner interfaceSpinner = (Spinner) v.findViewById(R.id.interface_opts);
+        String selectedInterface = interfaceSpinner.getSelectedItem().toString();
+        final String cleanInterface = selectedInterface.split(" ")[0];
+        final ShellExecuter exe = new ShellExecuter();
+        if(cleanInterface.equals("wlan0")){
 
-    }
+            nh.showMessage("Resetting " + cleanInterface + " MAC");
+            final String command = "settings put global airplane_mode_on 1"+
+                    " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true"+
+                    " && sleep 1"+
+                    " && settings put global airplane_mode_on 0"+
+                    " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false";
 
-    public void backupMac(final AlertDialog stepsDialog) {
-
-        stepsDialog.setMessage("Saving a copy of the default mac...");
-        try {
-
-            final ShellExecuter exe = new ShellExecuter();
-            String command = "cat /sys/class/net/wlan0/address > /sdcard/device_mac_backup";
-            final String _res;
-
-            _res = exe.RunAsRootOutput(command); // get the response
-
-            stepsDialog.setMessage("Saving MAC : OK\n\nLOCATION: /sdcard/kali-nh/device_mac_backup" + _res);
-            //thasts like a timeout
-            new android.os.Handler().postDelayed(
-                    new Runnable() {
+            new Thread(new Runnable() {
+                public void run() {
+                    exe.RunAsRootWithException(command);
+                    interfaceSpinner.post(new Runnable() {
+                        @Override
                         public void run() {
-                            stepsDialog.setMessage("All done! REBOOTING DEVICE...");
-
                             new android.os.Handler().postDelayed(
                                     new Runnable() {
                                         public void run() {
-                                            stepsDialog.dismiss();
-                                            String command = "reboot";
-                                            exe.RunAsRootOutput(command);
+                                            nh.showMessage("Refreshing the current MAC.");
+                                            refreshMAc();
                                         }
                                     }, 1000);
                         }
-                    }, 1000);
+                    });
+                }
+            }).start();
+        } else {
+            nh.showMessage("Resetting " + cleanInterface + " MAC");
+            exe.RunAsRootWithException("busybox ifconfig " + cleanInterface + " down");
 
-        } catch (final Exception e) {
+            String resetCmd = "bootkali macchanger_original " + cleanInterface;
+            exe.RunAsRootWithException(resetCmd);
 
-            stepsDialog.setMessage("Error initial setup in @backUpMac: \n\n" + e);
+            new android.os.Handler().postDelayed(
+                    new Runnable() {
+                        public void run() {
+                            exe.RunAsRootWithException("busybox ifconfig " + cleanInterface + " up");
+                            nh.showMessage("Refreshing the current MAC.");
+                            refreshMAc();
+                        }
+                    }, 500);
 
         }
+    }
 
+    private String randomMACAddress(){
+        Random rand = new Random();
+        byte[] macAddr = new byte[6];
+        rand.nextBytes(macAddr);
+        macAddr[0] = (byte)(macAddr[0] & (byte)254);
+        StringBuilder sb = new StringBuilder(18);
+        for(byte b : macAddr){
+
+            if(sb.length() > 0)
+                sb.append(":");
+
+            sb.append(String.format("%02x", b));
+        }
+
+        return sb.toString();
     }
 
     public void saveMacDialog() {
