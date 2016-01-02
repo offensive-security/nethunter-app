@@ -267,7 +267,7 @@ if __name__ == "__main__":
             line = line[7:]
             for char in line:
 
-                if char == "\n":  # Add enter if new line automagically
+                if char == '\n':  # Add enter if new line automagically
                     dest.write('echo enter | hid-keyboard /dev/hidg0 keyboard\n')
                 else:
                     if args.layout == "ru":
@@ -275,7 +275,11 @@ if __name__ == "__main__":
 
                     line = dicts[args.layout+'_bin'].get(char)
                     if line is not None:
-                        dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
+                        if isinstance(line, str):
+                            dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
+                        else:
+                            for elem in line:
+                                dest.write('%s%s%s\n' % (prefix, elem.rstrip('\n').strip(), suffix))
                     else:
                         line = dicts[args.layout][char]
                         dest.write('%s%s%s\n' % (prefixinput, line.rstrip('\n').strip(), prefixoutput))
@@ -294,7 +298,11 @@ if __name__ == "__main__":
 
                     line = dicts[args.layout+'_bin'].get(char)
                     if line is not None:
-                        dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
+                        if isinstance(line, str):
+                            dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
+                        else:
+                            for elem in line:
+                                dest.write('%s%s%s\n' % (prefix, elem.rstrip('\n').strip(), suffix))
                     else:
                         line = dicts[args.layout][char]
                         dest.write('%s%s%s\n' % (prefixinput, line.rstrip('\n').strip(), prefixoutput))
