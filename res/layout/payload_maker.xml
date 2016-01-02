@@ -75,28 +75,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:entries="@array/mpc_payload_array"
-            android:padding="10dp" />
+            />
 
         <Spinner
             android:id="@+id/mpc_callback_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:entries="@array/mpc_callback_array"
-            android:padding="10dp" />
+            />
 
         <Spinner
             android:id="@+id/mpc_stage_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:entries="@array/mpc_stage_array"
-            android:padding="10dp" />
+             />
 
         <Spinner
             android:id="@+id/mpc_callbacktype_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:entries="@array/mpc_callbacktype_array"
-            android:padding="10dp" />
+             />
 
         <Button
             android:id="@+id/mpc_GenerateSDCARD"
