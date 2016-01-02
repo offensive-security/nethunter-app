@@ -1,16 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/load_saved_mac"
-        android:title="@string/load_saved_mac"
-        android:icon="@android:drawable/ic_menu_set_as"
-        app:showAsAction="never"  />
-    <item
-        android:id="@+id/save_mac"
-        android:title="@string/save_mac"
-        android:icon="@android:drawable/ic_menu_set_as"
-        app:showAsAction="never"  />
-    <item
         android:id="@+id/reset_mac"
         android:title="@string/reset_mac"
         android:icon="@android:drawable/ic_menu_set_as"
