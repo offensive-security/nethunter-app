@@ -288,7 +288,7 @@ dicts = {
         "\x5d": "right-alt minus", # ]
         "\x5e": "right-alt 9",     # ^
         "\x5f": "8",               # _
-        "\x60": "right-alt 7",     # `
+        "\x60": ["right-alt 7", "space"], # `
         # Lowercase
         "\x61": "q",
         "\x62": "b",
@@ -320,7 +320,7 @@ dicts = {
         "\x7b": "right-alt 4",      # {
         "\x7c": "right-alt 6",      # |
         "\x7d": "right-alt equals", # }
-        "\x7e": "right-alt 2",      # ~
+        "\x7e": ["right-alt 2", "space"], # ~
         "\x7f": "backspace",
         #SDLK_RETURN,0x28
         #"\x0a": "\\x00\\x00\\x00\\x28\\x00\\x00\\x00\\x00",
