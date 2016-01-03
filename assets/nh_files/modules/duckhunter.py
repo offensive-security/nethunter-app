@@ -267,9 +267,7 @@ if __name__ == "__main__":
             line = line[7:]
             for char in line:
 
-                if char == '\n':  # Add enter if new line automagically
-                    dest.write('echo enter | hid-keyboard /dev/hidg0 keyboard\n')
-                else:
+                if char != '\n':
                     if args.layout == "ru":
                         char = iso_ru[char]
 
@@ -285,6 +283,8 @@ if __name__ == "__main__":
                         dest.write('%s%s%s\n' % (prefixinput, line.rstrip('\n').strip(), prefixoutput))
                         dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n') # releases key
                         dest.write('sleep 0.03 \n') # Slow things down
+
+            dest.write('echo enter | hid-keyboard /dev/hidg0 keyboard\n') # Add enter
 
         # TEXT to type and NOT pass \n as ENTER.  Allows text to stay put.
         elif line.startswith('TEXT '):
