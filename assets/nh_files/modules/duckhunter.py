@@ -141,21 +141,19 @@ if __name__ == "__main__":
         result.write(new_text)
         tmpfile.close()
 
-    line_backup = ''
+    prev_line = ''
     default_delay = ''
     src = open('tmp.txt', 'r')
-    for line in src:
+    for source_line in src:
 
-        repeat_counter = 0
-        prevline = line_backup
-        line_backup = line
-        while True:
-            if repeat_counter > 0:
-                repeat_counter -= 1
-                line = prevline
+        if source_line == '' or source_line == '\n' or source_line.startswith('//'):
+            continue
 
-            if line == '' or line == '\n':
-                break
+        repeat_counter = 1
+        while repeat_counter > 0:
+
+            repeat_counter -= 1
+            line = source_line
 
             if line.startswith('DELAY '):
                 line = line.rstrip('\n')[6:].strip()
@@ -235,10 +233,12 @@ if __name__ == "__main__":
                 elif line.startswith('REPEAT '):
                     line = line.rstrip('\n')[7:]
                     repeat_counter = int(line)
-                    if repeat_counter <= 0:
+                    source_line = prev_line
+
+                    if source_line == '':
                         break
-                    else:
-                        continue
+
+                    continue
 
                 else:
                     dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
@@ -246,8 +246,7 @@ if __name__ == "__main__":
                 if default_delay != '':
                     dest.write('sleep %s\n' % default_delay.strip().lower())
 
-            if repeat_counter <= 0:
-                break
+        prev_line = source_line
 
     src.close()
     dest.close()
