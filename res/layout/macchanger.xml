@@ -20,6 +20,42 @@
             android:padding="4dp"
             android:text="@string/macchanger_description"
              />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:padding="4dp"
+            android:id="@+id/phone_nameTitle"
+            android:text="Set Hostname"
+            android:textSize="18sp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
+
+            <EditText
+                android:id="@+id/phone_nameText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textNoSuggestions"
+                android:nextFocusUp="@id/phone_nameText"
+                android:nextFocusLeft="@id/phone_nameText"
+                android:paddingStart="4dp"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@+id/setHostname" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Set Hostname"
+                android:id="@+id/setHostname"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
 
         <TextView
             android:layout_width="match_parent"
