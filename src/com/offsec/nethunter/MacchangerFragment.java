@@ -101,7 +101,7 @@ public class MacchangerFragment extends Fragment {
         final EditText phoneName = (EditText) rootView.findViewById(R.id.phone_nameText);
         if(isOPO() && !sharedpreferences.contains("opo_original_mac")){
             Editor editor = sharedpreferences.edit();
-            editor.putString("opo_original_mac", exe.RunAsRootWithException("cat /sys/devices/fb000000.qcom.wcnss-wlan/wcnss_mac_addr"));
+            editor.putString("opo_original_mac", exe.RunAsRootWithException("cat /sys/devices/fb000000.qcom,wcnss-wlan/wcnss_mac_addr"));
             editor.commit();
 
         }
@@ -268,7 +268,7 @@ public class MacchangerFragment extends Fragment {
                         // bacon A0001 one OnePlus
                         if(isOPO()){
                             command = "svc wifi disable &&"+
-                                    "echo \""+ randomMACAddress() +"\" > /sys/devices/fb000000.qcom.wcnss-wlan/wcnss_mac_addr" +
+                                    "echo \""+ randomMACAddress() +"\" > /sys/devices/fb000000.qcom,wcnss-wlan/wcnss_mac_addr" +
                                     " && svc wifi enable";
                         } else {
                             command = "svc wifi disable && svc wifi enable"+
@@ -324,7 +324,7 @@ public class MacchangerFragment extends Fragment {
                     if (selectedDevice.equals("wlan0")) {
                         if(isOPO()){
                             command = "svc wifi disable &&"+
-                                    "echo \""+ macsArray +"\" > /sys/devices/fb000000.qcom.wcnss-wlan/wcnss_mac_addr" +
+                                    "echo \""+ macsArray +"\" > /sys/devices/fb000000.qcom,wcnss-wlan/wcnss_mac_addr" +
                                     " && svc wifi enable";
                         } else {
                             command = "svc wifi disable && svc wifi enable"+
@@ -499,7 +499,7 @@ public class MacchangerFragment extends Fragment {
             if(isOPO()){
                 Log.d("opo_original_mac", sharedpreferences.getString("opo_original_mac", ""));
                 command = "svc wifi disable &&"+
-                        "echo \""+ sharedpreferences.getString("opo_original_mac", "") +"\" > /sys/devices/fb000000.qcom.wcnss-wlan/wcnss_mac_addr" +
+                        "echo \""+ sharedpreferences.getString("opo_original_mac", "") +"\" > /sys/devices/fb000000.qcom,wcnss-wlan/wcnss_mac_addr" +
                         " && svc wifi enable";
             } else {
                 command = "settings put global airplane_mode_on 1" +
