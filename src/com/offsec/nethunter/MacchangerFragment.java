@@ -221,13 +221,16 @@ public class MacchangerFragment extends Fragment {
                 if (macModeSpinner.getSelectedItem().toString().equals("Random MAC")) {
                     if (selectedDevice.equals("wlan0")) {
                         // random wlan0
-                        command = "settings put global airplane_mode_on 1"+
+                       /* command = "settings put global airplane_mode_on 1"+
                                 " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true"+
                                 " && sleep 3"+
                                 " && ip link set dev wlan0 address "+
                                 randomMACAddress() +
                                 " && settings put global airplane_mode_on 0"+
-                                " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false";
+                                " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false";*/
+                        command = " (echo -17 > /proc/$$/oom_adj) &> /dev/null "+
+                                " && ip link set dev wlan0 address "+
+                                randomMACAddress();
                         final String finalCommand = command;
                         new Thread(new Runnable() {
                             public void run() {
@@ -273,13 +276,16 @@ public class MacchangerFragment extends Fragment {
                         }
                     }
                     if (selectedDevice.equals("wlan0")) {
-                        command = "settings put global airplane_mode_on 1"+
+                        /*command = "settings put global airplane_mode_on 1"+
                                 " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true"+
                                 " && sleep 3"+
                                 " && ip link set dev wlan0 address "+
                                 macsArray+
                                 " && settings put global airplane_mode_on 0"+
-                                " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false";
+                                " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false";*/
+                        command = " (echo -17 > /proc/$$/oom_adj) &> /dev/null "+
+                        " && ip link set dev wlan0 address "+
+                                macsArray;
                         final String finalCommand = command;
                         new Thread(new Runnable() {
                             public void run() {
