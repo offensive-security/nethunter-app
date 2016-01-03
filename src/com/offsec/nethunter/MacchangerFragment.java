@@ -7,8 +7,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -41,7 +43,7 @@ public class MacchangerFragment extends Fragment {
     SharedPreferences sharedpreferences;
     NhPaths nh;
     private static final String ARG_SECTION_NUMBER = "section_number";
-
+    ShellExecuter exe;
     public MacchangerFragment() {
 
     }
@@ -87,16 +89,41 @@ public class MacchangerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         nh = new NhPaths();
+        exe = new ShellExecuter();
+        sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
         setHasOptionsMenu(true);
         View rootView = inflater.inflate(R.layout.macchanger, container, false);
         // get views
         final Spinner interfaceSpinner = (Spinner) rootView.findViewById(R.id.interface_opts);
         final Spinner macModeSpinner = (Spinner) rootView.findViewById(R.id.macchanger_opts);
         final Button setMacButton = (Button) rootView.findViewById(R.id.set_mac_button);
+        final Button setHostname = (Button) rootView.findViewById(R.id.setHostname);
+        final EditText phoneName = (EditText) rootView.findViewById(R.id.phone_nameText);
+        if(isOPO() && !sharedpreferences.contains("opo_original_mac")){
+            Editor editor = sharedpreferences.edit();
+            editor.putString("opo_original_mac", exe.RunAsRootWithException("cat /sys/devices/fb000000.qcom.wcnss-wlan/wcnss_mac_addr"));
+            editor.commit();
+
+        }
+        Log.d("opo_original_mac", sharedpreferences.getString("opo_original_mac", ""));
+        //###############
+        new Thread(new Runnable() {
+            public void run() {
+                final String hostname = getHostname();
+                phoneName.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        phoneName.setText(hostname);
+                    }
+                });
+            }
+        }).start();
+
+        // ############################
         final View mac_layout = rootView.findViewById(R.id.mac_lay1);
         String[] ifacesList = getResources().getStringArray(R.array.interface_opts);
-        if(getDeviceName().equalsIgnoreCase("flo") || getDeviceName().equalsIgnoreCase("deb") || getDeviceName().equalsIgnoreCase("mako")){
-            ifacesList = delFromArray(ifacesList,ifacesList.length-2);
+        if(isOldDevice()){
+            ifacesList = delFromArray(ifacesList, ifacesList.length-2);
         } else {
             ifacesList = delFromArray(ifacesList, ifacesList.length -1);
 
@@ -111,8 +138,6 @@ public class MacchangerFragment extends Fragment {
         int current_interface = -1;
         int current_mode = -1;
 
-        // app general sprefs
-        sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
 
         // set the last used interface
         for (String cc : getResources().getStringArray(R.array.interface_opts)) {
@@ -144,7 +169,7 @@ public class MacchangerFragment extends Fragment {
                 //showMessage("Selected interface: \n" + items);
                 Editor editor = sharedpreferences.edit();
                 editor.putString("interface_opts", selectedInterface);  // the full text so we can compare later
-                editor.apply();
+                editor.commit();
 
 
                 getCurrentMac(cleanInterface, currMac, setMacButton);  // this gets the current mac of the interface and sets it to the textview
@@ -166,7 +191,23 @@ public class MacchangerFragment extends Fragment {
 
 
         });
+        setHostname.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                new Thread(new Runnable() {
+                    public void run() {
+                        setHostname(phoneName.getText().toString());
+                        v.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                nh.showMessage("Hostname changed");
+                            }
+                        });
+                    }
+                }).start();
 
+            }
+        });
         reloadMAC.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -185,7 +226,7 @@ public class MacchangerFragment extends Fragment {
                 String items = macModeSpinner.getSelectedItem().toString();
                 Editor editor = sharedpreferences.edit();
                 editor.putString("macchanger_opts", items);
-                editor.apply();
+                editor.commit();
 
                 // update button
                 if (items.equals(getResources().getString(R.string.randomMAC))) {
@@ -213,24 +254,28 @@ public class MacchangerFragment extends Fragment {
         setMacButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                PowerManager pm = (PowerManager) getContext().getSystemService(Context.POWER_SERVICE);
+                PowerManager.WakeLock mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                        getClass().getName());
+                mWakeLock.acquire();
                 // Usage: bootkali macchanger <mac address> <interface> || Random: bootkali macchanger random <interface>
                 String command;
                 final String selectedDevice = interfaceSpinner.getSelectedItem().toString().split(" ")[0];
                 final String macsArray = getMacValues();
-                final ShellExecuter exe = new ShellExecuter();
+
                 if (macModeSpinner.getSelectedItem().toString().equals("Random MAC")) {
                     if (selectedDevice.equals("wlan0")) {
-                        // random wlan0
-                       /* command = "settings put global airplane_mode_on 1"+
-                                " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true"+
-                                " && sleep 3"+
-                                " && ip link set dev wlan0 address "+
-                                randomMACAddress() +
-                                " && settings put global airplane_mode_on 0"+
-                                " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false";*/
-                        command = " (echo -17 > /proc/$$/oom_adj) &> /dev/null "+
-                                " && ip link set dev wlan0 address "+
-                                randomMACAddress();
+                        // bacon A0001 one OnePlus
+                        if(isOPO()){
+                            command = "svc wifi disable &&"+
+                                    "echo \""+ randomMACAddress() +"\" > /sys/devices/fb000000.qcom.wcnss-wlan/wcnss_mac_addr" +
+                                    " && svc wifi enable";
+                        } else {
+                            command = "svc wifi disable && svc wifi enable"+
+                                    " && ip link set dev wlan0 address "+
+                                    randomMACAddress();
+                        }
+
                         final String finalCommand = command;
                         new Thread(new Runnable() {
                             public void run() {
@@ -243,6 +288,7 @@ public class MacchangerFragment extends Fragment {
                                                     public void run() {
                                                         nh.showMessage("Refreshing the current MAC.");
                                                         refreshMAc();
+
                                                     }
                                                 }, 1000);
                                     }
@@ -276,16 +322,15 @@ public class MacchangerFragment extends Fragment {
                         }
                     }
                     if (selectedDevice.equals("wlan0")) {
-                        /*command = "settings put global airplane_mode_on 1"+
-                                " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true"+
-                                " && sleep 3"+
-                                " && ip link set dev wlan0 address "+
-                                macsArray+
-                                " && settings put global airplane_mode_on 0"+
-                                " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false";*/
-                        command = " (echo -17 > /proc/$$/oom_adj) &> /dev/null "+
-                        " && ip link set dev wlan0 address "+
-                                macsArray;
+                        if(isOPO()){
+                            command = "svc wifi disable &&"+
+                                    "echo \""+ macsArray +"\" > /sys/devices/fb000000.qcom.wcnss-wlan/wcnss_mac_addr" +
+                                    " && svc wifi enable";
+                        } else {
+                            command = "svc wifi disable && svc wifi enable"+
+                                    " && ip link set dev wlan0 address "+
+                                    macsArray;
+                        }
                         final String finalCommand = command;
                         new Thread(new Runnable() {
                             public void run() {
@@ -322,6 +367,7 @@ public class MacchangerFragment extends Fragment {
 
                     }
                 }
+                mWakeLock.release();
             }
 
 
@@ -391,7 +437,7 @@ public class MacchangerFragment extends Fragment {
                     StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
                     StrictMode.setThreadPolicy(policy);
 
-                    final ShellExecuter exe = new ShellExecuter();
+
                     String fileMac = "/sys/class/net/" + theDevice + "/address";
                     final String _res;
 
@@ -447,19 +493,26 @@ public class MacchangerFragment extends Fragment {
         final Spinner interfaceSpinner = (Spinner) v.findViewById(R.id.interface_opts);
         String selectedInterface = interfaceSpinner.getSelectedItem().toString();
         final String cleanInterface = selectedInterface.split(" ")[0];
-        final ShellExecuter exe = new ShellExecuter();
+        String command;
         if(cleanInterface.equals("wlan0")){
-
             nh.showMessage("Resetting " + cleanInterface + " MAC");
-            final String command = "settings put global airplane_mode_on 1"+
-                    " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true"+
-                    " && sleep 1"+
-                    " && settings put global airplane_mode_on 0"+
-                    " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false";
+            if(isOPO()){
+                Log.d("opo_original_mac", sharedpreferences.getString("opo_original_mac", ""));
+                command = "svc wifi disable &&"+
+                        "echo \""+ sharedpreferences.getString("opo_original_mac", "") +"\" > /sys/devices/fb000000.qcom.wcnss-wlan/wcnss_mac_addr" +
+                        " && svc wifi enable";
+            } else {
+                command = "settings put global airplane_mode_on 1" +
+                        " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true" +
+                        " && sleep 1" +
+                        " && settings put global airplane_mode_on 0" +
+                        " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false";
 
+            }
+            final String finalCommand = command;
             new Thread(new Runnable() {
                 public void run() {
-                    exe.RunAsRootWithException(command);
+                    exe.RunAsRootWithException(finalCommand);
                     interfaceSpinner.post(new Runnable() {
                         @Override
                         public void run() {
@@ -542,5 +595,31 @@ public class MacchangerFragment extends Fragment {
     }
     public String getDeviceName() {
         return Build.DEVICE;
+    }
+    public Boolean isOPO(){
+        return getDeviceName().equalsIgnoreCase("bacon") ||
+                getDeviceName().equalsIgnoreCase("A0001") ||
+                getDeviceName().equalsIgnoreCase("one") ||
+                getDeviceName().equalsIgnoreCase("OnePlus");
+    }
+    public Boolean isOPO2(){
+        return getDeviceName().equalsIgnoreCase("A2001") ||
+                getDeviceName().equalsIgnoreCase("A2003") ||
+                getDeviceName().equalsIgnoreCase("A2005") ||
+                getDeviceName().equalsIgnoreCase("OnePlus2");
+    }
+    public Boolean isOldDevice(){
+        return getDeviceName().equalsIgnoreCase("flo") ||
+                getDeviceName().equalsIgnoreCase("deb") ||
+                getDeviceName().equalsIgnoreCase("mako");
+    }
+
+    public static void setHostname(String host) {
+        final ShellExecuter exe = new ShellExecuter();
+        exe.RunAsRootWithException("setprop net.hostname " + host);
+    }
+    public String getHostname() {
+        final ShellExecuter exe = new ShellExecuter();
+        return exe.RunAsRootWithException("getprop net.hostname  myhost");
     }
 }
