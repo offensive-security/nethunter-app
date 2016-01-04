@@ -26,7 +26,7 @@ export HOME=/root
 export LOGNAME=root
 
 #########  MOUNT #########
-
+$busybox mount -o remount,suid /data
 $busybox mount -o bind /system $mnt/system
 $busybox mount -o bind /sdcard $mnt/sdcard
 $busybox mount -o bind /dev $mnt/dev

@@ -52,11 +52,15 @@ echo "nameserver 208.67.220.220" >> /data/local/nhsystem/kali-armhf/etc/resolv.c
 
 #########  MOUNT #########
 
+## Should run always (https://su.chainfire.eu/#how-mount)
+$busybox mount -o remount,suid /data
+
 if [ "$($busybox mountpoint $mnt/dev)" == "$mnt/dev is a mountpoint" ]; then
 	# Files exist in /dev so we can assume its mounted and we have root
 	clear
 else
 	f_checkforroot
+
 
 	$busybox mount -r -o bind /system $mnt/system
 

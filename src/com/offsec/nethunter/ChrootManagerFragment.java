@@ -734,6 +734,7 @@ public class ChrootManagerFragment extends Fragment {
                             new Runnable() {
                                 public void run() {
                                     checkForExistingChroot();
+                                    x.RunAsRootOutput("busybox mount -o remount,suid /data && chmod +s " + nh.CHROOT_PATH + "/usr/bin/sudo");
                                     deleteFile(extracted_zipFilePath);
                                     pd.dismiss();
                                     addMetaPackages();
