@@ -153,6 +153,18 @@
                 android:text="root"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="1" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="VNC RESOLUTION"
+                android:id="@+id/textView17"
+                android:layout_weight="1" />
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/resolution_spinner"
+                android:layout_gravity="center_horizontal" />
 
             <Button
                 android:layout_width="wrap_content"
@@ -161,11 +173,7 @@
                 android:id="@+id/vncClientStart"
                 android:layout_gravity="right"
                 android:layout_weight="1" />
-            intent.putExtra("R_IP", "127.0.0.1");
-            intent.putExtra("R_PORT", "5901");
-            intent.putExtra("PASSWD", "123456");
-            intent.putExtra("NICK", "root");
-            intent.putExtra("USER", "root");
+
         </LinearLayout>
     </ScrollView>
 
