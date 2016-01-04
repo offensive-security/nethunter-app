@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
@@ -32,7 +33,7 @@ import com.offsec.nethunter.utils.ShellExecuter;
 
 import java.util.List;
 
-public class CustomCommandsFragment  extends Fragment {
+public class CustomCommandsFragment extends Fragment {
 
 
     private static final String ARG_SECTION_NUMBER = "section_number";
@@ -45,11 +46,14 @@ public class CustomCommandsFragment  extends Fragment {
     private String bootScriptPath;
     private String shebang;
     private String custom_commands_runlevel;
+    SharedPreferences sharedpreferences;
     private ShellExecuter exe = new ShellExecuter();
     NhPaths nh;
+
     public CustomCommandsFragment() {
 
     }
+
     /**
      * Returns a new instance of this fragment for the given section
      * number.
@@ -62,13 +66,21 @@ public class CustomCommandsFragment  extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+        sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
         //this runs BEFORE the ui is available
         mContext = getActivity().getApplicationContext();
         nh = new NhPaths();
         database = new CustomCommandsSQL(mContext);
+        if(!sharedpreferences.contains("initial_commands")){
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.putString("initial_commands", "added");
+            editor.commit();
+            setUpInitialCommands();
+        }
+
         bootScriptPath = nh.APP_INITD_PATH;
         shebang = "#!/system/bin/sh\n\n# Run at boot CustomCommand: ";
         custom_commands_runlevel = "90";
@@ -76,7 +88,7 @@ public class CustomCommandsFragment  extends Fragment {
         View rootView = inflater.inflate(R.layout.custom_commands, container, false);
         final Button addCommand = (Button) rootView.findViewById(R.id.addCommand);
         setHasOptionsMenu(true);
-        final SearchView searchStr= (SearchView) rootView.findViewById(R.id.searchCommand);
+        final SearchView searchStr = (SearchView) rootView.findViewById(R.id.searchCommand);
         main(rootView);
         // set up listeners
         addCommand.setOnClickListener(new View.OnClickListener() {
@@ -113,14 +125,14 @@ public class CustomCommandsFragment  extends Fragment {
         String _sendTo = command.getSend_To_Shell();
 
         String composedCommand;
-        if(_sendTo.equals("KALI")){
+        if (_sendTo.equals("KALI")) {
             composedCommand = "su -c bootkali custom_cmd " + _cmd;
-        } else{
+        } else {
             // SEND TO ANDROID
             // no sure, if we add su -c , we cant exec comands as a normal android user
             composedCommand = _cmd;
         }
-        String bootServiceFile = bootScriptPath + "/" + custom_commands_runlevel + "_" + command.getId() +"_custom_command";
+        String bootServiceFile = bootScriptPath + "/" + custom_commands_runlevel + "_" + command.getId() + "_custom_command";
         String fileContents = shebang + _label + "\n" + composedCommand;
         exe.RunAsRoot(new String[]{
                 "echo '" + fileContents + "' > " + bootServiceFile,
@@ -130,25 +142,25 @@ public class CustomCommandsFragment  extends Fragment {
         // return the number of services
 
     }
+
     private void removeFromBoot(long commandId) {
         // return the number of services
-        String bootServiceFile = bootScriptPath + "/" +  custom_commands_runlevel + "_" + commandId +"_custom_command";
+        String bootServiceFile = bootScriptPath + "/" + custom_commands_runlevel + "_" + commandId + "_custom_command";
         exe.RunAsRoot(new String[]{"rm -rf " + bootServiceFile});
     }
-    public void onResume()
-    {
+
+    public void onResume() {
         super.onResume();
     }
 
-    public void onPause()
-    {
+    public void onPause() {
         super.onPause();
     }
 
-    public void onStop()
-    {
+    public void onStop() {
         super.onStop();
     }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.custom_commands, menu);
@@ -165,7 +177,7 @@ public class CustomCommandsFragment  extends Fragment {
             case R.id.doDbRestore:
                 // delete boot coomands
                 for (CustomCommand cc : database.getAllCommandsAtBoot()) {
-                        removeFromBoot(cc.getId());
+                    removeFromBoot(cc.getId());
                 }
                 //restore db
                 database.importDB();
@@ -175,7 +187,7 @@ public class CustomCommandsFragment  extends Fragment {
                 commandAdapter.notifyDataSetChanged();
                 // restore boot commands
                 for (CustomCommand cc : database.getAllCommandsAtBoot()) {
-                    if(cc.getRun_At_Boot() == 1) {
+                    if (cc.getRun_At_Boot() == 1) {
                         addToBoot(cc);
                     }
                 }
@@ -186,6 +198,7 @@ public class CustomCommandsFragment  extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
+
     private void main(final View rootView) {
 
         commandListView = (ListView) rootView.findViewById(R.id.commandList);
@@ -194,7 +207,7 @@ public class CustomCommandsFragment  extends Fragment {
         commandAdapter = new CmdLoader(mContext, commandList);
 
 
-        if(commandAdapter.getCount() == 0){
+        if (commandAdapter.getCount() == 0) {
             customComandsInfo.setText("Add a new command");
         }
 
@@ -222,6 +235,7 @@ public class CustomCommandsFragment  extends Fragment {
             }
         }, 100);
     }
+
     private void showCommandDialog(String action, CustomCommand commandInfo, int position) {
         // common setup
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -261,9 +275,10 @@ public class CustomCommandsFragment  extends Fragment {
                 break;
         }
     }
+
     private void saveNewCommand(AlertDialog.Builder alertDialogBuilder, View promptsView) {
 
-        final EditText userInputBtnLabel= (EditText) promptsView.findViewById(R.id.editText_launcher_btn_label);
+        final EditText userInputBtnLabel = (EditText) promptsView.findViewById(R.id.editText_launcher_btn_label);
         final EditText userInputCommand = (EditText) promptsView.findViewById(R.id.editText_launcher_command);
         final Spinner command_exec_mode = (Spinner) promptsView.findViewById(R.id.spinnerExecMode);
         final Spinner command_run_in_shell = (Spinner) promptsView.findViewById(R.id.spinnerRun_in_shell);
@@ -303,7 +318,7 @@ public class CustomCommandsFragment  extends Fragment {
 
     private void editCommand(AlertDialog.Builder alertDialogBuilder, View promptsView, CustomCommand commandInfo, final int position) {
 
-        final EditText userInputCommandLabel= (EditText) promptsView.findViewById(R.id.editText_launcher_btn_label);
+        final EditText userInputCommandLabel = (EditText) promptsView.findViewById(R.id.editText_launcher_btn_label);
         final EditText userInputCommand = (EditText) promptsView.findViewById(R.id.editText_launcher_command);
         final Spinner command_exec_mode = (Spinner) promptsView.findViewById(R.id.spinnerExecMode);
         final Spinner command_run_in_shell = (Spinner) promptsView.findViewById(R.id.spinnerRun_in_shell);
@@ -318,19 +333,19 @@ public class CustomCommandsFragment  extends Fragment {
         userInputCommandLabel.setText(_label);
         userInputCommand.setText(_cmd);
 
-        if(_runAtBoot == 1){
+        if (_runAtBoot == 1) {
             run_at_boot.setChecked(true);
             command_exec_mode.setSelection(0); // allways background
             command_exec_mode.setEnabled(false); // force option 1
         }
 
-        if(_sendTo.equals("KALI")){
+        if (_sendTo.equals("KALI")) {
             command_run_in_shell.setSelection(0);
         } else {
             // android
             command_run_in_shell.setSelection(1);
         }
-        if(_mode.equals("BACKGROUND")){
+        if (_mode.equals("BACKGROUND")) {
             command_exec_mode.setSelection(0);
         } else {
             // interactive
@@ -382,6 +397,13 @@ public class CustomCommandsFragment  extends Fragment {
                         });
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+
+    private void setUpInitialCommands() {
+
+        database.addCommand("Update Kali metapackages",nh.makeTermTitle("Updating Kali") + "apt-get update && apt-get upgrade", "INTERACTIVE", "KALI", 0);
+        database.addCommand("Launch Wifite",nh.makeTermTitle("Wifite") +"wifite", "INTERACTIVE", "KALI", 0);
+        database.addCommand("Dump Mifare",nh.makeTermTitle("DumpMifare") +"dumpmifare", "INTERACTIVE", "KALI", 0);
     }
 }
 
@@ -453,7 +475,7 @@ class CmdLoader extends BaseAdapter {
         String _sendTo = commandInfo.getSend_To_Shell();
         Integer _runAtBoot = commandInfo.getRun_At_Boot();
         String _runAtBoot_txt = "NO";
-        if (_runAtBoot ==1){
+        if (_runAtBoot == 1) {
             _runAtBoot_txt = "YES";
             vH.runatboot.setTextColor(_mContext.getResources().getColor(R.color.darkorange));
         } else {
@@ -482,7 +504,8 @@ class CmdLoader extends BaseAdapter {
     public long getItemId(int position) {
         return position;
     }
-    private void doCustomCommand(CustomCommand commandInfo){
+
+    private void doCustomCommand(CustomCommand commandInfo) {
 
         String _label = commandInfo.getCommand_label();
         String _cmd = commandInfo.getCommand();
@@ -491,8 +514,8 @@ class CmdLoader extends BaseAdapter {
 
         String composedCommand;
 
-        if(_mode.equals("BACKGROUND")){
-            if(_sendTo.equals("KALI")){
+        if (_mode.equals("BACKGROUND")) {
+            if (_sendTo.equals("KALI")) {
                 new BootKali(_cmd).run_bg();
                 Toast.makeText(_mContext,
                         "Kali cmd done.",
@@ -506,7 +529,7 @@ class CmdLoader extends BaseAdapter {
             }
         } else try {
             // INTERACTIVE
-            if(_sendTo.equals("KALI")){
+            if (_sendTo.equals("KALI")) {
                 Intent intent =
                         new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
                 intent.addCategory(Intent.CATEGORY_DEFAULT);
@@ -523,13 +546,11 @@ class CmdLoader extends BaseAdapter {
                 _mContext.startActivity(intent);
 
 
-
-
             }
 
-            } catch (Exception e) {
-                Toast.makeText(_mContext, _mContext.getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
-            }
+        } catch (Exception e) {
+            Toast.makeText(_mContext, _mContext.getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
+        }
     }
 
 }
