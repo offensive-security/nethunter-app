@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -242,6 +243,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
                                         .addToBackStack(null)
                                         .commit();
                                 break;
+                            /*
                             case R.id.kalilauncher_item:
                                 fragmentManager
                                         .beginTransaction()
@@ -249,6 +251,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
                                         .addToBackStack(null)
                                         .commit();
                                 break;
+                            */
                             case R.id.kaliservices_item:
                                 fragmentManager
                                         .beginTransaction()
@@ -256,6 +259,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
                                         .addToBackStack(null)
                                         .commit();
                                 break;
+
                             case R.id.custom_commands_item:
                                 fragmentManager
                                         .beginTransaction()
@@ -263,6 +267,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
                                         .addToBackStack(null)
                                         .commit();
                                 break;
+
                             case R.id.hid_item:
                                 fragmentManager
                                         .beginTransaction()
@@ -439,10 +444,9 @@ public class AppNavHomeActivity extends AppCompatActivity {
                         6);
             }
         }
-
     }
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if(permsCurrent < permsNum){
                         permsCurrent = permsCurrent+1;
