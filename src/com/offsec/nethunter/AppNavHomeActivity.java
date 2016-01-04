@@ -20,6 +20,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,10 +46,10 @@ public class AppNavHomeActivity extends AppCompatActivity {
      */
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
-    private NavigationView navigationView;
+    private static NavigationView navigationView;
     private CharSequence mTitle = "NetHunter";
     private Stack<String> titles = new Stack<>();
-    private SharedPreferences prefs;
+    private static SharedPreferences prefs;
     private MenuItem lastSelected;
     private static Context c;
     private Boolean weCheckedForRoot = false;
@@ -161,7 +162,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
 
     }
 
-    public void setDrawerOptions() {
+    public static void setDrawerOptions() {
         Menu menuNav = navigationView.getMenu();
         if (prefs.getBoolean(CHROOT_INSTALLED_TAG, false)) {
             menuNav.setGroupEnabled(R.id.chrootDependentGroup, true);
@@ -399,6 +400,9 @@ public class AppNavHomeActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                         1);
+            } else {
+                CheckForRoot mytask = new CheckForRoot(this);
+                mytask.execute();
             }
         }
         if(permnum == 2){
@@ -408,7 +412,8 @@ public class AppNavHomeActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this,
                         new String[]{"com.offsec.nhterm.permission.RUN_SCRIPT"},
                         2);
-            }}
+            }
+        }
         if(permnum == 3){
             if (ContextCompat.checkSelfPermission(this,
                     "com.offsec.nhterm.permission.RUN_SCRIPT_SU")
@@ -416,7 +421,8 @@ public class AppNavHomeActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this,
                         new String[]{"com.offsec.nhterm.permission.RUN_SCRIPT_SU"},
                         3);
-            }}
+            }
+        }
         if(permnum == 4){
             if (ContextCompat.checkSelfPermission(this,
                     "com.offsec.nhterm.permission.RUN_SCRIPT_NH")
@@ -427,6 +433,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
             }
         }
         if(permnum == 5){
+            Log.d("HOLA", "CODE0: " + permnum);
             if (ContextCompat.checkSelfPermission(this,
                     "com.offsec.nhterm.permission.RUN_SCRIPT_NH_LOGIN")
                     != PackageManager.PERMISSION_GRANTED) {
@@ -436,6 +443,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
             }
         }
         if(permnum == 6) {
+            Log.d("HOLA", "CODE0: " + permnum);
             if (ContextCompat.checkSelfPermission(this,
                     "com.offsec.nhvnc.permission.OPEN_VNC_CONN")
                     != PackageManager.PERMISSION_GRANTED) {
