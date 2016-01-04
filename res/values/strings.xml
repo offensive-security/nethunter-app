@@ -50,9 +50,7 @@
 
     <string name="duckhunter_label">HID Ducky Script Attacks</string>
     <string name="select_language">Language</string>
-    <string name="duckConvertUpdate">Update</string>
-    <string name="duckConvertConvert">Convert</string>
-    <string name="duckPreviewRefresh">Refresh</string>
+    <string name="duckConvertAttack">Attack</string>
     <string name="duck_hunter_headline">The DuckHunter script can easily convert "USB Rubber Ducky" scripts into NetHunter HID format.  You can generate preconfigured scripts at the incredibly useful <a href="http://www.ducktoolkit.com/Home.jsp">Ducky Toolkit</a> site, or check out the Rubber Ducky script syntax from the official <a href="https://github.com/hak5darren/USB-Rubber-Ducky/wiki/Duckyscript">README</a></string>
     <string-array name="duckhunter_preset_array">
         <item>Select preset</item>

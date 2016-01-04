@@ -109,9 +109,9 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     public void onPrepareOptionsMenu(Menu menu) {
         int pageNum = mViewPager.getCurrentItem();
         if (pageNum == 0) {
-            menu.findItem(R.id.duckConvertConvert).setVisible(true);
+            menu.findItem(R.id.duckConvertAttack).setVisible(true);
         } else {
-            menu.findItem(R.id.duckConvertConvert).setVisible(false);
+            menu.findItem(R.id.duckConvertAttack).setVisible(false);
         }
         getActivity().invalidateOptionsMenu();
     }
@@ -159,7 +159,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.duckConvertConvert:
+            case R.id.duckConvertAttack:
                 setLang();
                 nh.showMessage("Launching Attack");
                 if(getView() == null){
