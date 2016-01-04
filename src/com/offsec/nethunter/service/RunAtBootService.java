@@ -149,8 +149,11 @@ public class RunAtBootService extends Service {
         ShellExecuter exe = new ShellExecuter();
         String busybox = nh.whichBusybox();
         if(busybox != null){
+            exe.RunAsRootOutput("rm -rf " + nh.CHROOT_PATH + "/tmp/.X1*"); // remove posible vnc locks (if the phone is rebooted with the vnc server running)
+            // init.d
             String[] runner = {busybox + " run-parts " +  nh.APP_INITD_PATH};
             exe.RunAsRoot(runner);
+
             Toast.makeText(getBaseContext(), getString(R.string.autorunningscripts), Toast.LENGTH_SHORT).show();
             return true;
         }
