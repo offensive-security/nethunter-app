@@ -9,9 +9,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 import android.util.DisplayMetrics;
 
@@ -60,11 +62,15 @@ public class VNCFragment  extends Fragment {
             xwidth = Integer.toString(screen_width);
             xheight = Integer.toString(screen_height);
         }
-
         Button SetupVNCButton = (Button) rootView.findViewById(R.id.set_up_vnc);
         Button StartVNCButton = (Button) rootView.findViewById(R.id.start_vnc);
         Button StopVNCButton = (Button) rootView.findViewById(R.id.stop_vnc);
         Button OpenVNCButton = (Button) rootView.findViewById(R.id.vncClientStart);
+
+        String[] resolutions = new String[]{"Native", "256 Colors", "64 Colors"};
+        Spinner resolution_spinner = (Spinner) rootView.findViewById(R.id.resolution_spinner);
+        resolution_spinner.setAdapter(new ArrayAdapter<>(getContext(),
+                android.R.layout.simple_list_item_1, resolutions));
 
         // Checkbox for localhost only
         final CheckBox localhostCheckBox = (CheckBox) rootView.findViewById(R.id.vnc_checkBox);
@@ -122,7 +128,7 @@ public class VNCFragment  extends Fragment {
             String _PASSWD = ((EditText) getView().findViewById(R.id.vnc_PASSWD)).getText().toString();
             String _NICK = ((EditText) getView().findViewById(R.id.vnc_CONN_NICK)).getText().toString();
             String _USER = ((EditText) getView().findViewById(R.id.vnc_USER)).getText().toString();
-
+            int _RESOLUTION = ((Spinner) getView().findViewById(R.id.resolution_spinner)).getSelectedItemPosition();
             if(!_R_IP.equals("") && !_R_PORT.equals("") && !_NICK.equals("")){
                 Intent intent = getActivity().getApplicationContext().getPackageManager().getLaunchIntentForPackage("com.offsec.nhvnc");
                 intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
@@ -132,6 +138,8 @@ public class VNCFragment  extends Fragment {
                 intent.putExtra("PASSWD", _PASSWD);
                 intent.putExtra("NICK", _NICK);
                 intent.putExtra("USER", _USER);
+                intent.putExtra("COLORMODEL", _RESOLUTION);
+
                 startActivity(intent);
             }
 
