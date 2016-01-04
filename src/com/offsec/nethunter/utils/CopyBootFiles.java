@@ -1,12 +1,16 @@
 package com.offsec.nethunter.utils;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.offsec.nethunter.AppNavHomeActivity;
 import com.offsec.nethunter.BuildConfig;
+import com.offsec.nethunter.ChrootManagerFragment;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -76,7 +80,19 @@ public class CopyBootFiles extends AsyncTask<String, String, String> {
               SharedPreferences.Editor ed = prefs.edit();
               ed.putString(COPY_ASSETS_TAG, buildTime);
               ed.commit();
-
+              publishProgress("Checking for chroot....");
+              String command = "if [ -d " + nh.CHROOT_PATH + " ];then echo 1; fi"; //check the dir existence
+              final String _res = exe.RunAsRootOutput(command);
+              if (_res.equals("1")) {
+                  ed = prefs.edit();
+                  ed.putBoolean(ChrootManagerFragment.CHROOT_INSTALLED_TAG, true);
+                  ed.commit();
+                  publishProgress("Chroot Found!");
+                  // Mount suid /data && fix sudo
+                  publishProgress(exe.RunAsRootOutput("busybox mount -o remount,suid /data && chmod +s " + nh.CHROOT_PATH + "/usr/bin/sudo && echo \"Initial setup done!\""));
+              } else {
+                  publishProgress("Chroot no Found, install it in Chroot Manager");
+              }
               return "All files copied.";
           } else {
               cancel(true);
@@ -95,8 +111,11 @@ public class CopyBootFiles extends AsyncTask<String, String, String> {
                     new Runnable() {
                         public void run() {
                             pd.dismiss();
+                            AppNavHomeActivity.setDrawerOptions();
                         }
-                    }, 1000);
+                    }, 1500);
+
+
         }
     }
     private Boolean pathIsAllowed(String path, String copyType) {
