@@ -1102,13 +1102,13 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                         case 1:
                             // ARP Request REQ
                             removeFromCmd(M_Spoofer_ARP_Mode);
-                            M_Spoofer_ARP_Mode = " --arpmode req";
+                            M_Spoofer_ARP_Mode = " --arpmode req ";
                             addToCmd(M_Spoofer_ARP_Mode);
                             break;
                         case 2:
                             // ARP Reply REP
                             removeFromCmd(M_Spoofer_ARP_Mode);
-                            M_Spoofer_ARP_Mode = " --arpmode rep";
+                            M_Spoofer_ARP_Mode = " --arpmode rep ";
                             addToCmd(M_Spoofer_ARP_Mode);
                             break;
                     }
