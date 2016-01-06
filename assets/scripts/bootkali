@@ -247,6 +247,17 @@ fi
          fi
       fi
 
+      # File2HID will convert any file or string to HID for keyboard goodness
+      # bootkali file2hid-file -f fileinput.txt -l us
+      # bootkali file2hid-string -s "string" -l us
+
+      if [ "$1" == "file2hid-file" ]; then
+         $busybox chroot $mnt sudo python /sdcard/nh_files/modules/filetohid.py -f $2 -l $3
+      fi
+      if [ "$1" == "file2hid-string" ]; then
+         $busybox chroot $mnt sudo python /sdcard/nh_files/modules/filetohid.py -s $2 -l $3
+      fi
+
    	#SSH
 
    	if [ "$1" == "ssh" ] && [ "$2" == "start" ]; then
