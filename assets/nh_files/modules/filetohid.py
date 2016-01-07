@@ -20,7 +20,7 @@ args = parser.parse_args()
 
 # Variables for general keyboard commands, arguments
 prefix = "echo "
-suffix = " | hid-keyboard /dev/hidg0 keyboard"
+suffix = " | /system/xbin/hid-keyboard /dev/hidg0 keyboard"
 input_string = args.string
 filename = args.file
 language = args.layout
@@ -32,6 +32,7 @@ if not language:
 
 def do_file(filename, lang):
     try:
+        os.system("/system/xbin/dos2unixdos2unix " + filename)
         f = open(filename, "r")
         for line in f:  # Read a line in the file
             for char in line:  # Read each character in that line
@@ -56,6 +57,8 @@ def do_file(filename, lang):
                         os.system('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
                         os.system('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n') # releases key
                         os.system('sleep 0.03 \n') # Slow things down
+                elif char == '\n':
+                    os.system('echo enter | /system/xbin/hid-keyboard /dev/hidg0 keyboard\n')
     finally:
         f.close()
 
@@ -65,14 +68,14 @@ def do_string(string, lang):
         #
         #  Start conversion here
         #
-        if char != '\n':  # If the character is not a new line
+        if char != '\n' and char != '\r':  # If the character is not a new line
             if lang == "ru":  # If russian, set characters to russian
                 char = iso_ru[char]
 
             line = dicts[lang+'_bin'].get(char)
             if line is not None:
                 if isinstance(line, str):
-                    os.system('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
+                    os.system('%s%s%s\n' % (prefix, line.strip(), suffix))
                     #print('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
                 else:
                     for elem in line:

@@ -340,6 +340,8 @@ class ExploitLoader extends BaseAdapter {
 
     private final List<SearchSploit> _exploitList;
     private Context _mContext;
+    static NhPaths nh;
+
 
     public ExploitLoader(Context context, List<SearchSploit> exploitList) {
 
@@ -362,11 +364,21 @@ class ExploitLoader extends BaseAdapter {
         // run at boot checkbox
         Button viewSource;
         Button openWeb;
+        Button sendHid;
     }
 
     public int getCount() {
         // return the number of services
         return _exploitList.size();
+    }
+
+    private void start(String file) {
+        String[] command = new String[1];
+        command[0] = "su -c /data/data/com.offsec.nethunter/files/scripts/bootkali file2hid-file " + file;
+        String test = "su -c /data/data/com.offsec.nethunter/files/scripts/bootkali file2hid-file " + file;
+        Log.d("Exe:", test);
+        ShellExecuter exe = new ShellExecuter();
+        exe.RunAsRoot(command);
     }
 
     // getView method is called for each item of ListView
@@ -390,6 +402,7 @@ class ExploitLoader extends BaseAdapter {
             vH.date = (TextView) convertView.findViewById(R.id.exploit_date);
             vH.viewSource = (Button) convertView.findViewById(R.id.viewSource);
             vH.openWeb = (Button) convertView.findViewById(R.id.openWeb);
+            vH.sendHid = (Button) convertView.findViewById(R.id.searchsploit_sendhid_button);
             convertView.setTag(vH);
             //System.out.println ("created row");
         } else {
@@ -425,6 +438,14 @@ class ExploitLoader extends BaseAdapter {
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 i.putExtra("path", "/data/local/nhsystem/kali-armhf/usr/share/exploitdb/" + _file);
                 _mContext.startActivity(i);
+
+            }
+        });
+        vH.sendHid.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                start("/usr/share/exploitdb/" + _file);
+                //_mContext.startActivity(i);
 
             }
         });

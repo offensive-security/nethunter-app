@@ -126,4 +126,15 @@
         android:layout_below="@+id/viewSource"
         android:layout_alignParentEnd="true" />
 
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SEND HID"
+        android:textColor="#ff95ff84"
+        android:id="@+id/searchsploit_sendhid_button"
+        android:layout_above="@+id/platform"
+        android:layout_alignEnd="@+id/openWeb"
+        android:layout_alignStart="@+id/viewSource" />
+
 </RelativeLayout>
