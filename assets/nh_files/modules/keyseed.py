@@ -1605,9 +1605,13 @@ iso_ru = {
 }
 
 def findinlist(byte, locale):
-    if dicts[locale].get(byte) : print "#crap, couldn't find ["+byte +"]. Perhaps try adding it to the list."
-    else : print '''echo -ne "''' +dicts[locale][byte]+ '''" > /dev/hidg0'''
-    print '''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
+    #if dicts[locale][byte] : print "#crap, couldn't find ["+byte +"]. Perhaps try adding it to the list."
+    #else :
+    if byte == '\n':
+        os.system('echo enter | /system/xbin/hid-keyboard /dev/hidg0 keyboard\n')
+    else:
+        print '''echo -ne "''' +dicts[locale][byte]+ '''" > /dev/hidg0'''
+        print '''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
 
 def wincmd(locale):
     print '''sleep 1'''
