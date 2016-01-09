@@ -1608,7 +1608,7 @@ def findinlist(byte, locale):
     #if dicts[locale][byte] : print "#crap, couldn't find ["+byte +"]. Perhaps try adding it to the list."
     #else :
     if byte == '\n':
-        os.system('echo enter | /system/xbin/hid-keyboard /dev/hidg0 keyboard\n')
+        print '''echo enter | hid-keyboard /dev/hidg0 keyboard'''
     else:
         print '''echo -ne "''' +dicts[locale][byte]+ '''" > /dev/hidg0'''
         print '''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
@@ -1637,37 +1637,16 @@ def win7cmd_elevated(locale):
     print '''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
     print '''sleep 1'''
     findinlist("\x63", locale) #c
-    print '''sleep 1'''
+    print '''sleep 0.5'''
     findinlist("\x6d", locale) #m
-    print '''sleep 1'''
+    print '''sleep 0.5'''
     findinlist("\x64", locale) #d
-    print '''sleep 1'''
-    print '''echo left-ctrl left-shift return | hid-keyboard /dev/hidg0 keyboard'''
     print '''sleep 3'''
-    if (locale=="us"):
-        print '''echo left-alt y | hid-keyboard /dev/hidg0 keyboard'''
-    elif (locale=="fr"):
-        print '''echo left-alt o | hid-keyboard /dev/hidg0 keyboard'''
-    elif (locale=="de"):
-        print '''echo left-alt j | hid-keyboard /dev/hidg0 keyboard'''
-    elif (locale=="es"):
-        print '''echo left-alt s | hid-keyboard /dev/hidg0 keyboard'''
-    elif (locale=="sv"):
-        print '''echo left-alt j | hid-keyboard /dev/hidg0 keyboard'''
-    elif (locale=="it"):
-        print '''echo left-alt s | hid-keyboard /dev/hidg0 keyboard'''
-    elif (locale=="uk"):
-        print '''echo left-alt y | hid-keyboard /dev/hidg0 keyboard'''
-    elif (locale=="ru"):
-        print '''echo left-alt d | hid-keyboard /dev/hidg0 keyboard'''
-    elif (locale=="dk"):
-        print '''echo left-alt j | hid-keyboard /dev/hidg0 keyboard'''
-    elif (locale=="no"):
-        print '''echo left-alt j | hid-keyboard /dev/hidg0 keyboard'''
-    elif (locale=="pt"):
-        print '''echo left-alt s | hid-keyboard /dev/hidg0 keyboard'''
-    elif (locale=="be"):
-        print '''echo left-alt o | hid-keyboard /dev/hidg0 keyboard'''
+    print '''echo left-ctrl left-shift return | hid-keyboard /dev/hidg0 keyboard'''
+    print '''sleep 2'''
+    print '''echo left | hid-keyboard /dev/hidg0 keyboard'''
+    print '''sleep 0.5'''
+    print '''echo enter | hid-keyboard /dev/hidg0 keyboard'''
     print '''sleep 3'''
 
 def win8cmd_elevated(locale):
@@ -1676,11 +1655,11 @@ def win8cmd_elevated(locale):
     print '''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
     print '''sleep 1'''
     findinlist("\x63", locale) #c
-    print '''sleep 1'''
+    print '''sleep 0.5'''
     findinlist("\x6d", locale) #m
-    print '''sleep 1'''
+    print '''sleep 0.5'''
     findinlist("\x64", locale) #d
-    print '''sleep 1'''
+    print '''sleep 3'''
     print '''echo -ne "\\x10\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
     print '''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
     print '''sleep 1'''
@@ -1702,30 +1681,9 @@ def win8cmd_elevated(locale):
     print '''echo -ne "\\x00\\x00\\x00\\x28\\x00\\x00\\x00\\x00" > /dev/hidg0'''
     print '''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
     print '''sleep 2'''
-    if (locale=="us"):
-        print '''echo left-alt y | hid-keyboard /dev/hidg0 keyboard'''
-    elif (locale=="fr"):
-        print '''echo left-alt o | hid-keyboard /dev/hidg0 keyboard'''
-    elif (locale=="de"):
-        print '''echo left-alt j | hid-keyboard /dev/hidg0 keyboard'''
-    elif (locale=="es"):
-        print '''echo left-alt s | hid-keyboard /dev/hidg0 keyboard'''
-    elif (locale=="sv"):
-        print '''echo left-alt j | hid-keyboard /dev/hidg0 keyboard'''
-    elif (locale=="it"):
-        print '''echo left-alt s | hid-keyboard /dev/hidg0 keyboard'''
-    elif (locale=="uk"):
-        print '''echo left-alt y | hid-keyboard /dev/hidg0 keyboard'''
-    elif (locale=="ru"):
-        print '''echo left-alt d | hid-keyboard /dev/hidg0 keyboard'''
-    elif (locale=="dk"):
-        print '''echo left-alt j | hid-keyboard /dev/hidg0 keyboard'''
-    elif (locale=="no"):
-        print '''echo left-alt j | hid-keyboard /dev/hidg0 keyboard'''
-    elif (locale=="pt"):
-        print '''echo left-alt s | hid-keyboard /dev/hidg0 keyboard'''
-    elif (locale=="be"):
-        print '''echo left-alt o | hid-keyboard /dev/hidg0 keyboard'''
+    print '''echo left | hid-keyboard /dev/hidg0 keyboard'''
+    print '''sleep 0.5'''
+    print '''echo enter | hid-keyboard /dev/hidg0 keyboard'''
     print '''sleep 3'''
 
 def win10cmd_elevated(locale):
@@ -1734,23 +1692,21 @@ def win10cmd_elevated(locale):
     print '''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
     print '''sleep 1'''
     findinlist("\x63", locale) #c
-    print '''sleep 1'''
+    print '''sleep 0.5'''
     findinlist("\x6d", locale) #m
-    print '''sleep 1'''
+    print '''sleep 0.5'''
     findinlist("\x64", locale) #d
-    print '''sleep 1'''
-    print '''echo --b2 | hid-keyboard /dev/hidg1 mouse'''  # Right mouse click
-    print '''sleep 1'''
-    print '''echo -ne "\\x01\\x00\\x00\\x51\\x00\\x00\\x00\\x00" > /dev/hidg0'''  # Down Arrow
+    print '''sleep 3'''
+    print '''echo -ne "\\x02\\x00\\x00\\x43\\x00\\x00\\x00\\x00" > /dev/hidg0''' # Menu key
     print '''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
+    print '''sleep 1'''
+    print '''echo down | hid-keyboard /dev/hidg0 keyboard'''
+    print '''sleep 1'''
+    print '''echo enter | hid-keyboard /dev/hidg0 keyboard'''
     print '''sleep 2'''
-    print '''echo -ne "\\x00\\x00\\x00\\x28\\x00\\x00\\x00\\x00" > /dev/hidg0'''  # Enter button
-    print '''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
-    print '''sleep 1'''
-    print '''echo left | hid-keyboard /dev/hidg0 keyboard'''  # Left arrow
-    print '''sleep 1'''
-    print '''echo -ne "\\x00\\x00\\x00\\x28\\x00\\x00\\x00\\x00" > /dev/hidg0'''  # Enter button
-    print '''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
+    print '''echo left | hid-keyboard /dev/hidg0 keyboard'''
+    print '''sleep 0.5'''
+    print '''echo enter | hid-keyboard /dev/hidg0 keyboard'''
     print '''sleep 3'''
 
 
