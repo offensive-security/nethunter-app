@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.offsec.nethunter.ChrootManagerFragment;
+import com.offsec.nethunter.KaliServicesFragment;
 import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.R;
 import com.offsec.nethunter.utils.ShellExecuter;
@@ -60,6 +61,12 @@ public class RunAtBootService extends Service {
             doing_action = "Nethunter chroot is not installed.";
             runBootServices = false;
             doNotification(TAG, getString(R.string.nokalichrootfound));
+        } else if (!sharedpreferences.getBoolean(KaliServicesFragment.RUN_AT_BOOT, true)) {
+            // USER DISABLED BOOT SERVICES
+            Log.d(TAG,"USER DISABLED BOOT SERVICES");
+            doing_action = "USER DISABLED BOOT SERVICES";
+            runBootServices = false;
+            doNotification(TAG,"USER DISABLED BOOT SERVICES");
         }
         // check for DELETE_CHROOT_TAG pref & make sure default is NO
         if(ChrootManagerFragment.DELETE_CHROOT_TAG.equals(sharedpreferences.getString(ChrootManagerFragment.DELETE_CHROOT_TAG, ""))){
@@ -141,7 +148,7 @@ public class RunAtBootService extends Service {
             return false;
         }
         doing_action = "RUNNING BOOT SERVICES";
-        doNotification(TAG, "RUNNING BOOT SERVICES");
+        // doNotification(TAG, "RUNNING BOOT SERVICES");
         // this duplicates the functionality of the userinit service, formerly in init.rc
         // These scripts will start up after the system is booted.
         // Put scripts in fileDir/scripts/etc/init.d/ and set execute permission.  Scripts should
@@ -153,7 +160,6 @@ public class RunAtBootService extends Service {
             // init.d
             String[] runner = {busybox + " run-parts " +  nh.APP_INITD_PATH};
             exe.RunAsRoot(runner);
-
             Toast.makeText(getBaseContext(), getString(R.string.autorunningscripts), Toast.LENGTH_SHORT).show();
             return true;
         }
