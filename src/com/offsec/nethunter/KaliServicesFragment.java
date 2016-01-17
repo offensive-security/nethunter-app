@@ -2,10 +2,14 @@ package com.offsec.nethunter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -27,8 +31,10 @@ public class KaliServicesFragment extends Fragment {
      */
     private String[][] KaliServices;
     private static final String ARG_SECTION_NUMBER = "section_number";
+    public static final String RUN_AT_BOOT = "RUN_AT_BOOT";
     boolean updateStatuses = false;
     NhPaths nh;
+    private SharedPreferences prefs;
     public KaliServicesFragment() {
 
     }
@@ -49,11 +55,48 @@ public class KaliServicesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.kali_services, container, false);
+        setHasOptionsMenu(true);
         checkServices(rootView);
         return rootView;
 
     }
-
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        prefs = getContext().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
+        inflater.inflate(R.menu.kali_services, menu);
+    }
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.bootServicesState);
+        if (item != null) {
+            if(prefs.getBoolean(RUN_AT_BOOT, true)){
+                item.setTitle("DISABLE Services At Boot");
+            } else{
+                item.setTitle("ENABLE Services At Boot");
+            }
+        }
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.bootServicesState:
+                if(prefs.getBoolean(RUN_AT_BOOT, true)){
+                    SharedPreferences.Editor ed = prefs.edit();
+                    ed.putBoolean(RUN_AT_BOOT, false);
+                    ed.commit();
+                    nh.showMessage("Boot Services DISABLED");
+                } else{
+                    SharedPreferences.Editor ed = prefs.edit();
+                    ed.putBoolean(RUN_AT_BOOT, true);
+                    ed.commit();
+                    nh.showMessage("Boot Services ENABLED");
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
