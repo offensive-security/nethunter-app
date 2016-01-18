@@ -26,9 +26,10 @@
 
         <EditText
             android:id="@+id/ipaddress"
-            android:layout_width="match_parent"
+            android:layout_width="334dp"
             android:layout_height="wrap_content"
-            android:ems="10"/>
+            android:ems="10"
+            android:digits="0123456789." />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -37,9 +38,13 @@
 
         <EditText
             android:id="@+id/port"
-            android:layout_width="match_parent"
+            android:layout_width="102dp"
             android:layout_height="wrap_content"
-            android:ems="10"/>
+            android:ems="10"
+            android:maxWidth="15dp"
+            android:maxLines="1"
+            android:maxLength="5"
+            android:inputType="number" />
 
         <TextView
             android:layout_width="match_parent"

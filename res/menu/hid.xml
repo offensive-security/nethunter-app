@@ -1,11 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/source_button"
-        android:title="@string/source"
-        android:icon="@android:drawable/ic_menu_edit"
-        app:showAsAction="ifRoom|withText"  />
-    <item
         android:id="@+id/admin"
         android:title="@string/admin"
         app:showAsAction="never" />
