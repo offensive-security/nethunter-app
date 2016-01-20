@@ -403,7 +403,7 @@ public class CustomCommandsFragment extends Fragment {
 
         database.addCommand("Update Kali metapackages",nh.makeTermTitle("Updating Kali") + "apt-get update && apt-get upgrade", "INTERACTIVE", "KALI", 0);
         database.addCommand("Launch Wifite",nh.makeTermTitle("Wifite") +"wifite", "INTERACTIVE", "KALI", 0);
-        database.addCommand("Dump Mifare",nh.makeTermTitle("DumpMifare") +"dumpmifare", "INTERACTIVE", "KALI", 0);
+        database.addCommand("Dump Mifare",nh.makeTermTitle("DumpMifare") +"dumpmifare.sh", "INTERACTIVE", "KALI", 0);
     }
 }
 
