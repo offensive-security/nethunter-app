@@ -29,7 +29,8 @@
             android:layout_width="334dp"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:digits="0123456789." />
+            android:digits="0123456789."
+            android:inputType="number"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
