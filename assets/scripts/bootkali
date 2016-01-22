@@ -159,7 +159,7 @@ fi
    	#IPTABLES
 
    	if [ "$1" == "iptables" ]; then
-   		$busybox chroot $mnt sh /sdcard/nh_files/iptables.conf
+   		$busybox chroot $mnt sh /sdcard/nh_files/configs/iptables.conf
    	fi
 
    	#MANA (is now using only the stop scripts)
