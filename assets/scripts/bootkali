@@ -176,12 +176,10 @@ fi
    	#MSF
 
    	if [ "$1" == "msf" ] && [ "$2" == "start" ]; then
-   		$busybox chroot $mnt service postgresql start
-         $busybox chroot $mnt service metasploit start
+   		$busybox chroot $mnt start-msf.sh
    	fi
    	if [ "$1" == "msf" ] && [ "$2" == "stop" ]; then
-         $busybox chroot $mnt service postgresql start
-   		$busybox chroot $mnt service metasploit stop
+   		$busybox chroot $mnt stop-msf.sh
    	fi
 
 
