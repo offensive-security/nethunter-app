@@ -57,7 +57,7 @@ chmod 644 $mnt/etc/resolv.conf
 ## Should run always (https://su.chainfire.eu/#how-mount)
 $busybox mount -o remount,suid /data
 
-if [ "$($busybox mountpoint $mnt/dev)" == "$mnt/dev is a mountpoint" ]; then
+if $busybox mountpoint -q $mnt/dev; then
 	# Files exist in /dev so we can assume its mounted and we have root
 	clear
 else
@@ -65,9 +65,9 @@ else
 
 	$busybox mount -r -o bind /system $mnt/system
 
-	if [ -d "/storage/emulated/0" ]; then
+	if $busybox mountpoint -q /storage/emulated/0; then
 		$busybox mount -o bind /storage/emulated/0 $mnt/sdcard
-	elif [ -d "/storage/emulated/legacy" ]; then
+	elif $busybox mountpoint -q /storage/emulated/legacy; then
 		$busybox mount -o bind /storage/emulated/legacy $mnt/sdcard
 	else
 		$busybox mount -o bind /sdcard $mnt/sdcard
