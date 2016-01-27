@@ -1,0 +1,95 @@
+#!/system/bin/sh
+
+if [ -x /system/xbin/busybox ]; then
+	busybox=/system/xbin/busybox
+elif [ -x /data/local/bin/busybox ]; then
+	busybox=/data/local/bin/busybox
+elif [ -x /system/bin/busybox ]; then
+	busybox=/system/bin/busybox
+else
+	echo "Busybox not found!  Install it, dummy!"
+	log "Busybox not found!  Install it, dummy!"
+	exit
+fi
+
+su 0 setenforce 0
+
+######### CHECK FOR ROOT #########
+f_checkforroot(){
+	perm=$(id | $busybox cut -b 5)
+	if [ "$perm" != "0" ]; then
+		echo "ROOT NOT DETECTED! Type: su or install SuperSU to fix"
+		exit
+	fi
+}
+
+######### EXPORT #########
+export bin=/system/bin
+export mnt=/data/local/nhsystem/kali-armhf
+PRESERVED_PATH=$PATH
+export PATH=/usr/bin:/usr/sbin:/bin:/usr/local/bin:/usr/local/sbin:$PATH
+export TERM=linux
+export HOME=/root
+export USER=root
+export LOGNAME=root
+unset LD_PRELOAD
+
+######### SET DNS ########
+rm -f /data/local/nhsystem/kali-armhf/etc/resolv.conf # remove dns entries
+touch /data/local/nhsystem/kali-armhf/etc/resolv.conf # create empty resolv.conf
+
+for i in 1 2 3 4; do
+	if [[ -z $(getprop net.dns${i}) ]]; then
+		# we go through 1-4 dns servers and break out of loop on empty
+		break
+	else
+		# add local/device dns server first
+		echo "nameserver $(getprop net.dns${i})" >> /data/local/nhsystem/kali-armhf/etc/resolv.conf
+	fi
+done
+
+# lastly add two default dns entries
+echo "nameserver 208.67.222.222" >> /data/local/nhsystem/kali-armhf/etc/resolv.conf
+echo "nameserver 208.67.220.220" >> /data/local/nhsystem/kali-armhf/etc/resolv.conf
+chmod 644 /data/local/nhsystem/kali-armhf/etc/resolv.conf
+
+######### MOUNT #########
+
+## Should run always (https://su.chainfire.eu/#how-mount)
+$busybox mount -o remount,suid /data
+
+if [ "$($busybox mountpoint $mnt/dev)" == "$mnt/dev is a mountpoint" ]; then
+	# Files exist in /dev so we can assume its mounted and we have root
+	clear
+else
+	f_checkforroot
+
+	$busybox mount -r -o bind /system $mnt/system
+
+	if [ -d "/storage/emulated/0" ]; then
+		$busybox mount -o bind /storage/emulated/0 $mnt/sdcard
+	elif [ -d "/storage/emulated/legacy" ]; then
+		$busybox mount -o bind /storage/emulated/legacy $mnt/sdcard
+	else
+		$busybox mount -o bind /sdcard $mnt/sdcard
+	fi
+
+	$busybox mount -o bind /storage/usbdisk $mnt/mnt/usbdisk
+	$busybox mount -o bind /dev $mnt/dev
+	$busybox mount -t devpts devpts $mnt/dev/pts
+	$busybox mount -t proc proc $mnt/proc
+	$busybox mount -t sysfs sysfs $mnt/sys
+
+	$busybox chmod 666 /dev/null
+
+	# SET 250MB TO ALLOW POSTGRESQL #
+	$busybox sysctl -w kernel.shmmax=268435456
+
+	# NETWORK SETTINGS #
+	$busybox sysctl -w net.ipv4.ip_forward=1
+	echo "127.0.0.1		 localhost kali" > $mnt/etc/hosts
+	echo "::1				 localhost ip6-localhost ip6-loopback" >> $mnt/etc/hosts
+	echo "kali" > $mnt/proc/sys/kernel/hostname
+
+	clear
+fi
