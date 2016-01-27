@@ -68,6 +68,10 @@
              android:id="@+id/searchsploit_item"
              android:icon="@drawable/ic_bug_report_black_24dp"
              android:title="@string/drawertitlesearchsploit" />
+        <item
+            android:id="@+id/pineapple_item"
+            android:icon="@drawable/ic_usb"
+            android:title="@string/drawertitlepineapple" />
      </group>
 
  </menu>

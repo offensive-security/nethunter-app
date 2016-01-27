@@ -346,6 +346,13 @@ public class AppNavHomeActivity extends AppCompatActivity {
                                         .addToBackStack(null)
                                         .commit();
                                 break;
+                            case R.id.pineapple_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, PineappleFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
                             case R.id.checkforupdate_item:
                                 checkUpdate();
                                 break;
