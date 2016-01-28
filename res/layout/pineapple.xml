@@ -29,10 +29,10 @@
     <EditText
         android:layout_width="112dp"
         android:layout_height="wrap_content"
-        android:inputType="numberDecimal"
         android:ems="10"
         android:id="@+id/pineapple_webport"
-        android:text="1471" />
+        android:text="1471"
+        android:inputType="number" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -47,7 +47,7 @@
         android:inputType="numberDecimal"
         android:ems="10"
         android:id="@+id/pineapple_clientip"
-        android:text="172.16.42.245" />
+        android:text="172.16.42.245/24" />
 
     <TextView
         android:layout_width="wrap_content"
