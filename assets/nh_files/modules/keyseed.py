@@ -1312,6 +1312,112 @@ dicts = {
         "\x0d": "\\x00\\x00\\x00\\x28\\x00\\x00\\x00\\x00",
     },
     'be_bin' : {
+        # Symbols
+        "\x20": "space",
+        "\x21": "8",                    # !
+        "\x22": "3",                    # "
+        "\x23": "right-alt 3",          # hashtag nethunter
+        "\x24": "rbracket",             # $
+        "\x25": "left-shift quote",     # %
+        "\x26": "1",                    # &
+        "\x27": "4",                    # '
+        "\x28": "5",                    # (
+        "\x29": "minus",                # )
+        "\x2a": "left-shift rbracket",  # *
+        "\x2b": "left-shift slash",     # +
+        "\x2c": "m",                    # ,
+        "\x2d": "equals",               # -
+        "\x2e": "left-shift comma",     # .
+        "\x2f": "left-shift period",    # /
+        # Numbers
+        "\x30": "left-shift 0",
+        "\x31": "left-shift 1",
+        "\x32": "left-shift 2",
+        "\x33": "left-shift 3",
+        "\x34": "left-shift 4",
+        "\x35": "left-shift 5",
+        "\x36": "left-shift 6",
+        "\x37": "left-shift 7",
+        "\x38": "left-shift 8",
+        "\x39": "left-shift 9",
+        # Symbols
+        "\x3a": "period",               # :
+        "\x3b": "comma",                # ;
+        #"\x3c": "\\x00\\x00\\x00\\x64\\x00\\x00\\x00\\x00", # <
+        "\x3d": "slash",               # =
+        #"\x3e": "\\x20\\x00\\x00\\x64\\x00\\x00\\x00\\x00", # >
+        "\x3f": "left-shift m",         # ?
+        "\x40": "right-alt 2",          # @
+        # Uppercase
+        "\x41": "left-shift q",
+        "\x42": "left-shift b",
+        "\x43": "left-shift c",
+        "\x44": "left-shift d",
+        "\x45": "left-shift e",
+        "\x46": "left-shift f",
+        "\x47": "left-shift g",
+        "\x48": "left-shift h",
+        "\x49": "left-shift i",
+        "\x4a": "left-shift j",
+        "\x4b": "left-shift k",
+        "\x4c": "left-shift l",
+        "\x4d": "left-shift semicolon",
+        "\x4e": "left-shift n",
+        "\x4f": "left-shift o",
+        "\x50": "left-shift p",
+        "\x51": "left-shift a",
+        "\x52": "left-shift r",
+        "\x53": "left-shift s",
+        "\x54": "left-shift t",
+        "\x55": "left-shift u",
+        "\x56": "left-shift v",
+        "\x57": "left-shift z",
+        "\x58": "left-shift x",
+        "\x59": "left-shift y",
+        "\x5a": "left-shift w",
+        # Symbols
+        "\x5b": "right-alt 5",           # [
+        #"\x5c": "right-alt backslash",  # \
+        "\x5d": "right-alt rbracket",    # ]
+        "\x5e": ["lbracket", "space"],   # ^
+        "\x5f": "left-shift equals",     # _
+        "\x60": "right-alt backslash",   # 
+        # Lowercase
+        "\x61": "q",
+        "\x62": "b",
+        "\x63": "c",
+        "\x64": "d",
+        "\x65": "e",
+        "\x66": "f",
+        "\x67": "g",
+        "\x68": "h",
+        "\x69": "i",
+        "\x6a": "j",
+        "\x6b": "k",
+        "\x6c": "l",
+        "\x6d": "semicolon",
+        "\x6e": "n",
+        "\x6f": "o",
+        "\x70": "p",
+        "\x71": "a",
+        "\x72": "r",
+        "\x73": "s",
+        "\x74": "t",
+        "\x75": "u",
+        "\x76": "v",
+        "\x77": "z",
+        "\x78": "x",
+        "\x79": "y",
+        "\x7a": "w",
+        #Shift chars
+        "\x7b": "right-alt 9",      # {
+        "\x7c": "right-alt 1",      # |
+        "\x7d": "right-alt 0",      # }
+        "\x7e": ["right-alt slash", "space"], # ~
+        "\x7f": "backspace",
+        #SDLK_RETURN,0x28
+        #"\x0a": "\\x00\\x00\\x00\\x28\\x00\\x00\\x00\\x00",
+        #"\x0d": "\\x00\\x00\\x00\\x28\\x00\\x00\\x00\\x00"
     },
     'be' : {
         "\x20": "\\x00\\x00\\x00\\x2c\\x00\\x00\\x00\\x00",
