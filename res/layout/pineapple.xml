@@ -47,7 +47,7 @@
         android:inputType="numberDecimal"
         android:ems="10"
         android:id="@+id/pineapple_clientip"
-        android:text="172.16.42.245/24" />
+        android:text="172.16.42.42/24" />
 
     <TextView
         android:layout_width="wrap_content"
