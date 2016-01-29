@@ -235,6 +235,9 @@ else
 		if [ -f "/sys/module/dwc3/parameters/aca_enable" ]; then
 			echo "Y" > /sys/module/dwc3/parameters/aca_enable
 		fi
+		if [ -f "/sys/module/dwc3/parameters/otg_charging" ]; then
+			echo "Y" > /sys/module/dwc3/parameters/otg_charging
+		fi
 	fi
 
 	if [ "$1" == "ycable" ] && [ "$2" == "stop" ]; then
