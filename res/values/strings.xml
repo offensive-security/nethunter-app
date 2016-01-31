@@ -294,7 +294,7 @@
     <string name="drawertitlecheckupdate">Check App Update</string>
     <string name="drawertitlesearchsploit">SearchSploit</string>
     <string name="drawertitlenmap">Nmap Scan</string>
-    <string name="drawertitlepineapple">Pineapple Nano</string>
+    <string name="drawertitlepineapple">Pineapple Connector</string>
     <string name="InstallAndUpdateButtonText"><![CDATA[Install & Update]]></string>
     <string name="metapackagesExplanation">Choose some \"metapackages\". The chroot will also be upgraded (via \"apt-get update/dist-upgrade\").\n\nSelecting metapackages you already have installed (or no packages at all) simply update/upgrades without removing anything.\n\nDepending on what metapackages you select, you may be asked to do stuff (such as set passwords for services), so pay attention.</string>
     <string name="metapackagesAdditionalInfo">Local storage requirements may be in the 20+ GB range. This installation/update will be performed in a terminal, so watch for issues. When completed, press the back button.</string>

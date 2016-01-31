@@ -7,6 +7,17 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/pineapple_description"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:padding="4dp"
+        android:id="@+id/textView33"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/pineapple_gateway"
         android:id="@+id/textView31" />
