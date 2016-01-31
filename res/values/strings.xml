@@ -430,6 +430,7 @@
     <string name="nmap_udpscan">UDP Scan</string>
     <!-- End NMAP -->
     <!-- Start PineappleFragment -->
+    <string name="pineapple_description">The pineapple connector is used in conjunction with the Hak5 Pineapple Nano and a USB OTG cable.   This helper will connect the Pineapple Nano over ethernet and upstream your wifi connection.</string>
     <string name="pineapple_gateway">Pineapple Gateway/Web Interface IP</string>
     <string name="pineapple_port">Pineapple Nano Web Port</string>
     <string name="pineapple_ip">Client IP</string>
