@@ -93,7 +93,7 @@ public class VNCFragment  extends Fragment {
         });
         addClickListener(StartVNCButton, new View.OnClickListener() {
             public void onClick(View v) {
-                intentClickListener_NH("vncserver :1 -geometry " + localhostonly + xwidth + "x" + xheight + " && echo \"Closing terminal in 5 secs\" && sleep 5 && exit"); // since is a kali command we can send it as is
+                intentClickListener_NH("vncserver :1 " + localhostonly + "-geometry " + xwidth + "x" + xheight + " && echo \"Closing terminal in 5 secs\" && sleep 5 && exit"); // since is a kali command we can send it as is
                 Log.d(TAG, localhostonly);
             }
         });
