@@ -72,6 +72,10 @@
             android:id="@+id/pineapple_item"
             android:icon="@drawable/ic_usb"
             android:title="@string/drawertitlepineapple" />
+        <item
+            android:id="@+id/gps_item"
+            android:icon="@drawable/ic_gps_fixed_black_18dp"
+            android:title="@string/drawertitlegps" />
      </group>
 
  </menu>

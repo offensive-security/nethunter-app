@@ -2,9 +2,9 @@ package com.offsec.nethunter;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.GpsSatellite;
 import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
@@ -16,13 +16,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.offsec.nethunter.GPS.GpsPosition;
 import com.offsec.nethunter.GPS.NmeaUtils;
 import com.offsec.nethunter.utils.NhPaths;
+import com.offsec.nethunter.utils.ShellExecuter;
 
+import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 
 public class KaliGpsServiceFragment extends Fragment {
@@ -30,6 +35,7 @@ public class KaliGpsServiceFragment extends Fragment {
     SharedPreferences sharedpreferences;
     private Context mContext;
     private static final String TAG = "KaliGpsServiceFragment";
+    private TextView GpsTextview;
 
     static NhPaths nh;
 
@@ -38,8 +44,8 @@ public class KaliGpsServiceFragment extends Fragment {
     public KaliGpsServiceFragment() {
     }
 
-    public static PineappleFragment newInstance(int sectionNumber) {
-        PineappleFragment fragment = new PineappleFragment();
+    public static KaliGpsServiceFragment newInstance(int sectionNumber) {
+        KaliGpsServiceFragment fragment = new KaliGpsServiceFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
@@ -48,81 +54,111 @@ public class KaliGpsServiceFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.pineapple, container, false);
+        final View rootView = inflater.inflate(R.layout.gps, container, false);
         sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
         mContext = getActivity().getApplicationContext();
+        GpsTextview = (TextView) rootView.findViewById(R.id.GpsTextview);
+
+        nh = new NhPaths();
+
+        addClickListener(R.id.start_kismet, new View.OnClickListener() {
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+                    public void run() {
+                        ShellExecuter exe = new ShellExecuter();
+                        String command = "su -c '" + nh.APP_SCRIPTS_PATH + "/start-gpsd'";
+                        Log.d(TAG, command);
+                        exe.RunAsRootOutput(command);
+                    }
+                }).start();
+                intentClickListener_NH("/usr/bin/start-kismet"); // start kismet
+                nh.showMessage("Starting Kismet with GPS support");
+                setupGpsListener();
+            }
+        }, rootView);
+
+        addClickListener(R.id.gps_stop, new View.OnClickListener() {
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+                    public void run() {
+                        ShellExecuter exe = new ShellExecuter();
+                        String command = "su -c '" + nh.APP_SCRIPTS_PATH + "/stop-gpsd'";
+                        Log.d(TAG, command);
+                        exe.RunAsRootOutput(command);
+                    }
+                }).start();
+                nh.showMessage("Stopping GPS Server");
+                //stopGpsListener();
+            }
+        }, rootView);
 
         return rootView;
     }
 
+    private void addClickListener(int buttonId, View.OnClickListener onClickListener, View rootView) {
+        rootView.findViewById(buttonId).setOnClickListener(onClickListener);
+    }
 
-    private void setupGpsListener(Context context) {
+    private void setupGpsListener() {
 
-        final LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        Log.d(TAG, "setupGpsListener");
+
+        Log.d(TAG, "Start LocationManager");
+        final LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+        Log.d(TAG, "Requesting permissions marshmallow");
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+
             lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0L, new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
-                    Log.d(TAG, "onLocationChanged()");
+                    //Log.d(TAG, "onLocationChanged()");
                 }
 
                 @Override
                 public void onStatusChanged(String provider, int status, Bundle extras) {
-                    Log.d(TAG, "onStatusChanged(provider=" + provider + ", status=" + status + ")");
+                    //Log.d(TAG, "onStatusChanged(provider=" + provider + ", status=" + status + ")");
                 }
 
                 @Override
                 public void onProviderEnabled(String provider) {
-                    Log.d(TAG, "onProviderEnabled(provider=" + provider + ")");
+                    //Log.d(TAG, "onProviderEnabled(provider=" + provider + ")");
                 }
 
                 @Override
                 public void onProviderDisabled(String provider) {
-                    Log.d( TAG, "onProviderDisabled(provider=" + provider + ")");
+                    //Log.d(TAG, "onProviderDisabled(provider=" + provider + ")");
                 }
             });
 
             lm.addNmeaListener(new GpsStatus.NmeaListener() {
                 @Override
                 public void onNmeaReceived(long timestamp, String nmea) {
-                    Log.d(TAG, "onNmeaReceived()");
                     // This is where we log NMEA to file
-                    FileWriter f;
-                    try {
-                        f = new FileWriter("/tmp/gps", true);
-                        f.write(nmea + "\n" + extractNmeaInfo(timestamp, nmea));
-                        f.flush();
-                        f.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    writeToFile(nmea);
+
+                    GpsTextview.setText(nmea + "\n");
+
+                    // SHOW EVERYTHING
+                    //GpsTextview.setText(GpsTextview.getText() + "\n" + nmea + "\n" + extractNmeaInfo(timestamp, nmea));
                 }
             });
         }
-    }
-
-    private static String extractGpsStatusInfo(GpsStatus gpsStatus) {
-        String info = "GpsStatus: ";
-        if (gpsStatus == null) { return info + "null"; }
-
-        info += "\nMax satellites: " + gpsStatus.getMaxSatellites();
-        info += "\nTime to first fix: " + gpsStatus.getTimeToFirstFix();
-
-        int numSattelites = 0;
-        Iterable<GpsSatellite> satellites = gpsStatus.getSatellites();
-        for (GpsSatellite satellite : satellites) {
-            info += "\nSatellite " + satellite.toString() + ": azimuth=" + satellite.getAzimuth();
-            info += "\nSatellite " + satellite.toString() + ": elevation=" + satellite.getElevation();
-            info += "\nSatellite " + satellite.toString() + ": prn=" + satellite.getPrn();
-            info += "\nSatellite " + satellite.toString() + ": snr=" + satellite.getSnr();
-            info += "\nSatellite " + satellite.toString() + ": hasAlmanac=" + satellite.hasAlmanac();
-            info += "\nSatellite " + satellite.toString() + ": usedInFix=" + satellite.usedInFix();
-            info += "\nSatellite " + satellite.toString() + ": hasEphemeris=" + satellite.hasEphemeris();
-            numSattelites++;
         }
-        info += "\nNumber of satellites: " + numSattelites;
 
-        return info;
+    private void writeToFile(String data) {
+        try {
+            String filename = nh.CHROOT_PATH + "/tmp/gps" ;
+
+            FileWriter fstream = new FileWriter(filename, true);
+            fstream.write(data + "\n");
+            fstream.flush();
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
     }
 
     private static String extractNmeaInfo(long timestamp, String nmea) {
@@ -144,6 +180,19 @@ public class KaliGpsServiceFragment extends Fragment {
         }
 
         return info;
+    }
+
+    private void intentClickListener_NH(final String command) {
+        try {
+            Intent intent =
+                    new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+
+            intent.putExtra("com.offsec.nhterm.iInitialCommand", command);
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

@@ -295,6 +295,7 @@
     <string name="drawertitlesearchsploit">SearchSploit</string>
     <string name="drawertitlenmap">Nmap Scan</string>
     <string name="drawertitlepineapple">Pineapple Connector</string>
+    <string name="drawertitlegps">Wardriving</string>
     <string name="InstallAndUpdateButtonText"><![CDATA[Install & Update]]></string>
     <string name="metapackagesExplanation">Choose some \"metapackages\". The chroot will also be upgraded (via \"apt-get update/dist-upgrade\").\n\nSelecting metapackages you already have installed (or no packages at all) simply update/upgrades without removing anything.\n\nDepending on what metapackages you select, you may be asked to do stuff (such as set passwords for services), so pay attention.</string>
     <string name="metapackagesAdditionalInfo">Local storage requirements may be in the 20+ GB range. This installation/update will be performed in a terminal, so watch for issues. When completed, press the back button.</string>
@@ -438,6 +439,12 @@
     <string name="pineapple_start_OTG">Setup Connection</string>
     <string name="pineapple_stop_OTG">Close Connection</string>
     <!-- End PineappleFragment -->
+
+    <!-- Start GPSFragment -->
+    <string name="gps_description">Converts your GPS to nmea then provides to Kali chroot.  Perfect for wardriving with Kismet or just a generic GPS server for Kali</string>
+    <!-- End GPSFragment -->
+
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
