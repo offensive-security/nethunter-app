@@ -437,6 +437,7 @@
     <string name="pineapple_cidr">Pineapple CIDR</string>
     <string name="pineapple_start_OTG">Setup Connection</string>
     <string name="pineapple_stop_OTG">Close Connection</string>
+    <string name="pineapple_noupstream">No upstream</string>
     <!-- End PineappleFragment -->
 
     <!-- TODO: Remove or change this placeholder text -->

@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.offsec.nethunter.utils.NhPaths;
@@ -20,6 +21,8 @@ public class PineappleFragment extends Fragment {
     private static final String TAG = "PineappleFragment";
 
     static NhPaths nh;
+    String start_type = "start ";
+    View.OnClickListener checkBoxListener;
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -43,12 +46,26 @@ public class PineappleFragment extends Fragment {
         nh = new NhPaths();
         Log.d(TAG, nh.APP_SCRIPTS_PATH);
 
+        // Checkbox for No Upstream
+        final CheckBox noupCheckbox = (CheckBox) rootView.findViewById(R.id.pineapple_noup);
+        checkBoxListener = new View.OnClickListener() {
+            public void onClick(View v) {
+                if(noupCheckbox.isChecked()) {
+                    start_type = "start_noup ";
+                }else{
+                    start_type = "start ";
+                }
+            }
+        };
+        noupCheckbox.setOnClickListener(checkBoxListener);
+
+        // Start Button
         addClickListener(R.id.pineapple_start_button, new View.OnClickListener() {
                     public void onClick(View v) {
                         new Thread(new Runnable() {
                             public void run() {
                                 ShellExecuter exe = new ShellExecuter();
-                                String command = "su -c '" + nh.APP_SCRIPTS_PATH + "/pine-nano start " + startConnection(rootView) + "'";
+                                String command = "su -c '" + nh.APP_SCRIPTS_PATH + "/pine-nano " + start_type + startConnection(rootView) + "'";
                                 Log.d(TAG, command);
                                 exe.RunAsRootOutput(command);
                             }
@@ -57,6 +74,7 @@ public class PineappleFragment extends Fragment {
                     }
                 }, rootView);
 
+        // Stop|Close Button
         addClickListener(R.id.pineapple_close_button, new View.OnClickListener() {
             public void onClick(View v) {
                 new Thread(new Runnable() {
