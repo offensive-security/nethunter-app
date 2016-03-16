@@ -1,6 +1,8 @@
 #!/system/bin/sh
 
-if [ -x /system/xbin/busybox ]; then
+if [ -x /system/xbin/busybox_nh ]; then
+	busybox=/system/xbin/busybox_nh
+elif [ -x /system/xbin/busybox ]; then
 	busybox=/system/xbin/busybox
 elif [ -x /data/local/bin/busybox ]; then
 	busybox=/data/local/bin/busybox

@@ -1138,7 +1138,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
                 public void afterTextChanged(Editable s)
                 {
                     removeFromCmd(M_Spoofer_Gateway + GATEtext);
-                    M_Spoofer_Gateway = "--gateway ";
+                    M_Spoofer_Gateway = " --gateway ";
                     GATEtext = M_Spoofer_Gateway_Text.getText().toString();
                     addToCmd(M_Spoofer_Gateway + GATEtext);
                 }
@@ -1149,7 +1149,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
                     if(SpoofGatewayIPCheckbox.isChecked()) {
-                        M_Spoofer_Gateway = "--gateway ";
+                        M_Spoofer_Gateway = " --gateway ";
                         GATEtext = M_Spoofer_Gateway_Text.getText().toString();
                         addToCmd(M_Spoofer_Gateway + GATEtext);
                         M_Spoofer_Gateway_Text.setEnabled(true);
