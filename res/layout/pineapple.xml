@@ -75,11 +75,18 @@
         android:id="@+id/pineapple_cidr"
         android:text="172.16.42.0/24" />
 
+
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/pineapple_noupstream"
         android:id="@+id/pineapple_noup" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pineapple_transproxy"
+            android:id="@+id/pineapple_transproxy" />
 
     <LinearLayout
         android:orientation="horizontal"

@@ -22,6 +22,7 @@ public class PineappleFragment extends Fragment {
 
     static NhPaths nh;
     String start_type = "start ";
+    String proxy_type;
     View.OnClickListener checkBoxListener;
 
     private static final String ARG_SECTION_NUMBER = "section_number";
@@ -59,13 +60,26 @@ public class PineappleFragment extends Fragment {
         };
         noupCheckbox.setOnClickListener(checkBoxListener);
 
+        // Checkbox for Transparent Proxy
+        final CheckBox transCheckbox = (CheckBox) rootView.findViewById(R.id.pineapple_transproxy);
+        checkBoxListener = new View.OnClickListener() {
+            public void onClick(View v) {
+                if(noupCheckbox.isChecked()) {
+                    proxy_type = " start_proxy ";
+                }else{
+                    proxy_type = "";
+                }
+            }
+        };
+        noupCheckbox.setOnClickListener(checkBoxListener);
+
         // Start Button
         addClickListener(R.id.pineapple_start_button, new View.OnClickListener() {
                     public void onClick(View v) {
                         new Thread(new Runnable() {
                             public void run() {
                                 ShellExecuter exe = new ShellExecuter();
-                                String command = "su -c '" + nh.APP_SCRIPTS_PATH + "/pine-nano " + start_type + startConnection(rootView) + "'";
+                                String command = "su -c '" + nh.APP_SCRIPTS_PATH + "/pine-nano " + start_type + startConnection(rootView) +  proxy_type + "'";
                                 Log.d(TAG, command);
                                 exe.RunAsRootOutput(command);
                             }

@@ -438,6 +438,12 @@
     <string name="pineapple_start_OTG">Setup Connection</string>
     <string name="pineapple_stop_OTG">Close Connection</string>
     <string name="pineapple_noupstream">No upstream</string>
+    <string name="pineapple_upint">Pineapple Upstream Interface</string>
+    <string-array name="pineapple_interface">
+        <item>wlan0</item>
+        <item>p2p0</item>
+    </string-array>
+    <string name="pineapple_transproxy">Forward port 80/443 to 8080/8083</string>
     <!-- End PineappleFragment -->
 
     <!-- TODO: Remove or change this placeholder text -->

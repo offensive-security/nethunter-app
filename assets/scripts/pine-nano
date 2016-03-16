@@ -8,6 +8,7 @@
 # $3 = PINEAPPLE_CIDR
 # $4 = PINEAPPLE_GATEWAY
 # $5 = PINEAPPLE_PORT
+# $6 = start/stop port 80/443 redirection for transparent NAT
 
 GATEWAY=$(getprop dhcp.wlan0.gateway)
 PINEAPPLE_CLIENT_IP=$2  # 172.16.42.42/24
@@ -113,16 +114,29 @@ iptables -F bw_OUTPUT
 
 }
 
+f_transproxy(){
+    # For Bettercap/mitmproxy which acts as a transparent proxy
+
+    # Drop all
+    iptables -P INPUT DROP
+
+    # Allow only port 80 and 443
+    iptables -t nat -A PREROUTING -i $phy -p tcp --destination-port 80 -j REDIRECT --to-port 8080
+    iptables -t nat -A PREROUTING -i eth0  -p tcp --destination-port 443 -j REDIRECT --to-port 8083
+}
+
 if [[ $1 == "start" ]];then
     f_start
 fi
-
 
 if [[ $1 == "start_noup" ]];then
     f_start_noup
 fi
 
-
 if [[ $1 == "stop" ]]; then
     f_stop
+fi
+
+if [[ $6 == "start_proxy" ]];then
+    f_transproxy
 fi
