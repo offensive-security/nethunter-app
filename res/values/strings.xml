@@ -33,7 +33,6 @@
     <string name="mana_label">MANA Evil Access Point</string>
     <string name="mana_headline">Evil Access Point</string>
     <string name="mana_description">This is the configuration page for MANA, an evil access point implementation by Sensepost. The various MITM logs get written to the /var/lib/mana-toolkit directory in the Kali chroot..</string>
-
     <string name="mana_hostapd">The hostapd configuration file used by Mana.</string>
     <string name="mana_dhcpd">The dhcpd configuration file used by Mana.</string>
     <string name="mana_dnsspoof">The dnsspoof configuration file used by Mana.</string>
@@ -43,6 +42,8 @@
     <string name="bdfproxy_cfg">The configuration file for BDFProxy.</string>
     <string name="mana_noupstream">The Mana no-upstream run script.</string>
     <string name="mana_noupstream_eap">The Mana no-upstream EAP run script.</string>
+    <string name="mana_bettercap_description">Route traffic to bettercap proxy with Mana-toolkit</string>
+
 
     <string name="hostapd_label">Hostapd Service</string>
     <string name="hostapd_headline">Hostapd Config</string>
