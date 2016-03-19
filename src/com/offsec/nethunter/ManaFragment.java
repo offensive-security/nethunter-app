@@ -43,7 +43,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
     ViewPager mViewPager;
 
     private Integer selectedScriptIndex = 0;
-    final CharSequence[] scripts = {"mana-nat-full", "mana-nat-simple", "mana-nat-simple-bdf"};
+    final CharSequence[] scripts = {"mana-nat-full", "mana-nat-simple", "mana-nat-bettercap", "mana-nat-simple-bdf"};
     private static final String TAG = "ManaFragment";
     private static final String ARG_SECTION_NUMBER = "section_number";
     static NhPaths nh;
@@ -150,6 +150,10 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                         }
                         break;
                     case 2:
+                        nh.showMessage("Starting MANA Bettercap");
+                        intentClickListener_NH(nh.makeTermTitle("MANA-BETTERCAP") + "/usr/bin/start-nat-transproxy-lollipop.sh");
+                        break;
+                    case 3:
                         nh.showMessage("Starting MANA NAT SIMPLE && BDF");
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             intentClickListener_NH(nh.makeTermTitle("MANA-BDF") + "/usr/share/mana-toolkit/run-mana/start-nat-simple-bdf-lollipop.sh");
@@ -231,7 +235,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
         @Override
         public int getCount() {
-            return 6;
+            return 7;
         }
 
         @Override
@@ -248,6 +252,8 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                 case 4:
                     return new ManaNatSimpleFragment();
                 case 5:
+                    return new ManaNatBettercapFragment();
+                case 6:
                     return new BdfProxyConfigFragment();
                 default:
                     return new ManaStartNatSimpleBdfFragment();
@@ -268,6 +274,8 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                 case 4:
                     return "nat-mana-simple";
                 case 5:
+                    return "nat-mana-bettercap";
+                case 6:
                     return "bdfproxy.cfg";
                 default:
                     return "mana-nat-simple-bdf";
@@ -550,6 +558,43 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             TextView desc = (TextView) rootView.findViewById(R.id.description);
             desc.setText(description);
 
+
+            EditText source = (EditText) rootView.findViewById(R.id.source);
+            ShellExecuter exe = new ShellExecuter();
+            exe.ReadFile_ASYNC(configFilePath, source);
+
+            Button button = (Button) rootView.findViewById(R.id.update);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(getView() == null){
+                        return;
+                    }
+                    EditText source = (EditText) getView().findViewById(R.id.source);
+                    String newSource = source.getText().toString();
+                    ShellExecuter exe = new ShellExecuter();
+                    exe.SaveFileContents(newSource, configFilePath);
+                    nh.showMessage("Source updated");
+                }
+            });
+            return rootView;
+        }
+    }
+
+    public static class ManaNatBettercapFragment extends Fragment {
+
+        private String configFilePath;
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.source_short, container, false);
+
+            configFilePath = nh.CHROOT_PATH +"/usr/bin/start-nat-transproxy-lollipop.sh";
+
+            String description = getResources().getString(R.string.mana_bettercap_description);
+            TextView desc = (TextView) rootView.findViewById(R.id.description);
+            desc.setText(description);
 
             EditText source = (EditText) rootView.findViewById(R.id.source);
             ShellExecuter exe = new ShellExecuter();
