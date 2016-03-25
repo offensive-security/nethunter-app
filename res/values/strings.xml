@@ -375,8 +375,7 @@
         <item>ANDROID</item>
     </string-array>
     <string name="cancel">Cancel</string>
-    <string name="extract_part1">Uncompressing the Chroot… (~10 min)</string>
-    <string name="extract_part2">Deploying the Chroot… (~5–10 min)</string>
+    <string name="extract_chroot">Decompressing and deploying the Chroot… (~5–10 min)</string>
 
     <!-- Start NMAP -->
     <string name="nmap_hint">scanme.nmap.org, 192.168.0.1; 10.0.0-255.1-254</string>

@@ -91,10 +91,7 @@ public class ChrootManagerFragment extends Fragment {
     private static final String IMAGE_SERVER = "https://images.offensive-security.com/";
 
     private static final String FILENAME_MINIMAL = "kalifs-minimal.tar.xz";
-    private static final String EXTRACTED_FILENAME_MINIMAL = "kalifs-minimal.tar";
-
     private static final String FILENAME_FULL = "kalifs-full.tar.xz";
-    private static final String EXTRACTED_FILENAME_FULL = "kalifs-full.tar";
 
     private static final String URI_MINIMAL = IMAGE_SERVER + FILENAME_MINIMAL;
     private static final String URI_FULL = IMAGE_SERVER + FILENAME_FULL;
@@ -103,7 +100,6 @@ public class ChrootManagerFragment extends Fragment {
     private String SHA512_FULL = "";
     private String SHA512;
     private String zipFilePath;
-    private String extracted_zipFilePath;
     private String installLogFile;
     private Boolean shouldLog = false;
     // if is full or minimal
@@ -361,7 +357,6 @@ public class ChrootManagerFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
                         zipFilePath = nh.SD_PATH + "/" + FILENAME_MINIMAL;
-                        extracted_zipFilePath = nh.SD_PATH + "/" + EXTRACTED_FILENAME_MINIMAL;
                         SHA512 = SHA512_MINIMAL;
                         if (shouldDownload) {
                             // update value if is minimal
@@ -381,7 +376,6 @@ public class ChrootManagerFragment extends Fragment {
                         dialog.cancel();
                         SHA512 = SHA512_FULL;
                         zipFilePath = nh.SD_PATH + "/" + FILENAME_FULL;
-                        extracted_zipFilePath = nh.SD_PATH + "/" + EXTRACTED_FILENAME_FULL;
                         if (shouldDownload) {
                             // update value if is full
                             isFull = true;
@@ -701,19 +695,15 @@ public class ChrootManagerFragment extends Fragment {
         @Override
         protected Boolean doInBackground(Void... Void) {
             try {
-                // First: decompress .tar.xz >>> .tar
                 String fExists = x.RunAsRootOutput("[ -f "+ zipFilePath +" ] && echo \"1\" || echo \"0\"");
                 if(fExists.equals("0")){
                     Log.d(TAG, "Error: No tar.xz found");
                     publishProgress("Error: Missing file: "+ zipFilePath +" not found.");
                     return false;
                 }
-                publishProgress(getActivity().getString(R.string.extract_part1));
-                x.RunAsRootWithException(nh.whichBusybox() + " xz -df '" + zipFilePath + "'");
-
-                // Second: Extract and Deploy the chroot to Destination.
-                publishProgress(getActivity().getString(R.string.extract_part2));
-                x.RunAsRootWithException(nh.whichBusybox() + " tar -xf '" + extracted_zipFilePath + "' -C '" + nh.NH_SYSTEM_PATH + "'");
+                // Decompress, extract, and deploy the .tar.xz to the chroot destination in one step
+                publishProgress(getActivity().getString(R.string.extract_chroot));
+                x.RunAsRootWithException(nh.whichBusybox() + " tar -xJf '" + zipFilePath + "' -C '" + nh.NH_SYSTEM_PATH + "'");
             } catch (RuntimeException e) {
                 Log.d(TAG, "Error: ", e);
                 publishProgress("Error: " + e.toString());
@@ -735,7 +725,7 @@ public class ChrootManagerFragment extends Fragment {
                                 public void run() {
                                     checkForExistingChroot();
                                     x.RunAsRootOutput(nh.whichBusybox() + " mount -o remount,suid /data && chmod +s " + nh.CHROOT_PATH + "/usr/bin/sudo");
-                                    deleteFile(extracted_zipFilePath);
+                                    deleteFile(zipFilePath);
                                     pd.dismiss();
                                     addMetaPackages();
                                 }
