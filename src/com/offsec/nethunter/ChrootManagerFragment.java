@@ -709,11 +709,11 @@ public class ChrootManagerFragment extends Fragment {
                     return false;
                 }
                 publishProgress(getActivity().getString(R.string.extract_part1));
-                x.RunAsRootWithException("busybox xz -df '" + zipFilePath + "'");
+                x.RunAsRootWithException(nh.whichBusybox() + " xz -df '" + zipFilePath + "'");
 
                 // Second: Extract and Deploy the chroot to Destination.
                 publishProgress(getActivity().getString(R.string.extract_part2));
-                x.RunAsRootWithException("busybox tar -xf '" + extracted_zipFilePath + "' -C '" + nh.NH_SYSTEM_PATH + "'");
+                x.RunAsRootWithException(nh.whichBusybox() + " tar -xf '" + extracted_zipFilePath + "' -C '" + nh.NH_SYSTEM_PATH + "'");
             } catch (RuntimeException e) {
                 Log.d(TAG, "Error: ", e);
                 publishProgress("Error: " + e.toString());
@@ -734,7 +734,7 @@ public class ChrootManagerFragment extends Fragment {
                             new Runnable() {
                                 public void run() {
                                     checkForExistingChroot();
-                                    x.RunAsRootOutput("busybox mount -o remount,suid /data && chmod +s " + nh.CHROOT_PATH + "/usr/bin/sudo");
+                                    x.RunAsRootOutput(nh.whichBusybox() + " mount -o remount,suid /data && chmod +s " + nh.CHROOT_PATH + "/usr/bin/sudo");
                                     deleteFile(extracted_zipFilePath);
                                     pd.dismiss();
                                     addMetaPackages();

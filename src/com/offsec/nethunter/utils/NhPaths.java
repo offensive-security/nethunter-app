@@ -110,6 +110,8 @@ public class NhPaths {
     }
     public String whichBusybox() {
         String[] BB_PATHS = {
+                "/system/xbin/busybox_nh",
+                "/sbin/busybox_nh",
                 "/system/bin/busybox",
                 "/data/local/bin/busybox",
                 "/system/xbin/busybox"
@@ -120,7 +122,7 @@ public class NhPaths {
                 return BB_PATH;
             }
         }
-        return null;
+        return "";
     }
     public String makeTermTitle(String title) {
         return "echo -ne \"\\033]0;"+ title +"\\007\" && clear;";

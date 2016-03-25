@@ -296,7 +296,7 @@ public class MacchangerFragment extends Fragment {
                             }
                         }).start();
                     } else {
-                        exe.RunAsRootWithException("busybox ifconfig " + selectedDevice + " down");
+                        exe.RunAsRootWithException(nh.whichBusybox() + " ifconfig " + selectedDevice + " down");
 
                         command = "bootkali macchanger_random " + selectedDevice;
                         exe.RunAsRootWithException(command);
@@ -305,7 +305,7 @@ public class MacchangerFragment extends Fragment {
                         new android.os.Handler().postDelayed(
                                 new Runnable() {
                                     public void run() {
-                                        exe.RunAsRootWithException("busybox ifconfig " + selectedDevice + " up");
+                                        exe.RunAsRootWithException(nh.whichBusybox() + " ifconfig " + selectedDevice + " up");
                                         nh.showMessage("Refreshing the current MAC.");
                                         refreshMAc();
                                     }
@@ -351,7 +351,7 @@ public class MacchangerFragment extends Fragment {
                         }).start();
 
                     } else {
-                        exe.RunAsRootWithException("busybox ifconfig " + selectedDevice + " down");
+                        exe.RunAsRootWithException(nh.whichBusybox() + " ifconfig " + selectedDevice + " down");
                         command = "bootkali macchanger_custom " + macsArray + " " + selectedDevice;
                         exe.RunAsRootWithException(command);
                         // macResult.setText();
@@ -359,7 +359,7 @@ public class MacchangerFragment extends Fragment {
                         new android.os.Handler().postDelayed(
                                 new Runnable() {
                                     public void run() {
-                                        exe.RunAsRootWithException("busybox ifconfig " + selectedDevice + " up");
+                                        exe.RunAsRootWithException(nh.whichBusybox() + " ifconfig " + selectedDevice + " up");
                                         nh.showMessage("Refreshing the current MAC.");
                                         refreshMAc();
                                     }
@@ -529,7 +529,7 @@ public class MacchangerFragment extends Fragment {
             }).start();
         } else {
             nh.showMessage("Resetting " + cleanInterface + " MAC");
-            exe.RunAsRootWithException("busybox ifconfig " + cleanInterface + " down");
+            exe.RunAsRootWithException(nh.whichBusybox() + " ifconfig " + cleanInterface + " down");
 
             String resetCmd = "bootkali macchanger_original " + cleanInterface;
             exe.RunAsRootWithException(resetCmd);
@@ -537,7 +537,7 @@ public class MacchangerFragment extends Fragment {
             new android.os.Handler().postDelayed(
                     new Runnable() {
                         public void run() {
-                            exe.RunAsRootWithException("busybox ifconfig " + cleanInterface + " up");
+                            exe.RunAsRootWithException(nh.whichBusybox() + " ifconfig " + cleanInterface + " up");
                             nh.showMessage("Refreshing the current MAC.");
                             refreshMAc();
                         }

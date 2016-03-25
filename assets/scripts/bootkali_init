@@ -2,6 +2,8 @@
 
 if [ -x /system/xbin/busybox_nh ]; then
 	busybox=/system/xbin/busybox_nh
+elif [ -x /sbin/busybox_nh ]; then
+	busybox=/sbin/busybox_nh
 elif [ -x /system/xbin/busybox ]; then
 	busybox=/system/xbin/busybox
 elif [ -x /data/local/bin/busybox ]; then

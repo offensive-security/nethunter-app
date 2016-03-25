@@ -155,7 +155,7 @@ public class RunAtBootService extends Service {
         // start with a number and include a hashbang such as #!/system/bin/sh as the first line.
         ShellExecuter exe = new ShellExecuter();
         String busybox = nh.whichBusybox();
-        if(busybox != null){
+        if(!busybox.equals("")){
             exe.RunAsRootOutput("rm -rf " + nh.CHROOT_PATH + "/tmp/.X1*"); // remove posible vnc locks (if the phone is rebooted with the vnc server running)
             // init.d
             String[] runner = {busybox + " run-parts " +  nh.APP_INITD_PATH};
