@@ -450,6 +450,7 @@
 
     <!-- Start GPSFragment -->
     <string name="gps_description">Converts your GPS to nmea then provides to Kali chroot.  Perfect for wardriving with Kismet or just a generic GPS server for Kali</string>
+    <string name="gps_help">Kismet will launch.</string>
     <!-- End GPSFragment -->
 
 
