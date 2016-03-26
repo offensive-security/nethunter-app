@@ -448,8 +448,8 @@
     <!-- End PineappleFragment -->
 
     <!-- Start GPSFragment -->
-    <string name="gps_description">Converts your GPS to nmea then provides to Kali chroot.  Perfect for wardriving with Kismet or just a generic GPS server for Kali</string>
-    <string name="gps_help">Kismet will launch.</string>
+    <string name="gps_description">Converts your GPS to nmea then provides to Kali chroot.  Perfect for wardriving with Kismet or just a generic GPS server for Kali.  Requires OTG and external wireless.</string>
+    <string name="gps_help">You may need to give Nethunter permissions to GPS. Go to Settings > Apps > Nethunter > Permissions.  When it starts press: "return" three times, Vol+up and "t", "return.</string>
     <!-- End GPSFragment -->
 
 
