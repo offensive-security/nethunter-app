@@ -69,7 +69,9 @@ else
 
 	$busybox mount -r -o bind /system $mnt/system
 
-	if $busybox mountpoint -q /storage/emulated/0; then
+	if $busybox mountpoint -q "$EXTERNAL_STORAGE"; then
+		$busybox mount -o bind "$EXTERNAL_STORAGE" $mnt/sdcard
+	elif $busybox mountpoint -q /storage/emulated/0; then
 		$busybox mount -o bind /storage/emulated/0 $mnt/sdcard
 	elif $busybox mountpoint -q /storage/emulated/legacy; then
 		$busybox mount -o bind /storage/emulated/legacy $mnt/sdcard
@@ -77,12 +79,10 @@ else
 		$busybox mount -o bind /sdcard $mnt/sdcard
 	fi
 
-	if $busybox mountpoint -q /storage/sdcard1; then
-		$busybox mount -o bind /storage/sdcard1 $mnt/external_sd
-	elif $busybox mountpoint -q /storage/extSdCard; then
-		$busybox mount -o bind /storage/extSdCard $mnt/external_sd
-	elif $busybox mountpoint -q /external_sd; then
-		$busybox mount -o bind /external_sd $mnt/external_sd
+	# Grab the first available secondary storage and assume it's a micro SDcard
+	SDCARD=$(echo "$SECONDARY_STORAGE" | $busybox cut -d: -f1)
+	if $busybox mountpoint -q "$SDCARD"; then
+		$busybox mount -o bind "$SDCARD" $mnt/external_sd
 	fi
 
 	$busybox mount -o bind /storage/usbdisk $mnt/mnt/usbdisk
