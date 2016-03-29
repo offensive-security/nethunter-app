@@ -37,7 +37,7 @@ $busybox chroot $mnt /etc/init.d/ssh stop
 echo "Shutting down Postgresql"
 $busybox chroot $mnt /etc/init.d/postgresql stop
 
-#unmount everything
+# unmount everything
 
 echo "Removing all Kali mounts"
 $busybox umount $mnt/dev/pts && echo "unmounted pts"
@@ -47,4 +47,5 @@ $busybox umount $mnt/sys && echo "unmounted sys"
 $busybox umount $mnt/system && echo "unmounted system"
 $busybox umount $mnt/sdcard && echo "unmounted sdcard"
 $busybox umount $mnt/external_sd && echo "unmounted external_sd"
+
 export PATH=$PRESERVED_PATH
