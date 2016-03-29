@@ -13,7 +13,7 @@ elif [ -x /system/bin/busybox ]; then
 else
 	echo "Busybox not found!  Install it, dummy!"
 	log "Busybox not found!  Install it, dummy!"
-	exit
+	exit 1
 fi
 
 su 0 setenforce 0
@@ -23,20 +23,12 @@ f_checkforroot(){
 	perm=$(id | $busybox cut -b 5)
 	if [ "$perm" != "0" ]; then
 		echo "ROOT NOT DETECTED! Type: su or install SuperSU to fix"
-		exit
+		exit 1
 	fi
 }
 
-######### EXPORT #########
-export bin=/system/bin
-export mnt=/data/local/nhsystem/kali-armhf
-PRESERVED_PATH=$PATH
-export PATH=/usr/bin:/usr/sbin:/bin:/usr/local/bin:/usr/local/sbin:$PATH
-export TERM=linux
-export HOME=/root
-export USER=root
-export LOGNAME=root
-unset LD_PRELOAD
+######### VARIABLES #########
+mnt=/data/local/nhsystem/kali-armhf
 
 ######### SET DNS ########
 > $mnt/etc/resolv.conf # empty dns entries
@@ -99,4 +91,9 @@ if ! $busybox mountpoint -q $mnt/dev; then
 	echo "127.0.0.1		 localhost kali" > $mnt/etc/hosts
 	echo "::1				 localhost ip6-localhost ip6-loopback" >> $mnt/etc/hosts
 	echo "kali" > $mnt/proc/sys/kernel/hostname
+
+	echo "The Kali chroot has been started."
+	log "The Kali chroot has been started."
+else
+	echo "The Kali chroot is already running!"
 fi
