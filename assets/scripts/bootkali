@@ -3,6 +3,7 @@
 ######### IMPORT BOOTKALI CHECKS AND MOUNTING #########
 SCRIPT_PATH=$(readlink -f $0)
 . ${SCRIPT_PATH%/*}/bootkali_init
+clear
 
 # EXECUTE CHROOT / ADD ARGUMENTS TO LAUNCH SPECIFIC PROGRAMS
 #
