@@ -61,10 +61,8 @@ chmod 644 $mnt/etc/resolv.conf
 ## Should run always (https://su.chainfire.eu/#how-mount)
 $busybox mount -o remount,suid /data
 
-if $busybox mountpoint -q $mnt/dev; then
-	# Files exist in /dev so we can assume its mounted and we have root
-	clear
-else
+# If chroot's /dev is mounted, assume the chroot is already running and skip initialization
+if ! $busybox mountpoint -q $mnt/dev; then
 	f_checkforroot
 
 	$busybox mount -r -o bind /system $mnt/system
@@ -101,6 +99,4 @@ else
 	echo "127.0.0.1		 localhost kali" > $mnt/etc/hosts
 	echo "::1				 localhost ip6-localhost ip6-loopback" >> $mnt/etc/hosts
 	echo "kali" > $mnt/proc/sys/kernel/hostname
-
-	clear
 fi
