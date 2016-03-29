@@ -251,6 +251,9 @@ else
 		if [ -f "/sys/module/dwc3/parameters/aca_enable" ]; then
 			echo "N" > /sys/module/dwc3/parameters/aca_enable
 		fi
+		if [ -f "/sys/module/dwc3/parameters/otg_charging" ]; then
+			echo "N" > /sys/module/dwc3/parameters/otg_charging
+		fi
 	fi
 
 	#CUSTOM BUTTONS
