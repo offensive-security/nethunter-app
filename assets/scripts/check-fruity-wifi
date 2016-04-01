@@ -1,0 +1,6 @@
+unset LD_PRELOAD
+if [[ -n $(ps aux |grep /etc/fruitywifi/nginx.conf) ]]; then
+	echo "1"
+else
+	echo "0"
+fi
