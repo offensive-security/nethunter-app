@@ -1,5 +1,5 @@
 unset LD_PRELOAD
-if [[ -n $(ps |grep 'Xtightvnc') ]]; then
+if [[ -n $(ps ax |grep 'Xtightvnc') ]]; then
     echo "1"
 else
     echo "0"
