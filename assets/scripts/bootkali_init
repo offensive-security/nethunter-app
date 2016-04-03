@@ -30,6 +30,19 @@ f_checkforroot(){
 ######### VARIABLES #########
 mnt=/data/local/nhsystem/kali-armhf
 
+######### CHECK FOR INSTALL #########
+#
+# There is a bug that will create the resolv.conf
+# If we continue on with bootkali even after we
+# remove chroot.  So stop here if removed or else
+# chroot is never uninstalled.
+
+if [ ! -d "$mnt/usr" ]; then
+    echo "Missing a required folder. Something isn't right"
+    exit 1
+fi
+
+
 ######### SET DNS ########
 > $mnt/etc/resolv.conf # empty dns entries
 
