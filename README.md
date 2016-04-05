@@ -42,7 +42,7 @@ If your device is connected to your computer then you can click Run > Run 'nethu
 # Structure of Application
 
 A brief rundown of the files and folders:
-
+```bash
 androidwversionmanager <-- The app updater
 nethunter-app
   manifests
@@ -66,4 +66,4 @@ nethunter-app
         duckscripts <-- Some default ducky scripts
         modules     <-- Mainly used by duckhunter.  Contains keyseed.py which does all the HID work.
       scripts <-- This is what launches chroot (bootkali) and checks services
-
+```
