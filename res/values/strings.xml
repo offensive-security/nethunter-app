@@ -35,6 +35,7 @@
     <string name="mana_description">This is the configuration page for MANA, an evil access point implementation by Sensepost. The various MITM logs get written to the /var/lib/mana-toolkit directory in the Kali chroot..</string>
     <string name="mana_hostapd">The hostapd configuration file used by Mana.</string>
     <string name="mana_hostapd_wpe">The hostapd configuration file used for 802.1x/EAP authentication attack (hostapd-wpe)  This is not used with MANA.</string>
+    <string name="mana_hostapd_wpe_certs">Generate certificates (1st time only)</string>
     <string name="mana_dhcpd">The dhcpd configuration file used by Mana.</string>
     <string name="mana_dnsspoof">The dnsspoof configuration file used by Mana.</string>
     <string name="mana_nat_full">The Mana script that does full NAT &amp; SSL interception.</string>

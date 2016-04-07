@@ -447,8 +447,21 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.mana_hostapd_wpe, container, false);
+
             Button button = (Button) rootView.findViewById(R.id.wpe_updateButton);
+            Button gencerts = (Button) rootView.findViewById(R.id.wpe_generate_certs);
             loadOptions(rootView);
+
+            gencerts.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    Intent intent =
+                            new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
+                    intent.addCategory(Intent.CATEGORY_DEFAULT);
+                    intent.putExtra("com.offsec.nhterm.iInitialCommand", "/usr/share/hostapd-wpe/certs/bootstrap");
+                    startActivity(intent);
+                }
+            });
+
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
