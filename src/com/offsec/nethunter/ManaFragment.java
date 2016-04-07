@@ -43,7 +43,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
     ViewPager mViewPager;
 
     private Integer selectedScriptIndex = 0;
-    final CharSequence[] scripts = {"mana-nat-full", "mana-nat-simple", "mana-nat-bettercap", "mana-nat-simple-bdf"};
+    final CharSequence[] scripts = {"mana-nat-full", "mana-nat-simple", "mana-nat-bettercap", "mana-nat-simple-bdf", "hostapd-wpe"};
     private static final String TAG = "ManaFragment";
     private static final String ARG_SECTION_NUMBER = "section_number";
     static NhPaths nh;
@@ -169,6 +169,10 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                                     }
                                 }, 10000);
                         break;
+                    case 4:
+                        nh.showMessage("Starting HOSTAPD-WPE");
+                        intentClickListener_NH(nh.makeTermTitle("HOSTAPD-WPE") + "/usr/bin/start-hostapd-wpe.sh");
+                        break;
                     default:
                         nh.showMessage("Invalid script!");
                         return;
@@ -235,7 +239,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
         @Override
         public int getCount() {
-            return 7;
+            return 8;
         }
 
         @Override
@@ -244,16 +248,18 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                 case 0:
                     return new HostapdFragment();
                 case 1:
-                    return new DhcpdFragment();
+                    return new HostapdFragmentWPE();
                 case 2:
-                    return new DnsspoofFragment();
+                    return new DhcpdFragment();
                 case 3:
-                    return new ManaNatFullFragment();
+                    return new DnsspoofFragment();
                 case 4:
-                    return new ManaNatSimpleFragment();
+                    return new ManaNatFullFragment();
                 case 5:
-                    return new ManaNatBettercapFragment();
+                    return new ManaNatSimpleFragment();
                 case 6:
+                    return new ManaNatBettercapFragment();
+                case 7:
                     return new BdfProxyConfigFragment();
                 default:
                     return new ManaStartNatSimpleBdfFragment();
@@ -266,16 +272,18 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                 case 0:
                     return "hostapd-karma.conf";
                 case 1:
-                    return "dhcpd.conf";
+                    return "hostapd-wpe.conf";
                 case 2:
-                    return "dnsspoof.conf";
+                    return "dhcpd.conf";
                 case 3:
-                    return "nat-mana-full";
+                    return "dnsspoof.conf";
                 case 4:
-                    return "nat-mana-simple";
+                    return "nat-mana-full";
                 case 5:
-                    return "nat-mana-bettercap";
+                    return "nat-mana-simple";
                 case 6:
+                    return "nat-mana-bettercap";
+                case 7:
                     return "bdfproxy.cfg";
                 default:
                     return "mana-nat-simple-bdf";
@@ -418,6 +426,138 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                             String karmaLoudVal = matcherKarmaLoud.group(1);
                             karmaLoud.setText(karmaLoudVal);
                         }
+                        }
+                    });
+                }
+            }).start();
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+
+        }
+    }
+
+    public static class HostapdFragmentWPE extends Fragment {
+
+        private String configFilePath = nh.APP_SD_FILES_PATH + "/configs/hostapd-wpe.conf";
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.mana_hostapd_wpe, container, false);
+            Button button = (Button) rootView.findViewById(R.id.wpe_updateButton);
+            loadOptions(rootView);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ShellExecuter exe = new ShellExecuter();
+                    File file = new File(configFilePath);
+                    String source = null;
+                    try {
+                        source = Files.toString(file, Charsets.UTF_8);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    if(getView() == null){
+                        return;
+                    }
+                    EditText ifc = (EditText) getView().findViewById(R.id.wpe_ifc);
+                    EditText bssid = (EditText) getView().findViewById(R.id.wpe_bssid);
+                    EditText ssid = (EditText) getView().findViewById(R.id.wpe_ssid);
+                    EditText channel = (EditText) getView().findViewById(R.id.wpe_channel);
+                    EditText privatekey = (EditText) getView().findViewById(R.id.wpe_private_key);
+
+                    if(source != null){
+                        source = source.replaceAll("(?m)^interface=(.*)$", "interface=" + ifc.getText().toString());
+                        source = source.replaceAll("(?m)^bssid=(.*)$", "bssid=" + bssid.getText().toString());
+                        source = source.replaceAll("(?m)^ssid=(.*)$", "ssid=" + ssid.getText().toString());
+                        source = source.replaceAll("(?m)^channel=(.*)$", "channel=" + channel.getText().toString());
+                        source = source.replaceAll("(?m)^private_key_passwd=(.*)$", "private_key_passwd=" + privatekey.getText().toString());
+
+                        exe.SaveFileContents(source, configFilePath);
+                        nh.showMessage("Source updated");
+                    }
+
+                }
+            });
+            return rootView;
+        }
+
+
+        public void loadOptions(View rootView) {
+
+            final EditText ifc = (EditText) rootView.findViewById(R.id.wpe_ifc);
+            final EditText bssid = (EditText) rootView.findViewById(R.id.wpe_bssid);
+            final EditText ssid = (EditText) rootView.findViewById(R.id.wpe_ssid);
+            final EditText channel = (EditText) rootView.findViewById(R.id.wpe_channel);
+            final EditText privatekey = (EditText) rootView.findViewById(R.id.wpe_private_key);
+
+            new Thread(new Runnable() {
+                public void run() {
+                    ShellExecuter exe = new ShellExecuter();
+                    Log.d("exe: ", configFilePath);
+                    String text = exe.ReadFile_SYNC(configFilePath);
+
+                    String regExpatInterface = "^interface=(.*)$";
+                    Pattern patternIfc = Pattern.compile(regExpatInterface, Pattern.MULTILINE);
+                    final Matcher matcherIfc = patternIfc.matcher(text);
+
+                    String regExpatbssid = "^bssid=(.*)$";
+                    Pattern patternBssid = Pattern.compile(regExpatbssid, Pattern.MULTILINE);
+                    final Matcher matcherBssid = patternBssid.matcher(text);
+
+                    String regExpatssid = "^ssid=(.*)$";
+                    Pattern patternSsid = Pattern.compile(regExpatssid, Pattern.MULTILINE);
+                    final Matcher matcherSsid = patternSsid.matcher(text);
+
+                    String regExpatChannel = "^channel=(.*)$";
+                    Pattern patternChannel = Pattern.compile(regExpatChannel, Pattern.MULTILINE);
+                    final Matcher matcherChannel = patternChannel.matcher(text);
+
+                    String regExpatEnablePrivateKey = "^private_key_passwd=(.*)$";
+                    Pattern patternEnablePrivateKey = Pattern.compile(regExpatEnablePrivateKey, Pattern.MULTILINE);
+                    final Matcher matcherPrivateKey = patternEnablePrivateKey.matcher(text);
+
+                    ifc.post(new Runnable() {
+                        @Override
+                        public void run() {
+                        /*
+                         * Interface
+                         */
+                            if (matcherIfc.find()) {
+                                String ifcValue = matcherIfc.group(1);
+                                ifc.setText(ifcValue);
+                            }
+                        /*
+                         * bssid
+                         */
+                            if (matcherBssid.find()) {
+                                String bssidVal = matcherBssid.group(1);
+                                bssid.setText(bssidVal);
+                            }
+                        /*
+                         * ssid
+                         */
+                            if (matcherSsid.find()) {
+                                String ssidVal = matcherSsid.group(1);
+                                ssid.setText(ssidVal);
+                            }
+                        /*
+                         * channel
+                         */
+                            if (matcherChannel.find()) {
+                                String channelVal = matcherChannel.group(1);
+                                channel.setText(channelVal);
+                            }
+                        /*
+                         * Private Key File
+                         */
+                            if (matcherPrivateKey.find()) {
+                                String PrivateKeyVal = matcherPrivateKey.group(1);
+                                privatekey.setText(PrivateKeyVal);
+                            }
                         }
                     });
                 }
