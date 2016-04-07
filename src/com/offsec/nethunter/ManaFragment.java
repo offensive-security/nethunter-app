@@ -171,7 +171,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                         break;
                     case 4:
                         nh.showMessage("Starting HOSTAPD-WPE");
-                        intentClickListener_NH(nh.makeTermTitle("HOSTAPD-WPE") + "/usr/bin/start-hostapd-wpe.sh");
+                        intentClickListener_NH(nh.makeTermTitle("HOSTAPD-WPE") + "ifconfig wlan1 up && /usr/bin/hostapd-wpe /sdcard/nh_files/configs/hostapd-wpe.conf");
                         break;
                     default:
                         nh.showMessage("Invalid script!");
