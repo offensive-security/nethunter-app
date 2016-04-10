@@ -75,6 +75,20 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/enable_karma"
+            android:padding="4dp"
+            android:id="@+id/textView36" />
+
+        <EditText
+            android:id="@+id/wpe_enable_karma"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:layout_gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/hostapd_private_key"
             android:padding="4dp" />
 

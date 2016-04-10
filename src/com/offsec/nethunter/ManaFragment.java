@@ -43,7 +43,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
     ViewPager mViewPager;
 
     private Integer selectedScriptIndex = 0;
-    final CharSequence[] scripts = {"mana-nat-full", "mana-nat-simple", "mana-nat-bettercap", "mana-nat-simple-bdf", "hostapd-wpe"};
+    final CharSequence[] scripts = {"mana-nat-full", "mana-nat-simple", "mana-nat-bettercap", "mana-nat-simple-bdf", "mana-nat-eap"};
     private static final String TAG = "ManaFragment";
     private static final String ARG_SECTION_NUMBER = "section_number";
     static NhPaths nh;
@@ -170,8 +170,8 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                                 }, 10000);
                         break;
                     case 4:
-                        nh.showMessage("Starting HOSTAPD-WPE");
-                        intentClickListener_NH(nh.makeTermTitle("HOSTAPD-WPE") + "ifconfig wlan1 up && /usr/bin/hostapd-wpe /sdcard/nh_files/configs/hostapd-wpe.conf");
+                        nh.showMessage("Starting MANA EAP-ONLY");
+                        intentClickListener_NH(nh.makeTermTitle("MANA-EAP-ONLY") + "/usr/share/mana-toolkit/run-mana/start-noupstream-eaponly-lollipop.sh");
                         break;
                     default:
                         nh.showMessage("Invalid script!");
@@ -272,7 +272,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                 case 0:
                     return "hostapd-karma.conf";
                 case 1:
-                    return "hostapd-wpe.conf";
+                    return "hostapd-mana-eaponly.conf";
                 case 2:
                     return "dhcpd.conf";
                 case 3:
@@ -441,7 +441,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
     public static class HostapdFragmentWPE extends Fragment {
 
-        private String configFilePath = nh.APP_SD_FILES_PATH + "/configs/hostapd-wpe.conf";
+        private String configFilePath = nh.APP_SD_FILES_PATH + "/configs/hostapd-mana-eaponly.conf";
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -480,6 +480,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                     EditText bssid = (EditText) getView().findViewById(R.id.wpe_bssid);
                     EditText ssid = (EditText) getView().findViewById(R.id.wpe_ssid);
                     EditText channel = (EditText) getView().findViewById(R.id.wpe_channel);
+                    EditText enableKarma = (EditText) getView().findViewById(R.id.wpe_enable_karma);
                     EditText privatekey = (EditText) getView().findViewById(R.id.wpe_private_key);
 
                     if(source != null){
@@ -487,6 +488,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                         source = source.replaceAll("(?m)^bssid=(.*)$", "bssid=" + bssid.getText().toString());
                         source = source.replaceAll("(?m)^ssid=(.*)$", "ssid=" + ssid.getText().toString());
                         source = source.replaceAll("(?m)^channel=(.*)$", "channel=" + channel.getText().toString());
+                        source = source.replaceAll("(?m)^enable_mana=(.*)$", "enable_mana=" + enableKarma.getText().toString());
                         source = source.replaceAll("(?m)^private_key_passwd=(.*)$", "private_key_passwd=" + privatekey.getText().toString());
 
                         exe.SaveFileContents(source, configFilePath);
@@ -505,6 +507,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             final EditText bssid = (EditText) rootView.findViewById(R.id.wpe_bssid);
             final EditText ssid = (EditText) rootView.findViewById(R.id.wpe_ssid);
             final EditText channel = (EditText) rootView.findViewById(R.id.wpe_channel);
+            final EditText enableKarma = (EditText) rootView.findViewById(R.id.wpe_enable_karma);
             final EditText privatekey = (EditText) rootView.findViewById(R.id.wpe_private_key);
 
             new Thread(new Runnable() {
@@ -528,6 +531,10 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                     String regExpatChannel = "^channel=(.*)$";
                     Pattern patternChannel = Pattern.compile(regExpatChannel, Pattern.MULTILINE);
                     final Matcher matcherChannel = patternChannel.matcher(text);
+
+                    String regExpatEnableKarma = "^enable_mana=(.*)$";
+                    Pattern patternEnableKarma = Pattern.compile(regExpatEnableKarma, Pattern.MULTILINE);
+                    final Matcher matcherEnableKarma = patternEnableKarma.matcher(text);
 
                     String regExpatEnablePrivateKey = "^private_key_passwd=(.*)$";
                     Pattern patternEnablePrivateKey = Pattern.compile(regExpatEnablePrivateKey, Pattern.MULTILINE);
@@ -563,6 +570,13 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                             if (matcherChannel.find()) {
                                 String channelVal = matcherChannel.group(1);
                                 channel.setText(channelVal);
+                            }
+                            /*
+                            * enable_karma
+                            */
+                            if (matcherEnableKarma.find()) {
+                                String enableKarmaVal = matcherEnableKarma.group(1);
+                                enableKarma.setText(enableKarmaVal);
                             }
                         /*
                          * Private Key File
