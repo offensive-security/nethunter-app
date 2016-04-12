@@ -15,9 +15,9 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:gravity="center_vertical"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="14dp"
-        android:layout_marginTop="14dp" />
+        android:layout_marginBottom="18dp"
+        android:layout_marginTop="18dp"
+        android:layout_toStartOf="@+id/searchsploit_sendhid_button" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -62,7 +62,7 @@
         android:id="@+id/viewSource"
         android:layout_marginRight="@dimen/base_listItem_LR"
         android:textColor="#ff95ff84"
-        android:layout_below="@+id/description"
+        android:layout_below="@+id/searchsploit_sendhid_button"
         android:layout_alignStart="@+id/openWeb" />
 
     <TextView
@@ -133,8 +133,8 @@
         android:text="SEND HID"
         android:textColor="#ff95ff84"
         android:id="@+id/searchsploit_sendhid_button"
-        android:layout_above="@+id/platform"
-        android:layout_alignEnd="@+id/openWeb"
-        android:layout_alignStart="@+id/viewSource" />
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/viewSource"
+        android:layout_alignEnd="@+id/viewSource" />
 
 </RelativeLayout>
