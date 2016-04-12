@@ -43,7 +43,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
     ViewPager mViewPager;
 
     private Integer selectedScriptIndex = 0;
-    final CharSequence[] scripts = {"mana-nat-full", "mana-nat-simple", "mana-nat-bettercap", "mana-nat-simple-bdf", "hostapd-wpe"};
+    final CharSequence[] scripts = {"mana-nat-full", "mana-nat-simple", "mana-nat-bettercap", "mana-nat-simple-bdf", "hostapd-wpe", "hostapd-wpe-karma"};
     private static final String TAG = "ManaFragment";
     private static final String ARG_SECTION_NUMBER = "section_number";
     static NhPaths nh;
@@ -172,6 +172,10 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                     case 4:
                         nh.showMessage("Starting HOSTAPD-WPE");
                         intentClickListener_NH(nh.makeTermTitle("HOSTAPD-WPE") + "ifconfig wlan1 up && /usr/bin/hostapd-wpe /sdcard/nh_files/configs/hostapd-wpe.conf");
+                        break;
+                    case 5:
+                        nh.showMessage("Starting HOSTAPD-WPE with Karma");
+                        intentClickListener_NH(nh.makeTermTitle("HOSTAPD-WPE-KARMA") + "ifconfig wlan1 up && /usr/bin/hostapd-wpe -k /sdcard/nh_files/configs/hostapd-wpe.conf");
                         break;
                     default:
                         nh.showMessage("Invalid script!");
