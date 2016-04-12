@@ -171,7 +171,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                         break;
                     case 4:
                         nh.showMessage("Starting HOSTAPD-WPE");
-                        intentClickListener_NH(nh.makeTermTitle("HOSTAPD-WPE") + "ifconfig wlan1 up && /usr/bin/hostapd-wpe -d /sdcard/nh_files/configs/hostapd-wpe.conf");
+                        intentClickListener_NH(nh.makeTermTitle("HOSTAPD-WPE") + "ifconfig wlan1 up && /usr/bin/hostapd-wpe /sdcard/nh_files/configs/hostapd-wpe.conf");
                         break;
                     default:
                         nh.showMessage("Invalid script!");
@@ -457,7 +457,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                     Intent intent =
                             new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
                     intent.addCategory(Intent.CATEGORY_DEFAULT);
-                    intent.putExtra("com.offsec.nhterm.iInitialCommand", "/usr/share/hostapd-wpe/certs/bootstrap");
+                    intent.putExtra("com.offsec.nhterm.iInitialCommand", "cd /usr/share/hostapd-wpe/certs && ./bootstrap");
                     startActivity(intent);
                 }
             });
