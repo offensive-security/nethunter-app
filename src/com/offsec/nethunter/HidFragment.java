@@ -16,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,9 +38,6 @@ import java.io.OutputStreamWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//import android.app.Fragment;
-//import android.support.v4.app.FragmentActivity;
-
 public class HidFragment extends Fragment implements ActionBar.TabListener {
 
     TabsPagerAdapter TabsPagerAdapter;
@@ -48,7 +46,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
     static NhPaths nh;
     final CharSequence[] platforms = {"No UAC Bypass", "Windows 7", "Windows 8", "Windows 10"};
     final CharSequence[] languages = {"American English", "Belgian", "British English", "Danish", "French", "German", "Italian", "Norwegian", "Portugese", "Russian", "Spanish", "Swedish"};
-    private String configFilePath;
+    String configFilePath;
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -66,7 +64,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        configFilePath =   nh.CHROOT_PATH + "/var/www/html/powersploit-payload";
+        configFilePath = nh.CHROOT_PATH + "/data/local/nhsystem/kali-armhf/var/www/html/powersploit-payload";
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -80,6 +78,8 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        nh = new NhPaths();
 
         View rootView = inflater.inflate(R.layout.hid, container, false);
         TabsPagerAdapter = new TabsPagerAdapter(getActivity().getSupportFragmentManager());
