@@ -43,8 +43,8 @@ if [ ! -d "$mnt/usr" ]; then
 fi
 
 ######### SET TUN ########
-mkdir /dev/net
-ln -s /dev/tun /dev/net/tun
+mkdir -p /dev/net
+ln -s /dev/tun /dev/net/tun 2> /dev/null
 
 ######### SET DNS ########
 > $mnt/etc/resolv.conf # empty dns entries
