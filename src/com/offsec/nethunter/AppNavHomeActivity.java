@@ -54,7 +54,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
     private static Context c;
     private Boolean weCheckedForRoot = false;
     private final String BuildUser = "Kali";  // Change this to your name/username
-    private Integer permsNum = 6;
+    private Integer permsNum = 8;
     private Integer permsCurrent = 1;
     public static Context getAppContext() {
         return c;
@@ -464,6 +464,26 @@ public class AppNavHomeActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this,
                         new String[]{"com.offsec.nhvnc.permission.OPEN_VNC_CONN"},
                         6);
+            }
+        }
+        if(permnum == 7){
+            Log.d("HOLA", "CODE0: " + permnum);
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        7);
+            }
+        }
+        if(permnum == 8){
+            Log.d("HOLA", "CODE0: " + permnum);
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                        8);
             }
         }
     }
