@@ -498,9 +498,12 @@ public class MacchangerFragment extends Fragment {
             nh.showMessage("Resetting " + cleanInterface + " MAC");
             if(isOPO()){
                 Log.d("opo_original_mac", sharedpreferences.getString("opo_original_mac", ""));
-                command = "svc wifi disable &&"+
-                        "echo \""+ sharedpreferences.getString("opo_original_mac", "") +"\" > /sys/devices/fb000000.qcom,wcnss-wlan/wcnss_mac_addr" +
-                        " && svc wifi enable";
+                command = "settings put global airplane_mode_on 1" +
+                        " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true" +
+                        " && echo \""+ sharedpreferences.getString("opo_original_mac", "") +"\" > /sys/devices/fb000000.qcom,wcnss-wlan/wcnss_mac_addr" +
+                        " && sleep 1" +
+                        " && settings put global airplane_mode_on 0" +
+                        " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false";
             } else {
                 command = "settings put global airplane_mode_on 1" +
                         " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true" +
