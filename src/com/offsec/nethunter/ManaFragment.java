@@ -332,8 +332,8 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                         source = source.replaceAll("(?m)^bssid=(.*)$", "bssid=" + bssid.getText().toString());
                         source = source.replaceAll("(?m)^ssid=(.*)$", "ssid=" + ssid.getText().toString());
                         source = source.replaceAll("(?m)^channel=(.*)$", "channel=" + channel.getText().toString());
-                        source = source.replaceAll("(?m)^enable_karma=(.*)$", "enable_karma=" + enableKarma.getText().toString());
-                        source = source.replaceAll("(?m)^karma_loud=(.*)$", "karma_loud=" + karmaLoud.getText().toString());
+                        source = source.replaceAll("(?m)^enable_mana=(.*)$", "enable_mana=" + enableKarma.getText().toString());
+                        source = source.replaceAll("(?m)^mana_loud=(.*)$", "mana_loud=" + karmaLoud.getText().toString());
 
                         exe.SaveFileContents(source, configFilePath);
                         nh.showMessage("Source updated");
@@ -377,11 +377,11 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                     Pattern patternChannel = Pattern.compile(regExpatChannel, Pattern.MULTILINE);
                     final Matcher matcherChannel = patternChannel.matcher(text);
 
-                    String regExpatEnableKarma = "^enable_karma=(.*)$";
+                    String regExpatEnableKarma = "^enable_mana=(.*)$";
                     Pattern patternEnableKarma = Pattern.compile(regExpatEnableKarma, Pattern.MULTILINE);
                     final Matcher matcherEnableKarma = patternEnableKarma.matcher(text);
 
-                    String regExpatKarmaLoud = "^karma_loud=(.*)$";
+                    String regExpatKarmaLoud = "^mana_loud=(.*)$";
                     Pattern patternKarmaLoud = Pattern.compile(regExpatKarmaLoud, Pattern.MULTILINE);
                     final Matcher matcherKarmaLoud = patternKarmaLoud.matcher(text);
 
@@ -417,14 +417,14 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
                             channel.setText(channelVal);
                         }
                         /*
-                         * enable_karma
+                         * enable_mana
                          */
                         if (matcherEnableKarma.find()) {
                             String enableKarmaVal = matcherEnableKarma.group(1);
                             enableKarma.setText(enableKarmaVal);
                         }
                        /*
-                       * karma_loud
+                       * mana_loud
                        */
                         if (matcherKarmaLoud.find()) {
                             String karmaLoudVal = matcherKarmaLoud.group(1);
