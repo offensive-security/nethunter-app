@@ -195,7 +195,7 @@ else
 	#FRUITYWIFI
 
 	if [ "$1" == "fruitywifi" ] && [ "$2" == "start" ]; then
-		$busybox chroot $mnt /etc/init.d/php5-fpm start
+		$busybox chroot $mnt /etc/init.d/php7-fpm start
 		$busybox chroot $mnt /etc/init.d/fruitywifi start
 		$busybox chroot $mnt /etc/init.d/nginx start
 		sleep 15
@@ -203,7 +203,7 @@ else
 	fi
 	if [ "$1" == "fruitywifi" ] && [ "$2" == "stop" ]; then
 		$busybox chroot $mnt /etc/init.d/fruitywifi stop
-		$busybox chroot $mnt /etc/init.d/php5-fpm stop
+		$busybox chroot $mnt /etc/init.d/php7-fpm stop
 		$busybox chroot $mnt /etc/init.d/nginx stop
 	fi
 
