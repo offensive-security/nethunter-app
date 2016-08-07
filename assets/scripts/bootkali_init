@@ -44,7 +44,12 @@ fi
 
 ######### SET TUN ########
 mkdir -p /dev/net
-ln -s /dev/tun /dev/net/tun 2> /dev/null
+rm -f /dev/net/tun
+
+# This appears to work with miredo
+mknod /dev/net/tun c 10 200
+
+# ln -s /dev/tun /dev/net/tun 2> /dev/null
 
 ######### SET DNS ########
 > $mnt/etc/resolv.conf # empty dns entries
