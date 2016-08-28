@@ -42,7 +42,7 @@ android {
         minSdkVersion 17
         targetSdkVersion 23
         versionCode 19
-        versionName "3.1"
+        versionName "3.102"
     }
 
     sourceSets {

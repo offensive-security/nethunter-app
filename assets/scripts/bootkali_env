@@ -16,5 +16,4 @@ export LOGNAME=root
 unset LD_PRELOAD
 
 ######### TERMINAL SETUP #########
-$busybox resize
 clear
