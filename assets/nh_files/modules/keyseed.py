@@ -1204,6 +1204,112 @@ dicts = {
         "\x0d": "\\x00\\x00\\x00\\x28\\x00\\x00\\x00\\x00",
     },
     'pt_bin' : {
+        # Symbols
+        "\x20": "space",
+        "\x21": "left-shift 1", 	# !
+        "\x22": "left-shift 2", 	# "
+        "\x23": "left-shift 3", 	# hashtag nethunter
+        "\x24": "left-shift 4", 	# $
+        "\x25": "left-shift 5", 	# %
+        "\x26": "left-shift 6", 	# &
+        "\x27": "minus",		# '
+        "\x28": "left-shift 8", 	# (
+        "\x29": "left-shift 9", 	# )
+        "\x2a": "left-shift lbracket", 	# *
+        "\x2b": "lbracket", 		# +
+        "\x2c": "comma", 		# ,
+        "\x2d": "slash", 		# -
+        "\x2e": "period", 		# .
+        "\x2f": "left-shift 7", 	# slash
+        # Numbers
+        "\x30": "0",
+        "\x31": "1",
+        "\x32": "2",
+        "\x33": "3",
+        "\x34": "4",
+        "\x35": "5",
+        "\x36": "6",
+        "\x37": "7",
+        "\x38": "8",
+        "\x39": "9",
+        # Symbols
+        "\x3a": "left-shift period",	# :
+        "\x3b": "left-shift comma",	# ;
+        "\x3c": "tilde",		# <
+        "\x3d": "left-shift 0",		# =
+        "\x3e": "left-shift tilde",	# >
+        "\x3f": "left-shift dash",	# ?
+        "\x40": "right-alt 2",		# @
+        # Uppercase
+        "\x41": "left-shift a",
+        "\x42": "left-shift b",
+        "\x43": "left-shift c",
+        "\x44": "left-shift d",
+        "\x45": "left-shift e",
+        "\x46": "left-shift f",
+        "\x47": "left-shift g",
+        "\x48": "left-shift h",
+        "\x49": "left-shift i",
+        "\x4a": "left-shift j",
+        "\x4b": "left-shift k",
+        "\x4c": "left-shift l",
+        "\x4d": "left-shift m",
+        "\x4e": "left-shift n",
+        "\x4f": "left-shift o",
+        "\x50": "left-shift p",
+        "\x51": "left-shift q",
+        "\x52": "left-shift r",
+        "\x53": "left-shift s",
+        "\x54": "left-shift t",
+        "\x55": "left-shift u",
+        "\x56": "left-shift v",
+        "\x57": "left-shift w",
+        "\x58": "left-shift x",
+        "\x59": "left-shift y",
+        "\x5a": "left-shift z",
+        # Symbols
+        "\x5b": "right-alt 8",        	# [
+        #"\x5c": "\\x00\\x00\\x00\\x64\\x00\\x00\\x00\\x00", # \
+        "\x5d": "right-alt 9",        	# ]
+        "\x5e": "left-shift backslash",	# ^
+        "\x5f": "left-shift slash", 	# _
+        "\x60": "left-shift rbracket",  # `
+        # Lowercase
+        "\x61": "a",
+        "\x62": "b",
+        "\x63": "c",
+        "\x64": "d",
+        "\x65": "e",
+        "\x66": "f",
+        "\x67": "g",
+        "\x68": "h",
+        "\x69": "i",
+        "\x6a": "j",
+        "\x6b": "k",
+        "\x6c": "l",
+        "\x6d": "m",
+        "\x6e": "n",
+        "\x6f": "o",
+        "\x70": "p",
+        "\x71": "q",
+        "\x72": "r",
+        "\x73": "s",
+        "\x74": "t",
+        "\x75": "u",
+        "\x76": "v",
+        "\x77": "w",
+        "\x78": "x",
+        "\x79": "y",
+        "\x7a": "z",
+        #Shift chars
+        "\x7b": "right-alt 7",  # {
+        #"\x7c": "\\x20\\x00\\x00\\x64\\x00\\x00\\x00\\x00",  # |
+        "\x7d": "right-alt 0",  # }
+        "\x7e": "backslash",    # ~
+        "\x7f": "backspace",
+        #SDLK_RETURN,0x28
+        #"\x0a": "\\x00\\x00\\x00\\x28\\x00\\x00\\x00\\x00",
+        #"\x0d": "\\x00\\x00\\x00\\x28\\x00\\x00\\x00\\x00"        
     },
     'pt' : {
         "\x20": "\\x00\\x00\\x00\\x2c\\x00\\x00\\x00\\x00",
@@ -1266,7 +1372,7 @@ dicts = {
         "\x59": "\\x02\\x00\\x00\\x1c\\x00\\x00\\x00\\x00",
         "\x5A": "\\x02\\x00\\x00\\x1d\\x00\\x00\\x00\\x00",
         "\x5B": "\\x40\\x00\\x00\\x25\\x00\\x00\\x00\\x00",
-        "\x5C": "\\x00\\x00\\x00\\x35\\x00\\x00\\x00\\x00",
+        "\x5C": "\\x00\\x00\\x00\\x64\\x00\\x00\\x00\\x00",
         "\x5D": "\\x40\\x00\\x00\\x26\\x00\\x00\\x00\\x00",
         "\x5E": "\\x02\\x00\\x00\\x32\\x00\\x00\\x00\\x00",
         "\x5F": "\\x02\\x00\\x00\\x38\\x00\\x00\\x00\\x00",
@@ -1298,7 +1404,7 @@ dicts = {
         "\x79": "\\x00\\x00\\x00\\x1c\\x00\\x00\\x00\\x00",
         "\x7A": "\\x00\\x00\\x00\\x1d\\x00\\x00\\x00\\x00",
         "\x7B": "\\x40\\x00\\x00\\x24\\x00\\x00\\x00\\x00",
-        "\x7C": "\\x02\\x00\\x00\\x35\\x00\\x00\\x00\\x00",
+        "\x7C": "\\x20\\x00\\x00\\x64\\x00\\x00\\x00\\x00",
         "\x7D": "\\x40\\x00\\x00\\x27\\x00\\x00\\x00\\x00",
         "\x7E": "\\x00\\x00\\x00\\x32\\x00\\x00\\x00\\x00",
         "\x7F": "\\x00\\x00\\x00\\x2a\\x00\\x00\\x00\\x00",
