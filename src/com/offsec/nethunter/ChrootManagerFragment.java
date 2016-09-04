@@ -96,8 +96,8 @@ public class ChrootManagerFragment extends Fragment {
     private static final String URI_MINIMAL = IMAGE_SERVER + FILENAME_MINIMAL;
     private static final String URI_FULL = IMAGE_SERVER + FILENAME_FULL;
 
-    private String SHA512_MINIMAL = "";
-    private String SHA512_FULL = "";
+    private String SHA512_MINIMAL;
+    private String SHA512_FULL;
     private String SHA512;
     private String zipFilePath;
     private String installLogFile;
