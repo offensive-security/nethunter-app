@@ -28,6 +28,7 @@
         android:inputType="numberDecimal"
         android:ems="10"
         android:id="@+id/pineapple_gatewayip"
+        android:digits="0123456789."
         android:text="172.16.42.1" />
 
     <TextView
@@ -58,6 +59,7 @@
         android:inputType="numberDecimal"
         android:ems="10"
         android:id="@+id/pineapple_clientip"
+        android:digits="0123456789."
         android:text="172.16.42.42/24" />
 
     <TextView
@@ -73,6 +75,7 @@
         android:inputType="numberDecimal"
         android:ems="10"
         android:id="@+id/pineapple_cidr"
+        android:digits="0123456789."
         android:text="172.16.42.0/24" />
 
 
