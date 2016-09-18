@@ -57,6 +57,8 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import javax.net.ssl.HttpsURLConnection;
 
+import static android.content.Context.POWER_SERVICE;
+
 /**
  * Created by fattire on 3/14/15.
  * This is GPLv2'd.
@@ -142,6 +144,7 @@ public class ChrootManagerFragment extends Fragment {
         });
         updateButton.setVisibility(View.GONE);
         sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
+
         // extracte files location
 
 
@@ -670,6 +673,11 @@ public class ChrootManagerFragment extends Fragment {
 
     public class UnziptarTask extends AsyncTask<Void, String, Boolean> {
 
+        // https://developer.android.com/training/scheduling/wakelock.html
+        PowerManager powerManager = (PowerManager) getActivity().getSystemService(POWER_SERVICE);
+        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                "ChrootWakelockTag");
+        
         Boolean isStarted = false;
 
         @Override
@@ -695,6 +703,9 @@ public class ChrootManagerFragment extends Fragment {
         @Override
         protected Boolean doInBackground(Void... Void) {
             try {
+                // Accquire CPU
+                wakeLock.acquire();
+
                 String fExists = x.RunAsRootOutput("[ -f "+ zipFilePath +" ] && echo \"1\" || echo \"0\"");
                 if(fExists.equals("0")){
                     Log.d(TAG, "Error: No tar.xz found");
@@ -716,6 +727,9 @@ public class ChrootManagerFragment extends Fragment {
         @Override
         protected void onPostExecute(Boolean result) {
             if (result) {
+                // Release CPU
+                wakeLock.release();
+
                 statusLog(getActivity().getString(R.string.unzippinguntarringdone));
                 pd.setTitle("Intallation Successful.");
                 pd.setMessage("Wait... loading metapackages");
@@ -916,7 +930,7 @@ public class ChrootManagerFragment extends Fragment {
             mProgressDialog.setCanceledOnTouchOutside(false);
             // take CPU lock to prevent CPU from going off if the user
             // presses the power button during download
-            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            PowerManager pm = (PowerManager) context.getSystemService(POWER_SERVICE);
             mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                     getClass().getName());
             mWakeLock.acquire();
