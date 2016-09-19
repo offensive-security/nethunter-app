@@ -21,13 +21,11 @@ import com.offsec.nethunter.utils.NhPaths;
 
 public class MPCFragment extends Fragment {
 
-    SharedPreferences sharedpreferences;
-    private Context mContext;
-    String typeVar;
-    String callbackTypeVar;
-    String payloadVar;
-    String callbackVar;
-    String stagerVar;
+    private String typeVar;
+    private String callbackTypeVar;
+    private String payloadVar;
+    private String callbackVar;
+    private String stagerVar;
     String cmd;
 
     NhPaths nh;
@@ -46,8 +44,8 @@ public class MPCFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         final View rootView = inflater.inflate(R.layout.payload_maker, container, false);
-        sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
-        mContext = getActivity().getApplicationContext();
+        SharedPreferences sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
+        Context mContext = getActivity().getApplicationContext();
 
 
         // Payload Type Spinner
@@ -203,14 +201,19 @@ public class MPCFragment extends Fragment {
                 String selectedItemText = parent.getItemAtPosition(pos).toString();
                 Log.d("Slected: ", selectedItemText);
                 //use swich!
-                if (selectedItemText.equals("TCP")) {
-                    callbackTypeVar = "tcp";
-                } else if (selectedItemText.equals("HTTP")) {
-                    callbackTypeVar = "http";
-                } else if (selectedItemText.equals("HTTPS")) {
-                    callbackTypeVar = "https";
-                } else if (selectedItemText.equals("Find Port")) {
-                    callbackTypeVar = "find_port";
+                switch (selectedItemText) {
+                    case "TCP":
+                        callbackTypeVar = "tcp";
+                        break;
+                    case "HTTP":
+                        callbackTypeVar = "http";
+                        break;
+                    case "HTTPS":
+                        callbackTypeVar = "https";
+                        break;
+                    case "Find Port":
+                        callbackTypeVar = "find_port";
+                        break;
                 }
             }
 

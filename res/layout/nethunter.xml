@@ -34,7 +34,6 @@
 
 
         <TextView
-            android:id="@+id/current_interfaces"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/nethunter_current_interfaces"
@@ -57,7 +56,6 @@
             android:typeface="monospace" />
 
         <TextView
-            android:id="@+id/textView5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/nethunter_hid_detect"
@@ -82,7 +80,6 @@
             android:typeface="monospace" />
 
         <TextView
-            android:id="@+id/external_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
@@ -105,11 +102,11 @@
                 android:layout_gravity="end"
                 android:inputType="none"
                 android:paddingTop="8sp"
-                android:singleLine="true"
                 android:gravity="center"
                 android:text="@string/unknown"
                 android:textSize="12sp"
-                android:typeface="monospace" />
+                android:typeface="monospace"
+                android:maxLines="1" />
 
             <Button
                 android:id="@+id/button1"

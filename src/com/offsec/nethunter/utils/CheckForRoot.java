@@ -13,9 +13,9 @@ import com.offsec.nethunter.R;
 
 public class CheckForRoot  extends AsyncTask<String, Boolean, String> {
 
-    private String TAG = "CHECK_FOR_ROOT";
-    private Context ctx;
-    private ShellExecuter exe;
+    private final String TAG = "CHECK_FOR_ROOT";
+    private final Context ctx;
+    private final ShellExecuter exe;
 
     private ProgressDialog pd;
     private Boolean isRootAvailable;

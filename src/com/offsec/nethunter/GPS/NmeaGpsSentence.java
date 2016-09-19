@@ -63,7 +63,7 @@ public enum NmeaGpsSentence {
         }
     }
 
-    private NmeaGpsSentence() {}
+    NmeaGpsSentence() {}
 
     /** Returns a list of all the NmeaGpsSentence types. */
     public static NmeaGpsSentence[] getValuesArray() {

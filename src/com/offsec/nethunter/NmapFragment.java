@@ -28,32 +28,28 @@ import java.util.ArrayList;
 
 public class NmapFragment  extends Fragment {
 
-    SharedPreferences sharedpreferences;
-    private Context mContext;
     private static final String TAG = "NMAPFragment";
     private static final String ARG_SECTION_NUMBER = "section_number";
-    Switch advswitch;
-    View.OnClickListener checkBoxListener;
 
     // Building command line
-    static ArrayList<String> CommandComposed = new ArrayList<>();
+    private static final ArrayList<String> CommandComposed = new ArrayList<>();
 
     // Nmap switches
-    String net_interface;
-    String time_template;
-    String searchall;
-    String OSdetect;
-    String udpscan;
-    String ipv6check;
-    String technique;
-    String sv;
-    String MySearch;
-    String Ports;
-    String fastmode;
-    String topports;
+    private String net_interface;
+    private String time_template;
+    private String searchall;
+    private String OSdetect;
+    private String udpscan;
+    private String ipv6check;
+    private String technique;
+    private String sv;
+    private String MySearch;
+    private String Ports;
+    private String fastmode;
+    private String topports;
 
-    EditText searchBar;
-    EditText portsBar;
+    private EditText searchBar;
+    private EditText portsBar;
 
     NhPaths nh;
 
@@ -76,11 +72,11 @@ public class NmapFragment  extends Fragment {
         final LinearLayout AdvLayout = (LinearLayout) rootView.findViewById(R.id.nmap_adv_layout);
         AdvLayout.setVisibility(View.GONE);
 
-        sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
-        mContext = getActivity().getApplicationContext();
+        SharedPreferences sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
+        Context mContext = getActivity().getApplicationContext();
 
         // Switch to activate open/close of advanced options
-        advswitch = (Switch) rootView.findViewById(R.id.nmap_adv_switch);
+        Switch advswitch = (Switch) rootView.findViewById(R.id.nmap_adv_switch);
         advswitch.setChecked(false);
         advswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -211,7 +207,7 @@ public class NmapFragment  extends Fragment {
         });
 
         // Search button
-        addClickListener(R.id.nmap_scan_button, new View.OnClickListener() {
+        addClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 intentClickListener_NH("nmap " + getCmd());
             }
@@ -288,12 +284,12 @@ public class NmapFragment  extends Fragment {
 
         // Checkbox for Fastmode
         final CheckBox fastmodeCheckbox = (CheckBox) rootView.findViewById(R.id.nmap_fastmode_check);
-        checkBoxListener = new View.OnClickListener() {
+        View.OnClickListener checkBoxListener = new View.OnClickListener() {
             public void onClick(View v) {
-                if(fastmodeCheckbox.isChecked()) {
+                if (fastmodeCheckbox.isChecked()) {
                     fastmode = " -F";
                     addToCmd(fastmode);
-                }else{
+                } else {
                     removeFromCmd(fastmode);
                 }
             }
@@ -453,8 +449,8 @@ public class NmapFragment  extends Fragment {
                 CommandComposed.remove(j);
         }
     }
-    private void addClickListener(int buttonId, View.OnClickListener onClickListener, View rootView) {
-        rootView.findViewById(buttonId).setOnClickListener(onClickListener);
+    private void addClickListener(View.OnClickListener onClickListener, View rootView) {
+        rootView.findViewById(R.id.nmap_scan_button).setOnClickListener(onClickListener);
     }
     private void intentClickListener_NH(final String command) {
         try {

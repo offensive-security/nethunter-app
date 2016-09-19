@@ -48,7 +48,6 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="DATE"
-        android:id="@+id/textView5"
         android:paddingLeft="@dimen/base_listItem_LR"
         android:textColor="@color/accent_material_dark"
         android:paddingRight="@dimen/base_listItem_LR"

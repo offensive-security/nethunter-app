@@ -10,7 +10,6 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/thechroottitle"
-        android:id="@+id/textView"
         android:layout_gravity="center_horizontal"
         android:padding="16sp" />
 
@@ -19,7 +18,6 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/aboutchroot"
-        android:id="@+id/textView3"
         android:paddingLeft="16sp"
         android:paddingRight="16sp"
         android:paddingBottom="16sp" />
@@ -55,14 +53,12 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/statusText"
-        android:id="@+id/textView2"
         android:paddingLeft="16sp"
         android:paddingTop="16sp" />
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/scrollView2"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:fillViewport="true">
 

@@ -12,7 +12,6 @@
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/macchanger_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|center"
@@ -25,7 +24,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:padding="4dp"
-            android:id="@+id/phone_nameTitle"
             android:text="Set Hostname"
             android:textSize="18sp" />
 
@@ -80,7 +78,6 @@
             android:background="#ffffff" />
 
         <LinearLayout
-            android:id="@+id/cmLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:focusable="true"
@@ -88,7 +85,6 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/macHint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -159,7 +155,6 @@
                 android:maxLength="2" />
 
             <TextView
-                android:id="@+id/dummy1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/macSeparator" />
@@ -174,7 +169,6 @@
                 android:maxLength="2" />
 
             <TextView
-                android:id="@+id/dummy2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/macSeparator" />
@@ -189,7 +183,6 @@
                 android:maxLength="2" />
 
             <TextView
-                android:id="@+id/dummy3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/macSeparator" />
@@ -204,7 +197,6 @@
                 android:maxLength="2" />
 
             <TextView
-                android:id="@+id/dummy4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/macSeparator" />
@@ -219,7 +211,6 @@
                 android:maxLength="2" />
 
             <TextView
-                android:id="@+id/dummy5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/macSeparator" />

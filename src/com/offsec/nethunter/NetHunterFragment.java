@@ -77,7 +77,7 @@ public class NetHunterFragment extends Fragment {
         ip.setText("Please wait...");
 
         new Thread(new Runnable() {
-            StringBuilder result = new StringBuilder();
+            final StringBuilder result = new StringBuilder();
 
             public void run() {
 

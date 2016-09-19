@@ -21,13 +21,10 @@ import com.offsec.nethunter.utils.NhPaths;
 
 public class VNCFragment  extends Fragment {
 
-    SharedPreferences sharedpreferences;
-    private Context mContext;
     private static final String TAG = "VNCFragment";
-    String xwidth;
-    String xheight;
-    View.OnClickListener checkBoxListener;;
-    String localhostonly = "";
+    private String xwidth;
+    private String xheight;
+    private String localhostonly = "";
 
     NhPaths nh;
     private static final String ARG_SECTION_NUMBER = "section_number";
@@ -45,8 +42,8 @@ public class VNCFragment  extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         final View rootView = inflater.inflate(R.layout.vnc_setup, container, false);
-        sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
-        mContext = getActivity().getApplicationContext();
+        SharedPreferences sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
+        Context mContext = getActivity().getApplicationContext();
 
         // Get screen size to pass to VNC
         DisplayMetrics displaymetrics = new DisplayMetrics();
@@ -75,11 +72,11 @@ public class VNCFragment  extends Fragment {
         // Checkbox for localhost only
         final CheckBox localhostCheckBox = (CheckBox) rootView.findViewById(R.id.vnc_checkBox);
         localhostCheckBox.setChecked(true);
-        checkBoxListener =new View.OnClickListener() {
+        View.OnClickListener checkBoxListener = new View.OnClickListener() {
             public void onClick(View v) {
-                if(localhostCheckBox.isChecked()) {
+                if (localhostCheckBox.isChecked()) {
                     localhostonly = "-localhost ";
-                }else{
+                } else {
                     localhostonly = "";
                 }
             }

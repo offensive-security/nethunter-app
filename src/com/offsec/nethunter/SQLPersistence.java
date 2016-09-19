@@ -8,16 +8,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
+
 import java.util.LinkedList;
 import java.util.List;
 
-public class SQLPersistence extends SQLiteOpenHelper {
+class SQLPersistence extends SQLiteOpenHelper {
 
-    final static int DATABASE_VERSION = 1;
-    final static String DATABASE_NAME = "KaliLaunchers";
+    private final static int DATABASE_VERSION = 1;
+    private final static String DATABASE_NAME = "KaliLaunchers";
 
-    final static String CREATE_LAUNCHER_TABLE = "CREATE TABLE " +
+    private final static String CREATE_LAUNCHER_TABLE = "CREATE TABLE " +
             LauncherApp.TABLE + " (" +
             LauncherApp.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             LauncherApp.BTN_LABEL + " TEXT, " +
@@ -56,13 +56,13 @@ public class SQLPersistence extends SQLiteOpenHelper {
     }
 
     public List<LauncherApp> getAllApps() {
-        List<LauncherApp> apps = new LinkedList<LauncherApp>();
+        List<LauncherApp> apps = new LinkedList<>();
         String query = "SELECT  * FROM " + LauncherApp.TABLE;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
 
-        LauncherApp app = null;
+        LauncherApp app;
         if (cursor.moveToFirst()) {
             do {
                 app = new LauncherApp();
@@ -95,6 +95,7 @@ public class SQLPersistence extends SQLiteOpenHelper {
                 cursor.moveToFirst();
 
             app = new LauncherApp();
+            assert cursor != null;
             app.setId(Long.parseLong(cursor.getString(0)));
             app.setBtn_label(cursor.getString(1));
             app.setCommand(cursor.getString(2));

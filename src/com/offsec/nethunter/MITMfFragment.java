@@ -36,13 +36,11 @@ import java.util.ArrayList;
 
 public class MITMfFragment extends Fragment implements ActionBar.TabListener {
 
-    TabsPagerAdapter TabsPagerAdapter;
-    ViewPager mViewPager;
-    SharedPreferences sharedpreferences;
-    View.OnClickListener checkBoxListener;;
+    private ViewPager mViewPager;
+    View.OnClickListener checkBoxListener;
     // ^^ \\
     // static String CommandComposed = "";
-    static ArrayList<String> CommandComposed = new ArrayList<>();
+    private static final ArrayList<String> CommandComposed = new ArrayList<>();
 
     /* All MITMf General Command Variables */
 
@@ -119,7 +117,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
 
     CheckBox ScreenShotterCheckbox;
 
-    static NhPaths nh;
+    private static NhPaths nh;
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -138,10 +136,10 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         cleanCmd();
         View rootView = inflater.inflate(R.layout.mitmf, container, false);
-        TabsPagerAdapter = new TabsPagerAdapter(getActivity().getSupportFragmentManager());
+        MITMfFragment.TabsPagerAdapter tabsPagerAdapter = new TabsPagerAdapter(getActivity().getSupportFragmentManager());
 
         mViewPager = (ViewPager) rootView.findViewById(R.id.pagerMITMF);
-        mViewPager.setAdapter(TabsPagerAdapter);
+        mViewPager.setAdapter(tabsPagerAdapter);
 
         nh = new NhPaths();
 
@@ -152,7 +150,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
             }
         });
         setHasOptionsMenu(true);
-        sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
+        SharedPreferences sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
         return rootView;
     }
 
@@ -176,12 +174,12 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
         }
     }
 
-    public void start() {
+    private void start() {
         intentClickListener_NH("mitmf " + getCmd());
         nh.showMessage("MITMf Started!");
     }
 
-    public void stop() {
+    private void stop() {
         ShellExecuter exe = new ShellExecuter();
         String[] command = new String[1];
         exe.RunAsRoot(command);
@@ -258,11 +256,6 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
     /* Stop Tabs */
 
     public static class MITMfGeneral extends MITMfFragment implements View.OnClickListener {
-
-        @Override
-        public void onActivityCreated(Bundle savedInstanceState) {
-            super.onActivityCreated(savedInstanceState);
-        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -507,11 +500,6 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
     }
 
     public static class MITMfInject extends MITMfFragment implements View.OnClickListener {
-
-        @Override
-        public void onActivityCreated(Bundle savedInstanceState) {
-            super.onActivityCreated(savedInstanceState);
-        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -1026,11 +1014,6 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
     public static class MITMfSpoof extends MITMfFragment implements View.OnClickListener {
 
         @Override
-        public void onActivityCreated(Bundle savedInstanceState) {
-            super.onActivityCreated(savedInstanceState);
-        }
-
-        @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.mitmf_spoof, container, false);
@@ -1326,11 +1309,6 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
     public static class MITMfResponder extends MITMfFragment implements View.OnClickListener {
 
         @Override
-        public void onActivityCreated(Bundle savedInstanceState) {
-            super.onActivityCreated(savedInstanceState);
-        }
-
-        @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.mitmf_responder, container, false);
@@ -1482,8 +1460,8 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
 
     public static class MITMfConfigFragment extends Fragment {
 
-        private String configFilePath = nh.CHROOT_PATH +"/etc/mitmf/mitmf.conf";
-        ShellExecuter exe = new ShellExecuter();
+        private final String configFilePath = nh.CHROOT_PATH +"/etc/mitmf/mitmf.conf";
+        final ShellExecuter exe = new ShellExecuter();
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,

@@ -1,7 +1,6 @@
 package com.offsec.nethunter;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -39,7 +38,7 @@ import com.winsontan520.wversionmanager.library.WVersionManager;
 public class AppNavHomeActivity extends AppCompatActivity {
 
     public final static String TAG = "AppNavHomeActivity";
-    public static final String CHROOT_INSTALLED_TAG = "CHROOT_INSTALLED_TAG";
+    private static final String CHROOT_INSTALLED_TAG = "CHROOT_INSTALLED_TAG";
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -48,13 +47,11 @@ public class AppNavHomeActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private static NavigationView navigationView;
     private CharSequence mTitle = "NetHunter";
-    private Stack<String> titles = new Stack<>();
+    private final Stack<String> titles = new Stack<>();
     private static SharedPreferences prefs;
     private MenuItem lastSelected;
     private static Context c;
     private Boolean weCheckedForRoot = false;
-    private final String BuildUser = "Kali";  // Change this to your name/username
-    private Integer permsNum = 8;
     private Integer permsCurrent = 1;
     public static Context getAppContext() {
         return c;
@@ -110,7 +107,8 @@ public class AppNavHomeActivity extends AppCompatActivity {
         TextView buildInfo1 = (TextView) navigationHeadView.findViewById(R.id.buildinfo1);
         TextView buildInfo2 = (TextView) navigationHeadView.findViewById(R.id.buildinfo2);
         buildInfo1.setText(String.format("Version: %s (%s)", BuildConfig.VERSION_NAME, Build.TAGS));
-        buildInfo2.setText(String.format("Built by %s at %s", BuildUser, buildTime));
+        String buildUser = "Kali";
+        buildInfo2.setText(String.format("Built by %s at %s", buildUser, buildTime));
 
         if (navigationView != null) {
             setupDrawerContent(navigationView);
@@ -137,7 +135,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
             mDrawerLayout.openDrawer(GravityCompat.START);
             SharedPreferences.Editor ed = prefs.edit();
             ed.putBoolean("seenNav", true);
-            ed.commit();
+            ed.apply();
         }
 
         if(lastSelected == null){ // only in the 1st create
@@ -170,7 +168,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
             menuNav.setGroupEnabled(R.id.chrootDependentGroup, false);
         }
     }
-    public void checkUpdate(){
+    private void checkUpdate(){
         WVersionManager versionManager = new WVersionManager(this);
         versionManager.setVersionContentUrl("https://images.offensive-security.com/version.txt");
         versionManager.setUpdateUrl("https://images.offensive-security.com/latest.apk");
@@ -179,7 +177,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
         versionManager.setIgnoreThisVersionLabel("Ignore");
     }
 
-    public void showLicense() {
+    private void showLicense() {
         // @binkybear here goes the changelog etc... \n\n%s
         String readmeData = String.format("%s\n\n%s",
                 getResources().getString(R.string.licenseInfo),
@@ -372,7 +370,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
                 });
     }
 
-    public void restoreActionBar() {
+    private void restoreActionBar() {
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
             ab.setDisplayShowTitleEnabled(true);
@@ -492,6 +490,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Integer permsNum = 8;
                     if(permsCurrent < permsNum){
                         permsCurrent = permsCurrent+1;
                         askMarshmallowPerms(permsCurrent);

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,11 +25,10 @@ import java.util.regex.Pattern;
 
 public class BadusbFragment extends Fragment {
 
-    private String configFilePath;
     private String sourcePath;
     private static final String ARG_SECTION_NUMBER = "section_number";
-    NhPaths nh;
-    ShellExecuter exe = new ShellExecuter();
+    private NhPaths nh;
+    private final ShellExecuter exe = new ShellExecuter();
     public BadusbFragment() {
 
     }
@@ -62,6 +60,7 @@ public class BadusbFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         nh = new NhPaths();
+        String configFilePath;
         if (Build.VERSION.SDK_INT >= 21) {
             configFilePath = "/configs/startbadusb-lollipop.sh";
         } else {
@@ -122,7 +121,7 @@ public class BadusbFragment extends Fragment {
         }
     }
 
-    public void updateOptions() {
+    private void updateOptions() {
         String sourceFile = exe.ReadFile_SYNC(sourcePath);
         EditText ifc = (EditText) getActivity().findViewById(R.id.ifc);
         sourceFile = sourceFile.replaceAll("(?m)^INTERFACE=(.*)$", "INTERFACE=" + ifc.getText().toString());
@@ -134,7 +133,7 @@ public class BadusbFragment extends Fragment {
         }
     }
 
-    public void start() {
+    private void start() {
         ShellExecuter exe = new ShellExecuter();
         String[] command = new String[1];
         if (Build.VERSION.SDK_INT >= 21) {
@@ -146,7 +145,7 @@ public class BadusbFragment extends Fragment {
         nh.showMessage("BadUSB attack started! Check /sdcard/nh_files/badusb.log");
     }
 
-    public void stop() {
+    private void stop() {
         ShellExecuter exe = new ShellExecuter();
         String[] command = new String[1];
         if (Build.VERSION.SDK_INT >= 21) {

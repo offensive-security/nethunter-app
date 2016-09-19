@@ -42,12 +42,11 @@ import java.util.regex.Pattern;
 
 public class HidFragment extends Fragment implements ActionBar.TabListener {
 
-    TabsPagerAdapter TabsPagerAdapter;
-    ViewPager mViewPager;
-    SharedPreferences sharedpreferences;
-    static NhPaths nh;
-    final CharSequence[] platforms = {"No UAC Bypass", "Windows 7", "Windows 8", "Windows 10"};
-    final CharSequence[] languages = {"American English", "Belgian", "British English", "Danish", "French", "German", "Italian", "Norwegian", "Portugese", "Russian", "Spanish", "Swedish"};
+    private ViewPager mViewPager;
+    private SharedPreferences sharedpreferences;
+    private static NhPaths nh;
+    private final CharSequence[] platforms = {"No UAC Bypass", "Windows 7", "Windows 8", "Windows 10"};
+    private final CharSequence[] languages = {"American English", "Belgian", "British English", "Danish", "French", "German", "Italian", "Norwegian", "Portugese", "Russian", "Spanish", "Swedish"};
     private String configFilePath;
 
     private static final String ARG_SECTION_NUMBER = "section_number";
@@ -82,10 +81,10 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.hid, container, false);
-        TabsPagerAdapter = new TabsPagerAdapter(getActivity().getSupportFragmentManager());
+        HidFragment.TabsPagerAdapter tabsPagerAdapter = new TabsPagerAdapter(getActivity().getSupportFragmentManager());
 
         mViewPager = (ViewPager) rootView.findViewById(R.id.pagerHid);
-        mViewPager.setAdapter(TabsPagerAdapter);
+        mViewPager.setAdapter(tabsPagerAdapter);
 
         mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
@@ -248,7 +247,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
     }
 
 
-    public void openDialog() {
+    private void openDialog() {
 
         int UACBypassIndex = sharedpreferences.getInt("UACBypassIndex", 0);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -266,13 +265,13 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
             public void onClick(DialogInterface dialog, int which) {
                 Editor editor = sharedpreferences.edit();
                 editor.putInt("UACBypassIndex", which);
-                editor.commit();
+                editor.apply();
             }
         });
         builder.show();
     }
 
-    public void openLanguageDialog() {
+    private void openLanguageDialog() {
 
         int keyboardLayoutIndex = sharedpreferences.getInt("HIDKeyboardLayoutIndex", 0);
 
@@ -292,7 +291,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
             public void onClick(DialogInterface dialog, int which) {
                 Editor editor = sharedpreferences.edit();
                 editor.putInt("HIDKeyboardLayoutIndex", which);
-                editor.commit();
+                editor.apply();
             }
         });
         builder.show();
@@ -355,13 +354,8 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
 
     public static class PowerSploitFragment extends HidFragment implements OnClickListener {
 
-        private String configFilePath =  nh.CHROOT_PATH + "/var/www/html/powersploit-payload";
-        private String configFileUrlPath = nh.CHROOT_PATH + "/var/www/html/powersploit-url";
-
-        @Override
-        public void onActivityCreated(Bundle savedInstanceState) {
-            super.onActivityCreated(savedInstanceState);
-        }
+        private final String configFilePath =  nh.CHROOT_PATH + "/var/www/html/powersploit-payload";
+        private final String configFileUrlPath = nh.CHROOT_PATH + "/var/www/html/powersploit-url";
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -466,14 +460,9 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
 
     public static class WindowsCmdFragment extends HidFragment implements OnClickListener {
 
-        private String configFilePath = nh.APP_SD_FILES_PATH + "/configs/hid-cmd.conf";
-        private String loadFilePath =  nh.APP_SD_FILES_PATH + "/scripts/hid/";
-        ShellExecuter exe = new ShellExecuter();
-        @Override
-        public void onActivityCreated(Bundle savedInstanceState) {
-
-            super.onActivityCreated(savedInstanceState);
-        }
+        private final String configFilePath = nh.APP_SD_FILES_PATH + "/configs/hid-cmd.conf";
+        private final String loadFilePath =  nh.APP_SD_FILES_PATH + "/scripts/hid/";
+        final ShellExecuter exe = new ShellExecuter();
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,

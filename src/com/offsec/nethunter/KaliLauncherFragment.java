@@ -1,7 +1,6 @@
 package com.offsec.nethunter;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -43,7 +42,7 @@ public class KaliLauncherFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.kali_launcher, container, false);
         addClickListener(R.id.button_start_kali, new View.OnClickListener() {
             public void onClick(View v) {
-                intentClickListener_NH_LOGIN(""); // pops kali term.
+                intentClickListener_NH_LOGIN(); // pops kali term.
             }
         }, rootView);
         addClickListener(R.id.button_start_su, new View.OnClickListener() {
@@ -142,13 +141,13 @@ public class KaliLauncherFragment extends Fragment {
 
         }
     }
-    private void intentClickListener_NH_LOGIN(final String command) {
+    private void intentClickListener_NH_LOGIN() {
         try {
             Intent intent =
                     new Intent("com.offsec.nhterm.RUN_SCRIPT_NH_LOGIN");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
 
-            intent.putExtra("com.offsec.nhterm.iInitialCommand", command);
+            intent.putExtra("com.offsec.nhterm.iInitialCommand", "");
             startActivity(intent);
         } catch (Exception e) {
             Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();

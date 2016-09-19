@@ -34,7 +34,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
 import java.util.List;
-import java.util.Objects;
 
 
 public class SearchSploitFragment extends Fragment {
@@ -44,16 +43,16 @@ public class SearchSploitFragment extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
 
 
-    Boolean withFilters = true;
-    String sel_platform;
-    String sel_type;
-    String sel_port;
-    String sel_search = "";
-    TextView numex;
-    AlertDialog adi;
-    Boolean isLoaded = false;
+    private Boolean withFilters = true;
+    private String sel_platform;
+    private String sel_type;
+    private String sel_port;
+    private String sel_search = "";
+    private TextView numex;
+    private AlertDialog adi;
+    private Boolean isLoaded = false;
     private ListView searchSploitListView;
-    List<SearchSploit> full_exploitList;
+    private List<SearchSploit> full_exploitList;
     // Create and handle database
     private SearchSploitSQL database;
     private NhPaths nh;
@@ -339,7 +338,7 @@ public class SearchSploitFragment extends Fragment {
 class ExploitLoader extends BaseAdapter {
 
     private final List<SearchSploit> _exploitList;
-    private Context _mContext;
+    private final Context _mContext;
     static NhPaths nh;
 
 

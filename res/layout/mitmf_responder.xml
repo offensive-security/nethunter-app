@@ -4,7 +4,7 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:orientation="vertical"
@@ -16,8 +16,7 @@
             android:text="@string/mitmf_Responder_Description"
             android:layout_gravity="center_horizontal"
             android:gravity="center"
-            android:padding="4dp"
-            android:id="@+id/textView20" />
+            android:padding="4dp" />
 
         <ImageView
             android:layout_gravity="center_horizontal"
@@ -31,8 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Responder Settings"
-            android:id="@+id/textView18" />
+            android:text="Responder Settings" />
 
         <CheckBox
             android:layout_width="wrap_content"

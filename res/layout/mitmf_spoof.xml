@@ -4,7 +4,7 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:orientation="vertical"
@@ -22,8 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Spoof Settings"
-            android:id="@+id/textView18" />
+            android:text="Spoof Settings" />
 
         <CheckBox
             android:layout_width="wrap_content"
@@ -36,15 +35,13 @@
             android:paddingBottom="5px"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:src="@android:drawable/divider_horizontal_bright"
-            android:id="@+id/imageView4" />
+            android:src="@android:drawable/divider_horizontal_bright" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Redirect Using:"
-            android:id="@+id/textView21" />
+            android:text="Redirect Using:" />
 
         <Spinner
             android:layout_width="match_parent"
@@ -55,8 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="ARP Mode:"
-            android:id="@+id/textView22" />
+            android:text="ARP Mode:" />
 
         <Spinner
             android:layout_width="match_parent"

@@ -32,8 +32,8 @@ public class KaliServicesFragment extends Fragment {
     private String[][] KaliServices;
     private static final String ARG_SECTION_NUMBER = "section_number";
     public static final String RUN_AT_BOOT = "RUN_AT_BOOT";
-    boolean updateStatuses = false;
-    NhPaths nh;
+    private boolean updateStatuses = false;
+    private NhPaths nh;
     private SharedPreferences prefs;
     public KaliServicesFragment() {
 
@@ -84,12 +84,12 @@ public class KaliServicesFragment extends Fragment {
                 if(prefs.getBoolean(RUN_AT_BOOT, true)){
                     SharedPreferences.Editor ed = prefs.edit();
                     ed.putBoolean(RUN_AT_BOOT, false);
-                    ed.commit();
+                    ed.apply();
                     nh.showMessage("Boot Services DISABLED");
                 } else{
                     SharedPreferences.Editor ed = prefs.edit();
                     ed.putBoolean(RUN_AT_BOOT, true);
-                    ed.commit();
+                    ed.apply();
                     nh.showMessage("Boot Services ENABLED");
                 }
                 return true;
@@ -185,13 +185,13 @@ public class KaliServicesFragment extends Fragment {
 
 class KaliServicesLoader extends BaseAdapter {
 
-    private Context mContext;
-    private String[] _serviceStates;
-    private String[] _serviceBootStates;
-    private String services[][];
-    private String bootScriptPath;
-    private String shebang;
-    private ShellExecuter exe = new ShellExecuter();
+    private final Context mContext;
+    private final String[] _serviceStates;
+    private final String[] _serviceBootStates;
+    private final String[][] services;
+    private final String bootScriptPath;
+    private final String shebang;
+    private final ShellExecuter exe = new ShellExecuter();
 
 
     public KaliServicesLoader(Context context, String serviceStates, String bootStates, String[][] KaliServices, String _bootScriptPath) {
@@ -222,7 +222,7 @@ class KaliServicesLoader extends BaseAdapter {
         // return the number of services
         return services.length;
     }
-    public void addBootService(int serviceId) {
+    private void addBootService(int serviceId) {
         String bootServiceFile = bootScriptPath + "/" + services[serviceId][4];
         String fileContents = shebang + services[serviceId][0] + "\n" + services[serviceId][2];
         exe.RunAsRoot(new String[]{
@@ -233,7 +233,7 @@ class KaliServicesLoader extends BaseAdapter {
         // return the number of services
 
     }
-    public void removeBootService(int serviceId) {
+    private void removeBootService(int serviceId) {
         // return the number of services
         String bootServiceFile = bootScriptPath + "/" + services[serviceId][4];
         exe.RunAsRoot(new String[]{ "rm -rf " +  bootServiceFile });

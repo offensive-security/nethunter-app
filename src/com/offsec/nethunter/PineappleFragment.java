@@ -16,14 +16,11 @@ import com.offsec.nethunter.utils.ShellExecuter;
 
 public class PineappleFragment extends Fragment {
 
-    SharedPreferences sharedpreferences;
-    private Context mContext;
     private static final String TAG = "PineappleFragment";
 
-    static NhPaths nh;
-    String start_type = "start ";
-    String proxy_type;
-    View.OnClickListener checkBoxListener;
+    private static NhPaths nh;
+    private String start_type = "start ";
+    private String proxy_type;
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -41,19 +38,19 @@ public class PineappleFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         final View rootView = inflater.inflate(R.layout.pineapple, container, false);
-        sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
-        mContext = getActivity().getApplicationContext();
+        SharedPreferences sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
+        Context mContext = getActivity().getApplicationContext();
 
         nh = new NhPaths();
         Log.d(TAG, nh.APP_SCRIPTS_PATH);
 
         // Checkbox for No Upstream
         final CheckBox noupCheckbox = (CheckBox) rootView.findViewById(R.id.pineapple_noup);
-        checkBoxListener = new View.OnClickListener() {
+        View.OnClickListener checkBoxListener = new View.OnClickListener() {
             public void onClick(View v) {
-                if(noupCheckbox.isChecked()) {
+                if (noupCheckbox.isChecked()) {
                     start_type = "start_noup ";
-                }else{
+                } else {
                     start_type = "start ";
                 }
             }

@@ -24,20 +24,16 @@ import com.offsec.nethunter.GPS.NmeaUtils;
 import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
 
-import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 
 
 public class KaliGpsServiceFragment extends Fragment {
 
-    SharedPreferences sharedpreferences;
-    private Context mContext;
     private static final String TAG = "KaliGpsServiceFragment";
     private TextView GpsTextview;
 
-    static NhPaths nh;
+    private static NhPaths nh;
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -55,8 +51,8 @@ public class KaliGpsServiceFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.gps, container, false);
-        sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
-        mContext = getActivity().getApplicationContext();
+        SharedPreferences sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
+        Context mContext = getActivity().getApplicationContext();
         GpsTextview = (TextView) rootView.findViewById(R.id.GpsTextview);
 
         nh = new NhPaths();
@@ -71,7 +67,7 @@ public class KaliGpsServiceFragment extends Fragment {
                         exe.RunAsRootOutput(command);
                     }
                 }).start();
-                intentClickListener_NH("/usr/bin/start-kismet"); // start kismet
+                intentClickListener_NH(); // start kismet
                 nh.showMessage("Starting Kismet with GPS support");
                 setupGpsListener();
             }
@@ -182,13 +178,13 @@ public class KaliGpsServiceFragment extends Fragment {
         return info;
     }
 
-    private void intentClickListener_NH(final String command) {
+    private void intentClickListener_NH() {
         try {
             Intent intent =
                     new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
 
-            intent.putExtra("com.offsec.nhterm.iInitialCommand", command);
+            intent.putExtra("com.offsec.nhterm.iInitialCommand", "/usr/bin/start-kismet");
             startActivity(intent);
         } catch (Exception e) {
             Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();

@@ -50,16 +50,15 @@ import java.util.ArrayList;
  *
  */
 public class BootKali {
-    private String TERM_CMD;
-    private NhPaths nh = new NhPaths();
-    private String KALI_ENV;
-    private String KALI_COMMAND;
+    private final String TERM_CMD;
+    private final NhPaths nh = new NhPaths();
+    private final String KALI_ENV;
+    private final String KALI_COMMAND;
 
-    private String FULL_CMD;
-    private String SPACE = " ";
-    private String SINGLEQ = "'";
-    private String CLEAR_TERM = "clear && ";
-    private String BOOTKALI;
+    private final String FULL_CMD;
+    private final String SPACE = " ";
+    private final String SINGLEQ = "'";
+    private final String BOOTKALI;
 
     public BootKali(String cmd) {
         this.KALI_ENV = GET_KALI_ENV();
@@ -105,6 +104,7 @@ public class BootKali {
 
     private String GEN__KALI_TERM_CMD(String cmd) {
         // return "/bin/bash -c" + SPACE + SINGLEQ + KALI_ENV + CLEAR_TERM + cmd + SINGLEQ;
+        String CLEAR_TERM = "clear && ";
         return "/bin/bash -c" + SPACE + SINGLEQ + KALI_ENV + CLEAR_TERM + cmd + SINGLEQ;
     }
 
@@ -114,7 +114,7 @@ public class BootKali {
             Class<?> SystemProperties = Class.forName("android.os.SystemProperties");
             Method method = SystemProperties.getMethod("get", String.class);
             ArrayList<String> servers = new ArrayList<>();
-            String dns_servers = "";
+            //String dns_servers = "";
             for (String name : new String[]{"net.dns1", "net.dns2", "net.dns3", "net.dns4",}) {
                 String value = (String) method.invoke(null, name);
                 if (value != null && !"".equals(value) && !servers.contains(value)) {
@@ -172,9 +172,7 @@ public class BootKali {
             process.waitFor();
             process.destroy();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
         return output;
@@ -191,7 +189,7 @@ public class BootKali {
                     Process process = Runtime.getRuntime().exec("su");
                     OutputStream stdin = process.getOutputStream();
                     InputStream stderr = process.getErrorStream();
-                    InputStream stdout = process.getInputStream();
+                    //InputStream stdout = process.getInputStream();
                     stdin.write((BOOTKALI + KALI_COMMAND).getBytes());
                     stdin.flush();
                     stdin.close();
@@ -203,9 +201,7 @@ public class BootKali {
                     br.close();
                     process.waitFor();
                     process.destroy();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
+                } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
             }

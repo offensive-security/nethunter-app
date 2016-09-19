@@ -20,12 +20,12 @@ import java.nio.channels.FileChannel;
 import java.util.LinkedList;
 import java.util.List;
 
-public class CustomCommandsSQL extends SQLiteOpenHelper {
-    NhPaths nh;
-    final static int DATABASE_VERSION = 2;
-    final static String DATABASE_NAME = "KaliLaunchers";
+class CustomCommandsSQL extends SQLiteOpenHelper {
+    private final NhPaths nh;
+    private final static int DATABASE_VERSION = 2;
+    private final static String DATABASE_NAME = "KaliLaunchers";
 
-    final static String CREATE_LAUNCHER_TABLE = "CREATE TABLE " +
+    private final static String CREATE_LAUNCHER_TABLE = "CREATE TABLE " +
             CustomCommand.TABLE + " (" +
             CustomCommand.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             CustomCommand.BTN_LABEL + " TEXT, " +
@@ -33,7 +33,7 @@ public class CustomCommandsSQL extends SQLiteOpenHelper {
             CustomCommand.EXEC_MODE + " TEXT, " +
             CustomCommand.SEND_TO_SHELL + " TEXT, " +
             CustomCommand.RUN_AT_BOOT + " INTEGER )";
-    Context context;
+    private final Context context;
     public CustomCommandsSQL(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/side_head"
     android:layout_width="match_parent"
     android:layout_height="170dp"
     android:background="@color/primary_dark_material_dark"
@@ -11,7 +10,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="114dp"
-        android:layout_alignParentTop="true"
         android:background="@drawable/nh_cropbg"
         android:orientation="horizontal">
 
@@ -31,7 +29,6 @@
             app:pressedTranslationZ="12dp" />
 
         <ImageView
-            android:id="@+id/offsec_logo_header"
             android:layout_width="100dp"
             android:layout_height="50dp"
             android:layout_gravity="left"

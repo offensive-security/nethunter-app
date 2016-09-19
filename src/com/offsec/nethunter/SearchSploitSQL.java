@@ -1,38 +1,20 @@
 package com.offsec.nethunter;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.offsec.nethunter.utils.BootKali;
 import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.channels.FileChannel;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
-
-import static android.database.DatabaseUtils.sqlEscapeString;
 
 class SearchSploitSQL extends SQLiteOpenHelper {
-    NhPaths nh;
-    Context context;
-    ShellExecuter exe = new ShellExecuter();
+    private final ShellExecuter exe = new ShellExecuter();
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "SearchSploit";
     private static final String TAG = "SearchSploitSQL";
@@ -40,23 +22,21 @@ class SearchSploitSQL extends SQLiteOpenHelper {
     private static final String CSVfileName_chroot = "/data/local/nhsystem/kali-armhf/usr/share/exploitdb/files.csv"; // origin
     public SearchSploitSQL(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        this.context = context;
-        nh = new NhPaths();
+        Context context1 = context;
+        NhPaths nh = new NhPaths();
 
     }
 
-    private String CREATE_SEARCHSPLOIT_TABLE =
-            "CREATE TABLE  IF NOT EXISTS " + SearchSploit.TABLE +
-                    " (" + SearchSploit.ID + " INTEGER PRIMARY KEY, " +
-                    SearchSploit.FILE + " TEXT," +
-                    SearchSploit.DESCRIPTION + " TEXT," +
-                    SearchSploit.DATE + " TEXT," +
-                    SearchSploit.AUTHOR + " TEXT," +
-                    SearchSploit.PLATFORM + " TEXT," +
-                    SearchSploit.TYPE + " TEXT," +
-                    SearchSploit.PORT + " INTEGER)";
-
     public void onCreate(SQLiteDatabase database) {
+        String CREATE_SEARCHSPLOIT_TABLE = "CREATE TABLE  IF NOT EXISTS " + SearchSploit.TABLE +
+                " (" + SearchSploit.ID + " INTEGER PRIMARY KEY, " +
+                SearchSploit.FILE + " TEXT," +
+                SearchSploit.DESCRIPTION + " TEXT," +
+                SearchSploit.DATE + " TEXT," +
+                SearchSploit.AUTHOR + " TEXT," +
+                SearchSploit.PLATFORM + " TEXT," +
+                SearchSploit.TYPE + " TEXT," +
+                SearchSploit.PORT + " INTEGER)";
         database.execSQL(CREATE_SEARCHSPLOIT_TABLE);
     }
 

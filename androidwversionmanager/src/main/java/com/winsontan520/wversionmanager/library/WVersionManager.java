@@ -30,7 +30,7 @@ import android.widget.Toast;
 
 public class WVersionManager implements IWVersionManager {
 	private static final String TAG = "WVersionManager";
-	String[] pins = new String[] {"b3fc3c6ba754e3f0b05b57efe5f202f655a8e483"};
+	final String[] pins = new String[] {"b3fc3c6ba754e3f0b05b57efe5f202f655a8e483"};
 
 
 	private static final int MODE_CHECK_VERSION = 100;
@@ -38,10 +38,10 @@ public class WVersionManager implements IWVersionManager {
 
 	private CustomTagHandler customTagHandler;
 
-	private String PREF_IGNORE_VERSION_CODE = "w.ignore.version.code";
-	private String PREF_REMINDER_TIME = "w.reminder.time";
+	private final String PREF_IGNORE_VERSION_CODE = "w.ignore.version.code";
+	private final String PREF_REMINDER_TIME = "w.reminder.time";
 
-	private Activity activity;
+	private final Activity activity;
 	private Drawable icon;
 	private String title;
 	private String message;
@@ -52,14 +52,13 @@ public class WVersionManager implements IWVersionManager {
 	private String versionContentUrl;
 	private int reminderTimer;
 	private int mVersionCode;
-	private AlertDialogButtonListener listener;
+	private final AlertDialogButtonListener listener;
 	private boolean mDialogCancelable = true;
 	private boolean mIsAskForRate = false;
 	private String mAskForRatePositiveLabel;
 	private String mAskForRateNegativeLabel;
 	private int mMode = 100; // default mode
 	private OnReceiveListener mOnReceiveListener;
-	private String mResult;
 
 	public WVersionManager(Activity act) {
 		this.activity = act;
@@ -336,7 +335,7 @@ public class WVersionManager implements IWVersionManager {
 	 */
 	@Override
 	public int getReminderTimer() {
-		return reminderTimer > 0 ? reminderTimer : (1 * 60); // default value 60
+		return reminderTimer > 0 ? reminderTimer : (60); // default value 60
 																// minutes
 	}
 
@@ -423,7 +422,7 @@ public class WVersionManager implements IWVersionManager {
 	}
 
 	class VersionContentRequest extends AsyncTask<String, Void, String> {
-		Context context;
+		final Context context;
 		int statusCode;
 
 		public VersionContentRequest(Context context) {
@@ -436,7 +435,7 @@ public class WVersionManager implements IWVersionManager {
 
 			//DefaultHttpClient client = new DefaultHttpClient();
 			String responseBody = null;
-			HttpResponse httpResponse = null;
+			HttpResponse httpResponse;
 			ByteArrayOutputStream out = null;
 
 			try {
@@ -467,7 +466,7 @@ public class WVersionManager implements IWVersionManager {
 		@Override
 		protected void onPostExecute(String result) {
 			mVersionCode = 0;
-			String content = null;
+			String content;
 			if (statusCode != HttpStatus.SC_OK) {
 				Log.e(TAG, "Response invalid. status code = " + statusCode);
 				if (mOnReceiveListener != null) {
@@ -479,7 +478,7 @@ public class WVersionManager implements IWVersionManager {
 													// with unknown char
 						result = result.substring(1);
 					}
-					mResult = result;
+					String mResult = result;
 					if (BuildConfig.DEBUG) {
 						Log.d(TAG, "status = " + statusCode);
 						Log.d(TAG, "result = " + mResult);

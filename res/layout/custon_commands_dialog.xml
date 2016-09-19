@@ -7,8 +7,7 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/scrollView4" >
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:orientation="vertical"
@@ -16,7 +15,6 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/add_lauchner_btn_label_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/add_lauchner_btn_label"
@@ -32,7 +30,6 @@
             </EditText>
 
             <TextView
-                android:id="@+id/add_lauchner_btn_command_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
@@ -95,7 +92,6 @@
                     android:entries="@array/exec_mode"
 
                     android:paddingTop="10dp"
-                    android:layout_weight="1"
                     android:layout_below="@+id/spinnerRun_in_shell"
                     android:layout_toEndOf="@+id/add_lauchner_btn_execmode_text" />
 

@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -40,10 +39,10 @@ import java.util.Random;
 public class MacchangerFragment extends Fragment {
 
 
-    SharedPreferences sharedpreferences;
-    NhPaths nh;
+    private SharedPreferences sharedpreferences;
+    private NhPaths nh;
     private static final String ARG_SECTION_NUMBER = "section_number";
-    ShellExecuter exe;
+    private ShellExecuter exe;
     public MacchangerFragment() {
 
     }
@@ -102,7 +101,7 @@ public class MacchangerFragment extends Fragment {
         if(isOPO() && !sharedpreferences.contains("opo_original_mac")){
             Editor editor = sharedpreferences.edit();
             editor.putString("opo_original_mac", exe.RunAsRootWithException("cat /sys/devices/fb000000.qcom,wcnss-wlan/wcnss_mac_addr"));
-            editor.commit();
+            editor.apply();
 
         }
         Log.d("opo_original_mac", sharedpreferences.getString("opo_original_mac", ""));
@@ -169,7 +168,7 @@ public class MacchangerFragment extends Fragment {
                 //showMessage("Selected interface: \n" + items);
                 Editor editor = sharedpreferences.edit();
                 editor.putString("interface_opts", selectedInterface);  // the full text so we can compare later
-                editor.commit();
+                editor.apply();
 
 
                 getCurrentMac(cleanInterface, currMac, setMacButton);  // this gets the current mac of the interface and sets it to the textview
@@ -226,7 +225,7 @@ public class MacchangerFragment extends Fragment {
                 String items = macModeSpinner.getSelectedItem().toString();
                 Editor editor = sharedpreferences.edit();
                 editor.putString("macchanger_opts", items);
-                editor.commit();
+                editor.apply();
 
                 // update button
                 if (items.equals(getResources().getString(R.string.randomMAC))) {
@@ -424,7 +423,7 @@ public class MacchangerFragment extends Fragment {
 
 
 
-    public void getCurrentMac(final String theDevice, final TextView currMac, final Button setMacButton) {
+    private void getCurrentMac(final String theDevice, final TextView currMac, final Button setMacButton) {
         //in the bg
 
         currMac.setText(String.format("Reading %s", theDevice));
@@ -485,7 +484,7 @@ public class MacchangerFragment extends Fragment {
 
     }
 
-    public void resetMac() {
+    private void resetMac() {
         if(getView() == null){
             return;
         }
@@ -596,10 +595,10 @@ public class MacchangerFragment extends Fragment {
         });
         builder.show();
     }
-    public String getDeviceName() {
+    private String getDeviceName() {
         return Build.DEVICE;
     }
-    public Boolean isOPO(){
+    private Boolean isOPO(){
         return getDeviceName().equalsIgnoreCase("bacon") ||
                 getDeviceName().equalsIgnoreCase("A0001") ||
                 getDeviceName().equalsIgnoreCase("one") ||
@@ -611,17 +610,17 @@ public class MacchangerFragment extends Fragment {
                 getDeviceName().equalsIgnoreCase("A2005") ||
                 getDeviceName().equalsIgnoreCase("OnePlus2");
     }
-    public Boolean isOldDevice(){
+    private Boolean isOldDevice(){
         return getDeviceName().equalsIgnoreCase("flo") ||
                 getDeviceName().equalsIgnoreCase("deb") ||
                 getDeviceName().equalsIgnoreCase("mako");
     }
 
-    public static void setHostname(String host) {
+    private static void setHostname(String host) {
         final ShellExecuter exe = new ShellExecuter();
         exe.RunAsRootWithException("setprop net.hostname " + host);
     }
-    public String getHostname() {
+    private String getHostname() {
         final ShellExecuter exe = new ShellExecuter();
         return exe.RunAsRootWithException("getprop net.hostname  myhost");
     }

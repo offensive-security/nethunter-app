@@ -46,9 +46,8 @@ public class CustomCommandsFragment extends Fragment {
     private String bootScriptPath;
     private String shebang;
     private String custom_commands_runlevel;
-    SharedPreferences sharedpreferences;
-    private ShellExecuter exe = new ShellExecuter();
-    NhPaths nh;
+    private final ShellExecuter exe = new ShellExecuter();
+    private NhPaths nh;
 
     public CustomCommandsFragment() {
 
@@ -69,7 +68,7 @@ public class CustomCommandsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
+        SharedPreferences sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
         //this runs BEFORE the ui is available
         mContext = getActivity().getApplicationContext();
         nh = new NhPaths();
@@ -77,7 +76,7 @@ public class CustomCommandsFragment extends Fragment {
         if(!sharedpreferences.contains("initial_commands")){
             SharedPreferences.Editor editor = sharedpreferences.edit();
             editor.putString("initial_commands", "added");
-            editor.commit();
+            editor.apply();
             setUpInitialCommands();
         }
 
@@ -147,18 +146,6 @@ public class CustomCommandsFragment extends Fragment {
         // return the number of services
         String bootServiceFile = bootScriptPath + "/" + custom_commands_runlevel + "_" + commandId + "_custom_command";
         exe.RunAsRoot(new String[]{"rm -rf " + bootServiceFile});
-    }
-
-    public void onResume() {
-        super.onResume();
-    }
-
-    public void onPause() {
-        super.onPause();
-    }
-
-    public void onStop() {
-        super.onStop();
     }
 
     @Override
@@ -410,9 +397,9 @@ public class CustomCommandsFragment extends Fragment {
 class CmdLoader extends BaseAdapter {
 
     private final List<CustomCommand> _commandList;
-    private Context _mContext;
+    private final Context _mContext;
 
-    private ShellExecuter exe = new ShellExecuter();
+    private final ShellExecuter exe = new ShellExecuter();
 
 
     public CmdLoader(Context context, List<CustomCommand> commandList) {

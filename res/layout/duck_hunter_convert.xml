@@ -1,5 +1,4 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scroll"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content">
     <LinearLayout
@@ -25,8 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Example presets"
-            android:id="@+id/textView26" />
+            android:text="Example presets" />
 
         <Spinner
             android:layout_width="match_parent"
@@ -37,14 +35,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Preview"
-            android:id="@+id/textView27" />
+            android:text="Preview" />
 
         <EditText
             android:id="@+id/editSource"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:singleLine="false"
             android:includeFontPadding="false"
             android:inputType="textMultiLine"
             android:layout_marginLeft="1dip"

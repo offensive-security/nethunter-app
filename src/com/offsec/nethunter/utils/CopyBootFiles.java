@@ -1,6 +1,5 @@
 package com.offsec.nethunter.utils;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -20,17 +19,17 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public class CopyBootFiles extends AsyncTask<String, String, String> {
+class CopyBootFiles extends AsyncTask<String, String, String> {
 
-    private String COPY_ASSETS_TAG = "COPY_ASSETS_TAG";
-    private Context ctx;
-    private NhPaths nh;
-    private File sdCardDir;
-    private File scriptsDir;
-    private File etcDir;
-    private SharedPreferences prefs;
+    private final String COPY_ASSETS_TAG = "COPY_ASSETS_TAG";
+    private final Context ctx;
+    private final NhPaths nh;
+    private final File sdCardDir;
+    private final File scriptsDir;
+    private final File etcDir;
+    private final SharedPreferences prefs;
 
-    private String buildTime;
+    private final String buildTime;
     private Boolean shouldRun;
     private ProgressDialog pd;
     public CopyBootFiles(Context _ctx){
@@ -79,7 +78,7 @@ public class CopyBootFiles extends AsyncTask<String, String, String> {
               exe.RunAsRoot(new String[]{"chmod 700 " + nh.APP_SCRIPTS_PATH + "/*", "chmod 700 " + nh.APP_INITD_PATH + "/*"});
               SharedPreferences.Editor ed = prefs.edit();
               ed.putString(COPY_ASSETS_TAG, buildTime);
-              ed.commit();
+              ed.apply();
               publishProgress("Checking for chroot....");
               String command = "if [ -d " + nh.CHROOT_PATH + " ];then echo 1; fi"; //check the dir existence
               final String _res = exe.RunAsRootOutput(command);

@@ -6,7 +6,6 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 
 import com.offsec.nethunter.utils.NhPaths;
@@ -15,8 +14,8 @@ import com.offsec.nethunter.utils.ShellExecuter;
 public class EditSourceActivity extends AppCompatActivity {
 
     private String configFilePath = "";
-    NhPaths nh;
-    ShellExecuter exe = new ShellExecuter();
+    private NhPaths nh;
+    private final ShellExecuter exe = new ShellExecuter();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +48,7 @@ public class EditSourceActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void updateSource(View arg0) {
+    public void updateSource() {
 
         EditText source = (EditText) findViewById(R.id.source);
         String newSource = source.getText().toString();

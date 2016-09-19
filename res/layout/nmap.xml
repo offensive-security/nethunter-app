@@ -48,8 +48,7 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/scrollView5" >
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:orientation="vertical"
@@ -107,7 +106,6 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/nmap_ports"
-                android:id="@+id/textView25"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp" />
 
@@ -134,15 +132,13 @@
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/nmap_dontrandomize"
-                android:id="@+id/nmap_dontran_check" />
+                android:text="@string/nmap_dontrandomize" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/nmap_timing_template"
-                android:id="@+id/textView24"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp" />
 
@@ -156,7 +152,6 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/nmap_scan_technique"
-                android:id="@+id/textView23"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp" />
 
@@ -182,7 +177,6 @@
     <ExpandableListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/expandableListView"
         android:layout_gravity="center_horizontal" />
 
 

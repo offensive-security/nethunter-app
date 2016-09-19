@@ -46,17 +46,16 @@ import java.io.OutputStreamWriter;
 
 public class DuckHunterFragment extends Fragment implements ActionBar.TabListener{
 
-    TabsPagerAdapter TabsPagerAdapter;
-    ViewPager mViewPager;
-    static SharedPreferences sharedpreferences;
+    private ViewPager mViewPager;
+    private static SharedPreferences sharedpreferences;
 
     // Language vars
-    final static CharSequence[] languages = {"American English", "French", "German", "Spanish", "Swedish", "Italian", "British English", "Russian", "Danish", "Norwegian", "Portugese", "Belgian"};
+    private final static CharSequence[] languages = {"American English", "French", "German", "Spanish", "Swedish", "Italian", "British English", "Russian", "Danish", "Norwegian", "Portugese", "Belgian"};
     private static String lang = "us"; // Set US as default language
     private static Boolean shouldConvert = true;
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final String TAG = "DuckHunterFragment";
-    static NhPaths nh;
+    private static NhPaths nh;
     private static String prwText = "";
     public DuckHunterFragment() {
 
@@ -84,10 +83,10 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.duck_hunter, container, false);
-        TabsPagerAdapter = new TabsPagerAdapter(getActivity().getSupportFragmentManager());
+        DuckHunterFragment.TabsPagerAdapter tabsPagerAdapter = new TabsPagerAdapter(getActivity().getSupportFragmentManager());
 
         mViewPager = (ViewPager) rootView.findViewById(R.id.pagerDuckHunter);
-        mViewPager.setAdapter(TabsPagerAdapter);
+        mViewPager.setAdapter(tabsPagerAdapter);
 
         mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
@@ -115,7 +114,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
         }
         getActivity().invalidateOptionsMenu();
     }
-    public void setLang(){
+    private void setLang(){
         int keyboardLayoutIndex = sharedpreferences.getInt("DuckHunterLanguageIndex", 0);
         switch (keyboardLayoutIndex) {
             case 1:
@@ -210,7 +209,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
         }
 
     }
-    private static Boolean convert(){
+    private static void convert(){
         ShellExecuter exe = new ShellExecuter();
         if(updatefile()) {
             String[] command = new String[1];
@@ -219,9 +218,8 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                     " /sdcard/nh_files/modules/duckconvert.txt " + "/opt/" +
                     DuckHunterPreviewFragment.configFileFilename + "'";
             exe.RunAsRoot(command);
-            return true;
+            return;
         }
-        return false;
     }
 
     private void start() {
@@ -233,7 +231,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
         exe.RunAsRoot(command);
     }
 
-    public void openLanguageDialog() {
+    private void openLanguageDialog() {
 
         int keyboardLayoutIndex = sharedpreferences.getInt("DuckHunterLanguageIndex", 0);
 
@@ -295,7 +293,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
             public void onClick(DialogInterface dialog, int which) {
                 Editor editor = sharedpreferences.edit();
                 editor.putInt("DuckHunterLanguageIndex", which);
-                editor.commit();
+                editor.apply();
             }
         });
         builder.show();
@@ -356,9 +354,9 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
     public static class DuckHunterConvertFragment extends Fragment implements View.OnClickListener{
 
-        public static String configFilePath = "/modules/duckconvert.txt";
+        public static final String configFilePath = "/modules/duckconvert.txt";
         //public static String configFilePath = "/configs/modules/duckconvert.txt";
-        public static String loadFilePath = "/scripts/ducky/";
+        public static final String loadFilePath = "/scripts/ducky/";
         private static final int PICKFILE_RESULT_CODE = 1;
 
         @Override
@@ -581,8 +579,8 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
     public static class DuckHunterPreviewFragment extends Fragment{
 
-        public static String configFilePath = nh.CHROOT_PATH + "/opt/";
-        public static String configFileFilename = "duckout.sh";
+        public static final String configFilePath = nh.CHROOT_PATH + "/opt/";
+        public static final String configFileFilename = "duckout.sh";
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -597,10 +595,6 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                 readFileForPreview();
             }
             super.setUserVisibleHint(isVisibleToUser);
-        }
-
-        public void onResume() {
-            super.onResume();
         }
 
         public void readFileForPreview() {

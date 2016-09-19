@@ -39,15 +39,14 @@ import java.util.regex.Pattern;
 
 public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
-    TabsPagerAdapter tabsPagerAdapter;
-    ViewPager mViewPager;
+    private ViewPager mViewPager;
 
     private Integer selectedScriptIndex = 0;
-    final CharSequence[] scripts = {"mana-nat-full", "mana-nat-simple", "mana-nat-bettercap", "mana-nat-simple-bdf", "hostapd-wpe", "hostapd-wpe-karma"};
+    private final CharSequence[] scripts = {"mana-nat-full", "mana-nat-simple", "mana-nat-bettercap", "mana-nat-simple-bdf", "hostapd-wpe", "hostapd-wpe-karma"};
     private static final String TAG = "ManaFragment";
     private static final String ARG_SECTION_NUMBER = "section_number";
-    static NhPaths nh;
-    String configFilePath;
+    private static NhPaths nh;
+    private String configFilePath;
 
     public ManaFragment() {
 
@@ -65,7 +64,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         nh = new NhPaths();
         View rootView = inflater.inflate(R.layout.mana, container, false);
-        tabsPagerAdapter = new TabsPagerAdapter(getActivity().getSupportFragmentManager());
+        TabsPagerAdapter tabsPagerAdapter = new TabsPagerAdapter(getActivity().getSupportFragmentManager());
 
         mViewPager = (ViewPager) rootView.findViewById(R.id.pagerMana);
         mViewPager.setAdapter(tabsPagerAdapter);
@@ -298,7 +297,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
     public static class HostapdFragment extends Fragment {
         // private String configFilePath = nh.CHROOT_PATH + "/etc/hostapd.conf";
-        private String configFilePath = nh.APP_SD_FILES_PATH + "/configs/hostapd-karma.conf";
+        private final String configFilePath = nh.APP_SD_FILES_PATH + "/configs/hostapd-karma.conf";
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -436,16 +435,11 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             }).start();
         }
 
-        @Override
-        public void onResume() {
-            super.onResume();
-
-        }
     }
 
     public static class HostapdFragmentWPE extends Fragment {
 
-        private String configFilePath = nh.APP_SD_FILES_PATH + "/configs/hostapd-wpe.conf";
+        private final String configFilePath = nh.APP_SD_FILES_PATH + "/configs/hostapd-wpe.conf";
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -581,17 +575,12 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
             }).start();
         }
 
-        @Override
-        public void onResume() {
-            super.onResume();
-
-        }
     }
 
     public static class DhcpdFragment extends Fragment {
 
-        private String configFilePath = nh.CHROOT_PATH +"/etc/dhcp/dhcpd.conf";
-        ShellExecuter exe = new ShellExecuter();
+        private final String configFilePath = nh.CHROOT_PATH +"/etc/dhcp/dhcpd.conf";
+        final ShellExecuter exe = new ShellExecuter();
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -625,7 +614,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
     public static class DnsspoofFragment extends Fragment {
 
         private String configFilePath;
-        ShellExecuter exe = new ShellExecuter();
+        final ShellExecuter exe = new ShellExecuter();
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {

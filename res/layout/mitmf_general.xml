@@ -4,7 +4,7 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:orientation="vertical"
@@ -23,8 +23,7 @@
             android:paddingBottom="5px"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:src="@android:drawable/divider_horizontal_bright"
-            android:id="@+id/imageView3" />
+            android:src="@android:drawable/divider_horizontal_bright" />
 
         <LinearLayout
             android:orientation="vertical"
@@ -36,8 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Interface"
-                android:id="@+id/textView19" />
+                android:text="Interface" />
 
             <Spinner
                 android:layout_width="match_parent"
@@ -57,8 +55,7 @@
                 android:paddingBottom="5px"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:src="@android:drawable/divider_horizontal_bright"
-                android:id="@+id/imageView" />
+                android:src="@android:drawable/divider_horizontal_bright" />
 
             <CheckBox
                 android:layout_width="wrap_content"
@@ -145,16 +142,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="ScreenShotter"
-                android:id="@+id/textView11" />
+                android:text="ScreenShotter" />
 
             <ImageView
                 android:paddingTop="10px"
                 android:paddingBottom="5px"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:src="@android:drawable/divider_horizontal_bright"
-                android:id="@+id/imageView2" />
+                android:src="@android:drawable/divider_horizontal_bright" />
 
             <CheckBox
                 android:layout_width="wrap_content"
@@ -169,8 +164,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/mitmf_screenshotter_interval"
-                android:id="@+id/textView28" />
+                android:text="@string/mitmf_screenshotter_interval" />
 
             <LinearLayout
                 android:orientation="horizontal"

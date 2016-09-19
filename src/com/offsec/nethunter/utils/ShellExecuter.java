@@ -12,13 +12,13 @@ import java.io.OutputStream;
 
 public class ShellExecuter {
 
-    final static String TAG = "ShellExecutor";
+    private final static String TAG = "ShellExecutor";
 
     public ShellExecuter() {
 
     }
 
-    public String Executer(String command) {
+    public void Executer(String command) {
         StringBuilder output = new StringBuilder();
         Process p;
         try {
@@ -52,7 +52,7 @@ public class ShellExecuter {
         return output.toString();
     }
 
-    public boolean RunAsRoot(String[] command) {
+    public void RunAsRoot(String[] command) {
         try {
             Process process = Runtime.getRuntime().exec("su");
             DataOutputStream os = new DataOutputStream(process.getOutputStream());
@@ -63,9 +63,8 @@ public class ShellExecuter {
             os.flush();
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
+            return;
         }
-        return true;
     }
 
     public String RunAsRootWithException(String command) throws RuntimeException {

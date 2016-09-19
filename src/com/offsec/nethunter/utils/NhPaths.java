@@ -40,7 +40,7 @@ import static com.offsec.nethunter.AppNavHomeActivity.getAppContext;
 
 public class NhPaths {
     // System paths
-    public String APP_PATH;
+    public final String APP_PATH;
     public String APP_INITD_PATH;
     public String APP_SCRIPTS_PATH;
     // SD Paths
@@ -48,10 +48,10 @@ public class NhPaths {
     public String SD_PATH;
     public String APP_SD_FILES_PATH;
     // NetHunter paths
-    public String BASE_PATH;
+    private String BASE_PATH;
     public String NH_SYSTEM_PATH;
     // the chroot has this folder inside so...
-    public String ARCH_FOLDER;
+    private String ARCH_FOLDER;
     // current deploy location: /data/local/nhsystem/kali-armhf
     public String CHROOT_PATH;
     // old CHROOT

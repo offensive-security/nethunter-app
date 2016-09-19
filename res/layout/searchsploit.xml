@@ -67,7 +67,6 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Port"
-            android:id="@+id/textView11"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
             android:layout_toStartOf="@+id/exdb_port_spinner"
@@ -90,7 +89,6 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Type"
-            android:id="@+id/textView18"
             android:layout_alignTop="@+id/exdb_type_spinner"
             android:layout_alignParentStart="true"
             android:layout_alignBottom="@+id/exdb_type_spinner"
@@ -103,9 +101,6 @@
         android:layout_height="wrap_content"
         android:text="LOAD DB (1st run only)"
         android:id="@+id/serchsploit_loadDB"
-        android:layout_alignBottom="@+id/searchSploit_searchbar"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
         android:textAlignment="center" />
 
 
