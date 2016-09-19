@@ -28,7 +28,7 @@ public class RunAtBootService extends Service {
     public RunAtBootService() {
     }
 
-    private void doNotification(String contents){
+    private Notification.Builder doNotification(String contents){
                 if(n == null){
                     n  = new Notification.Builder(this);
                 }

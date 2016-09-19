@@ -18,7 +18,7 @@ public class ShellExecuter {
 
     }
 
-    public void Executer(String command) {
+    public String Executer(String command) {
         StringBuilder output = new StringBuilder();
         Process p;
         try {
