@@ -126,9 +126,14 @@ public class NetHunterFragment extends Fragment {
         final TextView busyboxIfaces = (TextView) rootView.findViewById(R.id.editTextBUSYBOX); // BUSYBOX IFACES
         final ListView busyboxList = (ListView) rootView.findViewById(R.id.listViewBusybox);
 
+        final TextView kernelverIfaces = (TextView) rootView.findViewById(R.id.editTextKERNELVER); // BUSYBOX IFACES
+        final ListView kernelverList = (ListView) rootView.findViewById(R.id.listViewKERNELVER);
+
         // Dont move this inside the thread. (Will throw a null pointer.)
         netIfaces.setText("Detecting Network interfaces...");
         hidIfaces.setText("Detecting HID interfaces...");
+        busyboxIfaces.setText("Detecting Busybox version...");
+        kernelverIfaces.setText("Detecting Kernel version...");
 
         new Thread(new Runnable() {
             public void run() {
@@ -136,14 +141,18 @@ public class NetHunterFragment extends Fragment {
                     String commandNET[] = {"sh", "-c", "ip -o addr show | busybox awk '/inet/ {print $2, $3, $4}'"};
                     String commandHID[] = {"sh", "-c", "ls /dev/hidg*"};
                     String commandBUSYBOX[] = {"sh", "-c", "busybox | busybox head -1 | busybox awk '{print $2}'"};
+                    String commandKERNELVER[] = {"sh", "-c", "cat /proc/version"};
+
 
                     final String outputNET = exe.Executer(commandNET);
                     final String outputHID = exe.Executer(commandHID);
                     final String outputBUSYBOX = exe.Executer(commandBUSYBOX);
+                    final String outputKERNELVER = exe.Executer(commandKERNELVER);
 
                     final String[] netArray = outputNET.split("\n");
                     final String[] hidArray = outputHID.split("\n");
                     final String[] busyboxArray = outputBUSYBOX.split("\n");
+                    final String[] kernelverArray = outputKERNELVER.split("\n");
 
                     netIfaces.post(new Runnable() {
                         @Override
@@ -207,6 +216,27 @@ public class NetHunterFragment extends Fragment {
                                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                                         Log.d("CLICKED", busyboxList.getItemAtPosition(position).toString());
                                         String itemData = busyboxList.getItemAtPosition(position).toString();
+                                        doCopy(itemData);
+                                        return false;
+                                    }
+                                });
+                            }
+                            if (outputKERNELVER.equals("")) {
+                                kernelverIfaces.setVisibility(View.VISIBLE);
+                                kernelverList.setVisibility(View.GONE);
+                                kernelverIfaces.setText("Could not find kernel version!");
+                                kernelverIfaces.setFocusable(false);
+                            } else {
+                                kernelverIfaces.setVisibility(View.GONE);
+                                kernelverList.setVisibility(View.VISIBLE);
+                                ArrayAdapter<String> aaKERNELVER = new ArrayAdapter<>(getContext(), R.layout.nethunter_item, kernelverArray);
+                                kernelverList.setAdapter(aaKERNELVER);
+                                fixListHeight(kernelverList, aaKERNELVER);
+                                kernelverList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                                    @Override
+                                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                                        Log.d("CLICKED", kernelverList.getItemAtPosition(position).toString());
+                                        String itemData = kernelverList.getItemAtPosition(position).toString();
                                         doCopy(itemData);
                                         return false;
                                     }

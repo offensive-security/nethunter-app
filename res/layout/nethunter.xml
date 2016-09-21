@@ -92,6 +92,31 @@
             android:typeface="monospace" />
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nethunter_kernelver_detect"
+            android:layout_marginTop="15dp"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/listViewKERNELVER"
+            />
+
+        <TextView
+            android:id="@+id/editTextKERNELVER"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:paddingTop="8sp"
+            android:layout_marginBottom="10dp"
+            android:textSize="12sp"
+            android:typeface="monospace" />
+
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
