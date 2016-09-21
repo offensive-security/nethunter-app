@@ -351,7 +351,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
                                         .addToBackStack(null)
                                         .commit();
                                 break;
-                            /*
+
                             case R.id.gps_item:
                                 fragmentManager
                                         .beginTransaction()
@@ -359,7 +359,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
                                         .addToBackStack(null)
                                         .commit();
                                 break;
-                                */
+
                             case R.id.checkforupdate_item:
                                 checkUpdate();
                                 break;

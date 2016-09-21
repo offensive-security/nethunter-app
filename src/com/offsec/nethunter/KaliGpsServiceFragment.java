@@ -10,6 +10,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -24,8 +25,15 @@ import com.offsec.nethunter.GPS.NmeaUtils;
 import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
 
+import java.io.BufferedReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
 
 
 public class KaliGpsServiceFragment extends Fragment {
@@ -55,6 +63,9 @@ public class KaliGpsServiceFragment extends Fragment {
         Context mContext = getActivity().getApplicationContext();
         GpsTextview = (TextView) rootView.findViewById(R.id.GpsTextview);
 
+        //StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        //StrictMode.setThreadPolicy(policy);
+
         nh = new NhPaths();
 
         addClickListener(R.id.start_kismet, new View.OnClickListener() {
@@ -69,6 +80,22 @@ public class KaliGpsServiceFragment extends Fragment {
                 }).start();
                 intentClickListener_NH(); // start kismet
                 nh.showMessage("Starting Kismet with GPS support");
+
+                // Start TCP Server on port 9000
+                Thread thread = new Thread(new Runnable(){
+                    @Override
+                    public void run() {
+                        try {
+                            new Server();
+                            Server.main();
+                        } catch (Exception e) {
+                            Log.e(TAG, e.getMessage());
+                        }
+                    }
+                });
+                thread.start();
+
+                // Setup NMEA
                 setupGpsListener();
             }
         }, rootView);
@@ -84,6 +111,7 @@ public class KaliGpsServiceFragment extends Fragment {
                     }
                 }).start();
                 nh.showMessage("Stopping GPS Server");
+                Server.Shutdown();
                 //stopGpsListener();
             }
         }, rootView);
@@ -98,7 +126,6 @@ public class KaliGpsServiceFragment extends Fragment {
     private void setupGpsListener() {
 
         Log.d(TAG, "setupGpsListener");
-
         Log.d(TAG, "Start LocationManager");
         final LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
@@ -132,51 +159,17 @@ public class KaliGpsServiceFragment extends Fragment {
             lm.addNmeaListener(new GpsStatus.NmeaListener() {
                 @Override
                 public void onNmeaReceived(long timestamp, String nmea) {
-                    // This is where we log NMEA to file
-                    writeToFile(nmea);
+                    // Broadcast NMEA data
+                    Server.broadcast(nmea);
 
                     GpsTextview.setText(nmea + "\n");
 
-                    // SHOW EVERYTHING
+                    // SHOW EVERYTHING!
                     //GpsTextview.setText(GpsTextview.getText() + "\n" + nmea + "\n" + extractNmeaInfo(timestamp, nmea));
-                }
-            });
+                    }
+                });
+            }
         }
-        }
-
-    private void writeToFile(String data) {
-        try {
-            String filename = nh.CHROOT_PATH + "/tmp/gps" ;
-
-            FileWriter fstream = new FileWriter(filename, true);
-            fstream.write(data + "\n");
-            fstream.flush();
-        }
-        catch (IOException e) {
-            Log.e("Exception", "File write failed: " + e.toString());
-        }
-    }
-
-    private static String extractNmeaInfo(long timestamp, String nmea) {
-        String info = "NmeaInfo: ";
-        if (nmea == null) { return info + "null"; }
-        if (nmea.isEmpty()) { return info + "empty"; }
-
-        info += "\ntimestamp: " + timestamp;
-
-        Log.d(TAG, "extractNmeaInfo(), nmea=" + nmea);
-
-        GpsPosition gpsPosition = new GpsPosition();
-        boolean isSuccessfulParse = NmeaUtils.parse(nmea, gpsPosition);
-        if (isSuccessfulParse) {
-            info += "\nGPS fix data: " + NmeaUtils.getType(nmea);
-            info += "\n" + gpsPosition.toString();
-        } else {
-            info += "unsuccessful parse";
-        }
-
-        return info;
-    }
 
     private void intentClickListener_NH() {
         try {
@@ -192,3 +185,4 @@ public class KaliGpsServiceFragment extends Fragment {
     }
 
 }
+
