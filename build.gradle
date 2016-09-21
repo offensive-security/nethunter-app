@@ -42,7 +42,7 @@ android {
         minSdkVersion 17
         targetSdkVersion 23
         versionCode 20
-        versionName "3.15"
+        versionName "3.15.2"
     }
 
     sourceSets {
@@ -91,7 +91,7 @@ android {
         release {
             signingConfig signingConfigs.release
             minifyEnabled false
-            shrinkResources true
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt')
             debuggable false
             jniDebuggable false
