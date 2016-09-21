@@ -111,12 +111,21 @@ public class NetHunterFragment extends Fragment {
 
     }
 
+    private void getBusybox (final View rootView) {
+
+    }
+
     private void getInterfaces(final View rootView) {
         // 1 thread, 2 commands
-        final TextView netIfaces = (TextView) rootView.findViewById(R.id.editText1); // NET IFACES
-        final TextView hidIfaces = (TextView) rootView.findViewById(R.id.editText3); // HID IFACES
+        final TextView netIfaces = (TextView) rootView.findViewById(R.id.editTextNET); // NET IFACES
         final ListView netList = (ListView) rootView.findViewById(R.id.listViewNet);
+
+        final TextView hidIfaces = (TextView) rootView.findViewById(R.id.editTextHID); // HID IFACES
         final ListView hidList = (ListView) rootView.findViewById(R.id.listViewHid);
+
+        final TextView busyboxIfaces = (TextView) rootView.findViewById(R.id.editTextBUSYBOX); // BUSYBOX IFACES
+        final ListView busyboxList = (ListView) rootView.findViewById(R.id.listViewBusybox);
+
         // Dont move this inside the thread. (Will throw a null pointer.)
         netIfaces.setText("Detecting Network interfaces...");
         hidIfaces.setText("Detecting HID interfaces...");
@@ -124,14 +133,18 @@ public class NetHunterFragment extends Fragment {
         new Thread(new Runnable() {
             public void run() {
                     ShellExecuter exe = new ShellExecuter();
-                    String commandNET[] = {"sh", "-c", "ip -o addr show | awk '/inet/ {print $2, $3, $4}'"};
+                    String commandNET[] = {"sh", "-c", "ip -o addr show | busybox awk '/inet/ {print $2, $3, $4}'"};
                     String commandHID[] = {"sh", "-c", "ls /dev/hidg*"};
+                    String commandBUSYBOX[] = {"sh", "-c", "busybox | busybox head -1 | busybox awk '{print $2}'"};
 
                     final String outputNET = exe.Executer(commandNET);
                     final String outputHID = exe.Executer(commandHID);
+                    final String outputBUSYBOX = exe.Executer(commandBUSYBOX);
 
                     final String[] netArray = outputNET.split("\n");
                     final String[] hidArray = outputHID.split("\n");
+                    final String[] busyboxArray = outputBUSYBOX.split("\n");
+
                     netIfaces.post(new Runnable() {
                         @Override
                         public void run() {
@@ -149,7 +162,7 @@ public class NetHunterFragment extends Fragment {
                                 netList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                                     @Override
                                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                                        Log.d("CLCIKEDD", netList.getItemAtPosition(position).toString());
+                                        Log.d("CLICKED", netList.getItemAtPosition(position).toString());
                                         String itemData = netList.getItemAtPosition(position).toString();
                                         String _itemData = itemData.split("\\s+")[2];
                                         doCopy(_itemData);
@@ -171,8 +184,29 @@ public class NetHunterFragment extends Fragment {
                                 hidList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                                     @Override
                                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                                        Log.d("CLCIKEDD", hidList.getItemAtPosition(position).toString());
+                                        Log.d("CLCIKED", hidList.getItemAtPosition(position).toString());
                                         String itemData = hidList.getItemAtPosition(position).toString();
+                                        doCopy(itemData);
+                                        return false;
+                                    }
+                                });
+                            }
+                            if (outputBUSYBOX.equals("")) {
+                                busyboxIfaces.setVisibility(View.VISIBLE);
+                                busyboxList.setVisibility(View.GONE);
+                                busyboxIfaces.setText("Busybox not detected!");
+                                busyboxIfaces.setFocusable(false);
+                            } else {
+                                busyboxIfaces.setVisibility(View.GONE);
+                                busyboxList.setVisibility(View.VISIBLE);
+                                ArrayAdapter<String> aaBUSYBOX = new ArrayAdapter<>(getContext(), R.layout.nethunter_item, busyboxArray);
+                                busyboxList.setAdapter(aaBUSYBOX);
+                                fixListHeight(busyboxList, aaBUSYBOX);
+                                busyboxList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                                    @Override
+                                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                                        Log.d("CLICKED", busyboxList.getItemAtPosition(position).toString());
+                                        String itemData = busyboxList.getItemAtPosition(position).toString();
                                         doCopy(itemData);
                                         return false;
                                     }

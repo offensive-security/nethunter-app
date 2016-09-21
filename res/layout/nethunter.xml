@@ -21,18 +21,6 @@
             android:textSize="22sp" />
 
 
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center|center_horizontal"
-            android:gravity="center"
-            android:padding="16sp"
-            android:paddingTop="16sp"
-            android:text="@string/nethunter_description" />
-
-
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,7 +34,7 @@
             android:id="@+id/listViewNet" />
 
         <TextView
-            android:id="@+id/editText1"
+            android:id="@+id/editTextNET"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="none"
@@ -70,7 +58,31 @@
             />
 
         <TextView
-            android:id="@+id/editText3"
+            android:id="@+id/editTextHID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:paddingTop="8sp"
+            android:layout_marginBottom="10dp"
+            android:textSize="12sp"
+            android:typeface="monospace" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nethunter_busybox_detect"
+            android:layout_marginTop="15dp"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/listViewBusybox"
+            />
+
+        <TextView
+            android:id="@+id/editTextBUSYBOX"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="none"
