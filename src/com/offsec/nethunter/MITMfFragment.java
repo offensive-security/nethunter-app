@@ -143,7 +143,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
 
         nh = new NhPaths();
 
-        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 getActivity().invalidateOptionsMenu();
@@ -205,7 +205,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
     public static class TabsPagerAdapter extends FragmentStatePagerAdapter {
 
 
-        public TabsPagerAdapter(FragmentManager fm) {
+        TabsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
