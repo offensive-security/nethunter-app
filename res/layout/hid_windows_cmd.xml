@@ -34,7 +34,7 @@
             android:layout_marginRight="1dip" />
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
 
