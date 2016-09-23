@@ -57,8 +57,9 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     private static final String TAG = "DuckHunterFragment";
     private static NhPaths nh;
     private static String prwText = "";
+    public DuckHunterFragment() {
 
-    public DuckHunterFragment() {}
+    }
 
     public static DuckHunterFragment newInstance(int sectionNumber) {
         DuckHunterFragment fragment = new DuckHunterFragment();
@@ -69,9 +70,17 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
 
-        nh = new NhPaths();
+        if (isAdded()) {
+
+            nh = new NhPaths();
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.duck_hunter, container, false);
         DuckHunterFragment.TabsPagerAdapter tabsPagerAdapter = new TabsPagerAdapter(getActivity().getSupportFragmentManager());
@@ -79,7 +88,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
         mViewPager = (ViewPager) rootView.findViewById(R.id.pagerDuckHunter);
         mViewPager.setAdapter(tabsPagerAdapter);
 
-        mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 getActivity().invalidateOptionsMenu();
@@ -307,7 +316,8 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
     public static class TabsPagerAdapter extends FragmentStatePagerAdapter {
 
-        TabsPagerAdapter(FragmentManager fm) {
+
+        public TabsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -345,6 +355,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     public static class DuckHunterConvertFragment extends Fragment implements View.OnClickListener{
 
         public static final String configFilePath = "/modules/duckconvert.txt";
+        //public static String configFilePath = "/configs/modules/duckconvert.txt";
         public static final String loadFilePath = "/scripts/ducky/";
         private static final int PICKFILE_RESULT_CODE = 1;
 
@@ -568,16 +579,13 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
     public static class DuckHunterPreviewFragment extends Fragment{
 
-        // Error reading chroot_path
         public static final String configFilePath = nh.CHROOT_PATH + "/opt/";
         public static final String configFileFilename = "duckout.sh";
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
             View rootView = inflater.inflate(R.layout.duck_hunter_preview, container, false);
             readFileForPreview();
-
             return rootView;
         }
         @Override

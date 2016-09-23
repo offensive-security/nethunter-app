@@ -64,6 +64,20 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        configFilePath =   nh.CHROOT_PATH + "/var/www/html/powersploit-payload";
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (isAdded()) {
+            nh = new NhPaths();
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.hid, container, false);
@@ -72,9 +86,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
         mViewPager = (ViewPager) rootView.findViewById(R.id.pagerHid);
         mViewPager.setAdapter(tabsPagerAdapter);
 
-        nh = new NhPaths();
-
-        mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 getActivity().invalidateOptionsMenu();
@@ -305,7 +317,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
     public static class TabsPagerAdapter extends FragmentStatePagerAdapter {
 
 
-        TabsPagerAdapter(FragmentManager fm) {
+        public TabsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
