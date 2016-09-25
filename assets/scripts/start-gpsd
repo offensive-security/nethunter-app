@@ -2,6 +2,3 @@ unset LD_PRELOAD
 chroot /data/local/nhsystem/kali-armhf /bin/bash -c "chmod 777 /dev/null"
 chroot /data/local/nhsystem/kali-armhf /bin/bash -c "/etc/init.d/dbus start"
 sleep 5
-chroot /data/local/nhsystem/kali-armhf /bin/bash -c "/usr/bin/tail -f /tmp/gps | /usr/bin/socat STDIN PTY,link=/tmp/gps_out &"
-sleep 3
-chroot /data/local/nhsystem/kali-armhf /bin/bash -c "/usr/sbin/gpsd -n /tmp/gps_out"
