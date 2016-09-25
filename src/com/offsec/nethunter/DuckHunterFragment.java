@@ -209,7 +209,6 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                     " /sdcard/nh_files/modules/duckconvert.txt " + "/opt/" +
                     DuckHunterPreviewFragment.configFileFilename + "'";
             exe.RunAsRoot(command);
-            return;
         }
     }
 

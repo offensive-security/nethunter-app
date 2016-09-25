@@ -34,7 +34,7 @@ class CopyBootFiles extends AsyncTask<String, String, String> {
     private final String buildTime;
     private Boolean shouldRun;
     private ProgressDialog pd;
-    public CopyBootFiles(Context _ctx){
+    CopyBootFiles(Context _ctx){
         this.ctx = _ctx;
         this.nh = new NhPaths();
 
