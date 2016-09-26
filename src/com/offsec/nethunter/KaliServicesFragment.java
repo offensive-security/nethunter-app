@@ -1,6 +1,5 @@
 package com.offsec.nethunter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -29,16 +28,11 @@ public class KaliServicesFragment extends Fragment {
      * The fragment argument representing the section number for this
      * fragment.
      */
-    private String[][] KaliServices;
+    private String[][] KaliServices; //
     private static final String ARG_SECTION_NUMBER = "section_number";
     public static final String RUN_AT_BOOT = "RUN_AT_BOOT";
-    private boolean updateStatuses = false;
     private NhPaths nh;
     private SharedPreferences prefs;
-    public KaliServicesFragment() {
-
-    }
-
 
     /**
      * Returns a new instance of this fragment for the given section
@@ -57,6 +51,7 @@ public class KaliServicesFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.kali_services, container, false);
         setHasOptionsMenu(true);
         checkServices(rootView);
+
         return rootView;
 
     }
@@ -98,48 +93,43 @@ public class KaliServicesFragment extends Fragment {
         }
     }
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
-        if (isAdded()) {
+        nh = new NhPaths();
 
-            nh = new NhPaths();
-            KaliServices = new String[][]{
+        KaliServices = new String[][]{
 
-                    // {name, check_cmd, start_cmd, stop_cmd, init_service_filename}
+                // {name, check_cmd, start_cmd, stop_cmd, init_service_filename}
 
-                    {"SSH", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalissh", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali ssh start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali ssh stop'", "70ssh"},
-                    {"Dnsmasq", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalidnsmq", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali dnsmasq start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali dnsmasq stop'", "70dnsmasq"},
-                    {"Hostapd", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalihostapd", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali hostapd start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali hostapd stop'", "70hostapd"},
-                    {"OpenVPN", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalivpn", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali openvpn start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali openvpn stop'", "70openvpn"},
-                    {"Apache", "sh " + nh.APP_SCRIPTS_PATH + "/check-kaliapache", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali apache start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali apache stop'", "70apache"},
-                    {"Metasploit", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalimetasploit", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali msf start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali msf stop'", "70msf"},
-                    {"Fruity WiFi", "sh " + nh.APP_SCRIPTS_PATH + "/check-fruity-wifi","su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali fruitywifi start'","su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali fruitywifi stop'", "70fruity"},
-                    //{"DHCP", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalidhcp","su -c '" + cachedir + "/bootkali dhcp start'","su -c '" + cachedir + "/bootkali dhcp stop'", "70dhcp"},
-                    {"BeEF Framework", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalibeef-xss", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali beef-xss start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali beef-xss stop'", "70beef"},
-                    {"Y-cable Charging", "sh " + nh.APP_SCRIPTS_PATH + "/check-ycable","su -c 'bootkali ycable start'","su -c 'bootkali ycable stop'", "70ycable"}
-                    // the stop script isnt working well, doing a raw cmd instead to stop vnc
-                    // {"VNC", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalivnc", "" + cachedir + "/bootkali\nvncserver", "" + cachedir + "/bootkali\nkill $(ps aux | grep 'Xtightvnc' | awk '{print $2}');CT=0;for x in $(ps aux | grep 'Xtightvnc' | awk '{print $2}'); do CT=$[$CT +1];tightvncserver -kill :$CT; done;rm /root/.vnc/*.log;rm -r /tmp/.X*", "70vnc"},
-            };
-        }
+                {"SSH", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalissh", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali ssh start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali ssh stop'", "70ssh"},
+                {"Dnsmasq", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalidnsmq", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali dnsmasq start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali dnsmasq stop'", "70dnsmasq"},
+                {"Hostapd", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalihostapd", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali hostapd start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali hostapd stop'", "70hostapd"},
+                {"OpenVPN", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalivpn", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali openvpn start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali openvpn stop'", "70openvpn"},
+                {"Apache", "sh " + nh.APP_SCRIPTS_PATH + "/check-kaliapache", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali apache start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali apache stop'", "70apache"},
+                {"Metasploit", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalimetasploit", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali msf start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali msf stop'", "70msf"},
+                {"Fruity WiFi", "sh " + nh.APP_SCRIPTS_PATH + "/check-fruity-wifi", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali fruitywifi start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali fruitywifi stop'", "70fruity"},
+                //{"DHCP", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalidhcp","su -c '" + cachedir + "/bootkali dhcp start'","su -c '" + cachedir + "/bootkali dhcp stop'", "70dhcp"},
+                {"BeEF Framework", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalibeef-xss", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali beef-xss start'", "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali beef-xss stop'", "70beef"},
+                {"Y-cable Charging", "sh " + nh.APP_SCRIPTS_PATH + "/check-ycable", "su -c 'bootkali ycable start'", "su -c 'bootkali ycable stop'", "70ycable"}
+                // the stop script isnt working well, doing a raw cmd instead to stop vnc
+                // {"VNC", "sh " + nh.APP_SCRIPTS_PATH + "/check-kalivnc", "" + cachedir + "/bootkali\nvncserver", "" + cachedir + "/bootkali\nkill $(ps aux | grep 'Xtightvnc' | awk '{print $2}');CT=0;for x in $(ps aux | grep 'Xtightvnc' | awk '{print $2}'); do CT=$[$CT +1];tightvncserver -kill :$CT; done;rm /root/.vnc/*.log;rm -r /tmp/.X*", "70vnc"},
+        };
     }
 
     public void onResume()
     {
         super.onResume();
-        updateStatuses = true;
     }
 
     public void onPause()
     {
         super.onPause();
-        updateStatuses = false;
     }
 
     public void onStop()
     {
         super.onStop();
-        updateStatuses = false;
     }
 
 
@@ -149,30 +139,44 @@ public class KaliServicesFragment extends Fragment {
 
             public void run() {
 
+                nh = new NhPaths();
+
                 ShellExecuter exe = new ShellExecuter();
                 final ListView servicesList = (ListView) rootView.findViewById(R.id.servicesList);
                 String checkCmd = "";
                 String checkBootStates = "";
                 final String bootScriptPath = nh.APP_INITD_PATH;
-                for (String[] KaliService : KaliServices) {
-                    File checkBootFile = new File(bootScriptPath + "/" + KaliService[4]);
-                    if (checkBootFile.exists()) {
-                        checkBootStates += "1";
-                    } else {
-                        checkBootStates += "0";
+
+                if (KaliServices == null) {
+                    Log.d("Services", "Null KaliServices");
+                } else {
+
+                    for (String[] KaliService : KaliServices) {
+                        Log.d("bootScriptPath", KaliService[4]);
                     }
-                    checkCmd += KaliService[1] + ";";
+
+                    for (String[] KaliService : KaliServices) {
+                        Log.d("bootScriptPath", bootScriptPath + "/" + KaliService[4]);
+
+                        File checkBootFile = new File(bootScriptPath + "/" + KaliService[4]);
+                        if (checkBootFile.exists()) {
+                            checkBootStates += "1";
+                        } else {
+                            checkBootStates += "0";
+                        }
+                        checkCmd += KaliService[1] + ";";
+                    }
+
+                    final String serviceStates = exe.RunAsRootOutput(checkCmd);
+                    final String finalCheckBootStates = checkBootStates;
+                    servicesList.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            servicesList.setAdapter(new KaliServicesLoader(getActivity().getApplicationContext(), serviceStates, finalCheckBootStates, KaliServices, bootScriptPath));
+                        }
+                    });
+
                 }
-
-                final String serviceStates = exe.RunAsRootOutput(checkCmd);
-                final String finalCheckBootStates = checkBootStates;
-                servicesList.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        servicesList.setAdapter(new KaliServicesLoader(getActivity().getApplicationContext(), serviceStates, finalCheckBootStates, KaliServices, bootScriptPath));
-                    }
-                });
-
             }
         }).start();
     }
@@ -194,7 +198,7 @@ class KaliServicesLoader extends BaseAdapter {
     private final ShellExecuter exe = new ShellExecuter();
 
 
-    public KaliServicesLoader(Context context, String serviceStates, String bootStates, String[][] KaliServices, String _bootScriptPath) {
+    KaliServicesLoader(Context context, String serviceStates, String bootStates, String[][] KaliServices, String _bootScriptPath) {
 
         mContext = context;
 
@@ -207,7 +211,7 @@ class KaliServicesLoader extends BaseAdapter {
 
     }
 
-    static class ViewHolderItem {
+    private static class ViewHolderItem {
         // The switch
         Switch sw;
         // the msg holder

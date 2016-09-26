@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 class CopyBootFiles extends AsyncTask<String, String, String> {
@@ -32,7 +34,7 @@ class CopyBootFiles extends AsyncTask<String, String, String> {
     private final String buildTime;
     private Boolean shouldRun;
     private ProgressDialog pd;
-    public CopyBootFiles(Context _ctx){
+    CopyBootFiles(Context _ctx){
         this.ctx = _ctx;
         this.nh = new NhPaths();
 
@@ -66,19 +68,53 @@ class CopyBootFiles extends AsyncTask<String, String, String> {
     protected String doInBackground(String... data) {
           if(shouldRun){
 
-              Log.d(COPY_ASSETS_TAG, "COPING FILES....");
+              List<String> bootkali_list = new ArrayList<String>();
+              bootkali_list.add("bootkali");
+              bootkali_list.add("bootkali_init");
+              bootkali_list.add("bootkali_login");
+              bootkali_list.add("bootkali_bash");
+              bootkali_list.add("killkali");
+
+              Log.d(COPY_ASSETS_TAG, "COPYING FILES....");
               // 1:1 copy (recursive) of the assets/{scripts, etc, wallpapers} folders to /data/data/...
               publishProgress("Doing app files update. (init.d and filesDir).");
               assetsToFiles(nh.APP_PATH, "", "data");
               // 1:1 copy (recursive) of the configs to  /sdcard...
+
               publishProgress("Doing sdcard files update. (nh_files).");
               assetsToFiles(nh.SD_PATH, "", "sdcard");
-              ShellExecuter exe = new ShellExecuter();
+
               publishProgress("Fixing permissions for new files");
+              ShellExecuter exe = new ShellExecuter();
               exe.RunAsRoot(new String[]{"chmod 700 " + nh.APP_SCRIPTS_PATH + "/*", "chmod 700 " + nh.APP_INITD_PATH + "/*"});
               SharedPreferences.Editor ed = prefs.edit();
               ed.putString(COPY_ASSETS_TAG, buildTime);
               ed.apply();
+
+              publishProgress("Checking for SYMLINKS to bootkali....");
+              try {
+                  MakeSYSWriteable();
+
+                  // Loop over bootkali list (e.g. bootkali | bootkali_bash | bootkali_env)
+                  for (String temp : bootkali_list) {
+
+                      String sys_temp = "/system/bin/" + temp;
+
+                      // Define each as a new file
+                      File filePath = new File(sys_temp);
+
+                      // If the symlink is not found, then go create one!
+                      if(!isSymlink(filePath)) {
+                          publishProgress("Creating symlink for " + temp);
+                          NotFound(temp);
+                      }
+                  }
+                  MakeSYSReadOnly();
+
+              } catch (IOException e) {
+                  e.printStackTrace();
+              }
+
               publishProgress("Checking for chroot....");
               String command = "if [ -d " + nh.CHROOT_PATH + " ];then echo 1; fi"; //check the dir existence
               final String _res = exe.RunAsRootOutput(command);
@@ -90,7 +126,7 @@ class CopyBootFiles extends AsyncTask<String, String, String> {
                   // Mount suid /data && fix sudo
                   publishProgress(exe.RunAsRootOutput("busybox mount -o remount,suid /data && chmod +s " + nh.CHROOT_PATH + "/usr/bin/sudo && echo \"Initial setup done!\""));
               } else {
-                  publishProgress("Chroot no Found, install it in Chroot Manager");
+                  publishProgress("Chroot not Found, install it in Chroot Manager");
               }
               return "All files copied.";
           } else {
@@ -204,5 +240,40 @@ class CopyBootFiles extends AsyncTask<String, String, String> {
             Log.e("tag", "Exception in copyFile() " + e.toString());
         }
 
+    }
+
+    // Check for symlink for bootkali
+    // http://stackoverflow.com/questions/813710/java-1-6-determine-symbolic-links/813730#813730
+    private static boolean isSymlink(File file) throws IOException {
+        if (file == null)
+            throw new NullPointerException("File must not be null");
+        File canon;
+        if (file.getParent() == null) {
+            canon = file;
+        } else {
+            File canonDir = file.getParentFile().getCanonicalFile();
+            canon = new File(canonDir, file.getName());
+        }
+        return !canon.getCanonicalFile().equals(canon.getAbsoluteFile());
+    }
+
+    private void MakeSYSWriteable(){
+        ShellExecuter exe = new ShellExecuter();
+        Log.d(COPY_ASSETS_TAG, "Making /system writeable for symlink");
+        exe.RunAsRoot(new String[]{"mount -o rw,remount,rw /system"});
+    }
+
+    private void MakeSYSReadOnly(){
+        ShellExecuter exe = new ShellExecuter();
+        Log.d(COPY_ASSETS_TAG, "Making /system readonly for symlink");
+        exe.RunAsRoot(new String[]{"mount -o ro,remount,ro /system"});
+    }
+
+    private void NotFound(String filename){
+        ShellExecuter exe = new ShellExecuter();
+        Log.d(COPY_ASSETS_TAG, "Symlinking " + filename);
+        Log.d(COPY_ASSETS_TAG, "command output: ln -s " + nh.APP_SCRIPTS_PATH + "/" + filename + " /system/bin/" + filename);
+
+        exe.RunAsRoot(new String[]{"ln -s " + nh.APP_SCRIPTS_PATH + "/" + filename + " /system/bin/" + filename});
     }
 }
