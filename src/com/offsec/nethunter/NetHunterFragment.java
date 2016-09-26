@@ -142,7 +142,7 @@ public class NetHunterFragment extends Fragment {
 
         new Thread(new Runnable() {
             public void run() {
-                
+
                     String busybox_ver = nh.whichBusybox();
 
                     ShellExecuter exe = new ShellExecuter();
@@ -238,7 +238,6 @@ public class NetHunterFragment extends Fragment {
                                 kernelverList.setVisibility(View.VISIBLE);
                                 ArrayAdapter<String> aaKERNELVER = new ArrayAdapter<>(getContext(), R.layout.nethunter_item, kernelverArray);
                                 kernelverList.setAdapter(aaKERNELVER);
-                                fixListHeight(kernelverList, aaKERNELVER);
                                 kernelverList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                                     @Override
                                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
