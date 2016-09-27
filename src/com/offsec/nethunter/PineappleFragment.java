@@ -68,7 +68,7 @@ public class PineappleFragment extends Fragment {
                 }
             }
         };
-        noupCheckbox.setOnClickListener(checkBoxListener);
+        transCheckbox.setOnClickListener(checkBoxListener);
 
         // Start Button
         addClickListener(R.id.pineapple_start_button, new View.OnClickListener() {

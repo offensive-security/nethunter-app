@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
 
 import java.io.BufferedReader;
@@ -30,6 +31,7 @@ public class NetHunterFragment extends Fragment {
      * fragment.
      */
 
+    private static NhPaths nh;
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final String IP_REGEX = "\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b";
     private static final Pattern IP_REGEX_PATTERN = Pattern.compile(IP_REGEX);
@@ -116,6 +118,9 @@ public class NetHunterFragment extends Fragment {
     }
 
     private void getInterfaces(final View rootView) {
+
+        nh = new NhPaths();
+
         // 1 thread, 2 commands
         final TextView netIfaces = (TextView) rootView.findViewById(R.id.editTextNET); // NET IFACES
         final ListView netList = (ListView) rootView.findViewById(R.id.listViewNet);
@@ -137,12 +142,14 @@ public class NetHunterFragment extends Fragment {
 
         new Thread(new Runnable() {
             public void run() {
+
+                    String busybox_ver = nh.whichBusybox();
+
                     ShellExecuter exe = new ShellExecuter();
                     String commandNET[] = {"sh", "-c", "ip -o addr show | busybox awk '/inet/ {print $2, $3, $4}'"};
                     String commandHID[] = {"sh", "-c", "ls /dev/hidg*"};
-                    String commandBUSYBOX[] = {"sh", "-c", "busybox | busybox head -1 | busybox awk '{print $2}'"};
+                    String commandBUSYBOX[] = {"sh", "-c", busybox_ver + " | " + busybox_ver + " head -1 | " + busybox_ver + " awk '{print $2}'"};
                     String commandKERNELVER[] = {"sh", "-c", "cat /proc/version"};
-
 
                     final String outputNET = exe.Executer(commandNET);
                     final String outputHID = exe.Executer(commandHID);
@@ -231,7 +238,6 @@ public class NetHunterFragment extends Fragment {
                                 kernelverList.setVisibility(View.VISIBLE);
                                 ArrayAdapter<String> aaKERNELVER = new ArrayAdapter<>(getContext(), R.layout.nethunter_item, kernelverArray);
                                 kernelverList.setAdapter(aaKERNELVER);
-                                fixListHeight(kernelverList, aaKERNELVER);
                                 kernelverList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                                     @Override
                                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
