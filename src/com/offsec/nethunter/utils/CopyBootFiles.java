@@ -68,7 +68,7 @@ class CopyBootFiles extends AsyncTask<String, String, String> {
     protected String doInBackground(String... data) {
           if(shouldRun){
 
-              List<String> bootkali_list = new ArrayList<String>();
+              List<String> bootkali_list = new ArrayList<>();
               bootkali_list.add("bootkali");
               bootkali_list.add("bootkali_init");
               bootkali_list.add("bootkali_login");

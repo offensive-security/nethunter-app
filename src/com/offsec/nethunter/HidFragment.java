@@ -1,9 +1,7 @@
 package com.offsec.nethunter;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,7 +12,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,10 +35,7 @@ import java.io.OutputStreamWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//import android.app.Fragment;
-//import android.support.v4.app.FragmentActivity;
-
-public class HidFragment extends Fragment implements ActionBar.TabListener {
+public class HidFragment extends Fragment {
 
     private ViewPager mViewPager;
     private SharedPreferences sharedpreferences;
@@ -50,10 +45,6 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
     private String configFilePath;
 
     private static final String ARG_SECTION_NUMBER = "section_number";
-
-    public HidFragment() {
-
-    }
 
     public static HidFragment newInstance(int sectionNumber) {
         HidFragment fragment = new HidFragment();
@@ -285,25 +276,7 @@ public class HidFragment extends Fragment implements ActionBar.TabListener {
         builder.show();
     }
 
-    @Override
-    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-
-    }
-
-    @Override
-    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-        mViewPager.setCurrentItem(tab.getPosition());
-    }
-
-    @Override
-    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-
-    }
-
-
-    //public static class TabsPagerAdapter extends FragmentPagerAdapter {
-    public static class TabsPagerAdapter extends FragmentStatePagerAdapter {
-
+    public static class TabsPagerAdapter extends FragmentPagerAdapter {
 
         TabsPagerAdapter(FragmentManager fm) {
             super(fm);

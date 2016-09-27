@@ -59,7 +59,7 @@ public class NetHunterFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.nethunter, container, false);
         TextView ip = (TextView) rootView.findViewById(R.id.editText2);
         ip.setFocusable(false);
-        addClickListener(R.id.button1, new View.OnClickListener() {
+        addClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 getExternalIp();
             }
@@ -69,8 +69,8 @@ public class NetHunterFragment extends Fragment {
         return rootView;
     }
 
-    private void addClickListener(int buttonId, View.OnClickListener onClickListener, View rootView) {
-        rootView.findViewById(buttonId).setOnClickListener(onClickListener);
+    private void addClickListener(View.OnClickListener onClickListener, View rootView) {
+        rootView.findViewById(R.id.button1).setOnClickListener(onClickListener);
     }
 
     private void getExternalIp() {

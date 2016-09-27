@@ -6,7 +6,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -18,7 +17,7 @@ public class Server {
     // http://stackoverflow.com/questions/27927279/java-tcp-echo-server-broadcast
 
     public static ServerSocket server;
-    private static ArrayList<Socket> clients = new ArrayList<Socket>();
+    private static ArrayList<Socket> clients = new ArrayList<>();
 
     public static void broadcast(String message) {
         try {

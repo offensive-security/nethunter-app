@@ -218,7 +218,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                         // only change it if is no the same as the last one
                         if(lastSelected != menuItem){
                             //remove last
