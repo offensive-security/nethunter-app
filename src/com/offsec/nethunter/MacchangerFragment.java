@@ -266,9 +266,12 @@ public class MacchangerFragment extends Fragment {
                     if (selectedDevice.equals("wlan0")) {
                         // bacon A0001 one OnePlus
                         if(isOPO()){
-                            command = "svc wifi disable &&"+
-                                    "echo \""+ randomMACAddress() +"\" > /sys/devices/fb000000.qcom,wcnss-wlan/wcnss_mac_addr" +
-                                    " && svc wifi enable";
+                            command = "settings put global airplane_mode_on 1" +
+                                    " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true" +
+                                    " && echo \""+ randomMACAddress() +"\" > /sys/devices/fb000000.qcom,wcnss-wlan/wcnss_mac_addr" +
+                                    " && sleep 1" +
+                                    " && settings put global airplane_mode_on 0" +
+                                    " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false";
                         } else {
                             command = "svc wifi disable && svc wifi enable"+
                                     " && ip link set dev wlan0 address "+
@@ -322,9 +325,12 @@ public class MacchangerFragment extends Fragment {
                     }
                     if (selectedDevice.equals("wlan0")) {
                         if(isOPO()){
-                            command = "svc wifi disable &&"+
-                                    "echo \""+ macsArray +"\" > /sys/devices/fb000000.qcom,wcnss-wlan/wcnss_mac_addr" +
-                                    " && svc wifi enable";
+                            command = "settings put global airplane_mode_on 1" +
+                                    " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true" +
+                                    " && echo \""+ macsArray +"\" > /sys/devices/fb000000.qcom,wcnss-wlan/wcnss_mac_addr" +
+                                    " && sleep 1" +
+                                    " && settings put global airplane_mode_on 0" +
+                                    " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false";
                         } else {
                             command = "svc wifi disable && svc wifi enable"+
                                     " && ip link set dev wlan0 address "+
