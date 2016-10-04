@@ -86,8 +86,8 @@ public class BootKali {
                 "YOU_KNOW_WHAT=THIS_IS_KALI_LINUX_NETHUNER_FROM_JAVA_BINKY"
         };
         String ENV_OUT = "";
-        for (int i = 0; i < ENV.length; i++) {
-            ENV_OUT = ENV_OUT + "export " + ENV[i] + " && ";
+        for (String aENV : ENV) {
+            ENV_OUT = ENV_OUT + "export " + aENV + " && ";
         }
         return ENV_OUT;
     }

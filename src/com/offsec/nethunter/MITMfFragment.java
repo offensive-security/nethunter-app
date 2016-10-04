@@ -1,7 +1,5 @@
 package com.offsec.nethunter;
 
-import android.app.ActionBar;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,7 +7,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -34,9 +32,8 @@ import com.offsec.nethunter.utils.ShellExecuter;
 
 import java.util.ArrayList;
 
-public class MITMfFragment extends Fragment implements ActionBar.TabListener {
+public class MITMfFragment extends Fragment {
 
-    private ViewPager mViewPager;
     View.OnClickListener checkBoxListener;
     // ^^ \\
     // static String CommandComposed = "";
@@ -138,7 +135,7 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
         View rootView = inflater.inflate(R.layout.mitmf, container, false);
         MITMfFragment.TabsPagerAdapter tabsPagerAdapter = new TabsPagerAdapter(getActivity().getSupportFragmentManager());
 
-        mViewPager = (ViewPager) rootView.findViewById(R.id.pagerMITMF);
+        ViewPager mViewPager = (ViewPager) rootView.findViewById(R.id.pagerMITMF);
         mViewPager.setAdapter(tabsPagerAdapter);
 
         nh = new NhPaths();
@@ -187,23 +184,8 @@ public class MITMfFragment extends Fragment implements ActionBar.TabListener {
     }
     /* Stop execution menu */
 
-    /* Start Tabs */
-    @Override
-    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-        mViewPager.setCurrentItem(tab.getPosition());
-    }
-
-    @Override
-    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
-    }
-
-    @Override
-    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
-    }
-
     //public static class TabsPagerAdapter extends FragmentPagerAdapter {
-    public static class TabsPagerAdapter extends FragmentStatePagerAdapter {
-
+    public static class TabsPagerAdapter extends FragmentPagerAdapter {
 
         TabsPagerAdapter(FragmentManager fm) {
             super(fm);

@@ -63,7 +63,6 @@ public class ShellExecuter {
             os.flush();
         } catch (IOException e) {
             e.printStackTrace();
-            return;
         }
     }
 
@@ -86,12 +85,15 @@ public class ShellExecuter {
                 output = output + line;
             }
             br.close();
+
+            // Lint says while does not loop here (probably because it doesn't do anything except shell error)
             br = new BufferedReader(new InputStreamReader(stderr));
             while ((line = br.readLine()) != null) {
                 Log.e("Shell Error:", line);
                 throw new RuntimeException();
             }
             br.close();
+
             process.waitFor();
             process.destroy();
             return output;
@@ -100,8 +102,14 @@ public class ShellExecuter {
             throw new RuntimeException(ex);
         }
     }
-    public boolean isRootAvailable() {
-        String result = RunAsRootOutput("busybox id -u");
+    boolean isRootAvailable() {
+
+        NhPaths nh;
+        nh = new NhPaths();
+
+        String busybox_ver = nh.whichBusybox() + " id -u";
+        String result = RunAsRootOutput(busybox_ver);
+
         return result.equals("0");
     }
 

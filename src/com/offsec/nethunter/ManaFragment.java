@@ -1,8 +1,6 @@
 package com.offsec.nethunter;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
-import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -10,7 +8,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,7 +35,7 @@ import java.util.regex.Pattern;
 //import android.app.Fragment;
 //import android.support.v4.app.FragmentActivity;
 
-public class ManaFragment extends Fragment implements ActionBar.TabListener {
+public class ManaFragment extends Fragment{
 
     private ViewPager mViewPager;
 
@@ -48,15 +46,12 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
     private static NhPaths nh;
     private String configFilePath;
 
-    public ManaFragment() {
-
-    }
-
     public static ManaFragment newInstance(int sectionNumber) {
         ManaFragment fragment = new ManaFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -211,27 +206,10 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
         nh.showMessage("Mana Stopped");
     }
 
-    @Override
-    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-
-    }
-
-    @Override
-    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-        mViewPager.setCurrentItem(tab.getPosition());
-    }
-
-    @Override
-    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-
-    }
+    public class TabsPagerAdapter extends FragmentPagerAdapter {
 
 
-    //	 public static class TabsPagerAdapter extends FragmentPagerAdapter {
-    public static class TabsPagerAdapter extends FragmentStatePagerAdapter {
-
-
-        public TabsPagerAdapter(FragmentManager fm) {
+        TabsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -296,7 +274,7 @@ public class ManaFragment extends Fragment implements ActionBar.TabListener {
 
 
     public static class HostapdFragment extends Fragment {
-        // private String configFilePath = nh.CHROOT_PATH + "/etc/hostapd.conf";
+
         private final String configFilePath = nh.APP_SD_FILES_PATH + "/configs/hostapd-karma.conf";
 
         @Override

@@ -1,6 +1,8 @@
 package com.offsec.nethunter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
@@ -59,7 +61,7 @@ public class NetHunterFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.nethunter, container, false);
         TextView ip = (TextView) rootView.findViewById(R.id.editText2);
         ip.setFocusable(false);
-        addClickListener(R.id.button1, new View.OnClickListener() {
+        addClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 getExternalIp();
             }
@@ -69,8 +71,8 @@ public class NetHunterFragment extends Fragment {
         return rootView;
     }
 
-    private void addClickListener(int buttonId, View.OnClickListener onClickListener, View rootView) {
-        rootView.findViewById(buttonId).setOnClickListener(onClickListener);
+    private void addClickListener(View.OnClickListener onClickListener, View rootView) {
+        rootView.findViewById(R.id.button1).setOnClickListener(onClickListener);
     }
 
     private void getExternalIp() {
@@ -121,6 +123,9 @@ public class NetHunterFragment extends Fragment {
 
         nh = new NhPaths();
 
+        final boolean installed = appInstalledOrNot("com.offsec.nhterm");
+
+
         // 1 thread, 2 commands
         final TextView netIfaces = (TextView) rootView.findViewById(R.id.editTextNET); // NET IFACES
         final ListView netList = (ListView) rootView.findViewById(R.id.listViewNet);
@@ -134,11 +139,15 @@ public class NetHunterFragment extends Fragment {
         final TextView kernelverIfaces = (TextView) rootView.findViewById(R.id.editTextKERNELVER); // BUSYBOX IFACES
         final ListView kernelverList = (ListView) rootView.findViewById(R.id.listViewKERNELVER);
 
+        final TextView terminalIfaces = (TextView) rootView.findViewById(R.id.editTextNHTerminal); // BUSYBOX IFACES
+        final ListView terminalList = (ListView) rootView.findViewById(R.id.listViewNHTerminal);
+
         // Dont move this inside the thread. (Will throw a null pointer.)
         netIfaces.setText("Detecting Network interfaces...");
         hidIfaces.setText("Detecting HID interfaces...");
         busyboxIfaces.setText("Detecting Busybox version...");
         kernelverIfaces.setText("Detecting Kernel version...");
+        terminalIfaces.setText("Detecting Nethunter terminal...");
 
         new Thread(new Runnable() {
             public void run() {
@@ -228,6 +237,20 @@ public class NetHunterFragment extends Fragment {
                                     }
                                 });
                             }
+                            if(!installed) {
+                                // Installed, make note!
+                                terminalIfaces.setVisibility(View.VISIBLE);
+                                terminalList.setVisibility(View.GONE);
+                                terminalIfaces.setText("Nethunter Terminal is NOT installed!");
+                                terminalIfaces.setFocusable(false);
+                            } else {
+                                // Not installed, make note!
+                                terminalIfaces.setVisibility(View.VISIBLE);
+                                terminalList.setVisibility(View.GONE);
+                                terminalIfaces.setText("Nethunter Terminal is installed");
+                                terminalIfaces.setFocusable(false);
+                            }
+
                             if (outputKERNELVER.equals("")) {
                                 kernelverIfaces.setVisibility(View.VISIBLE);
                                 kernelverList.setVisibility(View.GONE);
@@ -253,6 +276,20 @@ public class NetHunterFragment extends Fragment {
                 }
         }).start();
     }
+
+    private boolean appInstalledOrNot(String uri) {
+        PackageManager pm = getActivity().getPackageManager();
+        boolean app_installed;
+        try {
+            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+            app_installed = true;
+        }
+        catch (PackageManager.NameNotFoundException e) {
+            app_installed = false;
+        }
+        return app_installed;
+    }
+
     private void fixListHeight(ListView theListView, ArrayAdapter theAdapter){
         int totalHeight = 0;
         for (int i = 0; i < theAdapter.getCount(); i++) {
