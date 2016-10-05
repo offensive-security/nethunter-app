@@ -67,10 +67,8 @@ public class AppNavHomeActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             askMarshmallowPerms(permsCurrent);
         } else {
-            CheckForRoot mytask = new CheckForRoot(this);
-            mytask.execute();
+            CheckForRoot();
         }
-
 
         setContentView(R.layout.base_layout);
 
@@ -379,6 +377,12 @@ public class AppNavHomeActivity extends AppCompatActivity {
         }
     }
 
+    private void CheckForRoot() {
+        Log.d("AppNav", "Checking for Root");
+        CheckForRoot mytask = new CheckForRoot(this);
+        mytask.execute();
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -485,6 +489,10 @@ public class AppNavHomeActivity extends AppCompatActivity {
                         new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                         8);
             }
+            // Add CheckForRoot after last permission check.  Sometimes files don't copy over on first run
+            // so we need to force it to check.  Doing it earlier runs risk of no permission and SuperSU
+            // display conflicting with permission requests
+            CheckForRoot();
         }
     }
     @Override
@@ -492,13 +500,15 @@ public class AppNavHomeActivity extends AppCompatActivity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Integer permsNum = 8;
                     if(permsCurrent < permsNum){
+                        Log.d("AppNav", "Ask permission");
                         permsCurrent = permsCurrent+1;
                         askMarshmallowPerms(permsCurrent);
                     } else {
-                        CheckForRoot mytask = new CheckForRoot(this);
-                        mytask.execute();
+                        Log.d("AppNav", "Permissions granted");
+                        CheckForRoot();
                     }
                 } else {
+                    Log.d("AppNav", "Not granted permission");
                     askMarshmallowPerms(permsCurrent);
                 }
     }
