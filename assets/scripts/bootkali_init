@@ -84,7 +84,7 @@ mount_sdcard() {
 		/storage/sdcard0 \
 		/sdcard
 	do
-		$busybox mountpoint -q "$sdcard" &&
+		[ -d "$sdcard" ] &&
 			$busybox mount -o bind "$sdcard" "$mnt/sdcard" &&
 				return 0
 	done
@@ -100,7 +100,7 @@ mount_external_sd() {
 		/storage/external_sd \
 		/external_sd
 	do
-		$busybox mountpoint -q "$external_sd" &&
+		[ -d "$external_sd" ] &&
 			$busybox mount -o bind "$external_sd" "$mnt/external_sd" &&
 				return 0
 	done
@@ -111,7 +111,7 @@ mount_usbdisk() {
 	mountpoint -q "$mnt/mnt/usbdisk" && return 0
 
 	for usbdisk in /storage/usb*; do
-		$busybox mountpoint -q "$usbdisk" &&
+		[ -d "$usbdisk" ] &&
 			$busybox mount -o bind "$usbdisk" "$mnt/mnt/usbdisk" &&
 				return 0
 	done
@@ -119,6 +119,8 @@ mount_usbdisk() {
 }
 
 mount_external_storage() {
+	external_sd_mounted=false
+	usbdisk_mounted=false
 	mount_external_sd && external_sd_mounted=true
 	mount_usbdisk && usbdisk_mounted=true
 
@@ -126,8 +128,7 @@ mount_external_storage() {
 	for storage in /storage/*-*; do
 		# if both mount successfully then skip
 		$external_sd_mounted && $usbdisk_mounted && return
-
-		if $busybox mountpoint -q "$storage"; then
+		if [ -d "$storage" ]; then
 			if ! $external_sd_mounted; then
 				$busybox mount -o bind "$storage" "$mnt/external_sd" &&
 					external_sd_mounted=true
