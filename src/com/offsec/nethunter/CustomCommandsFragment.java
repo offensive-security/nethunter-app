@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
@@ -31,7 +32,10 @@ import com.offsec.nethunter.utils.BootKali;
 import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
 
+import java.security.AccessControlContext;
 import java.util.List;
+
+import static java.security.AccessController.getContext;
 
 public class CustomCommandsFragment extends Fragment {
 
@@ -492,13 +496,18 @@ class CmdLoader extends BaseAdapter {
         return position;
     }
 
+    private boolean checkTerminalExternalPermission(String permission)
+    {
+        int res = _mContext.checkCallingOrSelfPermission(permission);
+        return (res == PackageManager.PERMISSION_GRANTED);
+    }
+
     private void doCustomCommand(CustomCommand commandInfo) {
 
         String _label = commandInfo.getCommand_label();
         String _cmd = commandInfo.getCommand();
         String _mode = commandInfo.getExec_Mode();
         String _sendTo = commandInfo.getSend_To_Shell();
-
         String composedCommand;
 
         if (_mode.equals("BACKGROUND")) {
@@ -536,7 +545,12 @@ class CmdLoader extends BaseAdapter {
             }
 
         } catch (Exception e) {
-            Toast.makeText(_mContext, _mContext.getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
+            if (!checkTerminalExternalPermission("com.offsec.nhterm.permission.RUN_SCRIPT_NH") ||
+                    !checkTerminalExternalPermission("com.offsec.nhterm.permission.RUN_SCRIPT") ) {
+                Toast.makeText(_mContext, _mContext.getString(R.string.toast_error_permissions), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(_mContext, _mContext.getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
