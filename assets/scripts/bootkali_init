@@ -10,6 +10,8 @@ elif [ -x /data/local/bin/busybox ]; then
 	busybox=/data/local/bin/busybox
 elif [ -x /system/bin/busybox ]; then
 	busybox=/system/bin/busybox
+elif [ -x /su/bin/busybox ]; then
+	busybox=/su/bin/busybox
 else
 	echo "Busybox not found!  Install it, dummy!"
 	log "Busybox not found!  Install it, dummy!"
