@@ -4,4 +4,5 @@
 SCRIPT_PATH=$(readlink -f $0)
 . ${SCRIPT_PATH%/*}/bootkali_env
 
-$busybox chroot $mnt /bin/bash -i
+echo "Bash login"
+$chroot $mnt /bin/bash -i

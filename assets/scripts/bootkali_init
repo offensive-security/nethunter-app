@@ -27,6 +27,24 @@ f_checkforroot(){
 	fi
 }
 
+######### DETECT CHROOT #########
+#
+# Detect if chroot is located in scripts folder in app and is executable.
+#
+#
+#
+# chroot location: /data/data/com.offsec.nethunter/files/scripts/
+#
+#
+scripts_chroot=/data/data/com.offsec.nethunter/files/scripts/chroot
+if [ -f $scripts_chroot ] && [ -x $scripts_chroot ]; then
+    echo "Setting chroot to $scripts_chroot --userspec=root:root"
+    chroot="$scripts_chroot --userspec=root:root"
+else
+    echo "Using busybox chroot"
+    chroot="$busybox chroot"
+fi
+
 ######### VARIABLES #########
 mnt=/data/local/nhsystem/kali-armhf
 
