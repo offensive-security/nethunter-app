@@ -4,8 +4,12 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.0'
+        classpath 'com.android.tools.build:gradle:2.2.1'
     }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.2' //version required
 }
 
 apply plugin: 'com.android.application'
@@ -31,7 +35,7 @@ dependencies {
 android {
 
     compileSdkVersion 24
-    buildToolsVersion '23.0.3'
+    buildToolsVersion '25'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7

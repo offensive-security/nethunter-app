@@ -51,7 +51,5 @@ nethunter-app.iml
 .buildpath
 /lint.xml
 gradle
-gradlew
-gradlew.bat
 libsuperuser-release/libsuperuser-release.iml
 androidwversionmanager/androidwversionmanager.iml
