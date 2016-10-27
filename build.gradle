@@ -74,7 +74,7 @@ android {
         (or change the below values, hard-coding or whatever...)
         3. Don't forget to create a proguard.cfg file.  You can find a sample one in the sdk or
            point to it directly.
-        */
+
         release {
             storePassword System.getenv("KEYSTORE_PASSWORD")
             storeFile file("${System.properties['user.home']}" +  "/.android/release.keystore")
@@ -82,6 +82,7 @@ android {
             keyPassword System.getenv("KEY_PASSWORD")
 
         }
+        */
     }
 
     buildTypes {
@@ -90,10 +91,11 @@ android {
             minifyEnabled false
             buildConfigField "java.util.Date", "BUILD_TIME", "new java.util.Date(" + getDate() + "L)"
             buildConfigField "String", "BUILD_NAME", "\"" + System.getenv("USER") + "\"";
+
             return true
         }
         release {
-            signingConfig signingConfigs.release
+            //signingConfig signingConfigs.release
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt')
@@ -102,6 +104,7 @@ android {
             zipAlignEnabled true
             buildConfigField "java.util.Date", "BUILD_TIME", "new java.util.Date(" + getDate() + "L)"
             buildConfigField "String", "BUILD_NAME", "\"" + System.getenv("USER") + "\"";
+
             return true
         }
     }
