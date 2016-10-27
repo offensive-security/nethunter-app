@@ -9,7 +9,7 @@ LOCAL_PACKAGE_NAME := Nethunter
 nethunter_root  := $(LOCAL_PATH)
 nethunter_out   := $(PWD)/$(OUT_DIR)/target/common/obj/APPS/$(LOCAL_MODULE)_intermediates
 nethunter_build := $(nethunter_root)/build
-nethunter_apk   := build/outputs/apk/nethunter-release-unsigned.apk
+nethunter_apk   := build/outputs/apk/Nethunter-release-unsigned.apk
 
 $(nethunter_root)/$(nethunter_apk):
 	rm -Rf $(nethunter_build)
