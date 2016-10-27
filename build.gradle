@@ -24,9 +24,9 @@ repositories {
 
 
 dependencies {
-    compile 'com.android.support:support-v4:24.2.1'
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:design:24.2.1'
+    compile 'com.android.support:support-v4:25.0.0'
+    compile 'com.android.support:appcompat-v7:25.0.0'
+    compile 'com.android.support:design:25.0.0'
     compile 'com.google.guava:guava:19.0-rc2'
     compile project(':androidwversionmanager')
     compile 'org.thoughtcrime.ssl.pinning:AndroidPinning:1.0.0'
@@ -34,7 +34,7 @@ dependencies {
 
 android {
 
-    compileSdkVersion 24
+    compileSdkVersion 25
     buildToolsVersion '25'
 
     compileOptions {
@@ -44,7 +44,7 @@ android {
 
     defaultConfig {
         minSdkVersion 17
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode 20
         versionName "3.15.2"
     }
