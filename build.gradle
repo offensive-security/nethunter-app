@@ -46,7 +46,7 @@ android {
         minSdkVersion 17
         targetSdkVersion 25
         versionCode 20
-        versionName "3.15.2"
+        versionName "3.15.3"
     }
 
     sourceSets {
