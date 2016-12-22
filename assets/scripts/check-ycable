@@ -1,11 +1,22 @@
 unset LD_PRELOAD
-CHECKMSM=$(cat /sys/module/msm_otg/parameters/usbhost_charge_mode 2>&1 /dev/null)
-CHECKTEGRA=$(cat /sys/module/tegra_otg/parameters/tegra_otg_on_charging 2>&1 /dev/null)
-CHECKDWC3=$(cat /sys/module/dwc3/parameters/aca_enable 2>&1 /dev/null)
-CHECKDWC3ALT=$(cat /sys/module/dwc3/parameters/otg_charging 2>&1 /dev/null)
 
-if [[  $CHECKTEGRA == 'Y' ]] || [[ $CHEKMSM == "1" ]] || [[ $CHECKDWC3 == "Y" ]] || [[ $CHECKDWC3ALT == "Y" ]]; then
-	echo "1"
-else
-	echo "0"
-fi
+OTG_FILES="
+/sys/module/msm_otg/parameters/usbhost_charge_mode
+/sys/module/tegra_otg/parameters/tegra_otg_on_charging
+/sys/module/dwc3/parameters/aca_enable
+/sys/module/dwc3/parameters/otg_charging
+"
+
+for file in $OTG_FILES; do
+	[ -f "$file" ] || continue
+	case $(cat "$file" 2>/dev/null) in
+	1|Y*|y*)
+		echo 1; exit 0;;
+	0|N*|n*)
+		echo 0; exit 0;;
+	esac
+done
+
+# no valid OTG toggle files found
+echo 0
+exit 1
