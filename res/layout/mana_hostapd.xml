@@ -5,89 +5,100 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:orientation="vertical">
-        
+        android:paddingRight="16dp">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/mana_hostapd"
-            android:layout_gravity="center_horizontal|center" 
+            android:layout_gravity="center_horizontal|center"
             android:gravity="center"
-            android:padding="4dp" />
+            android:padding="4dp"
+            android:text="@string/mana_hostapd" />
 
-        <TextView
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/iface"
-            android:padding="4dp" />
+            android:layout_height="72dp"
+            android:padding="4dp">
 
-        <EditText
-            android:id="@+id/ifc"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"/>
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/ifc"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ems="10"
+                android:hint="@string/iface"
+                style="@style/DesignTextInput"/>
+        </android.support.design.widget.TextInputLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/bssid"
-            android:padding="4dp" />
 
-        <EditText
-            android:id="@+id/bssid"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"/>
+            android:layout_height="72dp"
+            android:padding="4dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/ssid"
-            android:padding="4dp" />
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/bssid"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ems="10"
+                android:hint="@string/bssid" />
+        </android.support.design.widget.TextInputLayout>
 
-        <EditText
-            android:id="@+id/ssid"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"/>
+            android:layout_height="72dp"
+            android:padding="4dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/chanel"
-            android:padding="4dp" />
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/ssid"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ems="10"
+                android:hint="@string/ssid" />
+        </android.support.design.widget.TextInputLayout>
 
-        <EditText
-            android:id="@+id/channel"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"/>
+            android:layout_height="72dp"
+            android:padding="4dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/enable_karma"
-            android:padding="4dp" />
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/channel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ems="10"
+                android:hint="@string/chanel" />
+        </android.support.design.widget.TextInputLayout>
 
-        <EditText
-            android:id="@+id/enable_karma"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"/>
+            android:layout_height="72dp"
+            android:padding="4dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/karma_loud"
-            android:padding="4dp" />
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/enable_karma"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ems="10"
+                android:hint="@string/enable_karma"
+                style="@style/DesignTextInput"/>
+        </android.support.design.widget.TextInputLayout>
 
-        <EditText
-            android:id="@+id/karma_loud"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"/>
+            android:layout_height="72dp"
+            android:padding="4dp">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/karma_loud"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ems="10"
+                android:hint="@string/karma_loud"
+                style="@style/DesignTextInput"/>
+        </android.support.design.widget.TextInputLayout>
+
 
         <Button
             android:id="@+id/updateButton"

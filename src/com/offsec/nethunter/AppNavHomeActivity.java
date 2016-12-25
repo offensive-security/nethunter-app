@@ -2,12 +2,16 @@ package com.offsec.nethunter;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -32,13 +36,16 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.Stack;
 
+import com.offsec.nethunter.GPS.KaliGPSUpdates;
+import com.offsec.nethunter.GPS.LocationUpdateService;
 import com.offsec.nethunter.utils.CheckForRoot;
 import com.winsontan520.wversionmanager.library.WVersionManager;
 
-public class AppNavHomeActivity extends AppCompatActivity {
+public class AppNavHomeActivity extends AppCompatActivity implements KaliGPSUpdates.Provider {
 
     public final static String TAG = "AppNavHomeActivity";
     private static final String CHROOT_INSTALLED_TAG = "CHROOT_INSTALLED_TAG";
+    private static final String GPS_BACKGROUND_FRAGMENT_TAG = "BG_FRAGMENT_TAG";
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -53,6 +60,9 @@ public class AppNavHomeActivity extends AppCompatActivity {
     private static Context c;
     private Boolean weCheckedForRoot = false;
     private Integer permsCurrent = 1;
+    private boolean locationUpdatesRequested = false;
+    private KaliGPSUpdates.Receiver locationUpdateReceiver;
+
     public static Context getAppContext() {
         return c;
     }
@@ -62,7 +72,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         // ************************************************
-            c = getApplication(); //* DONT REMOVE ME *
+        c = getApplication(); //* DONT REMOVE ME *
         // ************************************************
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             askMarshmallowPerms(permsCurrent);
@@ -136,7 +146,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
             ed.apply();
         }
 
-        if(lastSelected == null){ // only in the 1st create
+        if (lastSelected == null) { // only in the 1st create
             lastSelected = navigationView.getMenu().getItem(0);
             lastSelected.setChecked(true);
         }
@@ -166,7 +176,8 @@ public class AppNavHomeActivity extends AppCompatActivity {
             menuNav.setGroupEnabled(R.id.chrootDependentGroup, false);
         }
     }
-    private void checkUpdate(){
+
+    private void checkUpdate() {
         WVersionManager versionManager = new WVersionManager(this);
         versionManager.setVersionContentUrl("https://images.offensive-security.com/version.txt");
         versionManager.setUpdateUrl("https://images.offensive-security.com/latest.apk");
@@ -195,6 +206,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
         ad.getWindow().getAttributes().windowAnimations = R.style.DialogStyle;
         ad.show();
     }
+
     /* if the chroot isn't set up, don't show the chroot options */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -212,13 +224,14 @@ public class AppNavHomeActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
     private void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                         // only change it if is no the same as the last one
-                        if(lastSelected != menuItem){
+                        if (lastSelected != menuItem) {
                             //remove last
                             lastSelected.setChecked(false);
                             // udpate for the next
@@ -378,6 +391,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
     }
 
     private void CheckForRoot() {
+
         Log.d("AppNav", "Checking for Root");
         CheckForRoot mytask = new CheckForRoot(this);
         mytask.execute();
@@ -391,12 +405,12 @@ public class AppNavHomeActivity extends AppCompatActivity {
             mTitle = titles.peek();
         }
         Menu menuNav = navigationView.getMenu();
-        int i=0;
+        int i = 0;
         int mSize = menuNav.size();
-        while (i<mSize) {
-            if(menuNav.getItem(i).getTitle() == mTitle){
+        while (i < mSize) {
+            if (menuNav.getItem(i).getTitle() == mTitle) {
                 MenuItem _current = menuNav.getItem(i);
-                if(lastSelected != _current){
+                if (lastSelected != _current) {
                     //remove last
                     lastSelected.setChecked(false);
                     // udpate for the next
@@ -410,8 +424,9 @@ public class AppNavHomeActivity extends AppCompatActivity {
         }
         restoreActionBar();
     }
-    private void askMarshmallowPerms(Integer permnum){
-        if(permnum == 1){
+
+    private void askMarshmallowPerms(Integer permnum) {
+        if (permnum == 1) {
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -423,7 +438,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
                 mytask.execute();
             }
         }
-        if(permnum == 2){
+        if (permnum == 2) {
             if (ContextCompat.checkSelfPermission(this,
                     "com.offsec.nhterm.permission.RUN_SCRIPT")
                     != PackageManager.PERMISSION_GRANTED) {
@@ -432,7 +447,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
                         2);
             }
         }
-        if(permnum == 3){
+        if (permnum == 3) {
             if (ContextCompat.checkSelfPermission(this,
                     "com.offsec.nhterm.permission.RUN_SCRIPT_SU")
                     != PackageManager.PERMISSION_GRANTED) {
@@ -441,7 +456,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
                         3);
             }
         }
-        if(permnum == 4){
+        if (permnum == 4) {
             if (ContextCompat.checkSelfPermission(this,
                     "com.offsec.nhterm.permission.RUN_SCRIPT_NH")
                     != PackageManager.PERMISSION_GRANTED) {
@@ -450,7 +465,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
                         4);
             }
         }
-        if(permnum == 5){
+        if (permnum == 5) {
             Log.d("HOLA", "CODE0: " + permnum);
             if (ContextCompat.checkSelfPermission(this,
                     "com.offsec.nhterm.permission.RUN_SCRIPT_NH_LOGIN")
@@ -460,7 +475,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
                         5);
             }
         }
-        if(permnum == 6) {
+        if (permnum == 6) {
             Log.d("HOLA", "CODE0: " + permnum);
             if (ContextCompat.checkSelfPermission(this,
                     "com.offsec.nhvnc.permission.OPEN_VNC_CONN")
@@ -470,7 +485,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
                         6);
             }
         }
-        if(permnum == 7){
+        if (permnum == 7) {
             Log.d("HOLA", "CODE0: " + permnum);
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)
@@ -480,7 +495,7 @@ public class AppNavHomeActivity extends AppCompatActivity {
                         7);
             }
         }
-        if(permnum == 8){
+        if (permnum == 8) {
             Log.d("HOLA", "CODE0: " + permnum);
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -495,22 +510,73 @@ public class AppNavHomeActivity extends AppCompatActivity {
             CheckForRoot();
         }
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Integer permsNum = 8;
-                    if(permsCurrent < permsNum){
-                        Log.d("AppNav", "Ask permission");
-                        permsCurrent = permsCurrent+1;
-                        askMarshmallowPerms(permsCurrent);
-                    } else {
-                        Log.d("AppNav", "Permissions granted");
-                        CheckForRoot();
-                    }
-                } else {
-                    Log.d("AppNav", "Not granted permission");
-                    askMarshmallowPerms(permsCurrent);
-                }
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Integer permsNum = 8;
+            if (permsCurrent < permsNum) {
+                Log.d("AppNav", "Ask permission");
+                permsCurrent = permsCurrent + 1;
+                askMarshmallowPerms(permsCurrent);
+            } else {
+                Log.d("AppNav", "Permissions granted");
+                CheckForRoot();
+            }
+        } else {
+            Log.d("AppNav", "Not granted permission");
+            askMarshmallowPerms(permsCurrent);
+        }
+    }
+
+    @Override
+    public void onLocationUpdatesRequested(KaliGPSUpdates.Receiver receiver) {
+//        FragmentManager fm = getSupportFragmentManager();
+        locationUpdatesRequested = true;
+        this.locationUpdateReceiver = receiver;
+        Intent intent = new Intent(getApplicationContext(), LocationUpdateService.class);
+        bindService(intent, locationServiceConnection, Context.BIND_AUTO_CREATE);
+
+
+//        GPSBackgroundFragment gpsFragment = (GPSBackgroundFragment) fm.findFragmentByTag(GPS_BACKGROUND_FRAGMENT_TAG);
+//        if (gpsFragment == null) {
+//            gpsFragment = GPSBackgroundFragment.newInstance();
+//            fm.beginTransaction()
+//                    .add(gpsFragment, GPS_BACKGROUND_FRAGMENT_TAG)
+//                    .disallowAddToBackStack()
+//                    .commit();
+//        }
+//        gpsFragment.requestUpdates(receiver);
+
+    }
+
+    private LocationUpdateService locationService;
+    private boolean updateServiceBound = false;
+    private ServiceConnection locationServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to Update Service, cast the IBinder and get LocalService instance
+            LocationUpdateService.ServiceBinder binder = (LocationUpdateService.ServiceBinder) service;
+            locationService = binder.getService();
+            updateServiceBound = true;
+            if (locationUpdatesRequested) {
+                locationService.requestUpdates(locationUpdateReceiver);
+            }
+
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            updateServiceBound = false;
+        }
+    };
+
+
+    @Override
+    public void onStopRequested() {
+
     }
 }
 
