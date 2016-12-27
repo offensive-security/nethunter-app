@@ -6,6 +6,7 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 
 import com.offsec.nethunter.utils.NhPaths;
@@ -48,8 +49,21 @@ public class EditSourceActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /* Not usable?
     public void updateSource() {
 
+        EditText source = (EditText) findViewById(R.id.source);
+        String newSource = source.getText().toString();
+        Boolean isSaved = exe.SaveFileContents(newSource, configFilePath);
+        if(isSaved){
+            nh.showMessage("Source updated");
+        } else {
+            nh.showMessage("Source not updated");
+        }
+    }
+    */
+
+    public void updateSource(View view) {
         EditText source = (EditText) findViewById(R.id.source);
         String newSource = source.getText().toString();
         Boolean isSaved = exe.SaveFileContents(newSource, configFilePath);
