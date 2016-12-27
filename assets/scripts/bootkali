@@ -221,6 +221,14 @@ else
 		$busybox chroot $mnt sudo /usr/bin/macchanger --permanent $2
 	fi
 
+	#GPSD
+	# Usage:	bootkali start_gpsd <listen port>
+
+	if [ "$1" == "start_gpsd" ]; then
+		$busybox chroot $mnt sudo /usr/sbin/gpsd -n tcp://127.0.0.1:$2
+	fi
+
+
 	#KALIMENU
 
 	if [ "$1" == "kalimenu" ]; then

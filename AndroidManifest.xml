@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.offsec.nethunter">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -13,7 +14,7 @@
     <uses-permission android:name="com.offsec.nhterm.permission.RUN_SCRIPT_NH_LOGIN" />
     <uses-permission android:name="com.offsec.nhvnc.permission.OPEN_VNC_CONN" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -30,8 +31,9 @@
         android:allowBackup="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:windowSoftInputMode="adjustResize">
-
+        android:theme="@style/Theme.Nethunter"
+        android:windowSoftInputMode="adjustResize"
+        tools:replace="android:theme">
         <activity
             android:name=".AppNavHomeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
@@ -40,13 +42,13 @@
             android:theme="@style/Theme.Nethunter">
             <intent-filter android:label="@string/app_nav_home_label">
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".EditSourceActivity"
             android:label="Edit Source"
@@ -56,16 +58,21 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".EditSourceActivity" />
         </activity>
-        <receiver android:name=".receiver.BootCompletedReceiver">
+
+        <updateReceiver android:name=".updateReceiver.BootCompletedReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
-        </receiver>
+        </updateReceiver>
 
         <service
             android:name=".service.RunAtBootService"
             android:exported="false"
             android:process=":runAtBoot" />
-
+        <service
+            android:name=".GPS.LocationUpdateService"
+            android:enabled="true"
+            android:exported="false"></service>
     </application>
+
 </manifest>

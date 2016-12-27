@@ -50,7 +50,7 @@ nethunter-app
   java
     com.offsec.nethunter <-- Contains the source for application
       GPS <-- Handles NMEA data for chroot GPS
-      receiver <-- For "run at boot service"
+      updateReceiver <-- For "run at boot service"
       service  <-- For "run at boot service"
       utils    <-- Misc system variables and shell executer. Controls Nethunter paths also
     res

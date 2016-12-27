@@ -55,7 +55,7 @@ public class MITMfFragment extends Fragment {
     String M_ScreenInterval; // --interval [M_ScreenIntervalTime]
     EditText M_ScreenIntervalTime; // Time for Screen interval
 
-    /* All MITMf Responder Command Variables */
+    /* All MITMf Provider Command Variables */
 
     String M_Responder; // --responder
     String M_Responder_Analyze; // --analyze
@@ -223,7 +223,7 @@ public class MITMfFragment extends Fragment {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 1:
-                    return "Responder Settings";
+                    return "Provider Settings";
                 case 2:
                     return "Inject Settings";
                 case 3:
@@ -1295,7 +1295,7 @@ public class MITMfFragment extends Fragment {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.mitmf_responder, container, false);
 
-            // Checkbox for Responder Analyze
+            // Checkbox for Provider Analyze
             final CheckBox ResponderAnalyzeCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_responder_analyze);
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
@@ -1309,7 +1309,7 @@ public class MITMfFragment extends Fragment {
             };
             ResponderAnalyzeCheckbox.setOnClickListener(checkBoxListener);
 
-            // Checkbox for Responder Fingerprint
+            // Checkbox for Provider Fingerprint
             final CheckBox ResponderFingerprintCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_responder_fingerprint);
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
@@ -1323,7 +1323,7 @@ public class MITMfFragment extends Fragment {
             };
             ResponderFingerprintCheckbox.setOnClickListener(checkBoxListener);
 
-            // Checkbox for Responder Downgrade
+            // Checkbox for Provider Downgrade
             final CheckBox ResponderDowngradeCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_responder_LM);
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
@@ -1365,7 +1365,7 @@ public class MITMfFragment extends Fragment {
             };
             ResponderWPADCheckbox.setOnClickListener(checkBoxListener);
 
-            // Checkbox for Responder WREDIR
+            // Checkbox for Provider WREDIR
             final CheckBox ResponderWRedirCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_responder_WREDIR);
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
@@ -1380,14 +1380,14 @@ public class MITMfFragment extends Fragment {
             ResponderWRedirCheckbox.setOnClickListener(checkBoxListener);
 
 
-            // Checkbox for Responder
+            // Checkbox for Provider
             final CheckBox ResponderCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_responder);
             checkBoxListener =new View.OnClickListener() {
                 public void onClick(View v) {
                     if(ResponderCheckbox.isChecked()) {
                         M_Responder = " --responder";
                         addToCmd(M_Responder);
-                        /* Allow checkboxes to be enabled if Responder not activated */
+                        /* Allow checkboxes to be enabled if Provider not activated */
                         ResponderAnalyzeCheckbox.setEnabled(true);
                         ResponderFingerprintCheckbox.setEnabled(true);
                         ResponderDowngradeCheckbox.setEnabled(true);
@@ -1411,7 +1411,7 @@ public class MITMfFragment extends Fragment {
                         ResponderWPADCheckbox.setChecked(false);
                         ResponderWRedirCheckbox.setChecked(false);
 
-                        /* Don't allow checkboxes to be enabled if Responder not activated */
+                        /* Don't allow checkboxes to be enabled if Provider not activated */
                         ResponderAnalyzeCheckbox.setEnabled(false);
                         ResponderFingerprintCheckbox.setEnabled(false);
                         ResponderDowngradeCheckbox.setEnabled(false);
