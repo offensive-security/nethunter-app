@@ -4,8 +4,6 @@ public interface KaliGPSUpdates {
 
     interface Receiver {
         void onPositionUpdate(String nmeaSentences);
-        void onServerReady();
-
         void onFirstPositionUpdate();
     }
 

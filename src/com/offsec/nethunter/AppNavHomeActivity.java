@@ -531,23 +531,10 @@ public class AppNavHomeActivity extends AppCompatActivity implements KaliGPSUpda
 
     @Override
     public void onLocationUpdatesRequested(KaliGPSUpdates.Receiver receiver) {
-//        FragmentManager fm = getSupportFragmentManager();
         locationUpdatesRequested = true;
         this.locationUpdateReceiver = receiver;
         Intent intent = new Intent(getApplicationContext(), LocationUpdateService.class);
         bindService(intent, locationServiceConnection, Context.BIND_AUTO_CREATE);
-
-
-//        GPSBackgroundFragment gpsFragment = (GPSBackgroundFragment) fm.findFragmentByTag(GPS_BACKGROUND_FRAGMENT_TAG);
-//        if (gpsFragment == null) {
-//            gpsFragment = GPSBackgroundFragment.newInstance();
-//            fm.beginTransaction()
-//                    .add(gpsFragment, GPS_BACKGROUND_FRAGMENT_TAG)
-//                    .disallowAddToBackStack()
-//                    .commit();
-//        }
-//        gpsFragment.requestUpdates(receiver);
-
     }
 
     private LocationUpdateService locationService;
@@ -576,7 +563,9 @@ public class AppNavHomeActivity extends AppCompatActivity implements KaliGPSUpda
 
     @Override
     public void onStopRequested() {
-
+        if (locationService != null) {
+            locationService.stopUpdates();
+        }
     }
 }
 

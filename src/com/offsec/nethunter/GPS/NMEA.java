@@ -21,39 +21,6 @@ final class NMEA {
 
 
     /**
-     * Formats the number of satellites from the #Location into a
-     * string.  In case #LocationManager.NETWORK_PROVIDER is used, it
-     * returns the faked value "1", because some software refuses to
-     * work with a "0" or an empty value.
-     */
-    public static String formatSatellites(Location location) {
-        if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
-            Bundle bundle = location.getExtras();
-            return bundle != null
-                    ? "" + bundle.getInt("satellites")
-                    : "";
-        } else if (location.getProvider().equals(LocationManager.NETWORK_PROVIDER))
-            // fake this variable
-            return "1";
-        else
-            return "";
-    }
-
-    /**
-     * Formats the altitude from the #Location into a string, with a
-     * second unit field ("M" for meters).  If the altitude is
-     * unknown, it returns two empty fields.
-     */
-    public static String formatAltitude(Location location) {
-        String s = "";
-        if (location.hasAltitude())
-            s += location.getAltitude() + ",M";
-        else
-            s += ",";
-        return s;
-    }
-
-    /**
      * Formats the speed in knots from the #Location into a string.
      * If the speed is unknown, it returns an empty string.
      */

@@ -2,7 +2,6 @@ package com.offsec.nethunter.GPS;
 
 
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.util.Log;
 
 import com.offsec.nethunter.utils.ShellExecuter;
@@ -13,24 +12,19 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.nio.channels.ServerSocketChannel;
-import java.util.HashMap;
 
 
 public class GpsdServer extends AsyncTask<Void, Void, Void> {
     private static final String SCRIPT_PATH = "/data/data/com.offsec.nethunter/files/scripts/";
 
     private static final String TAG = "GpsdServer";
-    private ServerSocketChannel server = null;
     private ServerSocket serverSocket = null;
-    private Handler handler;
-    private static HashMap<String, String> pendingData;
 
     public GpsdServer(ConnectionListener listener) throws IOException {
         this.listener = listener;
     }
     public interface ConnectionListener {
-        void onSocketConnected(Socket clientSocket, ServerSocket serverSocket);
+        void onSocketConnected(Socket clientSocket);
     }
 
     private ConnectionListener listener;
@@ -39,11 +33,6 @@ public class GpsdServer extends AsyncTask<Void, Void, Void> {
      * The TCP/IP port used for Socket communication.
      */
     private static final int PORT = 10110;
-
-    /**
-     * The maximum length of a GGA sentence.
-     */
-    private static final int GGA_LENGTH_MAX = 80;
 
 
     @Override
@@ -74,7 +63,7 @@ public class GpsdServer extends AsyncTask<Void, Void, Void> {
 
 
             Socket clientSocket = serverSocket.accept();
-            listener.onSocketConnected(clientSocket, serverSocket);
+            listener.onSocketConnected(clientSocket);
            Log.d(TAG, "Client bound");
         } catch (IOException e) {
             Log.d(TAG, "Unable to create ServerSocket for port: " + PORT);

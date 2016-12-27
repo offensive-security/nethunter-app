@@ -6,6 +6,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -31,31 +32,66 @@ import java.net.Socket;
 
 public class LocationUpdateService extends Service implements GpsdServer.ConnectionListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-    private static final int GGA_LENGTH_MAX = 90;
     private KaliGPSUpdates.Receiver updateReceiver;
     private static final String TAG = "LocationUpdateService";
     private GoogleApiClient apiClient = null;
     private boolean requestedLocationUpdates = false;
     private Socket clientSocket = null;
-    private ServerSocket serverSocket = null;
-
-    public LocationUpdateService() {
-    }
 
     private final IBinder binder = new ServiceBinder();
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return Service.START_NOT_STICKY;
+    }
+
+    /**
+     * Formats the number of satellites from the #Location into a
+     * string.  In case #LocationManager.NETWORK_PROVIDER is used, it
+     * returns the faked value "1", because some software refuses to
+     * work with a "0" or an empty value.
+     */
+    public String formatSatellites(Location location) {
+        if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
+            Bundle bundle = location.getExtras();
+            return bundle != null
+                    ? "" + bundle.getInt("satellites")
+                    : "";
+        } else if (location.getProvider().equals(LocationManager.NETWORK_PROVIDER))
+            // fake this variable
+            return "1";
+        else
+            return "";
+    }
+
+    /**
+     * Formats the altitude from the #Location into a string, with a
+     * second unit field ("M" for meters).  If the altitude is
+     * unknown, it returns two empty fields.
+     */
+    public String formatAltitude(Location location) {
+        String s = "";
+        if (location.hasAltitude())
+            s += location.getAltitude() + ",M";
+        else
+            s += ",";
+        return s;
+    }
 
     /**
      * Calculates the NMEA checksum of the specified string.  Pass the
      * portion of the line between '$' and '*' here.
      */
     private String checksum(String s) {
-        byte[] bytes = s.getBytes();
         int checksum = 0;
 
-        for (int i = bytes.length - 1; i >= 0; --i)
-            checksum = checksum ^ bytes[i];
+        for (int i = 0; i < s.length(); i++)
+            checksum = checksum ^ s.charAt(i);
 
-        return "*" + String.valueOf(checksum);
+        String hex = Integer.toHexString(checksum);
+        if (hex.length() == 1)
+            hex = "0" + hex;
+        return ("*" + hex.toUpperCase());
     }
 
     /**
@@ -64,14 +100,6 @@ public class LocationUpdateService extends Service implements GpsdServer.Connect
     @SuppressLint("DefaultLocale")
     public static String formatTime(Location location) {
         DateTimeFormatter dtf = DateTimeFormat.forPattern("HHmmss");
-        return dtf.print(new DateTime(location.getTime()));
-    }
-
-    /**
-     * Formats the date from the #Location into a string.
-     */
-    public static String formatDate(Location location) {
-        DateTimeFormatter dtf = DateTimeFormat.forPattern("MMddyy");
         return dtf.print(new DateTime(location.getTime()));
     }
 
@@ -89,7 +117,6 @@ public class LocationUpdateService extends Service implements GpsdServer.Connect
         longitude = Math.abs(longitude);
         @SuppressLint("DefaultLocale")
 
-// Todo: format strings in a reasonable way
         String lat = String.format("%02d%02d.%04d,%c",
                 (int) latitude,
                 (int) (latitude * 60) % 60,
@@ -104,7 +131,7 @@ public class LocationUpdateService extends Service implements GpsdServer.Connect
     }
 
     @Override
-    public void onSocketConnected(Socket clientSocket, ServerSocket serverSocket) {
+    public void onSocketConnected(Socket clientSocket) {
         this.clientSocket = clientSocket;
     }
 
@@ -124,6 +151,7 @@ public class LocationUpdateService extends Service implements GpsdServer.Connect
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d(TAG, "Google API Client connection failed");
     }
+
 
 
     public class ServiceBinder extends Binder {
@@ -148,8 +176,12 @@ public class LocationUpdateService extends Service implements GpsdServer.Connect
         } catch (IOException e) {
             e.printStackTrace();
         }
-        gpsdServer.execute(null, null);
-        Log.d(TAG, "GPSDServer Async Task Begun");
+        if (gpsdServer != null) {
+            gpsdServer.execute(null, null);
+            Log.d(TAG, "GPSDServer Async Task Begun");
+        } else {
+            Log.d(TAG, "Error starting gpsd server");
+        }
 
 
         if (apiClient == null) {
@@ -163,19 +195,22 @@ public class LocationUpdateService extends Service implements GpsdServer.Connect
         } else {
             startLocationUpdates();
         }
-//        3) send GPS updates as they occur
     }
 
-    public void setUpdateReceiver(KaliGPSUpdates.Receiver updateReceiver) {
-        this.updateReceiver = updateReceiver;
+    public void stopUpdates() {
+        Log.d(TAG, "In stopUpdates");
+        requestedLocationUpdates = false;
+        this.updateReceiver = null;
+        stopSelf();
     }
 
     private void startLocationUpdates() {
         Log.d(TAG, "in startLocationUpdates");
         final LocationRequest lr = LocationRequest.create()
                 .setExpirationDuration(1000 * 3600 * 2) /*2 hrs*/
-                .setInterval(1000 / 2L) /*2 hz updates*/
-                .setMaxWaitTime(1000L)
+                .setFastestInterval(100L)
+                .setInterval(1000L / 2L) /*2 hz updates*/
+                .setMaxWaitTime(600L)
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
 
@@ -193,9 +228,6 @@ public class LocationUpdateService extends Service implements GpsdServer.Connect
         @Override
         public void onLocationChanged(Location location) {
             String nmeaSentence = nmeaSentenceFromLocation(location);
-//            CharsetEncoder enc = Charset.forName("US-ASCII").newEncoder();
-
-
 
             if (clientSocket != null) {
 
@@ -207,26 +239,6 @@ public class LocationUpdateService extends Service implements GpsdServer.Connect
                 }
                 out.println(nmeaSentence);
 
-
-
-//                ByteBuffer buf = ByteBuffer.allocate(GGA_LENGTH_MAX);
-//                buf.clear();
-//                buf.put(nmeaSentence.getBytes());
-//                buf.flip();
-//
-//                while (buf.hasRemaining()) {
-//                    try {
-//                        clientSocket.getChannel().write(buf);
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-
-//                try {
-//                    clientSocket.getChannel().write(enc.encode(CharBuffer.wrap(nmeaSentence)));
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
 
                 if (updateReceiver != null) {
                     if (firstupdate) {
@@ -242,30 +254,19 @@ public class LocationUpdateService extends Service implements GpsdServer.Connect
 
     private String nmeaSentenceFromLocation(Location location) {
 
-//            from: https://github.com/ya-isakov/blue-nmea-mirror/blob/master/src/Source.java
+//       from: https://github.com/ya-isakov/blue-nmea-mirror/blob/master/src/Source.java
         String time = formatTime(location);
-        String date = formatDate(location);
         String position = formatPosition(location);
 
-        String gpggaSentence = "GPGGA," + time + "," +
+        String innerSentence = "GPGGA," + time + "," +
                 position + ",1," +
-                NMEA.formatSatellites(location) + "," +
+                formatSatellites(location) + "," +
                 location.getAccuracy() + "," +
-                NMEA.formatAltitude(location) + ",,,,";
+                formatAltitude(location) + ",,,,";
 
 //        Adds checksum and initial $
-        String checksum = checksum(gpggaSentence);
-        String fullSentence = "$" + gpggaSentence + checksum;
-        return fullSentence;
-
-//        sendWithChecksum("GPGLL," + position + "," + time + ",A");
-//        sendWithChecksum("GPRMC," + time + ",A," +
-//                position + "," +
-//                NMEA.formatSpeedKt(location) + "," +
-//                NMEA.formatBearing(location) + "," +
-//                date + ",,");
-//
-
+        String checksum = checksum(innerSentence);
+        return "$" + innerSentence + checksum;
 
     }
 
@@ -273,6 +274,10 @@ public class LocationUpdateService extends Service implements GpsdServer.Connect
     @Override
     public void onDestroy() {
         Log.d(TAG, "OnDestroy");
+        if(apiClient != null && apiClient.isConnected()) {
+            apiClient.disconnect();
+            LocationServices.FusedLocationApi.removeLocationUpdates(apiClient, locationListener);
+        }
         super.onDestroy();
     }
 }
