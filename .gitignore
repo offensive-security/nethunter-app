@@ -55,3 +55,4 @@ gradlew
 gradlew.bat
 libsuperuser-release/libsuperuser-release.iml
 androidwversionmanager/androidwversionmanager.iml
+.iml
