@@ -99,6 +99,9 @@ public class MPCFragment extends Fragment {
                     case 11:
                         typeVar = "windows";
                         break;
+                    case 12:
+                        typeVar = "apk";
+                        break;
                 }
             }
             @Override
