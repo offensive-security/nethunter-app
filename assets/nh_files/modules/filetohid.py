@@ -76,7 +76,7 @@ def do_string(string, lang):
             if line is not None:
                 if isinstance(line, str):
                     os.system('%s%s%s\n' % (prefix, line.strip(), suffix))
-                    #print('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
+                    print('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
                 else:
                     for elem in line:
                         os.system('%s%s%s\n' % (prefix, elem.rstrip('\n').strip(), suffix))
