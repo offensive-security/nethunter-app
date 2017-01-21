@@ -779,12 +779,12 @@ dicts = {
         "\x37": "7",
         "\x38": "8",
         "\x39": "9",
-        "\x3A": "\\x02\\x00\\x00\\x37\\x00\\x00\\x00\\x00",
-        "\x3B": "\\x02\\x00\\x00\\x36\\x00\\x00\\x00\\x00",
+        "\x3A": "left-shift period",
+        "\x3B": "left-shift comma",
         "\x3C": "\\x00\\x00\\x00\\x64\\x00\\x00\\x00\\x00",
         "\x3D": "left-shift 0", #=
         "\x3E": "\\x02\\x00\\x00\\x64\\x00\\x00\\x00\\x00",
-        "\x3F": "\\x02\\x00\\x00\\x2d\\x00\\x00\\x00\\x00",
+        "\x3F": "left-shift minus",
         "\x40": "right-alt semicolon", #@
         "\x41": "left-shift a",
         "\x42": "left-shift b",
@@ -812,9 +812,9 @@ dicts = {
         "\x58": "left-shift x",
         "\x59": "left-shift y",
         "\x5a": "left-shift z",
-        "\x5B": "\\x40\\x00\\x00\\x2f\\x00\\x00\\x00\\x00",
-        "\x5C": "\\x00\\x00\\x00\\x35\\x00\\x00\\x00\\x00",
-        "\x5D": "\\x40\\x00\\x00\\x30\\x00\\x00\\x00\\x00",
+        "\x5B": "right-alt lbracket",
+        "\x5C": "tilde", #\
+        "\x5D": "right-alt rbracket",
         "\x5E": "left-shift equals", #^
         "\x5F": "left-shift slash", #_
           "\x61": "a",
@@ -843,9 +843,9 @@ dicts = {
         "\x78": "x",
         "\x79": "y",
         "\x7a": "z",
-        "\x7B": "\\x02\\x00\\x00\\x40\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x2f\\x00\\x00\\x00\\x00",
-        "\x7C": "\\x02\\x00\\x00\\x35\\x00\\x00\\x00\\x00",
-        "\x7D": "\\x02\\x00\\x00\\x40\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x30\\x00\\x00\\x00\\x00",
+        "\x7B": "left-shift right-alt lbracket",
+        "\x7C": "left-shift tilde", 
+        "\x7D": "left-shift right-alt rbracket",
         "\xE0": "\\x00\\x00\\x00\\x34\\x00\\x00\\x00\\x00",
         "\xE8": "\\x00\\x00\\x00\\x2f\\x00\\x00\\x00\\x00",
         "\xE9": "\\x02\\x00\\x00\\x2f\\x00\\x00\\x00\\x00",
