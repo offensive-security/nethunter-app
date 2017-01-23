@@ -55,7 +55,7 @@ def do_file(filename, lang):
                     else:
                         line = dicts[lang][char]
                         os.system('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
-                        os.system('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n') # releases key
+                        #os.system('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n') # releases key
                         os.system('sleep 0.03 \n') # Slow things down
                 elif char == '\n':
                     os.system('echo enter | /system/xbin/hid-keyboard /dev/hidg0 keyboard\n')
@@ -76,7 +76,7 @@ def do_string(string, lang):
             if line is not None:
                 if isinstance(line, str):
                     os.system('%s%s%s\n' % (prefix, line.strip(), suffix))
-                    #print('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
+                    print('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
                 else:
                     for elem in line:
                         os.system('%s%s%s\n' % (prefix, elem.rstrip('\n').strip(), suffix))
