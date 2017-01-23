@@ -528,6 +528,8 @@ dicts = {
         "\x0d": "\\x00\\x00\\x00\\x28\\x00\\x00\\x00\\x00"
     },
     'de_bin' : {
+        "\x47": "left-shift g",
+        "\x67": "g",
     },
     'de' : {
         # Symbols
