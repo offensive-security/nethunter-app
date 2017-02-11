@@ -354,7 +354,7 @@ public class ChrootManagerFragment extends Fragment {
     private void fullOrMinimal(final Boolean shouldDownload){
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
         adb.setTitle("Select Chroot Download:")
-                .setMessage("We recomend the full chroot, so you can enjoy all the nethunter features.\n\nIf you are installing from the SdCard, choose the type of chroot you copied to the SdCard.\n\nThe minimal is for testing/development")
+                .setMessage("We recommend the full chroot, so you can enjoy all the nethunter features.\n\nIf you are installing from the SdCard, choose the type of chroot you copied to the SdCard.\n\nThe minimal is for testing/development")
                 .setNeutralButton("Minimal Chroot", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
