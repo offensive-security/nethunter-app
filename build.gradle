@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath 'com.android.tools.build:gradle:2.3.0-beta3'
     }
 }
 
@@ -14,7 +14,7 @@ task wrapper(type: Wrapper) {
 
 apply plugin: 'com.android.application'
 
-def getDate() {
+static def getDate() {
     return Calendar.getInstance().getTimeInMillis()
 }
 
@@ -24,10 +24,10 @@ repositories {
 
 
 dependencies {
-    compile 'com.android.support:support-v4:25.1.0'
-    compile 'com.android.support:appcompat-v7:25.1.0'
-    compile 'com.android.support:design:25.1.0'
-    compile 'com.google.guava:guava:19.0-rc2'
+    compile 'com.android.support:support-v4:25.1.1'
+    compile 'com.android.support:appcompat-v7:25.1.1'
+    compile 'com.android.support:design:25.1.1'
+    compile 'com.google.guava:guava:20.0'
     compile project(':androidwversionmanager')
     compile 'org.thoughtcrime.ssl.pinning:AndroidPinning:1.0.0'
     compile 'com.google.android.gms:play-services-location:10.0.1'
@@ -37,7 +37,7 @@ dependencies {
 android {
 
     compileSdkVersion 25
-    buildToolsVersion '25'
+    buildToolsVersion '25.0.2'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
