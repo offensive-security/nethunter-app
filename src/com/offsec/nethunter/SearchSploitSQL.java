@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
+import android.os.Environment;
 import android.util.Log;
 
 import com.offsec.nethunter.utils.NhPaths;
@@ -18,11 +19,11 @@ class SearchSploitSQL extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "SearchSploit";
     private static final String TAG = "SearchSploitSQL";
-    private static final String CSVfileName = "/sdcard/nh_files/files.csv"; // tmp location
+    private static final String CSVfileName = Environment.getExternalStorageDirectory() + "/nh_files/files.csv"; // tmp location
     private static final String CSVfileName_chroot = "/data/local/nhsystem/kali-armhf/usr/share/exploitdb/files.csv"; // origin
-    public SearchSploitSQL(Context context) {
+
+    SearchSploitSQL(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        Context context1 = context;
         NhPaths nh = new NhPaths();
 
     }
@@ -49,25 +50,27 @@ class SearchSploitSQL extends SQLiteOpenHelper {
         onUpgrade(database, oldVersion, newVersion);
     }
 
-    public void doDrop(){
+    public void doDrop() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DROP TABLE IF EXISTS " + SearchSploit.TABLE);
     }
 
-    public Boolean doDbFeed() {
+    Boolean doDbFeed() {
         // copy csv to /sdcard as temp (so we can read it)
-        String _cmd = "su -c bootkali custom_cmd csv2sqlite.py /usr/share/exploitdb/files.csv /sdcard/nh_files/SearchSploit "+ SearchSploit.TABLE;
+        String _cmd = "su -c bootkali custom_cmd csv2sqlite.py /usr/share/exploitdb/files.csv /sdcard/nh_files/SearchSploit " + SearchSploit.TABLE;
         // move to app db folder
         exe.RunAsRootOutput(_cmd);
         return true;
     }
-    public long getCount() {
+
+    long getCount() {
         String sql = "SELECT COUNT(*) FROM " + SearchSploit.TABLE;
         SQLiteDatabase db = this.getWritableDatabase();
         SQLiteStatement statement = db.compileStatement(sql);
         long count = statement.simpleQueryForLong();
         return count;
     }
+
     public List<SearchSploit> getAllExploits() {
         String query = "SELECT  * FROM " + SearchSploit.TABLE + " LIMIT 100";
         SQLiteDatabase db = this.getWritableDatabase();
@@ -76,13 +79,14 @@ class SearchSploitSQL extends SQLiteOpenHelper {
         db.close();
         return _List;
     }
-    public List<SearchSploit> getAllExploitsFiltered(String filter, String platform, String type, String port) {
+
+    List<SearchSploit> getAllExploitsFiltered(String filter, String platform, String type, String port) {
         String wildcard = "%" + filter + "%";
         String query = "SELECT * FROM " + SearchSploit.TABLE
-                + " WHERE "+ SearchSploit.DESCRIPTION +" like ?" +
-                " and " + SearchSploit.PLATFORM + "='" + platform +"'"+
-                " and " + SearchSploit.TYPE +"='" + type +"'"+
-                " and " + SearchSploit.PORT +"='" + port +"' GROUP BY " +SearchSploit.ID;
+                + " WHERE " + SearchSploit.DESCRIPTION + " like ?" +
+                " and " + SearchSploit.PLATFORM + "='" + platform + "'" +
+                " and " + SearchSploit.TYPE + "='" + type + "'" +
+                " and " + SearchSploit.PORT + "='" + port + "' GROUP BY " + SearchSploit.ID;
         SQLiteDatabase db = this.getWritableDatabase();
         Log.d("QUERYYY", query);
         Cursor cursor = db.rawQuery(query, new String[]{wildcard});
@@ -90,10 +94,11 @@ class SearchSploitSQL extends SQLiteOpenHelper {
         db.close();
         return _List;
     }
-    public List<SearchSploit> getAllExploitsRaw(String filter) {
+
+    List<SearchSploit> getAllExploitsRaw(String filter) {
         String wildcard = "%" + filter + "%";
         String query = "SELECT * FROM " + SearchSploit.TABLE
-                + " WHERE ( "+ SearchSploit.DESCRIPTION +" like ? or "+ SearchSploit.AUTHOR +" like ? or "+ SearchSploit.PLATFORM +" like ? or "+ SearchSploit.TYPE +" like ? ) GROUP BY " +SearchSploit.ID;
+                + " WHERE ( " + SearchSploit.DESCRIPTION + " like ? or " + SearchSploit.AUTHOR + " like ? or " + SearchSploit.PLATFORM + " like ? or " + SearchSploit.TYPE + " like ? ) GROUP BY " + SearchSploit.ID;
         SQLiteDatabase db = this.getWritableDatabase();
         Log.d("EXPLOIT_QUERY", query);
         Cursor cursor = db.rawQuery(query, new String[]{wildcard, wildcard, wildcard, wildcard});
@@ -101,7 +106,8 @@ class SearchSploitSQL extends SQLiteOpenHelper {
         db.close();
         return _List;
     }
-    private List<SearchSploit> createExploitList(Cursor cursor){
+
+    private List<SearchSploit> createExploitList(Cursor cursor) {
         List<SearchSploit> commandList = new LinkedList<>();
         if (cursor.moveToFirst()) {
             do {
@@ -122,39 +128,42 @@ class SearchSploitSQL extends SQLiteOpenHelper {
     }
 
 
-    public List<String> getTypes() {
-        String query = "SELECT DISTINCT "+ SearchSploit.TYPE +
+    List<String> getTypes() {
+        String query = "SELECT DISTINCT " + SearchSploit.TYPE +
                 " FROM " + SearchSploit.TABLE +
-                " ORDER BY "+ SearchSploit.TYPE +" ASC";
+                " ORDER BY " + SearchSploit.TYPE + " ASC";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         List<String> _List = createStringList(cursor);
         db.close();
         return _List;
     }
-    public List<String> getPorts() {
-        String query = "SELECT DISTINCT "+ SearchSploit.PORT +
+
+    List<String> getPorts() {
+        String query = "SELECT DISTINCT " + SearchSploit.PORT +
                 " FROM " + SearchSploit.TABLE +
-                " ORDER BY "+ SearchSploit.PORT +" ASC";
+                " ORDER BY " + SearchSploit.PORT + " ASC";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         List<String> _List = createStringList(cursor);
         db.close();
         return _List;
     }
-    public List<String> getPlatforms() {
-        String query = "SELECT DISTINCT "+ SearchSploit.PLATFORM +" FROM " + SearchSploit.TABLE  + " ORDER BY "+ SearchSploit.PLATFORM +" ASC";
+
+    List<String> getPlatforms() {
+        String query = "SELECT DISTINCT " + SearchSploit.PLATFORM + " FROM " + SearchSploit.TABLE + " ORDER BY " + SearchSploit.PLATFORM + " ASC";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         List<String> _List = createStringList(cursor);
         db.close();
         return _List;
     }
-    private List<String> createStringList(Cursor cursor){
+
+    private List<String> createStringList(Cursor cursor) {
         List<String> strList = new LinkedList<>();
         if (cursor.moveToFirst()) {
             do {
-                   strList.add(cursor.getString(0));
+                strList.add(cursor.getString(0));
             } while (cursor.moveToNext());
         }
         cursor.close();

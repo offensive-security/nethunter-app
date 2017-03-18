@@ -34,7 +34,7 @@ class CustomCommandsSQL extends SQLiteOpenHelper {
             CustomCommand.SEND_TO_SHELL + " TEXT, " +
             CustomCommand.RUN_AT_BOOT + " INTEGER )";
     private final Context context;
-    public CustomCommandsSQL(Context context) {
+    CustomCommandsSQL(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
         nh = new NhPaths();
@@ -51,7 +51,7 @@ class CustomCommandsSQL extends SQLiteOpenHelper {
         this.onCreate(db);
     }
 
-    public CustomCommand addCommand(final String command_tag, final String command, final String mode, final String send_to_shell, final Integer run_at_boot) {
+    CustomCommand addCommand(final String command_tag, final String command, final String mode, final String send_to_shell, final Integer run_at_boot) {
         long id = 0;
         if (command_tag.length() > 0 &&
                 command.length() > 0) {
@@ -69,7 +69,7 @@ class CustomCommandsSQL extends SQLiteOpenHelper {
         }
         return new CustomCommand(id,command_tag, command, mode, send_to_shell, run_at_boot);
     }
-    public void updateCommand(final CustomCommand updatedCommand) {
+    void updateCommand(final CustomCommand updatedCommand) {
         if (updatedCommand != null) {
             SQLiteDatabase db = this.getWritableDatabase();
 
@@ -87,7 +87,7 @@ class CustomCommandsSQL extends SQLiteOpenHelper {
         }
     }
 
-    public void deleteCommand(final long id) {
+    void deleteCommand(final long id) {
         if (id != 0) {
             SQLiteDatabase db = this.getWritableDatabase();
 
@@ -98,7 +98,7 @@ class CustomCommandsSQL extends SQLiteOpenHelper {
 
         }
     }
-    public List<CustomCommand> getAllCommands() {
+    List<CustomCommand> getAllCommands() {
         String query = "SELECT  * FROM " + CustomCommand.TABLE;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -106,7 +106,7 @@ class CustomCommandsSQL extends SQLiteOpenHelper {
         db.close();
         return _List;
     }
-    public List<CustomCommand> getAllCommandsFiltered(String filter) {
+    List<CustomCommand> getAllCommandsFiltered(String filter) {
         String wildcard = "%" + filter + "%";
         String query = "SELECT * FROM " + CustomCommand.TABLE
                 + " WHERE BTN_LABEL like ?" ;
@@ -116,7 +116,7 @@ class CustomCommandsSQL extends SQLiteOpenHelper {
         db.close();
         return _List;
     }
-    public List<CustomCommand> getAllCommandsAtBoot() {
+    List<CustomCommand> getAllCommandsAtBoot() {
         String query = "SELECT * FROM " + CustomCommand.TABLE
                 + " WHERE RUN_AT_BOOT = 1" ;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -145,7 +145,7 @@ class CustomCommandsSQL extends SQLiteOpenHelper {
         return commandList;
 
     }
-    public void importDB() {
+    void importDB() {
         try {
             String sd = nh.SD_PATH;
             String data = nh.APP_PATH;
@@ -169,7 +169,7 @@ class CustomCommandsSQL extends SQLiteOpenHelper {
         }
     }
 
-    public void exportDB() {
+    void exportDB() {
         try {
             String sd = nh.SD_PATH;
             String data = nh.APP_PATH;

@@ -296,13 +296,13 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for JSKeyLogger Checkbox
             final CheckBox jskeylogCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_jskey);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(jskeylogCheckbox.isChecked()) {
+                    if (jskeylogCheckbox.isChecked()) {
                         M_JSKeyLogger = " --jskeylogger";
                         Log.d("MITMf:", M_JSKeyLogger);
                         addToCmd(M_JSKeyLogger);
-                    }else{
+                    } else {
                         removeFromCmd(M_JSKeyLogger);
                     }
                 }
@@ -311,12 +311,12 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for FerretNG Checkbox
             final CheckBox ferretNGCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_ferretng);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(ferretNGCheckbox.isChecked()) {
+                    if (ferretNGCheckbox.isChecked()) {
                         M_FerretNG = " --ferretng";
                         addToCmd(M_FerretNG);
-                    }else{
+                    } else {
                         removeFromCmd(M_FerretNG);
                     }
                 }
@@ -325,12 +325,12 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for BrowserProfiler Checkbox
             final CheckBox BrowserProfilerCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_browserprofile);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(BrowserProfilerCheckbox.isChecked()) {
+                    if (BrowserProfilerCheckbox.isChecked()) {
                         M_BrowserProfiler = " --browserprofiler";
                         addToCmd(M_BrowserProfiler);
-                    }else{
+                    } else {
                         removeFromCmd(M_BrowserProfiler);
                     }
                 }
@@ -339,12 +339,12 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for FilePWN Checkbox
             final CheckBox FilePWNCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_filepwn);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(FilePWNCheckbox.isChecked()) {
+                    if (FilePWNCheckbox.isChecked()) {
                         M_FilePWN = " --filepwn";
                         addToCmd(M_FilePWN);
-                    }else{
+                    } else {
                         removeFromCmd(M_FilePWN);
                     }
                 }
@@ -353,12 +353,12 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for BeeF AutoRUN Checkbox
             final CheckBox BeeFAutoCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_beef);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(BeeFAutoCheckbox.isChecked()) {
+                    if (BeeFAutoCheckbox.isChecked()) {
                         M_BeeF = " --beefauto";
                         addToCmd(M_BeeF);
-                    }else{
+                    } else {
                         removeFromCmd(M_BeeF);
                     }
                 }
@@ -367,12 +367,12 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for SMB Checkbox
             final CheckBox SMBCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_smb);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(SMBCheckbox.isChecked()) {
+                    if (SMBCheckbox.isChecked()) {
                         M_SMB = " --smbauth";
                         addToCmd(M_SMB);
-                    }else{
+                    } else {
                         removeFromCmd(M_SMB);
                     }
                 }
@@ -381,12 +381,12 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for SSLStrip
             final CheckBox SSLStripCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_sslstrip);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(SSLStripCheckbox.isChecked()) {
+                    if (SSLStripCheckbox.isChecked()) {
                         M_SSLStrip = " --hsts";
                         addToCmd(M_SSLStrip);
-                    }else{
+                    } else {
                         removeFromCmd(M_SSLStrip);
                     }
                 }
@@ -395,12 +395,12 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for App Cache Poison
             final CheckBox APPCachePoisonCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_app_poison);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(APPCachePoisonCheckbox.isChecked()) {
+                    if (APPCachePoisonCheckbox.isChecked()) {
                         M_App_Poison = " --appoison";
                         addToCmd(M_App_Poison);
-                    }else{
+                    } else {
                         removeFromCmd(M_App_Poison);
                     }
                 }
@@ -409,12 +409,12 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for UpsideDownInternet
             final CheckBox UpsideDownCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_upsidedown);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(UpsideDownCheckbox.isChecked()) {
+                    if (UpsideDownCheckbox.isChecked()) {
                         M_UpsideDown = " --upsidedownternet";
                         addToCmd(M_UpsideDown);
-                    }else{
+                    } else {
                         removeFromCmd(M_UpsideDown);
                     }
                 }
@@ -438,9 +438,8 @@ public class MITMfFragment extends Fragment {
                 }
 
                 @Override
-                public void afterTextChanged(Editable s)
-                {
-                    if(ScreenShotterCheckbox.isChecked()) {
+                public void afterTextChanged(Editable s) {
+                    if (ScreenShotterCheckbox.isChecked()) {
                         removeFromCmd(M_ScreenShotter);
                         SCREENTIMEtext = M_ScreenIntervalTime.getText().toString(); // Get [num]
                         M_ScreenShotter = " --screen --interval " + SCREENTIMEtext;
@@ -452,9 +451,9 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for ScreenShotter
             ScreenShotterCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_screenshotter);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(ScreenShotterCheckbox.isChecked()) {
+                    if (ScreenShotterCheckbox.isChecked()) {
                         M_ScreenShotter = " --screen --interval " + SCREENTIMEtext;
                         addToCmd(M_ScreenShotter);
                         M_ScreenIntervalTime.setFocusableInTouchMode(true);
@@ -490,12 +489,12 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for Injection Preserve Cache
             final CheckBox InjectionPreserveCacheCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_inject_preservecache);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(InjectionPreserveCacheCheckbox.isChecked()) {
+                    if (InjectionPreserveCacheCheckbox.isChecked()) {
                         M_Injection_Preserve_Cache = " --preserve-cache";
                         addToCmd(M_Injection_Preserve_Cache);
-                    }else{
+                    } else {
                         removeFromCmd(M_Injection_Preserve_Cache);
                     }
                 }
@@ -504,12 +503,12 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for Injection Once Per Domain
             final CheckBox InjectionPerDomainCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_inject_onceperdomain);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(InjectionPerDomainCheckbox.isChecked()) {
+                    if (InjectionPerDomainCheckbox.isChecked()) {
                         M_Injection_Per_Domain = " --per-domain";
                         addToCmd(M_Injection_Per_Domain);
-                    }else{
+                    } else {
                         M_Injection_Per_Domain = "";
                         removeFromCmd(M_Injection_Per_Domain);
                     }
@@ -532,8 +531,7 @@ public class MITMfFragment extends Fragment {
                 }
 
                 @Override
-                public void afterTextChanged(Editable s)
-                {
+                public void afterTextChanged(Editable s) {
                     removeFromCmd(M_Injection_JSURL + JSURLtext);
                     M_Injection_JSURL = " --js-url ";
                     JSURLtext = M_Injection_JSURL_Text.getText().toString();
@@ -544,16 +542,16 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for Injection JS URL
             final CheckBox InjectionJSURLCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_injectjs);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(InjectionJSURLCheckbox.isChecked()) {
+                    if (InjectionJSURLCheckbox.isChecked()) {
                         M_Injection_JSURL = " --js-url ";
                         JSURLtext = M_Injection_JSURL_Text.getText().toString();
                         addToCmd(M_Injection_JSURL + JSURLtext);
                         M_Injection_JSURL_Text.setFocusableInTouchMode(true);
                         M_Injection_JSURL_Text.setFocusable(true);
                         M_Injection_JSURL_Text.setEnabled(true);
-                    }else{
+                    } else {
                         removeFromCmd(M_Injection_JSURL + JSURLtext);
                         M_Injection_JSURL_Text.setFocusableInTouchMode(false);
                         M_Injection_JSURL_Text.setFocusable(false);
@@ -579,8 +577,7 @@ public class MITMfFragment extends Fragment {
                 }
 
                 @Override
-                public void afterTextChanged(Editable s)
-                {
+                public void afterTextChanged(Editable s) {
                     removeFromCmd(M_Injection_HTMLURL + HTMLURLtext);
                     M_Injection_HTMLURL = " --html-url ";
                     HTMLURLtext = M_Injection_HTMLURL_Text.getText().toString();
@@ -590,16 +587,16 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for Injection HTML URL
             final CheckBox InjectionHTMLURLCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_injecthtml);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(InjectionHTMLURLCheckbox.isChecked()) {
+                    if (InjectionHTMLURLCheckbox.isChecked()) {
                         M_Injection_HTMLURL = " --html-url ";
                         HTMLURLtext = M_Injection_HTMLURL_Text.getText().toString();
                         addToCmd(M_Injection_HTMLURL + HTMLURLtext);
                         M_Injection_HTMLURL_Text.setFocusableInTouchMode(true);
                         M_Injection_HTMLURL_Text.setFocusable(true);
                         M_Injection_HTMLURL_Text.setEnabled(true);
-                    }else{
+                    } else {
                         removeFromCmd(M_Injection_HTMLURL + HTMLURLtext);
                         M_Injection_HTMLURL_Text.setFocusableInTouchMode(false);
                         M_Injection_HTMLURL_Text.setFocusable(false);
@@ -624,8 +621,7 @@ public class MITMfFragment extends Fragment {
                 }
 
                 @Override
-                public void afterTextChanged(Editable s)
-                {
+                public void afterTextChanged(Editable s) {
                     removeFromCmd(M_Injection_HTMLPAY + HTMLPAYtext);
                     M_Injection_HTMLPAY = " --html-payload ";
                     HTMLPAYtext = M_Injection_HTMLPAY_Text.getText().toString();
@@ -635,15 +631,15 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for Injection HTML Payload String
             final CheckBox InjectionHTMLPAYCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_injecthtmlpay);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(InjectionHTMLPAYCheckbox.isChecked()) {
+                    if (InjectionHTMLPAYCheckbox.isChecked()) {
                         M_Injection_HTMLPAY = " --html-payload ";
                         addToCmd(M_Injection_HTMLPAY + HTMLPAYtext);
                         M_Injection_HTMLPAY_Text.setFocusableInTouchMode(true);
                         M_Injection_HTMLPAY_Text.setFocusable(true);
                         M_Injection_HTMLPAY_Text.setEnabled(true);
-                    }else{
+                    } else {
                         removeFromCmd(M_Injection_HTMLPAY + HTMLPAYtext);
                         M_Injection_HTMLPAY_Text.setFocusableInTouchMode(false);
                         M_Injection_HTMLPAY_Text.setFocusable(false);
@@ -656,16 +652,16 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for Injection Match HTML
             final CheckBox InjectionMatchCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_inject_match);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(InjectionMatchCheckbox.isChecked()) {
+                    if (InjectionMatchCheckbox.isChecked()) {
                         M_Injection_Match = " --match-str ";
                         MATCHtext = M_Injection_Match_Text.getText().toString();
                         addToCmd(M_Injection_Match + MATCHtext);
                         M_Injection_Match_Text.setFocusableInTouchMode(true);
                         M_Injection_Match_Text.setFocusable(true);
                         M_Injection_Match_Text.setEnabled(true);
-                    }else{
+                    } else {
                         removeFromCmd(M_Injection_Match + MATCHtext);
                         M_Injection_Match_Text.setFocusableInTouchMode(false);
                         M_Injection_Match_Text.setFocusable(false);
@@ -691,9 +687,8 @@ public class MITMfFragment extends Fragment {
                 }
 
                 @Override
-                public void afterTextChanged(Editable s)
-                {
-                    if(InjectionMatchCheckbox.isChecked()) {
+                public void afterTextChanged(Editable s) {
+                    if (InjectionMatchCheckbox.isChecked()) {
                         removeFromCmd(M_Injection_Match + MATCHtext);
                         M_Injection_Match = " --match-str ";
                         MATCHtext = M_Injection_Match_Text.getText().toString();
@@ -717,8 +712,7 @@ public class MITMfFragment extends Fragment {
                 }
 
                 @Override
-                public void afterTextChanged(Editable s)
-                {
+                public void afterTextChanged(Editable s) {
                     removeFromCmd(M_Injection_Rate_Limit + RATEtext);
                     M_Injection_Rate_Limit = " --rate-limit ";
                     RATEtext = M_Injection_Rate_Limit_Text.getText().toString();
@@ -728,16 +722,16 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for Injection Rate Limit
             final CheckBox InjectionRateLimitCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_inject_ratelimit);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(InjectionRateLimitCheckbox.isChecked()) {
+                    if (InjectionRateLimitCheckbox.isChecked()) {
                         M_Injection_Rate_Limit = " --rate-limit ";
                         RATEtext = M_Injection_Rate_Limit_Text.getText().toString();
                         addToCmd(M_Injection_Rate_Limit + RATEtext);
                         M_Injection_Rate_Limit_Text.setFocusableInTouchMode(true);
                         M_Injection_Rate_Limit_Text.setFocusable(true);
                         M_Injection_Rate_Limit_Text.setEnabled(true);
-                    }else{
+                    } else {
                         removeFromCmd(M_Injection_Rate_Limit + RATEtext);
                         M_Injection_Rate_Limit_Text.setFocusableInTouchMode(false);
                         M_Injection_Rate_Limit_Text.setFocusable(false);
@@ -762,8 +756,7 @@ public class MITMfFragment extends Fragment {
                 }
 
                 @Override
-                public void afterTextChanged(Editable s)
-                {
+                public void afterTextChanged(Editable s) {
                     removeFromCmd(M_Injection_Number + NUMtext);
                     M_Injection_Number = " --count-limit ";
                     NUMtext = M_Injection_Number_Text.getText().toString();
@@ -773,16 +766,16 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for Injection Count Limit
             final CheckBox InjectionNumberCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_inject_times);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(InjectionNumberCheckbox.isChecked()) {
+                    if (InjectionNumberCheckbox.isChecked()) {
                         M_Injection_Number = " --count-limit ";
                         NUMtext = M_Injection_Number_Text.getText().toString();
                         addToCmd(M_Injection_Number + NUMtext);
                         M_Injection_Number_Text.setFocusableInTouchMode(true);
                         M_Injection_Number_Text.setFocusable(true);
                         M_Injection_Number_Text.setEnabled(true);
-                    }else{
+                    } else {
                         removeFromCmd(M_Injection_Number + NUMtext);
                         M_Injection_Number = "";
                         M_Injection_Number_Text.setFocusableInTouchMode(false);
@@ -809,8 +802,7 @@ public class MITMfFragment extends Fragment {
                 }
 
                 @Override
-                public void afterTextChanged(Editable s)
-                {
+                public void afterTextChanged(Editable s) {
                     removeFromCmd(M_Injection_Only_IP + ONLYIPtext);
                     M_Injection_Only_IP = " --white-ips ";
                     ONLYIPtext = M_Injection_Only_IP_Text.getText().toString();
@@ -820,16 +812,16 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for Injection Only Target IP
             final CheckBox InjectionOnlyIPCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_inject_ip);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(InjectionOnlyIPCheckbox.isChecked()) {
+                    if (InjectionOnlyIPCheckbox.isChecked()) {
                         M_Injection_Only_IP = " --white-ips ";
                         ONLYIPtext = M_Injection_Only_IP_Text.getText().toString();
                         addToCmd(M_Injection_Only_IP + ONLYIPtext);
                         M_Injection_Only_IP_Text.setFocusableInTouchMode(true);
                         M_Injection_Only_IP_Text.setFocusable(true);
                         M_Injection_Only_IP_Text.setEnabled(true);
-                    }else{
+                    } else {
                         removeFromCmd(M_Injection_Only_IP + ONLYIPtext);
                         M_Injection_Only_IP_Text.setFocusableInTouchMode(false);
                         M_Injection_Only_IP_Text.setFocusable(false);
@@ -855,8 +847,7 @@ public class MITMfFragment extends Fragment {
                 }
 
                 @Override
-                public void afterTextChanged(Editable s)
-                {
+                public void afterTextChanged(Editable s) {
                     removeFromCmd(M_Injection_Not_IP + NOTIPtext);
                     M_Injection_Not_IP = " --black-ips ";
                     NOTIPtext = M_Injection_Not_IP_Text.getText().toString();
@@ -866,16 +857,16 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for Injection Not IP
             final CheckBox InjectionNotIPCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_inject_noip);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(InjectionNotIPCheckbox.isChecked()) {
+                    if (InjectionNotIPCheckbox.isChecked()) {
                         M_Injection_Not_IP = " --black-ips ";
                         NOTIPtext = M_Injection_Not_IP_Text.getText().toString();
                         addToCmd(M_Injection_Not_IP + NOTIPtext);
                         M_Injection_Not_IP_Text.setFocusableInTouchMode(true);
                         M_Injection_Not_IP_Text.setFocusable(true);
                         M_Injection_Not_IP_Text.setEnabled(true);
-                    }else{
+                    } else {
                         removeFromCmd(M_Injection_Not_IP + NOTIPtext);
                         M_Injection_Not_IP_Text.setFocusableInTouchMode(false);
                         M_Injection_Not_IP_Text.setFocusable(false);
@@ -888,9 +879,9 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for Injection
             final CheckBox InjectionCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_enableinject);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(InjectionCheckbox.isChecked()) {
+                    if (InjectionCheckbox.isChecked()) {
                         M_Injection = " --inject";
                         addToCmd(M_Injection);
                         /* Allow checkboxes to be enabled if Injection checkbox activated */
@@ -904,7 +895,7 @@ public class MITMfFragment extends Fragment {
                         InjectionNumberCheckbox.setEnabled(true);
                         InjectionOnlyIPCheckbox.setEnabled(true);
                         InjectionNotIPCheckbox.setEnabled(true);
-                    }else {
+                    } else {
                         removeFromCmd(M_Injection);
                         removeFromCmd(M_Injection_Preserve_Cache);
                         removeFromCmd(M_Injection_Per_Domain);
@@ -1100,8 +1091,7 @@ public class MITMfFragment extends Fragment {
                 }
 
                 @Override
-                public void afterTextChanged(Editable s)
-                {
+                public void afterTextChanged(Editable s) {
                     removeFromCmd(M_Spoofer_Gateway + GATEtext);
                     M_Spoofer_Gateway = " --gateway ";
                     GATEtext = M_Spoofer_Gateway_Text.getText().toString();
@@ -1111,16 +1101,16 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for Spoof Gateway
             final CheckBox SpoofGatewayIPCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_spoof_gateway);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(SpoofGatewayIPCheckbox.isChecked()) {
+                    if (SpoofGatewayIPCheckbox.isChecked()) {
                         M_Spoofer_Gateway = " --gateway ";
                         GATEtext = M_Spoofer_Gateway_Text.getText().toString();
                         addToCmd(M_Spoofer_Gateway + GATEtext);
                         M_Spoofer_Gateway_Text.setEnabled(true);
                         M_Spoofer_Gateway_Text.setFocusableInTouchMode(true);
                         M_Spoofer_Gateway_Text.setFocusable(true);
-                    }else{
+                    } else {
                         removeFromCmd(M_Spoofer_Gateway + GATEtext);
                         M_Spoofer_Gateway_Text.setEnabled(false);
                         M_Spoofer_Gateway_Text.setFocusableInTouchMode(false);
@@ -1145,8 +1135,7 @@ public class MITMfFragment extends Fragment {
                 }
 
                 @Override
-                public void afterTextChanged(Editable s)
-                {
+                public void afterTextChanged(Editable s) {
                     removeFromCmd(M_Spoofer_Targets + TARGETtext);
                     M_Spoofer_Targets = " --targets ";
                     TARGETtext = M_Spoofer_Targets_Text.getText().toString();
@@ -1155,16 +1144,16 @@ public class MITMfFragment extends Fragment {
             });
 
             final CheckBox SpoofSpecifyTargetCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_spoof_targets);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(SpoofSpecifyTargetCheckbox.isChecked()) {
+                    if (SpoofSpecifyTargetCheckbox.isChecked()) {
                         M_Spoofer_Targets = " --targets ";
                         TARGETtext = M_Spoofer_Targets_Text.getText().toString();
                         addToCmd(M_Spoofer_Targets + TARGETtext);
                         M_Spoofer_Targets_Text.setFocusableInTouchMode(true);
                         M_Spoofer_Targets_Text.setFocusable(true);
                         M_Spoofer_Targets_Text.setEnabled(true);
-                    }else{
+                    } else {
                         removeFromCmd(M_Spoofer_Targets + TARGETtext);
                         M_Spoofer_Targets_Text.setFocusableInTouchMode(false);
                         M_Spoofer_Targets_Text.setFocusable(false);
@@ -1190,8 +1179,7 @@ public class MITMfFragment extends Fragment {
                 }
 
                 @Override
-                public void afterTextChanged(Editable s)
-                {
+                public void afterTextChanged(Editable s) {
                     removeFromCmd(M_Spoofer_Shellshock + SHELLtext);
                     M_Spoofer_Shellshock = " --shellshock ";
                     SHELLtext = M_Spoofer_Shellshock_Text.getText().toString();
@@ -1200,16 +1188,16 @@ public class MITMfFragment extends Fragment {
             });
 
             final CheckBox SpoofShellshockCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_spoof_shellshock);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(SpoofShellshockCheckbox.isChecked()) {
+                    if (SpoofShellshockCheckbox.isChecked()) {
                         M_Spoofer_Shellshock = " --shellshock ";
                         SHELLtext = M_Spoofer_Shellshock_Text.getText().toString();
                         addToCmd(M_Spoofer_Shellshock + SHELLtext);
                         M_Spoofer_Shellshock_Text.setFocusableInTouchMode(true);
                         M_Spoofer_Shellshock_Text.setFocusable(true);
                         M_Spoofer_Shellshock_Text.setEnabled(true);
-                    }else{
+                    } else {
                         removeFromCmd(M_Spoofer_Shellshock + SHELLtext);
                         M_Spoofer_Shellshock_Text.setFocusableInTouchMode(false);
                         M_Spoofer_Shellshock_Text.setFocusable(false);
@@ -1223,9 +1211,9 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for Spoofer
             final CheckBox SpoofCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_enablespoof);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(SpoofCheckbox.isChecked()) {
+                    if (SpoofCheckbox.isChecked()) {
                         M_Spoofer = " --spoof";
                         addToCmd(M_Spoofer);
                         /* Allow checkboxes to be enabled if Spoof checkbox activated */
@@ -1237,7 +1225,7 @@ public class MITMfFragment extends Fragment {
                         M_Spoofer_Gateway_Text.setEnabled(true);
                         SpoofSpecifyTargetCheckbox.setEnabled(true);
                         SpoofShellshockCheckbox.setEnabled(true);
-                    }else{
+                    } else {
                         removeFromCmd(M_Spoofer);
                         removeFromCmd(M_Spoofer_Redirect);
                         removeFromCmd(M_Spoofer_ARP_Mode);
@@ -1297,12 +1285,12 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for Provider Analyze
             final CheckBox ResponderAnalyzeCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_responder_analyze);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(ResponderAnalyzeCheckbox.isChecked()) {
+                    if (ResponderAnalyzeCheckbox.isChecked()) {
                         M_Responder_Analyze = " --analyze";
                         addToCmd(M_Responder_Analyze);
-                    }else{
+                    } else {
                         removeFromCmd(M_Responder_Analyze);
                     }
                 }
@@ -1311,12 +1299,12 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for Provider Fingerprint
             final CheckBox ResponderFingerprintCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_responder_fingerprint);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(ResponderFingerprintCheckbox.isChecked()) {
+                    if (ResponderFingerprintCheckbox.isChecked()) {
                         M_Responder_Fingerprint = " --fingerprint";
                         addToCmd(M_Responder_Fingerprint);
-                    }else{
+                    } else {
                         removeFromCmd(M_Responder_Fingerprint);
                     }
                 }
@@ -1325,12 +1313,12 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for Provider Downgrade
             final CheckBox ResponderDowngradeCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_responder_LM);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(ResponderDowngradeCheckbox.isChecked()) {
+                    if (ResponderDowngradeCheckbox.isChecked()) {
                         M_Responder_Downgrade = " --lm";
                         addToCmd(M_Responder_Downgrade);
-                    }else{
+                    } else {
                         removeFromCmd(M_Responder_Downgrade);
                     }
                 }
@@ -1339,12 +1327,12 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for NBTNS
             final CheckBox ResponderNBTNSCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_responder_NBTNS);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(ResponderNBTNSCheckbox.isChecked()) {
+                    if (ResponderNBTNSCheckbox.isChecked()) {
                         M_Responder_NBTNS = " --nbtns";
                         addToCmd(M_Responder_NBTNS);
-                    }else{
+                    } else {
                         removeFromCmd(M_Responder_NBTNS);
                     }
                 }
@@ -1353,12 +1341,12 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for WAPD
             final CheckBox ResponderWPADCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_responder_WPAD);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(ResponderWPADCheckbox.isChecked()) {
+                    if (ResponderWPADCheckbox.isChecked()) {
                         M_Responder_WPAD = " --wpad";
                         addToCmd(M_Responder_WPAD);
-                    }else{
+                    } else {
                         removeFromCmd(M_Responder_WPAD);
                     }
                 }
@@ -1367,12 +1355,12 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for Provider WREDIR
             final CheckBox ResponderWRedirCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_responder_WREDIR);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(ResponderWRedirCheckbox.isChecked()) {
+                    if (ResponderWRedirCheckbox.isChecked()) {
                         M_Responder_WRedir = " --wredir";
                         addToCmd(M_Responder_WRedir);
-                    }else{
+                    } else {
                         removeFromCmd(M_Responder_WRedir);
                     }
                 }
@@ -1382,9 +1370,9 @@ public class MITMfFragment extends Fragment {
 
             // Checkbox for Provider
             final CheckBox ResponderCheckbox = (CheckBox) rootView.findViewById(R.id.mitmf_responder);
-            checkBoxListener =new View.OnClickListener() {
+            checkBoxListener = new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(ResponderCheckbox.isChecked()) {
+                    if (ResponderCheckbox.isChecked()) {
                         M_Responder = " --responder";
                         addToCmd(M_Responder);
                         /* Allow checkboxes to be enabled if Provider not activated */
@@ -1394,7 +1382,7 @@ public class MITMfFragment extends Fragment {
                         ResponderNBTNSCheckbox.setEnabled(true);
                         ResponderWPADCheckbox.setEnabled(true);
                         ResponderWRedirCheckbox.setEnabled(true);
-                    }else{
+                    } else {
                         removeFromCmd(M_Responder);
                         removeFromCmd(M_Responder_Analyze);
                         removeFromCmd(M_Responder_Fingerprint);
@@ -1417,7 +1405,8 @@ public class MITMfFragment extends Fragment {
                         ResponderDowngradeCheckbox.setEnabled(false);
                         ResponderNBTNSCheckbox.setEnabled(false);
                         ResponderWPADCheckbox.setEnabled(false);
-                        ResponderWRedirCheckbox.setEnabled(false);                    }
+                        ResponderWRedirCheckbox.setEnabled(false);
+                    }
                 }
             };
             ResponderCheckbox.setOnClickListener(checkBoxListener);
@@ -1442,7 +1431,7 @@ public class MITMfFragment extends Fragment {
 
     public static class MITMfConfigFragment extends Fragment {
 
-        private final String configFilePath = nh.CHROOT_PATH +"/etc/mitmf/mitmf.conf";
+        private final String configFilePath = nh.CHROOT_PATH + "/etc/mitmf/mitmf.conf";
         final ShellExecuter exe = new ShellExecuter();
 
         @Override
@@ -1463,7 +1452,7 @@ public class MITMfFragment extends Fragment {
                 public void onClick(View v) {
                     EditText source = (EditText) rootView.findViewById(R.id.source);
                     Boolean isSaved = exe.SaveFileContents(source.getText().toString(), configFilePath);
-                    if(isSaved){
+                    if (isSaved) {
                         nh.showMessage("Source updated");
                     } else {
                         nh.showMessage("Source not updated");
@@ -1474,29 +1463,33 @@ public class MITMfFragment extends Fragment {
         }
     }
 
-    private String getCmd(){
+    private String getCmd() {
         String genCmd = "";
-        for (int j = CommandComposed.size()-1; j >= 0; j--) {
+        for (int j = CommandComposed.size() - 1; j >= 0; j--) {
             genCmd = genCmd + CommandComposed.get(j);
         }
         Log.d("MITMF CMD OUTPUT: ", "mitmf " + genCmd);
 
         return genCmd;
     }
+
     private static void cleanCmd() {
-        for (int j = CommandComposed.size()-1; j >= 0; j--) {
-                CommandComposed.remove(j);
+        for (int j = CommandComposed.size() - 1; j >= 0; j--) {
+            CommandComposed.remove(j);
         }
     }
+
     private static void addToCmd(String opt) {
         CommandComposed.add(opt);
     }
+
     private static void removeFromCmd(String opt) {
-        for (int j = CommandComposed.size()-1; j >= 0; j--) {
-            if(CommandComposed.get(j).equals(opt))
+        for (int j = CommandComposed.size() - 1; j >= 0; j--) {
+            if (CommandComposed.get(j).equals(opt))
                 CommandComposed.remove(j);
         }
     }
+
     private void intentClickListener_NH(final String command) {
         try {
             Intent intent =

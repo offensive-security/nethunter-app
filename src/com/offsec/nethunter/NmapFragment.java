@@ -26,7 +26,7 @@ import com.offsec.nethunter.utils.NhPaths;
 
 import java.util.ArrayList;
 
-public class NmapFragment  extends Fragment {
+public class NmapFragment extends Fragment {
 
     private static final String TAG = "NMAPFragment";
     private static final String ARG_SECTION_NUMBER = "section_number";
@@ -83,7 +83,7 @@ public class NmapFragment  extends Fragment {
                 if (isChecked) {
                     Log.d(TAG, "Advanced Options Open");
                     AdvLayout.setVisibility(View.VISIBLE);
-               } else {
+                } else {
                     Log.d(TAG, "Advanced Options Closed");
                     AdvLayout.setVisibility(View.GONE);
                 }
@@ -92,10 +92,8 @@ public class NmapFragment  extends Fragment {
 
         final Button searchButton = (Button) rootView.findViewById(R.id.nmap_scan_button);
         searchButton.setOnClickListener(
-                new View.OnClickListener()
-                {
-                    public void onClick(View view)
-                    {
+                new View.OnClickListener() {
+                    public void onClick(View view) {
                         getCmd();
                     }
                 });
@@ -108,9 +106,9 @@ public class NmapFragment  extends Fragment {
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         typeSpinner.setAdapter(typeAdapter);
         net_interface = "wlan0";
-        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id){
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 String selectedItemText = parent.getItemAtPosition(pos).toString();
                 switch (pos) {
                     case 0:
@@ -138,8 +136,9 @@ public class NmapFragment  extends Fragment {
                         break;
                 }
             }
+
             @Override
-            public void onNothingSelected(AdapterView<?> parent){
+            public void onNothingSelected(AdapterView<?> parent) {
                 //Another interface callback
             }
         });
@@ -150,9 +149,9 @@ public class NmapFragment  extends Fragment {
                 R.array.nmap_scantechnique_array, android.R.layout.simple_spinner_item);
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         techSpinner.setAdapter(techAdapter);
-        techSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+        techSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id){
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 String selectedItemText = parent.getItemAtPosition(pos).toString();
                 switch (pos) {
                     case 0:
@@ -200,8 +199,9 @@ public class NmapFragment  extends Fragment {
                         break;
                 }
             }
+
             @Override
-            public void onNothingSelected(AdapterView<?> parent){
+            public void onNothingSelected(AdapterView<?> parent) {
                 //Another interface callback
             }
         });
@@ -220,9 +220,9 @@ public class NmapFragment  extends Fragment {
                 R.array.nmap_timing_array, android.R.layout.simple_spinner_item);
         timeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         timeSpinner.setAdapter(timeAdapter);
-        timeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+        timeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id){
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 String selectedItemText = parent.getItemAtPosition(pos).toString();
                 switch (pos) {
                     case 0:
@@ -260,8 +260,9 @@ public class NmapFragment  extends Fragment {
                         break;
                 }
             }
+
             @Override
-            public void onNothingSelected(AdapterView<?> parent){
+            public void onNothingSelected(AdapterView<?> parent) {
                 //Another interface callback
             }
         });
@@ -300,10 +301,10 @@ public class NmapFragment  extends Fragment {
         final CheckBox pingCheckbox = (CheckBox) rootView.findViewById(R.id.nmap_ping_check);
         checkBoxListener = new View.OnClickListener() {
             public void onClick(View v) {
-                if(pingCheckbox.isChecked()) {
+                if (pingCheckbox.isChecked()) {
                     fastmode = " -sn";
                     addToCmd(fastmode);
-                }else{
+                } else {
                     removeFromCmd(fastmode);
                 }
             }
@@ -314,10 +315,10 @@ public class NmapFragment  extends Fragment {
         final CheckBox topportsCheckbox = (CheckBox) rootView.findViewById(R.id.nmap_top_ports_check);
         checkBoxListener = new View.OnClickListener() {
             public void onClick(View v) {
-                if(topportsCheckbox.isChecked()) {
+                if (topportsCheckbox.isChecked()) {
                     topports = " --top-ports 20";
                     addToCmd(topports);
-                }else{
+                } else {
                     removeFromCmd(topports);
                 }
             }
@@ -328,10 +329,10 @@ public class NmapFragment  extends Fragment {
         final CheckBox udpCheckbox = (CheckBox) rootView.findViewById(R.id.nmap_udp_checkbox);
         checkBoxListener = new View.OnClickListener() {
             public void onClick(View v) {
-                if(udpCheckbox.isChecked()) {
+                if (udpCheckbox.isChecked()) {
                     udpscan = " -sU";
                     addToCmd(udpscan);
-                }else{
+                } else {
                     removeFromCmd(udpscan);
                 }
             }
@@ -343,10 +344,10 @@ public class NmapFragment  extends Fragment {
         final CheckBox ipv6box = (CheckBox) rootView.findViewById(R.id.nmap_ipv6_check);
         checkBoxListener = new View.OnClickListener() {
             public void onClick(View v) {
-                if(ipv6box.isChecked()) {
+                if (ipv6box.isChecked()) {
                     ipv6check = " -6";
                     addToCmd(ipv6check);
-                }else{
+                } else {
                     removeFromCmd(ipv6check);
                 }
             }
@@ -357,10 +358,10 @@ public class NmapFragment  extends Fragment {
         final CheckBox svbox = (CheckBox) rootView.findViewById(R.id.nmap_SV_checkbox);
         checkBoxListener = new View.OnClickListener() {
             public void onClick(View v) {
-                if(svbox.isChecked()) {
+                if (svbox.isChecked()) {
                     sv = " -sV";
                     addToCmd(sv);
-                }else{
+                } else {
                     removeFromCmd(sv);
                 }
             }
@@ -371,10 +372,10 @@ public class NmapFragment  extends Fragment {
         final CheckBox osdetectbox = (CheckBox) rootView.findViewById(R.id.nmap_osonly_check);
         checkBoxListener = new View.OnClickListener() {
             public void onClick(View v) {
-                if(osdetectbox.isChecked()) {
+                if (osdetectbox.isChecked()) {
                     OSdetect = " -O";
                     addToCmd(OSdetect);
-                }else{
+                } else {
                     removeFromCmd(OSdetect);
                 }
             }
@@ -393,8 +394,7 @@ public class NmapFragment  extends Fragment {
             }
 
             @Override
-            public void afterTextChanged(Editable s)
-            {
+            public void afterTextChanged(Editable s) {
                 removeFromCmd(" " + MySearch);
                 MySearch = searchBar.getText().toString();
                 addToCmd(" " + MySearch);
@@ -414,8 +414,7 @@ public class NmapFragment  extends Fragment {
             }
 
             @Override
-            public void afterTextChanged(Editable s)
-            {
+            public void afterTextChanged(Editable s) {
                 removeFromCmd(" -p" + Ports);
                 Ports = portsBar.getText().toString();
                 addToCmd(" -p" + Ports);
@@ -425,9 +424,9 @@ public class NmapFragment  extends Fragment {
         return rootView;
     }
 
-    private String getCmd(){
+    private String getCmd() {
         String genCmd = "";
-        for (int j = CommandComposed.size()-1; j >= 0; j--) {
+        for (int j = CommandComposed.size() - 1; j >= 0; j--) {
             genCmd = genCmd + CommandComposed.get(j);
         }
         //Log.d("NMAP SQL:", "nmap --script sqlite-output --script-args=dbname=/tmp/scan.sqlite,dbtable=scandata " + genCmd);
@@ -435,23 +434,28 @@ public class NmapFragment  extends Fragment {
 
         return genCmd;
     }
+
     private static void cleanCmd() {
-        for (int j = CommandComposed.size()-1; j >= 0; j--) {
+        for (int j = CommandComposed.size() - 1; j >= 0; j--) {
             CommandComposed.remove(j);
         }
     }
+
     private static void addToCmd(String opt) {
         CommandComposed.add(opt);
     }
+
     private static void removeFromCmd(String opt) {
-        for (int j = CommandComposed.size()-1; j >= 0; j--) {
-            if(CommandComposed.get(j).equals(opt))
+        for (int j = CommandComposed.size() - 1; j >= 0; j--) {
+            if (CommandComposed.get(j).equals(opt))
                 CommandComposed.remove(j);
         }
     }
+
     private void addClickListener(View.OnClickListener onClickListener, View rootView) {
         rootView.findViewById(R.id.nmap_scan_button).setOnClickListener(onClickListener);
     }
+
     private void intentClickListener_NH(final String command) {
         try {
             Intent intent =

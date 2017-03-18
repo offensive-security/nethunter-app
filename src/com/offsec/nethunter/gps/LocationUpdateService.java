@@ -152,7 +152,6 @@ public class LocationUpdateService extends Service implements GpsdServer.Connect
     }
 
 
-
     public class ServiceBinder extends Binder {
         public LocationUpdateService getService() {
             return LocationUpdateService.this;
@@ -273,7 +272,7 @@ public class LocationUpdateService extends Service implements GpsdServer.Connect
     @Override
     public void onDestroy() {
         Log.d(TAG, "OnDestroy");
-        if(apiClient != null && apiClient.isConnected()) {
+        if (apiClient != null && apiClient.isConnected()) {
             apiClient.disconnect();
             LocationServices.FusedLocationApi.removeLocationUpdates(apiClient, locationListener);
         }

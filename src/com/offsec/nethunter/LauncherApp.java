@@ -13,9 +13,9 @@ public class LauncherApp {
     final static String ID = "ID";
     final static String BTN_LABEL = "BTN_LABEL";
     final static String CMD = "COMMAND";
-    final static String[] COLUMNS = {ID,BTN_LABEL,CMD};
+    final static String[] COLUMNS = {ID, BTN_LABEL, CMD};
 
-    public LauncherApp() {
+    LauncherApp() {
     }
 
     public LauncherApp(long id, String btn_name, String command) {
@@ -24,17 +24,19 @@ public class LauncherApp {
         this.command = command;
     }
 
-    public void setId(long id) { this.id = id; }
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public long getId() {
         return id;
     }
 
-    public String getBtn_label() {
+    String getBtn_label() {
         return btn_label;
     }
 
-    public void setBtn_label(String btn_label) {
+    void setBtn_label(String btn_label) {
         this.btn_label = btn_label;
     }
 

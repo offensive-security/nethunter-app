@@ -56,6 +56,7 @@ public class SearchSploitFragment extends Fragment {
     // Create and handle database
     private SearchSploitSQL database;
     private NhPaths nh;
+
     public static SearchSploitFragment newInstance(int sectionNumber) {
         SearchSploitFragment fragment = new SearchSploitFragment();
         Bundle args = new Bundle();
@@ -87,7 +88,7 @@ public class SearchSploitFragment extends Fragment {
         searchStr.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                if(query.length() > 1){
+                if (query.length() > 1) {
                     sel_search = query;
                 } else {
                     sel_search = "";
@@ -98,9 +99,9 @@ public class SearchSploitFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String query) {
-                if(query.length() == 0){
-                   sel_search = "";
-                   loadExploits();
+                if (query.length() == 0) {
+                    sel_search = "";
+                    loadExploits();
                 }
 
                 return false;
@@ -171,9 +172,9 @@ public class SearchSploitFragment extends Fragment {
                 }, 250);
 
 
-
         return rootView;
     }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.searchsploit, menu);
@@ -183,8 +184,8 @@ public class SearchSploitFragment extends Fragment {
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.rawSearch_ON:
-                if(getView() == null) return true;
-                if(!withFilters){
+                if (getView() == null) return true;
+                if (!withFilters) {
                     getView().findViewById(R.id.search_filters).setVisibility(View.VISIBLE);
                     withFilters = true;
                     item.setTitle("Enable Raw search");
@@ -197,7 +198,7 @@ public class SearchSploitFragment extends Fragment {
                     builder.setMessage("The exploit db is pretty big (+30K exploits), activating raw search will make the search slow.\nIs useful to do global searches when you don't find a exploit.")
                             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                   dialog.dismiss();
+                                    dialog.dismiss();
                                 }
                             })
                             .setPositiveButton("Enable", new DialogInterface.OnClickListener() {
@@ -235,7 +236,7 @@ public class SearchSploitFragment extends Fragment {
         searchSploitListView = (ListView) rootView.findViewById(R.id.searchResultsList);
         Long exploitCount = database.getCount();
         Button searchSearchSploit = (Button) rootView.findViewById(R.id.serchsploit_loadDB);
-        if(exploitCount == 0){
+        if (exploitCount == 0) {
             searchSearchSploit.setVisibility(View.VISIBLE);
             rootView.findViewById(R.id.search_filters).setVisibility(View.GONE);
             adi.dismiss();
@@ -257,6 +258,7 @@ public class SearchSploitFragment extends Fragment {
                 sel_port = portList.get(position);
                 loadExploits();
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
             }
@@ -273,6 +275,7 @@ public class SearchSploitFragment extends Fragment {
                 sel_platform = platformList.get(position);
                 loadExploits();
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
             }
@@ -289,25 +292,27 @@ public class SearchSploitFragment extends Fragment {
                 sel_type = typeList.get(position);
                 loadExploits();
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
             }
         });
         loadExploits();
     }
-    private void loadExploits(){
-        if((sel_platform != null) && (sel_type != null) && (sel_port != null)){
+
+    private void loadExploits() {
+        if ((sel_platform != null) && (sel_type != null) && (sel_port != null)) {
             List<SearchSploit> exploitList;
-            if(withFilters){
+            if (withFilters) {
                 exploitList = database.getAllExploitsFiltered(sel_search, sel_platform, sel_type, sel_port);
             } else {
-                if(sel_search.equals("")){
+                if (sel_search.equals("")) {
                     exploitList = full_exploitList;
-                } else{
+                } else {
                     exploitList = database.getAllExploitsRaw(sel_search);
                 }
             }
-            if(exploitList == null){
+            if (exploitList == null) {
                 new android.os.Handler().postDelayed(
                         new Runnable() {
                             public void run() {
@@ -319,12 +324,12 @@ public class SearchSploitFragment extends Fragment {
             numex.setText(String.format("%d results", exploitList.size()));
             ExploitLoader exploitAdapter = new ExploitLoader(mContext, exploitList);
             searchSploitListView.setAdapter(exploitAdapter);
-            if(!isLoaded){
+            if (!isLoaded) {
                 // preloading the long list lets see if is more performant
                 // preload in the background.
                 new Thread(new Runnable() {
                     public void run() {
-                        full_exploitList =  database.getAllExploitsRaw("");
+                        full_exploitList = database.getAllExploitsRaw("");
                     }
                 }).start();
 
@@ -335,6 +340,7 @@ public class SearchSploitFragment extends Fragment {
         }
     }
 }
+
 class ExploitLoader extends BaseAdapter {
 
     private final List<SearchSploit> _exploitList;
@@ -342,7 +348,7 @@ class ExploitLoader extends BaseAdapter {
     static NhPaths nh;
 
 
-    public ExploitLoader(Context context, List<SearchSploit> exploitList) {
+    ExploitLoader(Context context, List<SearchSploit> exploitList) {
 
         _mContext = context;
         _exploitList = exploitList;

@@ -4,9 +4,9 @@
 package com.offsec.nethunter;
 
 import android.content.Context;
-import android.widget.Button;
+import android.support.v7.widget.AppCompatButton;
 
-public class LauncherButton extends Button {
+public class LauncherButton extends AppCompatButton {
 
     private long db_id;
 

@@ -20,15 +20,13 @@ import com.offsec.nethunter.utils.ShellExecuter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//import android.app.Fragment;
-
-
 public class BadusbFragment extends Fragment {
 
     private String sourcePath;
     private static final String ARG_SECTION_NUMBER = "section_number";
     private NhPaths nh;
     private final ShellExecuter exe = new ShellExecuter();
+
     public BadusbFragment() {
 
     }
@@ -71,7 +69,7 @@ public class BadusbFragment extends Fragment {
 
     public void onResume() {
         super.onResume();
-        if(getView() != null){
+        if (getView() != null) {
             loadOptions(getView().getRootView());
         }
     }
@@ -137,9 +135,9 @@ public class BadusbFragment extends Fragment {
         ShellExecuter exe = new ShellExecuter();
         String[] command = new String[1];
         if (Build.VERSION.SDK_INT >= 21) {
-            command[0] = nh.APP_SCRIPTS_PATH + "/start-badusb-lollipop &> "+ nh.APP_SD_FILES_PATH +"/badusb.log &";
+            command[0] = nh.APP_SCRIPTS_PATH + "/start-badusb-lollipop &> " + nh.APP_SD_FILES_PATH + "/badusb.log &";
         } else {
-            command[0] = nh.APP_SCRIPTS_PATH + "/start-badusb-kitkat &> "+ nh.APP_SD_FILES_PATH +"/badusb.log &";
+            command[0] = nh.APP_SCRIPTS_PATH + "/start-badusb-kitkat &> " + nh.APP_SD_FILES_PATH + "/badusb.log &";
         }
         exe.RunAsRoot(command);
         nh.showMessage("BadUSB attack started! Check /sdcard/nh_files/badusb.log");

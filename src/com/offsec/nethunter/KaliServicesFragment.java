@@ -45,6 +45,7 @@ public class KaliServicesFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -55,33 +56,36 @@ public class KaliServicesFragment extends Fragment {
         return rootView;
 
     }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         prefs = getContext().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
         inflater.inflate(R.menu.kali_services, menu);
     }
+
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         MenuItem item = menu.findItem(R.id.bootServicesState);
         if (item != null) {
-            if(prefs.getBoolean(RUN_AT_BOOT, true)){
+            if (prefs.getBoolean(RUN_AT_BOOT, true)) {
                 item.setTitle("DISABLE Services At Boot");
-            } else{
+            } else {
                 item.setTitle("ENABLE Services At Boot");
             }
         }
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.bootServicesState:
-                if(prefs.getBoolean(RUN_AT_BOOT, true)){
+                if (prefs.getBoolean(RUN_AT_BOOT, true)) {
                     SharedPreferences.Editor ed = prefs.edit();
                     ed.putBoolean(RUN_AT_BOOT, false);
                     ed.apply();
                     nh.showMessage("Boot Services DISABLED");
-                } else{
+                } else {
                     SharedPreferences.Editor ed = prefs.edit();
                     ed.putBoolean(RUN_AT_BOOT, true);
                     ed.apply();
@@ -92,6 +96,7 @@ public class KaliServicesFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -117,18 +122,15 @@ public class KaliServicesFragment extends Fragment {
         };
     }
 
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
     }
 
-    public void onPause()
-    {
+    public void onPause() {
         super.onPause();
     }
 
-    public void onStop()
-    {
+    public void onStop() {
         super.onStop();
     }
 
@@ -226,22 +228,25 @@ class KaliServicesLoader extends BaseAdapter {
         // return the number of services
         return services.length;
     }
+
     private void addBootService(int serviceId) {
         String bootServiceFile = bootScriptPath + "/" + services[serviceId][4];
         String fileContents = shebang + services[serviceId][0] + "\n" + services[serviceId][2];
         exe.RunAsRoot(new String[]{
-            "echo '"+ fileContents +"' > " +  bootServiceFile,
-            "chmod 700 " + bootServiceFile
+                "echo '" + fileContents + "' > " + bootServiceFile,
+                "chmod 700 " + bootServiceFile
         });
 
         // return the number of services
 
     }
+
     private void removeBootService(int serviceId) {
         // return the number of services
         String bootServiceFile = bootScriptPath + "/" + services[serviceId][4];
-        exe.RunAsRoot(new String[]{ "rm -rf " +  bootServiceFile });
+        exe.RunAsRoot(new String[]{"rm -rf " + bootServiceFile});
     }
+
     // getView method is called for each item of ListView
     public View getView(final int position, View convertView, ViewGroup parent) {
         // inflate the layout for each item of listView (our services)
@@ -341,7 +346,7 @@ class KaliServicesLoader extends BaseAdapter {
                 if (isChecked) {
                     new Thread(new Runnable() {
                         public void run() {
-                            Log.d("bootservice","ADD " + services[position][4]);
+                            Log.d("bootservice", "ADD " + services[position][4]);
                             addBootService(position);
                         }
                     }).start();
