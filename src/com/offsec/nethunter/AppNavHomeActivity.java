@@ -36,8 +36,8 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.Stack;
 
-import com.offsec.nethunter.GPS.KaliGPSUpdates;
-import com.offsec.nethunter.GPS.LocationUpdateService;
+import com.offsec.nethunter.gps.KaliGPSUpdates;
+import com.offsec.nethunter.gps.LocationUpdateService;
 import com.offsec.nethunter.utils.CheckForRoot;
 import com.winsontan520.wversionmanager.library.WVersionManager;
 

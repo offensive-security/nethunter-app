@@ -1,4 +1,4 @@
-package com.offsec.nethunter.GPS;
+package com.offsec.nethunter.gps;
 
 public interface KaliGPSUpdates {
 

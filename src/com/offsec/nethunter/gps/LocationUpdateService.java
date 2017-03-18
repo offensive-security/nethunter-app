@@ -1,4 +1,4 @@
-package com.offsec.nethunter.GPS;
+package com.offsec.nethunter.gps;
 
 import android.Manifest;
 import android.annotation.SuppressLint;

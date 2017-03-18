@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.offsec.nethunter.GPS.KaliGPSUpdates;
+import com.offsec.nethunter.gps.KaliGPSUpdates;
 import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
 
