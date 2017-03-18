@@ -366,6 +366,8 @@
     <string name="gps_help">You may need to give Nethunter permissions to GPS. Go to Settings > Apps > Nethunter > Permissions.  When it starts press: "return" three times, Vol+up and "t", "return.</string>
     <string name="loading_wait">Loading wait…</string>
     <string name="loading_file">Loading…  FILE: %s</string>
+    <string name="scanButtonText">Scan</string>
+    <string name="advancedOptionsSwitchText">Advanced Options</string>
     <!-- End GPSFragment -->
 
 
