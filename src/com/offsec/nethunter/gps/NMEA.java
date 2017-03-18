@@ -5,11 +5,9 @@ package com.offsec.nethunter.gps;
         import java.util.Iterator;
         import java.util.List;
 
-        import android.os.Bundle;
         import android.location.GpsSatellite;
         import android.location.GpsStatus;
         import android.location.Location;
-        import android.location.LocationManager;
 
 /**
  * This class is a container for several static methods which help

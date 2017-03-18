@@ -27,7 +27,6 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.ServerSocket;
 import java.net.Socket;
 
 public class LocationUpdateService extends Service implements GpsdServer.ConnectionListener,

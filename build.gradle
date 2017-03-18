@@ -14,10 +14,6 @@ task wrapper(type: Wrapper) {
 
 apply plugin: 'com.android.application'
 
-static def getDate() {
-    return Calendar.getInstance().getTimeInMillis()
-}
-
 repositories {
     mavenCentral()
 }
@@ -91,8 +87,8 @@ android {
 
         debug {
             minifyEnabled false
-            buildConfigField "java.util.Date", "BUILD_TIME", "new java.util.Date(" + getDate() + "L)"
-            buildConfigField "String", "BUILD_NAME", "\"" + System.getenv("USER") + "\"";
+            buildConfigField "java.util.Date", "BUILD_TIME", "new java.util.Date(" + System.currentTimeMillis() + "L)"
+            buildConfigField "String", "BUILD_NAME", "\"" + System.getenv("USER") + "\""
 
             return true
         }
@@ -104,8 +100,8 @@ android {
             debuggable false
             jniDebuggable false
             zipAlignEnabled true
-            buildConfigField "java.util.Date", "BUILD_TIME", "new java.util.Date(" + getDate() + "L)"
-            buildConfigField "String", "BUILD_NAME", "\"" + System.getenv("USER") + "\"";
+            buildConfigField "java.util.Date", "BUILD_TIME", "new java.util.Date(" + System.currentTimeMillis() + "L)"
+            buildConfigField "String", "BUILD_NAME", "\"" + System.getenv("USER") + "\""
 
             return true
         }
