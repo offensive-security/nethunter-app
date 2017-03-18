@@ -64,6 +64,7 @@ public class HidFragment extends Fragment {
         mViewPager.setAdapter(tabsPagerAdapter);
 
         nh = new NhPaths();
+        configFilePath = nh.CHROOT_PATH + "/var/www/html/powersploit-payload";
 
         mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
