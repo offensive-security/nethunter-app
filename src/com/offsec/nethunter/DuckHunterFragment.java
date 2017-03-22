@@ -44,7 +44,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
-public class DuckHunterFragment extends Fragment implements ActionBar.TabListener{
+public class DuckHunterFragment extends Fragment implements ActionBar.TabListener {
 
     private ViewPager mViewPager;
     private static SharedPreferences sharedpreferences;
@@ -58,7 +58,8 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     private static NhPaths nh;
     private static String prwText = "";
 
-    public DuckHunterFragment() {}
+    public DuckHunterFragment() {
+    }
 
     public static DuckHunterFragment newInstance(int sectionNumber) {
         DuckHunterFragment fragment = new DuckHunterFragment();
@@ -105,7 +106,8 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
         }
         getActivity().invalidateOptionsMenu();
     }
-    private void setLang(){
+
+    private void setLang() {
         int keyboardLayoutIndex = sharedpreferences.getInt("DuckHunterLanguageIndex", 0);
         switch (keyboardLayoutIndex) {
             case 1:
@@ -146,19 +148,20 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                 break;
         }
     }
+
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.duckConvertAttack:
                 setLang();
                 nh.showMessage("Launching Attack");
-                if(getView() == null){
+                if (getView() == null) {
                     return true;
                 }
                 final View v = getView();
                 new Thread(new Runnable() {
                     public void run() {
-                        if(shouldConvert){
+                        if (shouldConvert) {
                             convert();
                             try {
                                 Thread.sleep(2000);  // Slow down
@@ -184,7 +187,8 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                 return super.onOptionsItemSelected(item);
         }
     }
-    private static Boolean updatefile(){
+
+    private static Boolean updatefile() {
         try {
             File myFile = new File(nh.APP_SD_FILES_PATH, DuckHunterConvertFragment.configFilePath);
             myFile.createNewFile();
@@ -200,9 +204,10 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
         }
 
     }
-    private static void convert(){
+
+    private static void convert() {
         ShellExecuter exe = new ShellExecuter();
-        if(updatefile()) {
+        if (updatefile()) {
             String[] command = new String[1];
             Log.d("LANGGG", lang);
             command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali duck-hunt-convert " + lang +
@@ -233,7 +238,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
             public void onClick(DialogInterface dialog, int which) {
                 setLang();
                 if (mViewPager.getCurrentItem() == 1) {
-                    if(getView() == null){
+                    if (getView() == null) {
                         return;
                     }
 
@@ -249,12 +254,12 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                                 e.printStackTrace();
                             }
                             try {
-                                Process  p = Runtime.getRuntime().exec("su -c cat " + DuckHunterPreviewFragment.configFilePath + DuckHunterPreviewFragment.configFileFilename);
+                                Process p = Runtime.getRuntime().exec("su -c cat " + DuckHunterPreviewFragment.configFilePath + DuckHunterPreviewFragment.configFileFilename);
                                 p.waitFor();
                                 BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
                                 String line;
                                 while ((line = reader.readLine()) != null) {
-                                    output = output +  line + "\n";
+                                    output = output + line + "\n";
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -341,7 +346,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
         }
     }
 
-    public static class DuckHunterConvertFragment extends Fragment implements View.OnClickListener{
+    public static class DuckHunterConvertFragment extends Fragment implements View.OnClickListener {
 
         public static final String configFilePath = "/modules/duckconvert.txt";
         public static final String loadFilePath = "/scripts/ducky/";
@@ -369,8 +374,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                 }
 
                 @Override
-                public void afterTextChanged(Editable s)
-                {
+                public void afterTextChanged(Editable s) {
                     prwText = s.toString();
                     shouldConvert = true;
                 }
@@ -403,9 +407,9 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                     R.array.duckhunter_preset_array, android.R.layout.simple_spinner_item);
             presetAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             presetSpinner.setAdapter(presetAdapter);
-            presetSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            presetSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int pos, long id){
+                public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                     String selectedItemText = parent.getItemAtPosition(pos).toString();
                     switch (pos) {
                         case 0:
@@ -424,8 +428,9 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                             break;
                     }
                 }
+
                 @Override
-                public void onNothingSelected(AdapterView<?> parent){
+                public void onNothingSelected(AdapterView<?> parent) {
                     //Another interface callback
                 }
             });
@@ -433,8 +438,8 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
             return rootView;
         }
 
-        private void getPreset(String filename){
-            if(getView() == null){
+        private void getPreset(String filename) {
+            if (getView() == null) {
                 return;
             }
             String filename_path = "/duckyscripts/";
@@ -461,8 +466,8 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                 case R.id.duckyLoad:
                     try {
 
-                        File scriptsDir = new File(nh.APP_SD_FILES_PATH,loadFilePath);
-                        if(!scriptsDir.exists()) scriptsDir.mkdirs();
+                        File scriptsDir = new File(nh.APP_SD_FILES_PATH, loadFilePath);
+                        if (!scriptsDir.exists()) scriptsDir.mkdirs();
                     } catch (Exception e) {
                         nh.showMessage(e.getMessage());
                     }
@@ -474,8 +479,8 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                 case R.id.duckySave:
                     try {
 
-                        File scriptsDir = new File(nh.APP_SD_FILES_PATH,loadFilePath);
-                        if(!scriptsDir.exists()) scriptsDir.mkdirs();
+                        File scriptsDir = new File(nh.APP_SD_FILES_PATH, loadFilePath);
+                        if (!scriptsDir.exists()) scriptsDir.mkdirs();
                     } catch (Exception e) {
                         nh.showMessage(e.getMessage());
                     }
@@ -491,13 +496,13 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                     alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             String value = input.getText().toString();
-                            if(value.length() > 0){
+                            if (value.length() > 0) {
                                 //Save file (ask name)
-                                File scriptFile = new File(nh.APP_SD_FILES_PATH + loadFilePath + File.separator +  value +".conf");
+                                File scriptFile = new File(nh.APP_SD_FILES_PATH + loadFilePath + File.separator + value + ".conf");
                                 System.out.println(scriptFile.getAbsolutePath());
-                                if(!scriptFile.exists()){
+                                if (!scriptFile.exists()) {
                                     try {
-                                        if(getView() != null) {
+                                        if (getView() != null) {
                                             EditText source = (EditText) getView().findViewById(R.id.editSource);
                                             String text = source.getText().toString();
                                             scriptFile.createNewFile();
@@ -511,10 +516,10 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                                     } catch (Exception e) {
                                         nh.showMessage(e.getMessage());
                                     }
-                                }else{
+                                } else {
                                     nh.showMessage("File already exists");
                                 }
-                            }else{
+                            } else {
                                 nh.showMessage("Wrong name provided");
                             }
                         }
@@ -538,7 +543,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
             switch (requestCode) {
                 case PICKFILE_RESULT_CODE:
                     if (resultCode == Activity.RESULT_OK) {
-                        if(getView() == null){
+                        if (getView() == null) {
                             return;
                         }
                         String FilePath = data.getData().getPath();
@@ -565,7 +570,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     } //end of class
 
 
-    public static class DuckHunterPreviewFragment extends Fragment{
+    public static class DuckHunterPreviewFragment extends Fragment {
 
         // Error reading chroot_path
         public static final String configFilePath = nh.CHROOT_PATH + "/opt/";
@@ -579,9 +584,10 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
             return rootView;
         }
+
         @Override
         public void setUserVisibleHint(boolean isVisibleToUser) {
-            if(isVisibleToUser){
+            if (isVisibleToUser) {
                 //Log.d("ISORNOT", isVisibleToUser + prwText);
                 readFileForPreview();
             }
@@ -589,44 +595,44 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
         }
 
         public void readFileForPreview() {
-            if(getView() == null){
+            if (getView() == null) {
                 return;
             }
 
-                final TextView source = (TextView) getView().findViewById(R.id.source);
-                source.setText("Loading wait...");
-                new Thread(new Runnable() {
-                    public void run() {
-                        String output = "";
-                        if(shouldConvert) {
-                            convert();
-                            try {
-                                Thread.sleep(2000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
+            final TextView source = (TextView) getView().findViewById(R.id.source);
+            source.setText(R.string.loading_wait);
+            new Thread(new Runnable() {
+                public void run() {
+                    String output = "";
+                    if (shouldConvert) {
+                        convert();
                         try {
-                            Process  p = Runtime.getRuntime().exec("su -c cat " + configFilePath + configFileFilename);
-                            p.waitFor();
-                            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                            String line;
-                            while ((line = reader.readLine()) != null) {
-                                output = output +  line + "\n";
-                            }
-                        } catch (Exception e) {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        final String finalOutput = output;
-                        source.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                source.setText(finalOutput);
-                                shouldConvert = false;
-                            }
-                        });
                     }
-                }).start();
+                    try {
+                        Process p = Runtime.getRuntime().exec("su -c cat " + configFilePath + configFileFilename);
+                        p.waitFor();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            output = output + line + "\n";
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    final String finalOutput = output;
+                    source.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            source.setText(finalOutput);
+                            shouldConvert = false;
+                        }
+                    });
+                }
+            }).start();
 
         }
     }

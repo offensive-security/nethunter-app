@@ -3,21 +3,23 @@ package com.offsec.nethunter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Spinner;
-import android.widget.ArrayAdapter;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
-import android.net.wifi.WifiManager;
-import android.net.wifi.WifiInfo;
 
 import com.offsec.nethunter.utils.NhPaths;
+
+import java.util.Locale;
 
 public class MPCFragment extends Fragment {
 
@@ -26,12 +28,13 @@ public class MPCFragment extends Fragment {
     private String payloadVar;
     private String callbackVar;
     private String stagerVar;
-    String cmd;
 
     NhPaths nh;
     private static final String ARG_SECTION_NUMBER = "section_number";
+
     public MPCFragment() {
     }
+
     public static MPCFragment newInstance(int sectionNumber) {
         MPCFragment fragment = new MPCFragment();
         Bundle args = new Bundle();
@@ -57,9 +60,9 @@ public class MPCFragment extends Fragment {
         //Give it a initial value: this value stands until onItemSelected is fired
         // usually the 1st value of spinner
         typeVar = "asp";
-        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id){
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 String selectedItemText = parent.getItemAtPosition(pos).toString();
                 Log.d("Slected: ", selectedItemText);
                 switch (pos) {
@@ -104,8 +107,9 @@ public class MPCFragment extends Fragment {
                         break;
                 }
             }
+
             @Override
-            public void onNothingSelected(AdapterView<?> parent){
+            public void onNothingSelected(AdapterView<?> parent) {
                 //Another interface callback
             }
         });
@@ -123,10 +127,9 @@ public class MPCFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 String selectedItemText = parent.getItemAtPosition(pos).toString();
                 Log.d("Slected: ", selectedItemText);
-                if(selectedItemText.equals("MSF")) {
+                if (selectedItemText.equals("MSF")) {
                     payloadVar = "msf";
-                }
-                else if(selectedItemText.equals("CMD")) {
+                } else if (selectedItemText.equals("CMD")) {
                     payloadVar = "cmd";
                 }
             }
@@ -150,13 +153,13 @@ public class MPCFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 String selectedItemText = parent.getItemAtPosition(pos).toString();
                 Log.d("Slected: ", selectedItemText);
-                if(selectedItemText.equals("Reverse")) {
+                if (selectedItemText.equals("Reverse")) {
                     callbackVar = "reverse";
-                }
-                else if(selectedItemText.equals("Bind")) {
+                } else if (selectedItemText.equals("Bind")) {
                     callbackVar = "bind";
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 //Another interface callback
@@ -176,10 +179,9 @@ public class MPCFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 String selectedItemText = parent.getItemAtPosition(pos).toString();
                 Log.d("Slected: ", selectedItemText);
-                if(selectedItemText.equals("Staged")) {
+                if (selectedItemText.equals("Staged")) {
                     stagerVar = "staged";
-                }
-                else if(selectedItemText.equals("Stageless")) {
+                } else if (selectedItemText.equals("Stageless")) {
                     stagerVar = "stageless";
                 }
             }
@@ -227,8 +229,8 @@ public class MPCFragment extends Fragment {
         });
 
         // Port Text Field
-        EditText port = (EditText)rootView.findViewById(R.id.mpc_port);
-        port.setText("443");
+        EditText port = (EditText) rootView.findViewById(R.id.mpc_port);
+        port.setText(R.string.mpc_port_default);
         //final String PortStr = port.getText().toString();
 
         // Get IP address for IP default IP field
@@ -236,10 +238,10 @@ public class MPCFragment extends Fragment {
         WifiManager wifiMan = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInf = wifiMan.getConnectionInfo();
         int ipAddress = wifiInf.getIpAddress();
-        String ip = String.format("%d.%d.%d.%d", (ipAddress & 0xff),(ipAddress >> 8 & 0xff),(ipAddress >> 16 & 0xff),(ipAddress >> 24 & 0xff));
+        String ip = String.format(Locale.getDefault(),"%d.%d.%d.%d", (ipAddress & 0xff), (ipAddress >> 8 & 0xff), (ipAddress >> 16 & 0xff), (ipAddress >> 24 & 0xff));
 
         // IP Text Field
-        EditText ipaddress = (EditText)rootView.findViewById(R.id.mpc_ip_address);
+        EditText ipaddress = (EditText) rootView.findViewById(R.id.mpc_ip_address);
         ipaddress.setText(ip);
         //final String IPAddressStr = ipaddress.getText().toString();
         // this should not be assigned like that
@@ -266,9 +268,9 @@ public class MPCFragment extends Fragment {
         return rootView;
     }
 
-    private String getCmd(View rootView){
-        EditText ipaddress = (EditText)rootView.findViewById(R.id.mpc_ip_address);
-        EditText port = (EditText)rootView.findViewById(R.id.mpc_port);
+    private String getCmd(View rootView) {
+        EditText ipaddress = (EditText) rootView.findViewById(R.id.mpc_ip_address);
+        EditText port = (EditText) rootView.findViewById(R.id.mpc_port);
         return typeVar + " " + ipaddress.getText() + " " + port.getText() + " " + payloadVar + " " + callbackVar + " " + " " + stagerVar + " " + callbackTypeVar;
     }
 

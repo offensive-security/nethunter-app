@@ -1,5 +1,7 @@
-package com.offsec.nethunter.GPS;
+package com.offsec.nethunter.gps;
 
+
+import java.util.Locale;
 
 /**
  * Created by Danial on 2/23/2015.
@@ -9,12 +11,12 @@ package com.offsec.nethunter.GPS;
 public class GpsPosition {
 
     public float time = 0.0f;
-    public float latitude = 0.0f;
-    public float longitude = 0.0f;
-    public int quality = 0;
-    public float direction = 0.0f;
-    public float altitude = 0.0f;
-    public float velocity = 0.0f;
+    private float latitude = 0.0f;
+    private float longitude = 0.0f;
+    private int quality = 0;
+    private float direction = 0.0f;
+    private float altitude = 0.0f;
+    private float velocity = 0.0f;
 
     public void updateIsfixed() {
         boolean isFixed = quality > 0;
@@ -22,7 +24,7 @@ public class GpsPosition {
 
     @Override
     public String toString() {
-        return String.format("GpsPosition: latitude: %f, longitude: %f, time: %f, quality: %d, " +
+        return String.format(Locale.getDefault(), "GpsPosition: latitude: %f, longitude: %f, time: %f, quality: %d, " +
                         "direction: %f, altitude: %f, velocity: %f", latitude, longitude, time, quality,
                 direction, altitude, velocity);
     }

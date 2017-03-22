@@ -32,10 +32,7 @@ import com.offsec.nethunter.utils.BootKali;
 import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
 
-import java.security.AccessControlContext;
 import java.util.List;
-
-import static java.security.AccessController.getContext;
 
 public class CustomCommandsFragment extends Fragment {
 
@@ -77,7 +74,7 @@ public class CustomCommandsFragment extends Fragment {
         mContext = getActivity().getApplicationContext();
         nh = new NhPaths();
         database = new CustomCommandsSQL(mContext);
-        if(!sharedpreferences.contains("initial_commands")){
+        if (!sharedpreferences.contains("initial_commands")) {
             SharedPreferences.Editor editor = sharedpreferences.edit();
             editor.putString("initial_commands", "added");
             editor.apply();
@@ -391,10 +388,10 @@ public class CustomCommandsFragment extends Fragment {
     }
 
     private void setUpInitialCommands() {
-        database.addCommand("Update Kali metapackages",nh.makeTermTitle("Updating Kali") + "apt-get update && apt-get upgrade", "INTERACTIVE", "KALI", 0);
-        database.addCommand("Wlan1 Monitor Mode",nh.makeTermTitle("Wlan1 Monitor UP") +"sudo ifconfig wlan1 down && sudo iwconfig wlan1 mode monitor && sudo ifconfig wlan1 up && echo \"wlan1 Monitor mode enabled\" && sleep 3 && exit", "INTERACTIVE", "KALI", 0);
-        database.addCommand("Launch Wifite",nh.makeTermTitle("Wifite") +"wifite", "INTERACTIVE", "KALI", 0);
-        database.addCommand("Dump Mifare",nh.makeTermTitle("DumpMifare") +"dumpmifare.sh", "INTERACTIVE", "KALI", 0);
+        database.addCommand("Update Kali metapackages", nh.makeTermTitle("Updating Kali") + "apt-get update && apt-get upgrade", "INTERACTIVE", "KALI", 0);
+        database.addCommand("Wlan1 Monitor Mode", nh.makeTermTitle("Wlan1 Monitor UP") + "sudo ifconfig wlan1 down && sudo iwconfig wlan1 mode monitor && sudo ifconfig wlan1 up && echo \"wlan1 Monitor mode enabled\" && sleep 3 && exit", "INTERACTIVE", "KALI", 0);
+        database.addCommand("Launch Wifite", nh.makeTermTitle("Wifite") + "wifite", "INTERACTIVE", "KALI", 0);
+        database.addCommand("Dump Mifare", nh.makeTermTitle("DumpMifare") + "dumpmifare.sh", "INTERACTIVE", "KALI", 0);
     }
 }
 
@@ -496,8 +493,7 @@ class CmdLoader extends BaseAdapter {
         return position;
     }
 
-    private boolean checkTerminalExternalPermission(String permission)
-    {
+    private boolean checkTerminalExternalPermission(String permission) {
         int res = _mContext.checkCallingOrSelfPermission(permission);
         return (res == PackageManager.PERMISSION_GRANTED);
     }
@@ -546,7 +542,7 @@ class CmdLoader extends BaseAdapter {
 
         } catch (Exception e) {
             if (!checkTerminalExternalPermission("com.offsec.nhterm.permission.RUN_SCRIPT_NH") ||
-                    !checkTerminalExternalPermission("com.offsec.nhterm.permission.RUN_SCRIPT") ) {
+                    !checkTerminalExternalPermission("com.offsec.nhterm.permission.RUN_SCRIPT")) {
                 Toast.makeText(_mContext, _mContext.getString(R.string.toast_error_permissions), Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(_mContext, _mContext.getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();

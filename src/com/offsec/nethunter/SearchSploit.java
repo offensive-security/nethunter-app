@@ -21,9 +21,10 @@ public class SearchSploit {
     final static String TYPE = "TYPE";
     final static String PORT = "PORT";
 
-    public SearchSploit(){
+    public SearchSploit() {
 
     }
+
     public SearchSploit(long id, String file, String description, String date, String author, String platform, String type, Integer port) {
         this.id = id;
         this.file = file;
@@ -32,10 +33,13 @@ public class SearchSploit {
         this.author = author;
         this.platform = platform;
         this.type = type;
-        this.port= port;
+        this.port = port;
     }
 
-    public void setId(long id) { this.id = id; }
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public long getId() {
         return id;
     }
@@ -43,6 +47,7 @@ public class SearchSploit {
     public String getFile() {
         return file;
     }
+
     public void setFile(String file) {
         this.file = file;
     }
@@ -50,6 +55,7 @@ public class SearchSploit {
     public String getDescription() {
         return description;
     }
+
     public void setDescription(String description) {
         this.description = description;
     }
@@ -57,27 +63,31 @@ public class SearchSploit {
     public String getDate() {
         return date;
     }
+
     public void setDate(String date) {
         this.date = date;
     }
 
-    public String getAuthor() {
+    String getAuthor() {
         return author;
     }
-    public void setAuthor(String author) {
-        this.author= author;
+
+    void setAuthor(String author) {
+        this.author = author;
     }
 
-    public String getPlatform() {
+    String getPlatform() {
         return platform;
     }
-    public void setPlatform(String platform) {
+
+    void setPlatform(String platform) {
         this.platform = platform;
     }
 
     public String getType() {
         return type;
     }
+
     public void setType(String type) {
         this.type = type;
     }
@@ -85,6 +95,7 @@ public class SearchSploit {
     public Integer getPort() {
         return port;
     }
+
     public void setPort(Integer port) {
         this.port = port;
     }

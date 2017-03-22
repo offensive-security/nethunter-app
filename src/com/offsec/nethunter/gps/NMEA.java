@@ -1,20 +1,18 @@
-package com.offsec.nethunter.GPS;
+package com.offsec.nethunter.gps;
 
 
-        import java.util.ArrayList;
-        import java.util.Iterator;
-        import java.util.List;
+import android.location.GpsSatellite;
+import android.location.GpsStatus;
+import android.location.Location;
 
-        import android.os.Bundle;
-        import android.location.GpsSatellite;
-        import android.location.GpsStatus;
-        import android.location.Location;
-        import android.location.LocationManager;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * This class is a container for several static methods which help
  * with generating NMEA data.
- *
+ * <p>
  * A nice reference for NMEA is at http://www.gpsinformation.org/dale/nmea.htm
  */
 final class NMEA {
@@ -48,10 +46,10 @@ final class NMEA {
         String prn = "";
         int nbr_sat = 0;
         Iterator<GpsSatellite> satellites = gps.getSatellites().iterator();
-        for (int i = 0; i < 12; i++){
-            if (satellites.hasNext()){
+        for (int i = 0; i < 12; i++) {
+            if (satellites.hasNext()) {
                 GpsSatellite sat = satellites.next();
-                if (sat.usedInFix()){
+                if (sat.usedInFix()) {
                     prn = prn + sat.getPrn();
                     nbr_sat++;
                 }
@@ -62,7 +60,7 @@ final class NMEA {
 
         if (nbr_sat > 3)
             fix = "3";
-        else if(nbr_sat > 0)
+        else if (nbr_sat > 0)
             fix = "2";
 
         //TODO: calculate DOP values
@@ -80,7 +78,7 @@ final class NMEA {
             if (satellites.hasNext()) {
                 String g = Integer.toString(nbr_sat);
                 for (int n = 0; n < 4; n++) {
-                    if(satellites.hasNext()) {
+                    if (satellites.hasNext()) {
                         GpsSatellite sat = satellites.next();
                         g = g + "," + sat.getPrn() + "," + sat.getElevation() +
                                 "," + sat.getAzimuth() + "," + sat.getSnr();

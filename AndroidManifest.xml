@@ -79,9 +79,9 @@
             android:exported="false"
             android:process=":runAtBoot" />
         <service
-            android:name=".GPS.LocationUpdateService"
+            android:name="gps.LocationUpdateService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false" />
     </application>
 
 </manifest>

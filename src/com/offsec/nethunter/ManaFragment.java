@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
 //import android.app.Fragment;
 //import android.support.v4.app.FragmentActivity;
 
-public class ManaFragment extends Fragment{
+public class ManaFragment extends Fragment {
 
     private ViewPager mViewPager;
 
@@ -294,7 +294,7 @@ public class ManaFragment extends Fragment{
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    if(getView() == null){
+                    if (getView() == null) {
                         return;
                     }
                     EditText ifc = (EditText) getView().findViewById(R.id.ifc);
@@ -304,7 +304,7 @@ public class ManaFragment extends Fragment{
                     EditText enableKarma = (EditText) getView().findViewById(R.id.enable_karma);
                     EditText karmaLoud = (EditText) getView().findViewById(R.id.karma_loud);
                     // FIXED BY BINKYBEAR <3
-                    if(source != null){
+                    if (source != null) {
                         source = source.replaceAll("(?m)^interface=(.*)$", "interface=" + ifc.getText().toString());
                         source = source.replaceAll("(?m)^bssid=(.*)$", "bssid=" + bssid.getText().toString());
                         source = source.replaceAll("(?m)^ssid=(.*)$", "ssid=" + ssid.getText().toString());
@@ -323,7 +323,6 @@ public class ManaFragment extends Fragment{
 
 
         public void loadOptions(View rootView) {
-
 
 
             final EditText ifc = (EditText) rootView.findViewById(R.id.ifc);
@@ -368,45 +367,45 @@ public class ManaFragment extends Fragment{
                         /*
                          * Interface
                          */
-                        if (matcherIfc.find()) {
-                            String ifcValue = matcherIfc.group(1);
-                            ifc.setText(ifcValue);
-                        }
+                            if (matcherIfc.find()) {
+                                String ifcValue = matcherIfc.group(1);
+                                ifc.setText(ifcValue);
+                            }
                         /*
                          * bssid
                          */
-                        if (matcherBssid.find()) {
-                            String bssidVal = matcherBssid.group(1);
-                            bssid.setText(bssidVal);
-                        }
+                            if (matcherBssid.find()) {
+                                String bssidVal = matcherBssid.group(1);
+                                bssid.setText(bssidVal);
+                            }
                         /*
                          * ssid
                          */
-                        if (matcherSsid.find()) {
-                            String ssidVal = matcherSsid.group(1);
-                            ssid.setText(ssidVal);
-                        }
+                            if (matcherSsid.find()) {
+                                String ssidVal = matcherSsid.group(1);
+                                ssid.setText(ssidVal);
+                            }
                         /*
                          * channel
                          */
-                        if (matcherChannel.find()) {
-                            String channelVal = matcherChannel.group(1);
-                            channel.setText(channelVal);
-                        }
+                            if (matcherChannel.find()) {
+                                String channelVal = matcherChannel.group(1);
+                                channel.setText(channelVal);
+                            }
                         /*
                          * enable_mana
                          */
-                        if (matcherEnableKarma.find()) {
-                            String enableKarmaVal = matcherEnableKarma.group(1);
-                            enableKarma.setText(enableKarmaVal);
-                        }
+                            if (matcherEnableKarma.find()) {
+                                String enableKarmaVal = matcherEnableKarma.group(1);
+                                enableKarma.setText(enableKarmaVal);
+                            }
                        /*
                        * mana_loud
                        */
-                        if (matcherKarmaLoud.find()) {
-                            String karmaLoudVal = matcherKarmaLoud.group(1);
-                            karmaLoud.setText(karmaLoudVal);
-                        }
+                            if (matcherKarmaLoud.find()) {
+                                String karmaLoudVal = matcherKarmaLoud.group(1);
+                                karmaLoud.setText(karmaLoudVal);
+                            }
                         }
                     });
                 }
@@ -449,7 +448,7 @@ public class ManaFragment extends Fragment{
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    if(getView() == null){
+                    if (getView() == null) {
                         return;
                     }
                     EditText ifc = (EditText) getView().findViewById(R.id.wpe_ifc);
@@ -458,7 +457,7 @@ public class ManaFragment extends Fragment{
                     EditText channel = (EditText) getView().findViewById(R.id.wpe_channel);
                     EditText privatekey = (EditText) getView().findViewById(R.id.wpe_private_key);
 
-                    if(source != null){
+                    if (source != null) {
                         source = source.replaceAll("(?m)^interface=(.*)$", "interface=" + ifc.getText().toString());
                         source = source.replaceAll("(?m)^bssid=(.*)$", "bssid=" + bssid.getText().toString());
                         source = source.replaceAll("(?m)^ssid=(.*)$", "ssid=" + ssid.getText().toString());
@@ -557,7 +556,7 @@ public class ManaFragment extends Fragment{
 
     public static class DhcpdFragment extends Fragment {
 
-        private final String configFilePath = nh.CHROOT_PATH +"/etc/dhcp/dhcpd.conf";
+        private final String configFilePath = nh.CHROOT_PATH + "/etc/dhcp/dhcpd.conf";
         final ShellExecuter exe = new ShellExecuter();
 
         @Override
@@ -578,7 +577,7 @@ public class ManaFragment extends Fragment{
                 public void onClick(View v) {
                     EditText source = (EditText) rootView.findViewById(R.id.source);
                     Boolean isSaved = exe.SaveFileContents(source.getText().toString(), configFilePath);
-                    if(isSaved){
+                    if (isSaved) {
                         nh.showMessage("Source updated");
                     } else {
                         nh.showMessage("Source not updated");
@@ -593,6 +592,7 @@ public class ManaFragment extends Fragment{
 
         private String configFilePath;
         final ShellExecuter exe = new ShellExecuter();
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -611,7 +611,7 @@ public class ManaFragment extends Fragment{
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(getView() == null){
+                    if (getView() == null) {
                         return;
                     }
                     EditText source = (EditText) getView().findViewById(R.id.source);
@@ -637,9 +637,9 @@ public class ManaFragment extends Fragment{
             desc.setText(getResources().getString(R.string.mana_nat_full));
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                configFilePath = nh.CHROOT_PATH +"/usr/share/mana-toolkit/run-mana/start-nat-full-lollipop.sh";
+                configFilePath = nh.CHROOT_PATH + "/usr/share/mana-toolkit/run-mana/start-nat-full-lollipop.sh";
             } else {
-                configFilePath = nh.CHROOT_PATH +"/usr/share/mana-toolkit/run-mana/start-nat-full-kitkat.sh";
+                configFilePath = nh.CHROOT_PATH + "/usr/share/mana-toolkit/run-mana/start-nat-full-kitkat.sh";
             }
 
 
@@ -650,7 +650,7 @@ public class ManaFragment extends Fragment{
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(getView() == null){
+                    if (getView() == null) {
                         return;
                     }
                     EditText source = (EditText) getView().findViewById(R.id.source);
@@ -673,9 +673,9 @@ public class ManaFragment extends Fragment{
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                configFilePath = nh.CHROOT_PATH +"/usr/share/mana-toolkit/run-mana/start-nat-simple-lollipop.sh";
+                configFilePath = nh.CHROOT_PATH + "/usr/share/mana-toolkit/run-mana/start-nat-simple-lollipop.sh";
             } else {
-                configFilePath = nh.CHROOT_PATH +"/usr/share/mana-toolkit/run-mana/start-nat-simple-kitkat.sh";
+                configFilePath = nh.CHROOT_PATH + "/usr/share/mana-toolkit/run-mana/start-nat-simple-kitkat.sh";
             }
 
             String description = getResources().getString(R.string.mana_nat_simple);
@@ -691,7 +691,7 @@ public class ManaFragment extends Fragment{
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(getView() == null){
+                    if (getView() == null) {
                         return;
                     }
                     EditText source = (EditText) getView().findViewById(R.id.source);
@@ -714,7 +714,7 @@ public class ManaFragment extends Fragment{
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
 
-            configFilePath = nh.CHROOT_PATH +"/usr/bin/start-nat-transproxy-lollipop.sh";
+            configFilePath = nh.CHROOT_PATH + "/usr/bin/start-nat-transproxy-lollipop.sh";
 
             String description = getResources().getString(R.string.mana_bettercap_description);
             TextView desc = (TextView) rootView.findViewById(R.id.description);
@@ -728,7 +728,7 @@ public class ManaFragment extends Fragment{
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(getView() == null){
+                    if (getView() == null) {
                         return;
                     }
                     EditText source = (EditText) getView().findViewById(R.id.source);
@@ -765,7 +765,7 @@ public class ManaFragment extends Fragment{
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(getView() == null){
+                    if (getView() == null) {
                         return;
                     }
                     EditText source = (EditText) getView().findViewById(R.id.source);
@@ -809,7 +809,7 @@ public class ManaFragment extends Fragment{
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(getView() == null){
+                    if (getView() == null) {
                         return;
                     }
                     EditText source = (EditText) getView().findViewById(R.id.source);

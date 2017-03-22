@@ -10,7 +10,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/nmap_searchbar"
-            android:queryHint="@string/nmap_hint"
+            android:hint="@string/nmap_hint"
             android:iconifiedByDefault="false"
             android:baselineAligned="false"
             android:measureWithLargestChild="false"
@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/base_listItem_LR"
-            android:text="Scan"
+            android:text="@string/scanButtonText"
             android:layout_centerVertical="true"
             android:id="@+id/nmap_scan_button"
             android:layout_alignParentStart="true" />
@@ -40,7 +40,7 @@
         <Switch
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Advanced Options"
+            android:text="@string/advancedOptionsSwitchText"
             android:id="@+id/nmap_adv_switch"
             android:textAlignment="center" />
 
@@ -58,6 +58,7 @@
             android:layout_margin="15dp"
             android:padding="5dp"
             android:clickable="true"
+            android:focusable="true"
             android:id="@+id/nmap_adv_layout"
             android:weightSum="1"
             android:paddingEnd="10dp"
@@ -66,7 +67,7 @@
             <Spinner
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:id="@+id/nmap_int_spinner"
                 android:paddingBottom="10dp" />
 
