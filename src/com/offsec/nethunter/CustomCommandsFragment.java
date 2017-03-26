@@ -388,10 +388,18 @@ public class CustomCommandsFragment extends Fragment {
     }
 
     private void setUpInitialCommands() {
+<<<<<<< Updated upstream
         database.addCommand("Update Kali metapackages", nh.makeTermTitle("Updating Kali") + "apt-get update && apt-get upgrade", "INTERACTIVE", "KALI", 0);
         database.addCommand("Wlan1 Monitor Mode", nh.makeTermTitle("Wlan1 Monitor UP") + "sudo ifconfig wlan1 down && sudo iwconfig wlan1 mode monitor && sudo ifconfig wlan1 up && echo \"wlan1 Monitor mode enabled\" && sleep 3 && exit", "INTERACTIVE", "KALI", 0);
         database.addCommand("Launch Wifite", nh.makeTermTitle("Wifite") + "wifite", "INTERACTIVE", "KALI", 0);
         database.addCommand("Dump Mifare", nh.makeTermTitle("DumpMifare") + "dumpmifare.sh", "INTERACTIVE", "KALI", 0);
+=======
+        database.addCommand("Scan networks",nh.makeTermTitle("Scanning Networks") + "echo 'test' > test.txt ", "INTERACTIVE", "KALI", 0);
+        database.addCommand("Update Kali metapackages",nh.makeTermTitle("Updating Kali") + "apt-get update && apt-get upgrade", "INTERACTIVE", "KALI", 0);
+        database.addCommand("Wlan1 Monitor Mode",nh.makeTermTitle("Wlan1 Monitor UP") +"sudo ifconfig wlan1 down && sudo iwconfig wlan1 mode monitor && sudo ifconfig wlan1 up && echo \"wlan1 Monitor mode enabled\" && sleep 3 && exit", "INTERACTIVE", "KALI", 0);
+        database.addCommand("Launch Wifite",nh.makeTermTitle("Wifite") +"wifite", "INTERACTIVE", "KALI", 0);
+        database.addCommand("Dump Mifare",nh.makeTermTitle("DumpMifare") +"dumpmifare.sh", "INTERACTIVE", "KALI", 0);
+>>>>>>> Stashed changes
     }
 }
 

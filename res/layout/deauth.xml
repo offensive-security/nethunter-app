@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/deauth_item"
+    android:weightSum="1">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="wlan1"
+        android:ems="10"
+        android:id="@+id/wlan_interface"
+        android:hint="Type wlan interface" />
+
+    <Button
+        android:text="Scan Networks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scan_networks" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/TerminalOutputDeAuth"
+        android:padding="16sp"
+        android:background="@android:color/black"
+        android:textColor="@android:color/holo_green_light"
+        android:fontFamily="monospace"
+        android:layout_weight="0.97"
+        android:textSize="6sp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:text="Number of packets"
+        android:ems="10"
+        android:id="@+id/time" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="BSSID"
+        android:ems="10"
+        android:id="@+id/bssid" />
+
+    <Button
+        android:text="Start Deauthentication :)"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/StartDeAuth" />
+
+</LinearLayout>

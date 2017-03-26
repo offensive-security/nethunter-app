@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group>
         <item
@@ -76,6 +77,10 @@
             android:id="@+id/gps_item"
             android:icon="@drawable/ic_gps_fixed_black_18dp"
             android:title="@string/drawertitlegps" />
+        <item
+            android:id="@+id/deauth_item"
+            android:icon="@drawable/ic_action_network_wifi"
+            android:title="DeAuth" />
      </group>
 
- </menu>
+</menu>
