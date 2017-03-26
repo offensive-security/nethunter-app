@@ -85,8 +85,8 @@ import android.widget.AdapterView.OnItemClickListener;
             public void onClick(View v) {
 
                 /**TODO: create .sh that executes the commands and puts its output in a file and then read the file in the textview 20/02/17*/
-                String cmd = "./root/scan.sh " + wlan.getText() + " | tr -s [:space:] > /root/test.txt";
-
+                new BootKali("cp /sdcard/nh_files/deauth/scan.sh /root/scan.sh & chmod +x /root/scan.sh").run_bg();
+                String cmd = "./root/scan.sh " + wlan.getText() + " | tr -s [:space:] > /sdcard/nh_files/deauth/output.txt";
                 try {
                     new BootKali("ifconfig " + wlan.getText() + " up").run_bg();
                     Thread.sleep(1000);
@@ -97,7 +97,7 @@ import android.widget.AdapterView.OnItemClickListener;
                 try {
                     Thread.sleep(5000);
                     nh = new NhPaths();
-                    String output = exe.RunAsRootOutput("cat " + nh.CHROOT_PATH + "/root/test.txt").replace("Cell ","\n");
+                    String output = exe.RunAsRootOutput("cat /sdcard/nh_files/deauth/output.txt").replace("Cell ","\n");
                     term.setText(output);
                 } catch (Exception e) {
                     e.printStackTrace();
