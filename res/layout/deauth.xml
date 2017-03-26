@@ -29,23 +29,23 @@
         android:textColor="@android:color/holo_green_light"
         android:fontFamily="monospace"
         android:layout_weight="0.97"
-        android:textSize="6sp" />
+        android:textSize="14sp" />
 
     <EditText
+        android:id="@+id/time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="number"
-        android:text="Number of packets"
         android:ems="10"
-        android:id="@+id/time" />
+        android:hint="Number of packets(0 is for continuously sending)"
+        android:inputType="number" />
 
     <EditText
+        android:id="@+id/bssid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:text="BSSID"
         android:ems="10"
-        android:id="@+id/bssid" />
+        android:hint="BSSID"
+        android:inputType="textPersonName" />
 
     <Button
         android:text="Start Deauthentication :)"
