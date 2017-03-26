@@ -262,6 +262,7 @@
         <item>Windows [.exe]</item>
     </string-array>
     <string name="mpc_port">Port:</string>
+    <string name="mpc_port_default">443</string>
     <string name="mpc_ip_address">IP Address:</string>
     <string name="mpc_payload">Payload Options:</string>
     <string-array name="mpc_payload_array">
@@ -307,7 +308,7 @@
     <string name="extract_chroot">Decompressing and deploying the Chroot… (~5–10 min)</string>
 
     <!-- Start NMAP -->
-    <string name="nmap_hint">scanme.nmap.org, 192.168.0.1; 10.0.0-255.1-254</string>
+    <string name="nmap_hint">scanme.nmap.org, 192.168.0.1; 10.0.0–255.1&#8211;254</string>
     <string-array name="nmap_interface_array">
         <item>Select interface</item>
         <item>wlan0</item>
@@ -363,6 +364,10 @@
     <!-- Start GPSFragment -->
     <string name="gps_description">Converts your GPS to nmea then provides to Kali chroot.  Perfect for wardriving with Kismet or just a generic GPS server for Kali.  Requires OTG and external wireless.</string>
     <string name="gps_help">You may need to give Nethunter permissions to GPS. Go to Settings > Apps > Nethunter > Permissions.  When it starts press: "return" three times, Vol+up and "t", "return.</string>
+    <string name="loading_wait">Loading wait…</string>
+    <string name="loading_file">Loading…  FILE: %s</string>
+    <string name="scanButtonText">Scan</string>
+    <string name="advancedOptionsSwitchText">Advanced Options</string>
     <!-- End GPSFragment -->
 
 

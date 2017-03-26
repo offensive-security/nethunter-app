@@ -31,6 +31,8 @@
         android:allowBackup="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
+        android:resizeableActivity="true"
+        android:supportsPictureInPicture="false"
         android:theme="@style/Theme.Nethunter"
         android:windowSoftInputMode="adjustResize"
         tools:replace="android:theme">
@@ -48,6 +50,13 @@
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+            <!-- for Nougat -->
+            <layout
+                android:defaultHeight="500dp"
+                android:defaultWidth="600dp"
+                android:gravity="top|end"
+                android:minHeight="320dp"
+                android:minWidth="480dp" />
         </activity>
         <activity
             android:name=".EditSourceActivity"
@@ -70,9 +79,9 @@
             android:exported="false"
             android:process=":runAtBoot" />
         <service
-            android:name=".GPS.LocationUpdateService"
+            android:name="gps.LocationUpdateService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false" />
     </application>
 
 </manifest>

@@ -26,6 +26,7 @@ public class PineappleFragment extends Fragment {
 
     public PineappleFragment() {
     }
+
     public static PineappleFragment newInstance(int sectionNumber) {
         PineappleFragment fragment = new PineappleFragment();
         Bundle args = new Bundle();
@@ -61,9 +62,9 @@ public class PineappleFragment extends Fragment {
         final CheckBox transCheckbox = (CheckBox) rootView.findViewById(R.id.pineapple_transproxy);
         checkBoxListener = new View.OnClickListener() {
             public void onClick(View v) {
-                if(noupCheckbox.isChecked()) {
+                if (noupCheckbox.isChecked()) {
                     proxy_type = " start_proxy ";
-                }else{
+                } else {
                     proxy_type = "";
                 }
             }
@@ -72,18 +73,18 @@ public class PineappleFragment extends Fragment {
 
         // Start Button
         addClickListener(R.id.pineapple_start_button, new View.OnClickListener() {
-                    public void onClick(View v) {
-                        new Thread(new Runnable() {
-                            public void run() {
-                                ShellExecuter exe = new ShellExecuter();
-                                String command = "su -c '" + nh.APP_SCRIPTS_PATH + "/pine-nano " + start_type + startConnection(rootView) +  proxy_type + "'";
-                                Log.d(TAG, command);
-                                exe.RunAsRootOutput(command);
-                            }
-                        }).start();
-                        nh.showMessage("Starting eth0 connection");
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+                    public void run() {
+                        ShellExecuter exe = new ShellExecuter();
+                        String command = "su -c '" + nh.APP_SCRIPTS_PATH + "/pine-nano " + start_type + startConnection(rootView) + proxy_type + "'";
+                        Log.d(TAG, command);
+                        exe.RunAsRootOutput(command);
                     }
-                }, rootView);
+                }).start();
+                nh.showMessage("Starting eth0 connection");
+            }
+        }, rootView);
 
         // Stop|Close Button
         addClickListener(R.id.pineapple_close_button, new View.OnClickListener() {
@@ -100,24 +101,24 @@ public class PineappleFragment extends Fragment {
             }
         }, rootView);
 
-    return rootView;
+        return rootView;
     }
 
-    private String startConnection(View rootView){
+    private String startConnection(View rootView) {
         // Port Text Field
-        EditText port = (EditText)rootView.findViewById(R.id.pineapple_webport);
+        EditText port = (EditText) rootView.findViewById(R.id.pineapple_webport);
 
         // Gateway IP Text Field
-        EditText gateway_ip = (EditText)rootView.findViewById(R.id.pineapple_gatewayip);
+        EditText gateway_ip = (EditText) rootView.findViewById(R.id.pineapple_gatewayip);
 
         // Client IP Text Field
-        EditText web_ip = (EditText)rootView.findViewById(R.id.pineapple_clientip);
+        EditText web_ip = (EditText) rootView.findViewById(R.id.pineapple_clientip);
 
         // CIDR Text Field
-        EditText CIDR = (EditText)rootView.findViewById(R.id.pineapple_cidr);
+        EditText CIDR = (EditText) rootView.findViewById(R.id.pineapple_cidr);
 
         // Pineapple CIDR Text Field
-        return web_ip.getText() + " " + CIDR.getText() + " " +gateway_ip.getText() + " " + port.getText();
+        return web_ip.getText() + " " + CIDR.getText() + " " + gateway_ip.getText() + " " + port.getText();
     }
 
     private void addClickListener(int buttonId, View.OnClickListener onClickListener, View rootView) {

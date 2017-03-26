@@ -12,8 +12,8 @@ import android.widget.Toast;
 
 import com.offsec.nethunter.ChrootManagerFragment;
 import com.offsec.nethunter.KaliServicesFragment;
-import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.R;
+import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
 
 
@@ -25,15 +25,16 @@ public class RunAtBootService extends Service {
     private Boolean runBootServices = true;
     private String doing_action = "";
     private Notification.Builder n = null;
+
     public RunAtBootService() {
     }
 
-    private Notification.Builder doNotification(String contents){
-                if(n == null){
-                    n  = new Notification.Builder(this);
-                }
-                n.setStyle(new Notification.BigTextStyle().bigText(contents))
-                        .setContentTitle(RunAtBootService.TAG)
+    private void doNotification(String contents) {
+        if (n == null) {
+            n = new Notification.Builder(this);
+        }
+        n.setStyle(new Notification.BigTextStyle().bigText(contents))
+                .setContentTitle(RunAtBootService.TAG)
                 //.setContentText(contents)
                 .setSmallIcon(R.drawable.ic_stat_ic_nh_notificaiton)
                 // .setContentIntent(pIntent)
@@ -42,7 +43,6 @@ public class RunAtBootService extends Service {
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         notificationManager.notify(999, n.build());
-        return n;
     }
 
     @Override
@@ -56,19 +56,19 @@ public class RunAtBootService extends Service {
         // updates should be done at boot, at every app start (current practice), etc.
         if (!sharedpreferences.getBoolean(CHROOT_INSTALLED_TAG, false)) {
             // chroot not installed
-            Log.d(TAG,"Nethunter chroot is not installed.");
+            Log.d(TAG, "Nethunter chroot is not installed.");
             doing_action = "Nethunter chroot is not installed.";
             runBootServices = false;
             doNotification(getString(R.string.nokalichrootfound));
         } else if (!sharedpreferences.getBoolean(KaliServicesFragment.RUN_AT_BOOT, true)) {
             // USER DISABLED BOOT SERVICES
-            Log.d(TAG,"USER DISABLED BOOT SERVICES");
+            Log.d(TAG, "USER DISABLED BOOT SERVICES");
             doing_action = "USER DISABLED BOOT SERVICES";
             runBootServices = false;
             doNotification("USER DISABLED BOOT SERVICES");
         }
         // check for DELETE_CHROOT_TAG pref & make sure default is NO
-        if(ChrootManagerFragment.DELETE_CHROOT_TAG.equals(sharedpreferences.getString(ChrootManagerFragment.DELETE_CHROOT_TAG, ""))){
+        if (ChrootManagerFragment.DELETE_CHROOT_TAG.equals(sharedpreferences.getString(ChrootManagerFragment.DELETE_CHROOT_TAG, ""))) {
             doing_action = "DELETE CHROOT";
             doNotification("Delete chroot request found.");
             runBootServices = false;
@@ -82,7 +82,7 @@ public class RunAtBootService extends Service {
             if (_res.equals("1")) {
                 Toast.makeText(getBaseContext(), getString(R.string.toastchrootmountedwarning), Toast.LENGTH_LONG).show();
                 doNotification(getString(R.string.toastchrootmountedwarning));
-            } else{
+            } else {
                 doNotification(getString(R.string.toastdeletingchroot));
                 Toast.makeText(getBaseContext(), getString(R.string.toastdeletingchroot), Toast.LENGTH_LONG).show();
                 x.RunAsRootOutput("su -c 'rm -rf " + nh.NH_SYSTEM_PATH + "/*'");
@@ -97,7 +97,7 @@ public class RunAtBootService extends Service {
 
         }
 
-        if(ChrootManagerFragment.MIGRATE_CHROOT_TAG.equals(sharedpreferences.getString(ChrootManagerFragment.MIGRATE_CHROOT_TAG, ""))) {
+        if (ChrootManagerFragment.MIGRATE_CHROOT_TAG.equals(sharedpreferences.getString(ChrootManagerFragment.MIGRATE_CHROOT_TAG, ""))) {
             doing_action = "MIGRATE CHROOT";
             doNotification("Migrate chroot request found.");
             runBootServices = false;
@@ -125,7 +125,7 @@ public class RunAtBootService extends Service {
             Toast.makeText(getBaseContext(), "Boot end: ALL OK", Toast.LENGTH_SHORT).show();
 //            doNotification("Boot ended. All fine. Action performed: " + doing_action + " OK");
         } else {
-            if(!runBootServices){
+            if (!runBootServices) {
                 Toast.makeText(getBaseContext(), "Not runing boot scripts. OK", Toast.LENGTH_SHORT).show();
 //                doNotification("Boot ended. All fine. Action performed: " + doing_action + " OK");
             } else {
@@ -143,7 +143,7 @@ public class RunAtBootService extends Service {
     }
 
     private boolean userinit(Boolean ShouldRun) {
-        if(!ShouldRun){
+        if (!ShouldRun) {
             return false;
         }
         doing_action = "RUNNING BOOT SERVICES";
@@ -154,10 +154,10 @@ public class RunAtBootService extends Service {
         // start with a number and include a hashbang such as #!/system/bin/sh as the first line.
         ShellExecuter exe = new ShellExecuter();
         String busybox = nh.whichBusybox();
-        if(!busybox.equals("")){
+        if (!busybox.equals("")) {
             exe.RunAsRootOutput("rm -rf " + nh.CHROOT_PATH + "/tmp/.X1*"); // remove posible vnc locks (if the phone is rebooted with the vnc server running)
             // init.d
-            String[] runner = {busybox + " run-parts " +  nh.APP_INITD_PATH};
+            String[] runner = {busybox + " run-parts " + nh.APP_INITD_PATH};
             exe.RunAsRoot(runner);
             Toast.makeText(getBaseContext(), getString(R.string.autorunningscripts), Toast.LENGTH_SHORT).show();
             return true;

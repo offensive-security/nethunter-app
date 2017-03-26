@@ -4,40 +4,35 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath 'com.android.tools.build:gradle:2.4.0-alpha1'
     }
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.2' //version required
+    gradleVersion = '3.4.1' //version required
 }
 
 apply plugin: 'com.android.application'
-
-def getDate() {
-    return Calendar.getInstance().getTimeInMillis()
-}
 
 repositories {
     mavenCentral()
 }
 
-
 dependencies {
-    compile 'com.android.support:support-v4:25.1.0'
-    compile 'com.android.support:appcompat-v7:25.1.0'
-    compile 'com.android.support:design:25.1.0'
-    compile 'com.google.guava:guava:19.0-rc2'
+    compile 'com.android.support:support-v4:25.3.0'
+    compile 'com.android.support:appcompat-v7:25.3.0'
+    compile 'com.android.support:design:25.3.0'
+    compile 'com.google.guava:guava:20.0'
     compile project(':androidwversionmanager')
     compile 'org.thoughtcrime.ssl.pinning:AndroidPinning:1.0.0'
-    compile 'com.google.android.gms:play-services-location:10.0.1'
+    compile 'com.google.android.gms:play-services-location:10.2.0'
     compile 'joda-time:joda-time:2.9.7'
 }
 
 android {
 
     compileSdkVersion 25
-    buildToolsVersion '25'
+    buildToolsVersion '25.0.2'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
@@ -47,8 +42,8 @@ android {
     defaultConfig {
         minSdkVersion 17
         targetSdkVersion 25
-        versionCode 21
-        versionName "3.15.4"
+        versionCode 22
+        versionName "3.16"
     }
 
     sourceSets {
@@ -66,7 +61,7 @@ android {
     signingConfigs {
 
         debug {
-            storeFile file("${System.properties['user.home']}" +  "/.android/debug.keystore")
+            storeFile file("${System.properties['user.home']}" + "/.android/debug.keystore")
         }
 
         /* note:  To build a signed version of nethunter:
@@ -91,8 +86,8 @@ android {
 
         debug {
             minifyEnabled false
-            buildConfigField "java.util.Date", "BUILD_TIME", "new java.util.Date(" + getDate() + "L)"
-            buildConfigField "String", "BUILD_NAME", "\"" + System.getenv("USER") + "\"";
+            buildConfigField "java.util.Date", "BUILD_TIME", "new java.util.Date(" + System.currentTimeMillis() + "L)"
+            buildConfigField "String", "BUILD_NAME", "\"" + System.getenv("USER") + "\""
 
             return true
         }
@@ -104,8 +99,8 @@ android {
             debuggable false
             jniDebuggable false
             zipAlignEnabled true
-            buildConfigField "java.util.Date", "BUILD_TIME", "new java.util.Date(" + getDate() + "L)"
-            buildConfigField "String", "BUILD_NAME", "\"" + System.getenv("USER") + "\"";
+            buildConfigField "java.util.Date", "BUILD_TIME", "new java.util.Date(" + System.currentTimeMillis() + "L)"
+            buildConfigField "String", "BUILD_NAME", "\"" + System.getenv("USER") + "\""
 
             return true
         }

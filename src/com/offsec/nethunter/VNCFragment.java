@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +16,10 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-import android.util.DisplayMetrics;
 
 import com.offsec.nethunter.utils.NhPaths;
 
-public class VNCFragment  extends Fragment {
+public class VNCFragment extends Fragment {
 
     private static final String TAG = "VNCFragment";
     private String xwidth;
@@ -28,8 +28,10 @@ public class VNCFragment  extends Fragment {
 
     NhPaths nh;
     private static final String ARG_SECTION_NUMBER = "section_number";
+
     public VNCFragment() {
     }
+
     public static VNCFragment newInstance(int sectionNumber) {
         VNCFragment fragment = new VNCFragment();
         Bundle args = new Bundle();
@@ -52,7 +54,7 @@ public class VNCFragment  extends Fragment {
         final int screen_width = displaymetrics.widthPixels;
 
         // Because height and width changes on screen rotation, use the largest as width
-        if (screen_height > screen_width){
+        if (screen_height > screen_width) {
             xwidth = Integer.toString(screen_height);
             xheight = Integer.toString(screen_width);
         } else {
@@ -116,7 +118,7 @@ public class VNCFragment  extends Fragment {
 
     private void intentClickListener_VNC() {
         try {
-            if(getView() == null){
+            if (getView() == null) {
                 return;
             }
 
@@ -126,7 +128,7 @@ public class VNCFragment  extends Fragment {
             String _NICK = ((EditText) getView().findViewById(R.id.vnc_CONN_NICK)).getText().toString();
             String _USER = ((EditText) getView().findViewById(R.id.vnc_USER)).getText().toString();
             int _RESOLUTION = ((Spinner) getView().findViewById(R.id.resolution_spinner)).getSelectedItemPosition();
-            if(!_R_IP.equals("") && !_R_PORT.equals("") && !_NICK.equals("")){
+            if (!_R_IP.equals("") && !_R_PORT.equals("") && !_NICK.equals("")) {
                 Intent intent = getActivity().getApplicationContext().getPackageManager().getLaunchIntentForPackage("com.offsec.nhvnc");
                 intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
                 intent.putExtra("com.offsec.nhvnc.EXTRA_CONN_DATA", true);

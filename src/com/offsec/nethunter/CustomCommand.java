@@ -19,10 +19,10 @@ public class CustomCommand {
     final static String EXEC_MODE = "EXEC_MODE";
     final static String SEND_TO_SHELL = "SEND_TO_SHELL";
     final static String RUN_AT_BOOT = "RUN_AT_BOOT";
-    public CustomCommand(){
+    CustomCommand(){
 
     }
-    public CustomCommand(long id, String command_label, String command, String execMode, String sendToShell,  Integer runAtBoot) {
+    CustomCommand(long id, String command_label, String command, String execMode, String sendToShell, Integer runAtBoot) {
         this.id = id;
         this.command_label = command_label;
         this.command = command;
@@ -38,11 +38,11 @@ public class CustomCommand {
         return id;
     }
 
-    public String getCommand_label() {
+    String getCommand_label() {
         return command_label;
     }
 
-    public void setCommand_label(String command_label) {
+    void setCommand_label(String command_label) {
         this.command_label = command_label;
     }
 
@@ -54,24 +54,24 @@ public class CustomCommand {
         this.command = command;
     }
 
-    public String getExec_Mode() {
+    String getExec_Mode() {
         return execMode;
     }
-    public void setExec_Mode(String execMode) {
+    void setExec_Mode(String execMode) {
         this.execMode = execMode;
     }
 
-    public String getSend_To_Shell() {
+    String getSend_To_Shell() {
         return sendToShell;
     }
-    public void setSend_To_Shell(String sendToShell) {
+    void setSend_To_Shell(String sendToShell) {
         this.sendToShell = sendToShell;
     }
 
-    public Integer getRun_At_Boot() {
+    Integer getRun_At_Boot() {
         return runAtBoot;
     }
-    public void setRun_At_Boot(Integer runAtBoot) {
+    void setRun_At_Boot(Integer runAtBoot) {
         this.runAtBoot = runAtBoot;
     }
 }

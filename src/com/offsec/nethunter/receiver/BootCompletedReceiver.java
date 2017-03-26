@@ -9,6 +9,7 @@ import com.offsec.nethunter.service.RunAtBootService;
 /**
  * Created by fattire on 2/19/15.
  */
+
 public class BootCompletedReceiver extends BroadcastReceiver{
 
         @Override

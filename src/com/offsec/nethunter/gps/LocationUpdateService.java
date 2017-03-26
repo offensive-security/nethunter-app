@@ -1,4 +1,4 @@
-package com.offsec.nethunter.GPS;
+package com.offsec.nethunter.gps;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -27,7 +27,6 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.ServerSocket;
 import java.net.Socket;
 
 public class LocationUpdateService extends Service implements GpsdServer.ConnectionListener,
@@ -153,7 +152,6 @@ public class LocationUpdateService extends Service implements GpsdServer.Connect
     }
 
 
-
     public class ServiceBinder extends Binder {
         public LocationUpdateService getService() {
             return LocationUpdateService.this;
@@ -274,7 +272,7 @@ public class LocationUpdateService extends Service implements GpsdServer.Connect
     @Override
     public void onDestroy() {
         Log.d(TAG, "OnDestroy");
-        if(apiClient != null && apiClient.isConnected()) {
+        if (apiClient != null && apiClient.isConnected()) {
             apiClient.disconnect();
             LocationServices.FusedLocationApi.removeLocationUpdates(apiClient, locationListener);
         }

@@ -1,8 +1,0 @@
-#!/system/bin/sh
-su
-mount -o rw,remount,rw /system
-ln -s /data/data/com.offsec.nethunter/files/scripts/bootkali /system/bin/bootkali
-ln -s /data/data/com.offsec.nethunter/files/scripts/bootkali_login /system/bin/bootkali_login
-ln -s /data/data/com.offsec.nethunter/files/scripts/bootkali_init /system/bin/bootkali_init
-ln -s /data/data/com.offsec.nethunter/files/scripts/bootkali_bash /system/bin/bootkali_bash
-mount -o ro,remount,ro /system
