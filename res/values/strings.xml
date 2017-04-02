@@ -368,6 +368,13 @@
     <string name="loading_file">Loading…  FILE: %s</string>
     <string name="scanButtonText">Scan</string>
     <string name="advancedOptionsSwitchText">Advanced Options</string>
+    <string name="edit_whitelist_file">Edit whitelist file.</string>
+    <string name="type_wlan_interface">Type wlan interface</string>
+    <string name="scan_networks">Scan Networks</string>
+    <string name="channel">Channel</string>
+    <string name="whitelist">Whitelist</string>
+    <string name="deauthenticate_anyone_besides_me">Deauthenticate anyone besides me</string>
+    <string name="start_deauthentication">Start Deauthentication :)</string>
     <!-- End GPSFragment -->
 
 

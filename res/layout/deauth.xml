@@ -12,10 +12,10 @@
         android:text="wlan1"
         android:ems="10"
         android:id="@+id/wlan_interface"
-        android:hint="Type wlan interface" />
+        android:hint="@string/type_wlan_interface" />
 
     <Button
-        android:text="Scan Networks"
+        android:text="@string/scan_networks"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/scan_networks" />
@@ -28,27 +28,39 @@
         android:background="@android:color/black"
         android:textColor="@android:color/holo_green_light"
         android:fontFamily="monospace"
-        android:layout_weight="0.97"
+        android:layout_weight="1.00"
         android:textSize="14sp" />
 
     <EditText
-        android:id="@+id/time"
+        android:id="@+id/channel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Number of packets(0 is for continuously sending)"
+        android:hint="@string/channel"
         android:inputType="number" />
 
-    <EditText
-        android:id="@+id/bssid"
+    <TableRow
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="BSSID"
-        android:inputType="textPersonName" />
+        android:layout_height="wrap_content">
+
+        <CheckBox
+            android:id="@+id/deauth_whitelist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/whitelist"
+            android:clickable="false"
+            />
+
+        <CheckBox
+            android:id="@+id/deauth_me"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:duplicateParentState="true"
+            android:text="@string/deauthenticate_anyone_besides_me" />
+    </TableRow>
 
     <Button
-        android:text="Start Deauthentication :)"
+        android:text="@string/start_deauthentication"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/StartDeAuth" />

@@ -67,7 +67,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".EditSourceActivity" />
         </activity>
-
+        <activity
+            android:name=".DeAuthWhitelistActivity"
+            android:label="Edit whitelist"
+            android:theme="@style/Theme.Nethunter"
+            android:windowSoftInputMode="stateHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".DeAuthWhitelistActivity" />
+        </activity>
         <updateReceiver android:name=".updateReceiver.BootCompletedReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
