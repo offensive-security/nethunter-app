@@ -152,7 +152,7 @@ import android.widget.AdapterView.OnItemClickListener;
                             exe.RunAsRootOutput("echo '" + getmac(wlan.getText().toString()) + "' >> /sdcard/nh_files/deauth/whitelist.txt");
 
                         } else {
-                            exe.RunAsRootOutput("sed -i '/wlan0/d' /sdcard/nh_files/deauth/whitelist.txt");
+                            exe.RunAsRootOutput("echo '" + getmac("wlan0") + "' >> /sdcard/nh_files/deauth/whitelist.txt");
                             exe.RunAsRootOutput("echo '" + getmac(wlan.getText().toString()) + "' >> /sdcard/nh_files/deauth/whitelist.txt");
                         }
                     } else {
