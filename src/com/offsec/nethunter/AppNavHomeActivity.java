@@ -262,6 +262,13 @@ public class AppNavHomeActivity extends AppCompatActivity implements KaliGPSUpda
                                         .commit();
                                 break;
                             */
+                            case R.id.deauth_item:
+                                fragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.container, DeAuthFragment.newInstance(itemId))
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
                             case R.id.kaliservices_item:
                                 fragmentManager
                                         .beginTransaction()

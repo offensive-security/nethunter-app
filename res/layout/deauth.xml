@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/deauth_item"
+    android:weightSum="1">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="wlan1"
+        android:ems="10"
+        android:id="@+id/wlan_interface"
+        android:hint="@string/type_wlan_interface" />
+
+    <Button
+        android:text="@string/scan_networks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scan_networks" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/TerminalOutputDeAuth"
+        android:padding="16sp"
+        android:background="@android:color/black"
+        android:textColor="@android:color/holo_green_light"
+        android:fontFamily="monospace"
+        android:layout_weight="1.00"
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/channel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/channel"
+        android:inputType="number" />
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <CheckBox
+            android:id="@+id/deauth_whitelist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/whitelist"
+            android:clickable="false"
+            />
+
+        <CheckBox
+            android:id="@+id/deauth_me"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:duplicateParentState="true"
+            android:text="@string/deauthenticate_anyone_besides_me" />
+    </TableRow>
+
+    <Button
+        android:text="@string/start_deauthentication"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/StartDeAuth" />
+
+</LinearLayout>

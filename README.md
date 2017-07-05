@@ -62,6 +62,7 @@ nethunter-app
       etc.init.d <-- Startup scripts
       files
       nh_files   <-- Copied to sdcard
+        deauth <-- Used by the Deauthenticator.
         configs  <-- Config files used by apps
         duckscripts <-- Some default ducky scripts
         modules     <-- Mainly used by duckhunter.  Contains keyseed.py which does all the HID work.
