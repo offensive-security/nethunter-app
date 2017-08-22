@@ -1,8 +1,18 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.offsec.nethunter.MITMFViewModel" />
+    </data>
+
+    <ScrollView
     android:layout_width="fill_parent"
     android:layout_height="wrap_content">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="16dp"
@@ -17,19 +27,6 @@
             android:layout_gravity="center_horizontal|center"
             android:gravity="center"
             android:padding="4dp" />
-
-        <ImageView
-            android:paddingTop="10px"
-            android:paddingBottom="5px"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:src="@android:drawable/divider_horizontal_bright" />
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="599dp"
-            android:layout_gravity="center_horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -54,7 +51,7 @@
                 android:paddingTop="10px"
                 android:paddingBottom="5px"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:src="@android:drawable/divider_horizontal_bright" />
 
             <CheckBox
@@ -93,16 +90,16 @@
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/mitmf_beefautorun"
-                android:id="@+id/mitmf_beef"
+                android:text="@string/mitmf_smbauth"
+                android:id="@+id/mitmf_smb"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp" />
 
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/mitmf_smbauth"
-                android:id="@+id/mitmf_smb"
+                android:text="SMB trap"
+                android:id="@+id/mitmf_smb_trap"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp" />
 
@@ -135,7 +132,7 @@
                 android:paddingTop="10px"
                 android:paddingBottom="5px"
                 android:layout_height="wrap_content"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:src="@android:drawable/divider_horizontal_bright" />
 
             <TextView
@@ -148,7 +145,7 @@
                 android:paddingTop="10px"
                 android:paddingBottom="5px"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:src="@android:drawable/divider_horizontal_bright" />
 
             <CheckBox
@@ -156,7 +153,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/mitmf_screenshotter"
                 android:id="@+id/mitmf_screenshotter"
-                android:checked="false"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp" />
 
@@ -164,7 +160,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/mitmf_screenshotter_interval" />
+                android:text="@string/mitmf_screenshotter_interval"
+                android:labelFor="@+id/mitmf_screen_interval" />
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -178,11 +175,17 @@
                     android:ems="10"
                     android:id="@+id/mitmf_screen_interval"
                     android:maxLines="1" />
+                <!--android:enabled="@{mitmfScreenshotter.checked}"-->
             </LinearLayout>
 
-
-        </LinearLayout>
+            <ImageView
+                android:paddingTop="10px"
+                android:paddingBottom="5px"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:src="@android:drawable/divider_horizontal_bright" />
 
     </LinearLayout>
 
 </ScrollView>
+</layout>
