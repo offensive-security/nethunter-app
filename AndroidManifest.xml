@@ -76,11 +76,17 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".DeAuthWhitelistActivity" />
         </activity>
-        <updateReceiver android:name=".updateReceiver.BootCompletedReceiver">
+        <!--updateReceiver android:name=".updateReceiver.BootCompletedReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
-        </updateReceiver>
+        </updateReceiver-->
+
+        <receiver android:name=".receiver.BootCompletedReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
         <service
             android:name=".service.RunAtBootService"
