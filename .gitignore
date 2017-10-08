@@ -53,3 +53,4 @@ nethunter-app.iml
 libsuperuser-release/libsuperuser-release.iml
 androidwversionmanager/androidwversionmanager.iml
 *.iml
+/release
