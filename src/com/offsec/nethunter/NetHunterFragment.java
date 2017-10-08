@@ -11,14 +11,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -36,6 +40,7 @@ public class NetHunterFragment extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final String IP_REGEX = "\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b";
     private static final Pattern IP_REGEX_PATTERN = Pattern.compile(IP_REGEX);
+    Switch HIDSwitch;
 
     /**
      * Returns a new instance of this fragment for the given section
@@ -67,6 +72,23 @@ public class NetHunterFragment extends Fragment {
             }
         }, rootView);
         getInterfaces(rootView);
+
+        // HID Switch for newer kernels to turn on HID
+        HIDSwitch = (Switch) rootView.findViewById(R.id.hidSWITCH);
+        HIDSwitch.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                if(HIDSwitch.isChecked())
+                {
+                    setHIDON();
+                }
+                else {
+                    setHIDOff();
+                }
+            }
+        });
 
         return rootView;
     }
@@ -115,9 +137,34 @@ public class NetHunterFragment extends Fragment {
 
     }
 
-    private void getBusybox(final View rootView) {
+    private void setHIDON() {
+        new Thread(new Runnable(){
 
+            public void run(){
+                try {
+                    Process p = Runtime.getRuntime().exec("su -c getprop sys.usb.config > /data/local/usb.config.tmp && su -c setprop sys.usb.config `cat /data/local/usb.config.tmp`,hid");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }).start();
     }
+
+    private void setHIDOff() {
+        new Thread(new Runnable(){
+
+            public void run(){
+                try {
+                    Process p = Runtime.getRuntime().exec("su -c setprop sys.usb.config `cat /data/local/usb.config.tmp` && su -c rm /data/local/usb.config.tmp");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }).start();
+    }
+
 
     private void getInterfaces(final View rootView) {
 
