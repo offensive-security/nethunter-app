@@ -148,6 +148,9 @@ if ! $busybox mountpoint -q $mnt/dev; then
 
 	$busybox mount -r -o bind /system $mnt/system
 
+	# enable depmod/modprobe support in rootfs
+	$busybox mount -r -o bind /system/lib/modules $mnt/lib/modules
+
 	mount_sdcard
 	mount_external_storage
 
