@@ -95,7 +95,6 @@ android {
             minifyEnabled false
             buildConfigField "java.util.Date", "BUILD_TIME", "new java.util.Date(" + System.currentTimeMillis() + "L)"
             buildConfigField "String", "BUILD_NAME", "\"" + System.getenv("USER") + "\""
-
             return true
         }
         release {
@@ -107,8 +106,10 @@ android {
             jniDebuggable false
             zipAlignEnabled true
             buildConfigField "java.util.Date", "BUILD_TIME", "new java.util.Date(" + System.currentTimeMillis() + "L)"
-            buildConfigField "String", "BUILD_NAME", "\"" + System.getenv("USER") + "\""
-
+            /*  enable below to set "built by" name to build machine name
+                buildConfigField "String", "BUILD_NAME", "\"" + System.getenv("USER") + "\""
+                or change line below to hard code it.  */
+            buildConfigField "String", "BUILD_NAME", "\"Kali\""
             return true
         }
     }
