@@ -1,8 +1,18 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.offsec.nethunter.MITMFViewModel" />
+    </data>
+
+    <ScrollView
     android:layout_width="fill_parent"
     android:layout_height="wrap_content">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="16dp"
@@ -15,139 +25,161 @@
             android:paddingTop="10px"
             android:paddingBottom="20px"
             android:layout_height="wrap_content"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:src="@android:drawable/divider_horizontal_bright" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Inject Settings" />
+            android:text="@string/inject_settings" />
 
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/mitmf_inject"
-            android:id="@+id/mitmf_enableinject" />
+            android:id="@+id/mitmf_enableinject"
+            android:onClick="@{(view) -> viewModel.clickInject(view)}" />
 
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/mitmf_inject_PRESERVER"
             android:id="@+id/mitmf_inject_preservecache"
-            android:checked="false" />
+            android:enabled="@{viewModel.injectionEnabled}" />
 
         <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/mitmf_inject_ONCE"
             android:id="@+id/mitmf_inject_onceperdomain"
-            android:checked="false" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="@{viewModel.injectionEnabled}"
+            android:text="@string/mitmf_inject_ONCE" />
 
-        <LinearLayout
-            android:orientation="vertical"
+            <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <CheckBox
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/mitmf_inject_JS"
-                android:id="@+id/mitmf_injectjs"
-                android:layout_gravity="left" />
+                android:layout_marginTop="8dp"
+                android:text="@string/objects_to_inject"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Widget.ActionBar.Subtitle" />
 
-            <EditText
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/mitmf_injectjs_url" />
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp">
 
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/mitmf_inject_HTML"
-                android:id="@+id/mitmf_injecthtml"
-                android:layout_gravity="top" />
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/mitmf_injectjs_url"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="@{viewModel.injectJSEnabled}"
+                    android:hint="@string/mitmf_inject_JS"
+                    app:addTextChangedListener="@{viewModel.injectJSWatcher}" />
+            </android.support.design.widget.TextInputLayout>
 
-            <EditText
+
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/mitmf_injecthtml_url" />
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp">
 
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/mitmf_inject_HTMLPAY"
-                android:id="@+id/mitmf_injecthtmlpay" />
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/mitmf_injecthtml_url"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="@{viewModel.injectHtmlUrlEnabled}"
+                    android:hint="@string/mitmf_inject_HTML"
+                    app:addTextChangedListener="@{viewModel.injectHtmlUrlWatcher}" />
+            </android.support.design.widget.TextInputLayout>
 
-            <EditText
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/mitmf_injecthtmlpay_text" />
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp">
 
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/mitmf_inject_MATCH"
-                android:id="@+id/mitmf_inject_match"
-                android:checked="false" />
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/mitmf_injecthtmlpay_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="@{viewModel.injectHtmlEnabled}"
+                    android:hint="@string/mitmf_inject_HTMLPAY"
+                    app:addTextChangedListener="@{viewModel.injectHtmlWatcher}" />
 
-            <EditText
+            </android.support.design.widget.TextInputLayout>
+
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/inject_characteristics"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Widget.ActionBar.Subtitle" />
+
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/mitmf_inject_match_string" />
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp">
 
-        </LinearLayout>
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/mitmf_inject_rateseconds"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/mitmf_inject_RATELIMIT"
+                    android:inputType="number"
+                    android:enabled="@{viewModel.injectionEnabled}" />
 
-        <CheckBox
-            android:layout_width="wrap_content"
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/mitmf_inject_RATELIMIT"
-            android:id="@+id/mitmf_inject_ratelimit"
-            android:checked="false" />
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp">
 
-        <EditText
-            android:layout_width="82dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/mitmf_inject_rateseconds"
-            android:inputType="number" />
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/mitmf_inject_times_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/mitmf_inject_COUNTLIMIT"
+                    android:inputType="number"
+                    android:enabled="@{viewModel.injectionEnabled}" />
 
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/mitmf_inject_COUNTLIMIT"
-            android:id="@+id/mitmf_inject_times"
-            android:checked="false" />
+            </android.support.design.widget.TextInputLayout>
 
-        <EditText
-            android:layout_width="92dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/mitmf_inject_times_text"
-            android:inputType="number" />
 
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/mitmf_inject_INJECTIP"
-            android:id="@+id/mitmf_inject_ip"
-            android:checked="false" />
-
-        <EditText
+            <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/mitmf_inject_ip_text" />
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp">
 
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/mitmf_inject_NOINJECTIP"
-            android:id="@+id/mitmf_inject_noip"
-            android:checked="false" />
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/mitmf_inject_ip_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/mitmf_inject_INJECTIP"
+                    android:enabled="@{viewModel.injectionEnabled}" />
 
-        <EditText
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/mitmf_inject_noip_text" />
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp">
 
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/mitmf_inject_noip_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/mitmf_inject_NOINJECTIP"
+                    android:enabled="@{viewModel.injectionEnabled}" />
 
+            </android.support.design.widget.TextInputLayout>
     </LinearLayout>
     </ScrollView>
+</layout>

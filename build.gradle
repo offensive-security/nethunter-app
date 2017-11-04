@@ -1,49 +1,57 @@
 buildscript {
     repositories {
+        google()
         jcenter()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.4.0-alpha1'
+        classpath 'com.android.tools.build:gradle:3.0.0'
     }
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '3.4.1' //version required
+    gradleVersion = '4.1' //version required
 }
 
 apply plugin: 'com.android.application'
 
 repositories {
-    mavenCentral()
+    jcenter()
+    maven {
+        url "https://maven.google.com"
+    }
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:25.3.0'
-    compile 'com.android.support:appcompat-v7:25.3.0'
-    compile 'com.android.support:design:25.3.0'
-    compile 'com.google.guava:guava:20.0'
+    compile 'com.android.support:support-v4:26.0.1'
+    compile 'com.android.support:appcompat-v7:26.0.1'
+    compile 'com.android.support:design:26.0.1'
     compile project(':androidwversionmanager')
     compile 'org.thoughtcrime.ssl.pinning:AndroidPinning:1.0.0'
-    compile 'com.google.android.gms:play-services-location:10.2.0'
+    compile 'com.google.android.gms:play-services-location:11.2.0'
     compile 'joda-time:joda-time:2.9.7'
+    implementation 'com.google.guava:guava:23.0-android'
 }
 
 android {
 
-    compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
+
+    dataBinding {
+        enabled = true
+    }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     defaultConfig {
         minSdkVersion 17
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 22
-        versionName "3.16"
+        versionName "2017.10"
     }
 
     sourceSets {

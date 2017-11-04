@@ -157,9 +157,9 @@
         <item>DHCP</item>
         <item>DNS</item>
     </string-array>
-    <string name="mitmf_spoof_shellshock">Shellshock vuln when spoofing DHCP then launch command:</string>
-    <string name="mitmf_spoof_gateway">Gateway IP: </string>
-    <string name="mitmf_spoof_targets">Specify Target:</string>
+    <string name="mitmf_spoof_shellshock">Exploit shellshock (only with dhcp spoofing)</string>
+    <string name="mitmf_spoof_gateway">Gateway IP </string>
+    <string name="mitmf_spoof_targets">Target(s)</string>
     <string-array name="mitmf_spoof_arpmode">
         <item>Select ARP mode</item>
         <item>Requests</item>
@@ -168,16 +168,16 @@
     <string name="mitmf_screenshotter">Enable ScreenShotter Plugin</string>
     <string name="mitmf_screenshotter_interval">Interval (in seconds) to screenshot:</string>
     <string name="mitmf_inject">Enable Inject Plugin</string>
-    <string name="mitmf_inject_JS">JavaScript to inject URL:</string>
-    <string name="mitmf_inject_HTML">HTML to inject URL:</string>
+    <string name="mitmf_inject_JS">Javascript payload URL</string>
+    <string name="mitmf_inject_HTML">HTML payload URL</string>
     <string name="mitmf_inject_HTMLPAY">HTML Payload to inject:</string>
     <string name="mitmf_inject_MATCH">Match String:</string>
     <string name="mitmf_inject_PRESERVER">Preserve Cache</string>
     <string name="mitmf_inject_ONCE">Inject once per domain</string>
-    <string name="mitmf_inject_RATELIMIT">Rate Limit (seconds):</string>
-    <string name="mitmf_inject_COUNTLIMIT">Number of times to inject:</string>
-    <string name="mitmf_inject_INJECTIP">Inject only IP:</string>
-    <string name="mitmf_inject_NOINJECTIP">Do NOT inject IP:</string>
+    <string name="mitmf_inject_RATELIMIT">Rate Limit (seconds)</string>
+    <string name="mitmf_inject_COUNTLIMIT">Number of times to inject</string>
+    <string name="mitmf_inject_INJECTIP">Inject only IP</string>
+    <string name="mitmf_inject_NOINJECTIP">IP not to inject</string>
     <string name="mitmf_config">The MITMf configuration file.</string>
 
 
@@ -375,6 +375,10 @@
     <string name="whitelist">Whitelist</string>
     <string name="deauthenticate_anyone_besides_me">Deauthenticate anyone besides me</string>
     <string name="start_deauthentication">Start Deauthentication :)</string>
+    <string name="objects_to_inject">Objects to Inject</string>
+    <string name="inject_characteristics">Inject Characteristics</string>
+    <string name="shellshock_command">Shellshock command</string>
+    <string name="inject_settings">Inject Settings</string>
     <!-- End GPSFragment -->
 
 
