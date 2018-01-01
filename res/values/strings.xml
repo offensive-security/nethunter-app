@@ -259,7 +259,8 @@
         <item>Powershell [.ps1]</item>
         <item>Python [.py]</item>
         <item>Tomcat [.war]</item>
-        <item>Windows [.exe]</item>
+        <item>Windows [.exe/.dll]</item>
+        <item>Android [.apk]</item>
     </string-array>
     <string name="mpc_port">Port:</string>
     <string name="mpc_port_default">443</string>
