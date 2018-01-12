@@ -278,9 +278,9 @@ public class MacchangerFragment extends Fragment {
                                     " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false";
                         } else {
                             command = "svc wifi disable " +
-                                    "&& sleep 2" +
-                                    "&& svc wifi enable " +
-                                    "&& sleep 2" +
+                                    " && sleep 2" +
+                                    " && svc wifi enable " +
+                                    " && sleep 2" +
                                     " && ip link set dev wlan0 address " +
                                     randomMACAddress();
                         }
