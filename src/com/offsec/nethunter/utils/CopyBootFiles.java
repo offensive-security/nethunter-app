@@ -74,6 +74,7 @@ class CopyBootFiles extends AsyncTask<String, String, String> {
               bootkali_list.add("bootkali_login");
               bootkali_list.add("bootkali_bash");
               bootkali_list.add("killkali");
+              bootkali_list.add("usb_army");
 
               Log.d(COPY_ASSETS_TAG, "COPYING FILES....");
               // 1:1 copy (recursive) of the assets/{scripts, etc, wallpapers} folders to /data/data/...

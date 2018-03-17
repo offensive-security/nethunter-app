@@ -147,7 +147,16 @@ else
 			echo "File not found"
 		else
 			echo "File /data/local/nhsystem/kali-armhf$2 found"
-			$busybox chroot $mnt /bin/bash $2
+			COUNT=0
+            until echo volume-up | hid-keyboard /dev/hidg0 keyboard > /dev/null 2>&1; do
+                sleep 1
+                COUNT=$((COUNT+1))
+                if [ $COUNT -gt 30 ]; then  #30 seconds
+                    exit
+                fi
+            done
+            echo "USB cable plugged"
+			sh /sdcard/nh_files/modules/duckout.sh
 		fi
 	fi
 

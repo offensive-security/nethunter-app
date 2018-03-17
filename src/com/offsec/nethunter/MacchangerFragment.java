@@ -108,6 +108,12 @@ public class MacchangerFragment extends Fragment {
             editor.apply();
 
         }
+        else if (isOPO5() && !sharedpreferences.contains("opo_original_mac")) {
+            Editor editor = sharedpreferences.edit();
+            editor.putString("opo_origfinal_mac", exe.RunAsRootWithException("grep Intf0 /persist/wlan_mac.bin | cut -d'=' -f2 | sed -e 's/\\([0-9A-Fa-f]\\{2\\}\\)/\\1:/g' -e 's/\\(.*\\):\\$/\\1/'"));
+            editor.apply();
+        }
+
         Log.d("opo_original_mac", sharedpreferences.getString("opo_original_mac", ""));
         //###############
         new Thread(new Runnable() {
@@ -276,6 +282,22 @@ public class MacchangerFragment extends Fragment {
                                     " && sleep 1" +
                                     " && settings put global airplane_mode_on 0" +
                                     " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false";
+                        } else if (isOPO5()) {
+                            String randMac = randomMACAddress();
+                            command = "settings put global airplane_mode_on 1" +
+                                    " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true" +
+                                    " && sleep 5" +
+                                    " && settings put global airplane_mode_on 0" +
+                                    " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false" +
+                                    " && while true; do if [ ! $(ip link set dev wlan0 address " + randMac + " 2>&1 > /dev/null) ]; then break; else continue; fi; done" +
+                                    " && sleep 5" +
+                                    " && svc wifi disable" +
+                                    " && ifconfig wlan0 down" +
+                                    " && ifconfig wlan0 hw ether " + randMac +
+                                    " && ifconfig wlan0 up" +
+                                    " && sleep 3" +
+                                    " && svc wifi enable";
+
                         } else {
                             command = "svc wifi disable && svc wifi enable" +
                                     " && ip link set dev wlan0 address " +
@@ -283,9 +305,18 @@ public class MacchangerFragment extends Fragment {
                         }
 
                         final String finalCommand = command;
+                        final String[] finalCommandA = new String[1];
+                        finalCommandA[0] = command;
                         new Thread(new Runnable() {
+                            public int delayTime;
                             public void run() {
-                                exe.RunAsRootWithException(finalCommand);
+                                if (isOPO5()) {
+                                    exe.RunAsRoot(finalCommandA);
+                                    delayTime = 13000;
+                                } else {
+                                    exe.RunAsRootWithException(finalCommand);
+                                    delayTime = 1000;
+                                }
                                 macModeSpinner.post(new Runnable() {
                                     @Override
                                     public void run() {
@@ -296,7 +327,7 @@ public class MacchangerFragment extends Fragment {
                                                         refreshMAc();
 
                                                     }
-                                                }, 1000);
+                                                }, delayTime);
                                     }
                                 });
                             }
@@ -335,15 +366,39 @@ public class MacchangerFragment extends Fragment {
                                     " && sleep 1" +
                                     " && settings put global airplane_mode_on 0" +
                                     " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false";
+                        }
+                        else if (isOPO5()) {
+                            command = "settings put global airplane_mode_on 1" +
+                                    " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true" +
+                                    " && sleep 5" +
+                                    " && settings put global airplane_mode_on 0" +
+                                    " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false" +
+                                    " && while true; do if [ ! $(ip link set dev wlan0 address " + macsArray + " 2>&1 > /dev/null) ]; then break; else continue; fi; done" +
+                                    " && sleep 5" +
+                                    " && svc wifi disable" +
+                                    " && ifconfig wlan0 down" +
+                                    " && ifconfig wlan0 hw ether " + macsArray +
+                                    " && ifconfig wlan0 up" +
+                                    " && sleep 3" +
+                                    " && svc wifi enable";
                         } else {
                             command = "svc wifi disable && svc wifi enable" +
                                     " && ip link set dev wlan0 address " +
                                     macsArray;
                         }
                         final String finalCommand = command;
+                        final String[] finalCommandA = new String[1];
+                        finalCommandA[0] = command;
                         new Thread(new Runnable() {
+                            public int delayTime;
                             public void run() {
-                                exe.RunAsRootWithException(finalCommand);
+                                if (isOPO5()) {
+                                    exe.RunAsRoot(finalCommandA);
+                                    delayTime =  13000;
+                                } else {
+                                    exe.RunAsRootWithException(finalCommand);
+                                    delayTime = 1000;
+                                }
                                 macModeSpinner.post(new Runnable() {
                                     @Override
                                     public void run() {
@@ -353,7 +408,7 @@ public class MacchangerFragment extends Fragment {
                                                         nh.showMessage("Refreshing the current MAC.");
                                                         refreshMAc();
                                                     }
-                                                }, 1000);
+                                                }, delayTime);
                                     }
                                 });
                             }
@@ -501,6 +556,7 @@ public class MacchangerFragment extends Fragment {
         String selectedInterface = interfaceSpinner.getSelectedItem().toString();
         final String cleanInterface = selectedInterface.split(" ")[0];
         String command;
+        int delayTime;
         if (cleanInterface.equals("wlan0")) {
             nh.showMessage("Resetting " + cleanInterface + " MAC");
             if (isOPO()) {
@@ -511,6 +567,21 @@ public class MacchangerFragment extends Fragment {
                         " && sleep 1" +
                         " && settings put global airplane_mode_on 0" +
                         " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false";
+            }
+            else if (isOPO5()) {
+                command = "settings put global airplane_mode_on 1" +
+                        " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true" +
+                        " && sleep 5" +
+                        " && settings put global airplane_mode_on 0" +
+                        " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false" +
+                        " && while true; do if [ ! $(ip link set dev wlan0 address " + sharedpreferences.getString("opo_original_mac", "") + " 2>&1 > /dev/null) ]; then break; else continue; fi; done" +
+                        " && sleep 5" +
+                        " && svc wifi disable" +
+                        " && ifconfig wlan0 down" +
+                        " && ifconfig wlan0 hw ether " + sharedpreferences.getString("opo_original_mac", "") +
+                        " && ifconfig wlan0 up" +
+                        " && sleep 3" +
+                        " && svc wifi enable";
             } else {
                 command = "settings put global airplane_mode_on 1" +
                         " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true" +
@@ -520,9 +591,18 @@ public class MacchangerFragment extends Fragment {
 
             }
             final String finalCommand = command;
+            final String[] finalCommandA = new String[1];
+            finalCommandA[0] = command;
             new Thread(new Runnable() {
+                public int delayTime;
                 public void run() {
-                    exe.RunAsRootWithException(finalCommand);
+                    if (isOPO5()) {
+                        exe.RunAsRoot(finalCommandA);
+                        delayTime = 13000;
+                    } else {
+                        exe.RunAsRootWithException(finalCommand);
+                        delayTime = 1000;
+                    }
                     interfaceSpinner.post(new Runnable() {
                         @Override
                         public void run() {
@@ -532,7 +612,7 @@ public class MacchangerFragment extends Fragment {
                                             nh.showMessage("Refreshing the current MAC.");
                                             refreshMAc();
                                         }
-                                    }, 1000);
+                                    }, delayTime);
                         }
                     });
                 }
@@ -622,6 +702,12 @@ public class MacchangerFragment extends Fragment {
                 getDeviceName().equalsIgnoreCase("OnePlus2");
     }
 
+    public Boolean isOPO5() {
+        return getDeviceName().equalsIgnoreCase("A5000") ||
+                getDeviceName().equalsIgnoreCase("A5010") ||
+                getDeviceName().equalsIgnoreCase("OnePlus5") ||
+                getDeviceName().equalsIgnoreCase("OnePlus5T");
+    }
     private Boolean isOldDevice() {
         return getDeviceName().equalsIgnoreCase("flo") ||
                 getDeviceName().equalsIgnoreCase("deb") ||

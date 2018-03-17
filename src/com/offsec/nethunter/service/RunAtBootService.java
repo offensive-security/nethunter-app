@@ -1,12 +1,15 @@
 package com.offsec.nethunter.service;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -24,25 +27,62 @@ public class RunAtBootService extends Service {
     private NhPaths nh;
     private Boolean runBootServices = true;
     private String doing_action = "";
-    private Notification.Builder n = null;
-
+    private NotificationCompat.Builder n = null;
+    private NotificationManager notificationManager;
     public RunAtBootService() {
     }
 
     private void doNotification(String contents) {
-        if (n == null) {
-            n = new Notification.Builder(this);
+        //Simon Edit Start
+        final int NOTIFY_ID = 1002;
+        // There are hardcoding only for show it's just strings
+        String name = "my_package_channel";
+        String id = "my_package_channel_1"; // The user-visible name of the channel.
+        String description = "my_package_first_channel"; // The user-visible description of the channel.
+
+        //Intent intent;
+        //PendingIntent pendingIntent;
+        if (notificationManager == null) {
+            notificationManager =
+                    (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         }
-        n.setStyle(new Notification.BigTextStyle().bigText(contents))
-                .setContentTitle(RunAtBootService.TAG)
+
+        int importance = NotificationManager.IMPORTANCE_LOW;
+        NotificationChannel mChannel = notificationManager.getNotificationChannel(id);
+        if (mChannel == null) {
+            mChannel = new NotificationChannel(id, name, importance);
+            mChannel.setDescription(description);
+            mChannel.enableVibration(false);
+            //mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+            notificationManager.createNotificationChannel(mChannel);
+        }
+
+        if (n == null) {
+            n = new NotificationCompat.Builder(this, id);
+        }
+
+        //intent = new Intent(this, MainActivity.class);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        //.setStyle(new Notification.BigTextStyle().bigText(contents))
+        n.setContentTitle(RunAtBootService.TAG)
                 //.setContentText(contents)
                 .setSmallIcon(R.drawable.ic_stat_ic_nh_notificaiton)
+                .setContentText(this.getString(R.string.app_name))
+                .setDefaults(Notification.DEFAULT_ALL)
+                //.setContentIntent(pendingIntent)
                 // .setContentIntent(pIntent)
                 .setAutoCancel(true);
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-        notificationManager.notify(999, n.build());
+                //Simon Edit End
+        //NotificationManager notificationManager =
+                //(NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        //Simon Edit Start
+
+        // The id of the channel.
+
+        notificationManager.notify(NOTIFY_ID, n.build());
     }
 
     @Override

@@ -5,6 +5,7 @@
 import sys
 import re
 import os
+import shutil
 from keyseed import *
 import argparse
 from decimal import Decimal #for conversion milliseconds -> seconds
@@ -192,18 +193,21 @@ if __name__ == "__main__":
                             if args.layout == "ru":
                                 char = iso_ru[char]
 
-                            line = dicts[args.layout+'_bin'].get(char)
+#                            line = dicts[args.layout+'_bin'].get(char)
+                            line = dicts[args.layout][char]
                             if line is not None:
                                 if isinstance(line, str):
-                                    dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
+                                    dest.write('%s%s%s\n' % (prefixinput, line.rstrip('\n').strip(), prefixoutput))
+                                    dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n')
                                 else:
                                     for elem in line:
-                                        dest.write('%s%s%s\n' % (prefix, elem.rstrip('\n').strip(), suffix))
+                                        dest.write('%s%s%s\n' % (prefixinput, elem.rstrip('\n').strip(), prefixoutput))
+                                        dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n')
                             else:
                                 line = dicts[args.layout][char]
                                 dest.write('%s%s%s\n' % (prefixinput, line.rstrip('\n').strip(), prefixoutput))
                                 dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n') # releases key
-                                dest.write('sleep 0.03 \n') # Slow things down
+                              #  dest.write('sleep 0.03 \n') # Slow things down
 
                     dest.write('echo enter | hid-keyboard /dev/hidg0 keyboard\n') # Add enter
 
@@ -217,18 +221,21 @@ if __name__ == "__main__":
                             if args.layout == "ru":
                                 char = iso_ru[char]
 
-                            line = dicts[args.layout+'_bin'].get(char)
+#                            line = dicts[args.layout+'_bin'].get(char)
+                            line = dicts[args.layout][char]
                             if line is not None:
                                 if isinstance(line, str):
-                                    dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
+                                    dest.write('%s%s%s\n' % (prefixinput, line.rstrip('\n').strip(), prefixoutput))
+                                    dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n')
                                 else:
                                     for elem in line:
-                                        dest.write('%s%s%s\n' % (prefix, elem.rstrip('\n').strip(), suffix))
+                                        dest.write('%s%s%s\n' % (prefixinput, elem.rstrip('\n').strip(), prefixoutput))
+                                        dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n')
                             else:
                                 line = dicts[args.layout][char]
                                 dest.write('%s%s%s\n' % (prefixinput, line.rstrip('\n').strip(), prefixoutput))
                                 dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n') # releases key
-                                dest.write('sleep 0.03 \n') # Slow things down
+                          #      dest.write('sleep 0.03 \n') # Slow things down
 
                 elif line.startswith('REPEAT '):
                     line = line.rstrip('\n')[7:]
@@ -251,4 +258,5 @@ if __name__ == "__main__":
     src.close()
     dest.close()
     os.remove("tmp.txt")
-    print "File saved to location: " + (args.hunterscript)
+    shutil.copy2('/opt/duckout.sh', '/sdcard/nh_files/modules/duckout.sh')
+    # print "File saved to location: " + (args.hunterscrip

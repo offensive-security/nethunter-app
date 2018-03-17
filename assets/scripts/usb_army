@@ -1,0 +1,9 @@
+#!/system/bin/sh
+unset LD_PRELOAD
+
+[ -f /sdcard/nh_files/usb_army.sh ] || {
+echo "Please place the 'usb_army.sh' under '/sdcard/nh_files/'"
+exit
+}
+
+sh /sdcard/nh_files/usb_army.sh
