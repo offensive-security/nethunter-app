@@ -31,9 +31,9 @@ else
 
 	if [ "$1" == "beef-xss" ] && [ "$2" == "start" ]; then
 		LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8 LC_ALL=en_US.UTF-8 $busybox chroot $mnt sudo service beef-xss start
-		sleep 35
-		am start -a android.intent.action.VIEW -d http://127.0.0.1:3000/ui/panel
-	fi
+		sleep 10
+		am start -a android.intent.action.VIEW -d http://127.0.0.1:3000/ui/authentication
+
 	if [ "$1" == "beef-xss" ] && [ "$2" == "stop" ]; then
 		$busybox chroot $mnt sudo service beef-xss stop
 	fi
@@ -151,7 +151,7 @@ else
             until echo volume-up | hid-keyboard /dev/hidg0 keyboard > /dev/null 2>&1; do
                 sleep 1
                 COUNT=$((COUNT+1))
-                if [ $COUNT -gt 30 ]; then  #30 seconds
+                if [ $COUNT -gt 60 ]; then  #60 seconds
                     exit
                 fi
             done
