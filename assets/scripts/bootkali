@@ -33,7 +33,7 @@ else
 		LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8 LC_ALL=en_US.UTF-8 $busybox chroot $mnt sudo service beef-xss start
 		sleep 10
 		am start -a android.intent.action.VIEW -d http://127.0.0.1:3000/ui/authentication
-
+    fi
 	if [ "$1" == "beef-xss" ] && [ "$2" == "stop" ]; then
 		$busybox chroot $mnt sudo service beef-xss stop
 	fi
