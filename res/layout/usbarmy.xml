@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/nethunter_usb_detect"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="26dp">
+
+
+            <TextView
+                android:id="@+id/usbView1"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="7dp"
+                android:text="Targets"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/usbView2"
+                android:layout_width="146dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
+                android:text="USB Interface"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/usbView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
+                android:text="ADB"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Spinner
+                android:id="@+id/usb_targets"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:entries="@array/usb_targets"
+                android:prompt="@string/nethunter_usb_detect"
+                android:textSize="12sp" />
+
+            <Spinner
+                android:id="@+id/usb_states"
+                android:layout_width="145dp"
+                android:layout_height="wrap_content"
+                android:entries="@array/usb_states_win_lin"
+                android:prompt="@string/nethunter_usb_detect"
+                android:textSize="12sp" />
+
+            <Spinner
+                android:id="@+id/usb_adb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:entries="@array/usb_adb"
+                android:prompt="@string/nethunter_usb_detect"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/setusbinterface"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:text="Set USB Interface" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp">
+
+            <TextView
+                android:id="@+id/current_usb_state"
+                android:layout_width="300dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="7dp"
+                android:layout_marginTop="0dp"
+                android:text="@string/current_usb_state"
+                android:textSize="18sp" />
+
+            <ImageButton
+                android:id="@+id/reloadUSB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="false"
+                android:baselineAlignBottom="false"
+                android:contentDescription="@string/reloadUSB"
+                android:cropToPadding="false"
+                android:src="@drawable/ic_action_refresh" />
+        </LinearLayout>
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:background="#ffffff" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/nethunter_img_mounter"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/nethunter_img_mounter_desc"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/usbarmy_img_mounter_preset_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="36dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/mountImage"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_weight="1"
+                android:text="Mount Image" />
+
+            <Button
+                android:id="@+id/unmountImage"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_weight="1"
+                android:text="Unmount Image" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="84dp">
+
+            <TextView
+                android:id="@+id/mountedImage_state"
+                android:layout_width="300dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="7dp"
+                android:layout_marginTop="0dp"
+                android:text="@string/current_img_mount_state"
+                android:textSize="18sp" />
+
+            <ImageButton
+                android:id="@+id/reloadImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="false"
+                android:baselineAlignBottom="false"
+                android:contentDescription="@string/reloadImage"
+                android:cropToPadding="false"
+                android:src="@drawable/ic_action_refresh" />
+        </LinearLayout>
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:background="#ffffff" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/nethunter_script_runner"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/nethunter_script_runner_desc"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+        <Spinner
+            android:id="@+id/usbarmy_script_runner_preset_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="36dp" />
+        <Button
+            android:id="@+id/scriptRunner"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_weight="1"
+            android:text="Run in Terminal" />
+    </LinearLayout>
+</ScrollView>

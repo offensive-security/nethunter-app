@@ -100,9 +100,9 @@ public class HidFragment extends Fragment {
             case R.id.start_service:
                 start();
                 return true;
-            case R.id.stop_service:
-                reset();
-                return true;
+            //case R.id.stop_service:
+            //    reset();
+            //    return true;
             case R.id.admin:
                 openDialog();
                 return true;
@@ -219,12 +219,12 @@ public class HidFragment extends Fragment {
         }).start();
     }
 
-    private void reset() {
-        ShellExecuter exe = new ShellExecuter();
-        String[] command = {"stop-badusb"};
-        exe.RunAsRoot(command);
-        nh.showMessage("Reseting USB");
-    }
+    //private void reset() {
+    //    ShellExecuter exe = new ShellExecuter();
+    //    String[] command = {"stop-badusb"};
+    //    exe.RunAsRoot(command);
+    //    nh.showMessage("Reseting USB");
+    //}
 
 
     private void openDialog() {

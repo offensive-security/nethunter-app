@@ -50,6 +50,15 @@ pkill python
 $chroot_nh pkill Responder
 $chroot_nh pkill screen
 echo 0 > /proc/sys/net/ipv4/ip_forward
+# Revert iptables setting dumped from kernel log.
+iptables -t nat -D natctrl_nat_POSTROUTING -o $UPSTREAM -j MASQUERADE
+ip6tables -D natctrl_FORWARD -g natctrl_tether_counters
+iptables -D natctrl_FORWARD -i $UPSTREAM -o $INTERFACE -m state --state ESTABLISHED,RELATED -g natctrl_tether_counters
+iptables -D natctrl_FORWARD -i $INTERFACE -o $UPSTREAM -m state --state INVALID -j DROP
+iptables -D natctrl_FORWARD -i $INTERFACE -o $UPSTREAM -g natctrl_tether_counters
+ip6tables -t raw -D natctrl_raw_PREROUTING -i $INTERFACE -m rpfilter --invert ! -s fe80::/64 -j DROP
+iptables -A natctrl_FORWARD -j DROP
+iptables -D natctrl_FORWARD -j DROP
 # Bring down interface
 echo " [!] Bringing down $INTERFACE and revert the iptables"
 ip link set $INTERFACE down
@@ -75,7 +84,7 @@ if ! iptables -V;then
 fi
 
 # ================== #
-# Check if usb state is setup correctly before moving forward. 
+# Check if usb state is setup correctly before moving forward.
 # ================== #
 if [ "$(getprop sys.usb.state | grep win)" != "" ] && [ "$(getprop sys.usb.state | grep rndis)" != "" ]; then
     INTERFACE=rndis0
@@ -87,19 +96,30 @@ else
 fi
 
 # ================== #
+# Get upstream interface and check if it is up
+# ================== #
+if [ "$(route | sed '1,2d' | awk '{print $8}')" != "" ]; then
+    UPSTREAM=$(route | sed '1,2d' | awk '{print $8}')
+    echo " [+] Interface [$INTERFACE] detected"
+    echo " [+] Using [$UPSTREAM] as upstream interface"
+else
+    echo " [-] Upstream interface not found, please check again!"
+    exit
+fi
+# ================== #
 # Make sure Wifi and Cellular data is disable
 # ================== #
-if [ "$(ifconfig wlan0 | grep inet)" ]; then
-    echo " [!] Wifi is running, shuting it down! "
-    svc wifi disable
-    sleep 1
-    echo " [+] Wifi is down!"
-elif [ "$(ifconfig rmnet_data0 | grep inet)" ]; then
-    echo " [!] Mobile data is running, shuting it down! "
-    svc data disable
-    sleep 1
-    echo " [+] Mobile data is down!"
-fi
+#if [ "$(ifconfig wlan0 | grep inet)" ]; then
+#    echo " [!] Wifi is running, shuting it down! "
+#    svc wifi disable
+#    sleep 1
+#    echo " [+] Wifi is down!"
+#elif [ "$(ifconfig rmnet_data0 | grep inet)" ]; then
+#    echo " [!] Mobile data is running, shuting it down! "
+#    svc data disable
+#    sleep 1
+#    echo " [+] Mobile data is down!"
+#fi
 
 # ================== #
 # Bring up interface and setup iptables
@@ -108,11 +128,20 @@ ip link set $INTERFACE down
 ip addr flush dev $INTERFACE
 ip addr add $iface_addr/1 dev $INTERFACE
 ip link set $INTERFACE up
-ip route add 0.0.0.0/0 dev $INTERFACE
+#ip route add 0.0.0.0/0 dev $INTERFACE
+ip route append $net_addr.0/24 dev $INTERFACE src $iface_addr proto kernel scope link table $UPSTREAM
 # Catch the interrupt signal and run the shutdown script
 trap shutitdown INT
 echo 1 > /proc/sys/net/ipv4/ip_forward
 # Setup iptables rules dumped from kernel log
+iptables -t nat -A natctrl_nat_POSTROUTING -o $UPSTREAM -j MASQUERADE
+ip6tables -A natctrl_FORWARD -g natctrl_tether_counters
+iptables -A natctrl_FORWARD -i $UPSTREAM -o $INTERFACE -m state --state ESTABLISHED,RELATED -g natctrl_tether_counters
+iptables -A natctrl_FORWARD -i $INTERFACE -o $UPSTREAM -m state --state INVALID -j DROP
+iptables -A natctrl_FORWARD -i $INTERFACE -o $UPSTREAM -g natctrl_tether_counters
+ip6tables -t raw -A natctrl_raw_PREROUTING -i $INTERFACE -m rpfilter --invert ! -s fe80::/64 -j DROP
+iptables -D natctrl_FORWARD -j DROP
+iptables -A natctrl_FORWARD -j DROP
 
 # ================== #
 # Remove all previous leases, pid, conf and Responder.db

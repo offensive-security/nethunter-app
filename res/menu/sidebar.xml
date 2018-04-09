@@ -38,6 +38,10 @@
              android:icon="@drawable/ic_action_home"
              android:title="VNC Manager" />
          <item
+            android:id="@+id/usbarmy_item"
+            android:icon="@drawable/ic_action_usb"
+            android:title="@string/drawertitleusbarmy" />
+         <item
              android:id="@+id/hid_item"
              android:icon="@drawable/ic_action_keyboard"
              android:title="@string/drawertitlehid" />
@@ -45,10 +49,6 @@
              android:id="@+id/duckhunter_item"
              android:icon="@drawable/ic_action_keyboard"
              android:title="@string/drawertitleduckhunter" />
-         <item
-             android:id="@+id/badusb_item"
-             android:icon="@drawable/ic_action_usb"
-             android:title="@string/drawertitlebadusb" />
          <item
              android:id="@+id/mana_item"
              android:icon="@drawable/ic_action_network_wifi"
