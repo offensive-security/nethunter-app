@@ -45,7 +45,6 @@ public class HidFragment extends Fragment {
     private String configFilePath;
 
     private static final String ARG_SECTION_NUMBER = "section_number";
-
     public static HidFragment newInstance(int sectionNumber) {
         HidFragment fragment = new HidFragment();
         Bundle args = new Bundle();
@@ -53,6 +52,7 @@ public class HidFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+    private boolean isHIDenable = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -74,7 +74,9 @@ public class HidFragment extends Fragment {
         });
         setHasOptionsMenu(true);
         sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
+        check_HID_enable();
         return rootView;
+
     }
 
 
@@ -98,7 +100,11 @@ public class HidFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.start_service:
-                start();
+                if (isHIDenable) {
+                    start();
+                } else {
+                    nh.showMessage_long("HID interfaces are not enabled or something wrong with the permission of /dev/hidg*, make sure they are enabled and permissions are granted as 666");
+                }
                 return true;
             //case R.id.stop_service:
             //    reset();
@@ -120,6 +126,7 @@ public class HidFragment extends Fragment {
     }
 
     private void start() {
+
         int keyboardLayoutIndex = sharedpreferences.getInt("HIDKeyboardLayoutIndex", 0);
         String lang;
         switch (keyboardLayoutIndex) {
@@ -162,6 +169,7 @@ public class HidFragment extends Fragment {
         }
 
         int UACBypassIndex = sharedpreferences.getInt("UACBypassIndex", 0);
+        final String[] check_hid_permission = new String[2];
         final String[] command = new String[1];
         int pageNum = mViewPager.getCurrentItem();
         if (pageNum == 0) {
@@ -201,6 +209,7 @@ public class HidFragment extends Fragment {
                     break;
             }
         }
+
         nh.showMessage("Attack launched...");
         new Thread(new Runnable() {
             public void run() {
@@ -210,22 +219,13 @@ public class HidFragment extends Fragment {
                 mViewPager.post(new Runnable() {
                     @Override
                     public void run() {
-
                         nh.showMessage("Attack execution ended.");
                     }
                 });
             }
-
         }).start();
+
     }
-
-    //private void reset() {
-    //    ShellExecuter exe = new ShellExecuter();
-    //    String[] command = {"stop-badusb"};
-    //    exe.RunAsRoot(command);
-    //    nh.showMessage("Reseting USB");
-    //}
-
 
     private void openDialog() {
 
@@ -617,5 +617,19 @@ public class HidFragment extends Fragment {
         }
     }
 
-
+    private void check_HID_enable() {
+        new Thread(new Runnable() {
+            public void run() {
+                ShellExecuter exe_check = new ShellExecuter();
+                String hidgs[] = {"/dev/hidg0", "/dev/hidg1"};
+                for (String hidg : hidgs) {
+                    if (!exe_check.RunAsRootOutput("su -c \"stat -c '%a' " + hidg + "\"").equals("666")) {
+                        isHIDenable = false;
+                        break;
+                    }
+                    isHIDenable = true;
+                }
+            }
+        }).start();
+    }
 }

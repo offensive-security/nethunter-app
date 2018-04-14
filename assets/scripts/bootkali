@@ -250,7 +250,7 @@ else
 		$busybox chroot $mnt sudo /usr/bin/kalimenu
 	fi
 
-	#YCABLE ¯\_(ಠ_ಠ)_/¯
+	#YCABLE
 
 	if [ "$1" == "ycable" ] && [ "$2" == "start" ]; then
 		if [ -f "/sys/module/msm_otg/parameters/usbhost_charge_mode" ]; then

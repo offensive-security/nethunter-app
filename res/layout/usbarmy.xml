@@ -50,12 +50,12 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="35dp">
 
             <Spinner
                 android:id="@+id/usb_targets"
                 android:layout_width="120dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:baselineAligned="false"
                 android:entries="@array/usb_targets"
                 android:prompt="@string/nethunter_usb_detect"
@@ -64,7 +64,7 @@
             <Spinner
                 android:id="@+id/usb_states"
                 android:layout_width="145dp"
-                android:layout_height="wrap_content"
+                android:layout_height="35dp"
                 android:entries="@array/usb_states_win_lin"
                 android:prompt="@string/nethunter_usb_detect"
                 android:textSize="12sp" />
@@ -72,7 +72,7 @@
             <Spinner
                 android:id="@+id/usb_adb"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="35dp"
                 android:entries="@array/usb_adb"
                 android:prompt="@string/nethunter_usb_detect"
                 android:textSize="12sp" />

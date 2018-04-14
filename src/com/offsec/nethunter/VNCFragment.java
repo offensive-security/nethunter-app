@@ -33,7 +33,7 @@ public class VNCFragment extends Fragment {
     private String xwidth;
     private String xheight;
     private String localhostonly = "";
-
+    private boolean isbVNCinstalled = false;
     NhPaths nh;
     private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -116,7 +116,7 @@ public class VNCFragment extends Fragment {
             }
         });
 
-
+        check_bVNC();
         return rootView;
     }
 
@@ -130,7 +130,10 @@ public class VNCFragment extends Fragment {
             if (getView() == null) {
                 return;
             }
-
+            if (!isbVNCinstalled) {
+                Toast.makeText(getActivity().getApplicationContext(), "bVNC app not found!", Toast.LENGTH_LONG).show();
+                return;
+            }
             String _R_IP = ((EditText) getView().findViewById(R.id.vnc_R_IP)).getText().toString().replaceAll(" ", "");
             String _R_PORT = ((EditText) getView().findViewById(R.id.vnc_R_PORT)).getText().toString().replaceAll(" ", "");
             String _PASSWD = ((EditText) getView().findViewById(R.id.vnc_PASSWD)).getText().toString();
@@ -139,25 +142,26 @@ public class VNCFragment extends Fragment {
             int _RESOLUTION = ((Spinner) getView().findViewById(R.id.resolution_spinner)).getSelectedItemPosition();
             String[] resolutions_bVNC = new String[]{"C24bit", "C256", "C64"};
             if (_R_IP.equals("") || _R_PORT.equals("") || _NICK.equals("") || _PASSWD.equals("")){
-                Toast.makeText(getActivity().getApplicationContext(), "Make sure ip,port,nickname & password are not empty!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity().getApplicationContext(), "Make sure ip,port,nickname & password are not empty!", Toast.LENGTH_LONG).show();
             }
-            //Intent intent = getActivity().getApplicationContext().getPackageManager().getLaunchIntentForPackage("com.offsec.nhvnc");
+
             else {
                 try {
-
                     ShellExecuter exe = new ShellExecuter();
                     String command;
                     if (_USER.equals("")) _USER = "kali";
                     command = "bootkali vnc start " + _NICK + " " + _R_IP + " " + _R_PORT + " " + _PASSWD + " " + _USER + " " + resolutions_bVNC[_RESOLUTION];
                     exe.RunAsRootOutput(command);
+                    //Intent intent = new Intent("com.iiordanov.freebVNC/com.iiordanov.bVNC.bVNC");
+                    //startActivity(intent);
                 } catch (Exception e) {
-                    Toast.makeText(getActivity().getApplicationContext(), "Something goes wrong!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(), e.toString() , Toast.LENGTH_LONG).show();
                 }
             }
 
         } catch (Exception e) {
             Log.d("errorLaunching", e.toString());
-            Toast.makeText(getActivity().getApplicationContext(), "bVNC app not found!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity().getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -172,5 +176,15 @@ public class VNCFragment extends Fragment {
             Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_install_terminal), Toast.LENGTH_SHORT).show();
 
         }
+    }
+    private void check_bVNC() {
+        new Thread(new Runnable() {
+            public void run() {
+                ShellExecuter exe_check = new ShellExecuter();
+                if (exe_check.RunAsRootOutput("pm list packages | grep com.iiordanov.freebVNC").equals("")) {
+                    isbVNCinstalled = false;
+                } else isbVNCinstalled = true;
+            }
+        }).start();
     }
 }
