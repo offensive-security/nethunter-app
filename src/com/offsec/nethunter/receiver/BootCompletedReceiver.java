@@ -6,15 +6,12 @@ import android.content.Intent;
 
 import com.offsec.nethunter.service.RunAtBootService;
 
-/**
- * Created by fattire on 2/19/15.
- */
-
 public class BootCompletedReceiver extends BroadcastReceiver{
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Intent startServiceIntent = new Intent(context, RunAtBootService.class);
-            context.startForegroundService(startServiceIntent);
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
+            RunAtBootService.enqueueWork(context, new Intent());
         }
+    }
 }
