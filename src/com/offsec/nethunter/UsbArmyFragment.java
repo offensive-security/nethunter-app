@@ -39,7 +39,8 @@ public class UsbArmyFragment extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
     private final ShellExecuter exe = new ShellExecuter();
     private Context mContext;
-
+    private static final String image_folder_path = "/sdcard/nh_files/img_folder";
+    private static final String script_folder_path = "/sdcard/nh_files/punkscripts";
     public UsbArmyFragment() {
 
     }
@@ -117,9 +118,6 @@ public class UsbArmyFragment extends Fragment {
         usbAdbSpinner.setSelection(current_usb_adb);
         imageSpinner.setSelection(0);
         scriptSpinner.setSelection(0);
-        // Get file list from img_folder
-
-
 
         usbTargetSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
@@ -236,7 +234,7 @@ public class UsbArmyFragment extends Fragment {
 
                         Intent intent = new Intent("com.offsec.nhterm.RUN_SCRIPT");
                         intent.addCategory(Intent.CATEGORY_DEFAULT);
-                        intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("ScriptRunner") + "su -c \"sh " + "/sdcard/nh_files/punkscripts/" + scriptSpinner.getSelectedItem().toString() + "\"");
+                        intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("ScriptRunner") + "su -c \"sh " + script_folder_path + scriptSpinner.getSelectedItem().toString() + "\"");
                         startActivity(intent);
                         //CustomCommand runscriptComand = new CustomCommand(1, "scriptRunner", scriptSpinner.getSelectedItem().toString(), "INTERACTIVE", "ANDROID", 0);
                         //    new BootKali(runscriptComand.getCommand()).run();
@@ -268,7 +266,7 @@ public class UsbArmyFragment extends Fragment {
             public void onClick(final View v) {
                 new Thread(new Runnable() {
                     public void run() {
-                        mountImage("/sdcard/nh_files/img_folder", imageSpinner.getSelectedItem().toString());
+                        mountImage(image_folder_path, imageSpinner.getSelectedItem().toString());
                         v.post(new Runnable() {
                             @Override
                             public void run() {
@@ -398,7 +396,16 @@ public class UsbArmyFragment extends Fragment {
 
     private String[] getImageFiles() {
         ArrayList<String> result = new ArrayList<String>();
-        File image_folder = new File("/sdcard/nh_files/img_folder");
+        File image_folder = new File(image_folder_path);
+        if (!image_folder.exists()){
+            nh.showMessage_long("Creating directory for storing script files..");
+            try {
+                image_folder.mkdir();
+            } catch (Exception e){
+                e.printStackTrace();
+                System.exit(-1);
+            }
+        }
         File[] filesInFolder = image_folder.listFiles();
         for (File file : filesInFolder) {
             if (!file.isDirectory()) {
@@ -412,7 +419,16 @@ public class UsbArmyFragment extends Fragment {
 
     private String[] getScriptFiles() {
         ArrayList<String> result = new ArrayList<String>();
-        File script_folder = new File("/sdcard/nh_files/punkscripts");
+        File script_folder = new File(script_folder_path);
+        if (!script_folder.exists()) {
+            nh.showMessage_long("Creating directory for storing script files..");
+            try {
+                script_folder.mkdir();
+            } catch (Exception e){
+                e.printStackTrace();
+                System.exit(-1);
+            }
+        }
         File[] filesInFolder = script_folder.listFiles();
         for (File file : filesInFolder) {
             if (!file.isDirectory()) {
@@ -423,6 +439,7 @@ public class UsbArmyFragment extends Fragment {
         }
         return result.toArray(new String[0]);
     }
+
     private String getDeviceName() {
         return Build.DEVICE;
     }

@@ -447,10 +447,11 @@ ChrootManagerFragment extends Fragment {
     private void installAndUpgrade(String packages) {
 
         try {
+
             Intent intent = new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
-            if (packages.equals("FixedUpdatingToLatestKali")) {
-                intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "echo \"Updating gpg key..\" && wget -q -O - https://archive.kali.org/archive-key.asc | apt-key add && apt-get update && apt-get install kali-linux-all -y && apt-get dist-upgrade -y && echo \"\nKali Linux Nethunter setup is complete.\nEnjoy. (You can close the terminal now)\n\"");
+            if (packages.replaceAll(" ", "").equals("JustOnlyClickThisToUpdateToTheLatestKali")) {
+                intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "echo \"Updating gpg key..\" && wget -q -O - https://archive.kali.org/archive-key.asc | apt-key add && apt-get update && apt-get install kali-linux-all -y && apt-get dist-upgrade -y && apt-get install kali-linux-nethunter -y && echo \"\nKali Linux Nethunter setup is complete.\nEnjoy. (You can close the terminal now)\n\"");
             } else {
                 intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "apt-get update && apt-get install " + packages + " && echo \"\nUpgrade completed.\nEnjoy. (You can close the terminal now)\n\"");
             }
