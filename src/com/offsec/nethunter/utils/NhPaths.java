@@ -105,14 +105,14 @@ public class NhPaths {
     public void showMessage(String message) {
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(getAppContext(), message, duration);
-        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
+        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
         toast.show();
     }
 
     public void showMessage_long(String message) {
         int duration = Toast.LENGTH_LONG;
         Toast toast = Toast.makeText(getAppContext(), message, Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
+        toast.setGravity(Gravity.CENTER | Gravity.CENTER_HORIZONTAL, 0, 600);
         toast.show();
     }
     public String whichBusybox() {

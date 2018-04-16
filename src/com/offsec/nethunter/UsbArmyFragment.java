@@ -38,7 +38,7 @@ public class UsbArmyFragment extends Fragment {
     private static NhPaths nh;
     private static final String ARG_SECTION_NUMBER = "section_number";
     private final ShellExecuter exe = new ShellExecuter();
-    private Context mContext;
+
     private static final String image_folder_path = "/sdcard/nh_files/img_folder";
     private static final String script_folder_path = "/sdcard/nh_files/punkscripts";
     public UsbArmyFragment() {
@@ -58,7 +58,7 @@ public class UsbArmyFragment extends Fragment {
         nh = new NhPaths();
         sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
         View rootView = inflater.inflate(R.layout.usbarmy, container, false);
-        mContext = getActivity().getApplicationContext();
+
         //final Button button = (Button) rootView.findViewById(R.id.updateOptions);
         //button.setOnClickListener(new View.OnClickListener() {
         //    public void onClick(View v) {
@@ -216,7 +216,7 @@ public class UsbArmyFragment extends Fragment {
                         v.post(new Runnable() {
                             @Override
                             public void run() {
-                                nh.showMessage("USB interface changed");
+                                nh.showMessage_long("USB interface changed");
                                 refreshUSB();
                             }
                         });
@@ -264,19 +264,27 @@ public class UsbArmyFragment extends Fragment {
         mountImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                new Thread(new Runnable() {
-                    public void run() {
-                        mountImage(image_folder_path, imageSpinner.getSelectedItem().toString());
-                        v.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                nh.showMessage("Image mounted");
-                                refreshImage();
-                            }
-                        });
-                    }
-                }).start();
-
+                if (imageSpinner.getCount() != 0) {
+                    new Thread(new Runnable() {
+                        public void run() {
+                            mountImage(image_folder_path, imageSpinner.getSelectedItem().toString());
+                            v.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    final ShellExecuter exe = new ShellExecuter();
+                                    String output = exe.Executer("cat /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file");
+                                    if (!output.contains(imageSpinner.getSelectedItem().toString())) {
+                                        nh.showMessage_long("Failed to change image file, please eject on the PC or disconnect the usb first and try again.");
+                                    } else {
+                                        nh.showMessage_long("Image mounted");
+                                    }
+                                    ;
+                                    refreshImage();
+                                }
+                            });
+                        }
+                    }).start();
+                } else nh.showMessage_long("No image file is selected to mount");
             }
         });
 
@@ -292,9 +300,9 @@ public class UsbArmyFragment extends Fragment {
                                 final ShellExecuter exe = new ShellExecuter();
                                 String output = exe.Executer("cat /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file");
                                 if (!output.equals("")) {
-                                    nh.showMessage("Image failed to unmount, please eject on the PC or disconnect the usb first and try again.");
+                                    nh.showMessage_long("Image failed to unmount, please eject on the PC or disconnect the usb first and try again.");
                                 } else {
-                                    nh.showMessage("Image unmounted");
+                                    nh.showMessage_long("Image unmounted");
                                 };
                                 refreshImage();
                             }
@@ -310,8 +318,6 @@ public class UsbArmyFragment extends Fragment {
     }
 
     private void getUSBInterfaces(final View rootView) {
-
-        nh = new NhPaths();
         final TextView usbState = (TextView) rootView.findViewById(R.id.current_usb_state);
         final TextView imageState = (TextView) rootView.findViewById(R.id.mountedImage_state);
         new Thread(new Runnable() {
@@ -350,7 +356,8 @@ public class UsbArmyFragment extends Fragment {
 
     }
 
-    private static void mountImage(String script_path, String script_name) {
+    public void mountImage(String script_path, String script_name) {
+
         final ShellExecuter exe = new ShellExecuter();
         String command = "echo \"\" > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file";
         if (script_path.contains(".iso")) {
@@ -365,11 +372,11 @@ public class UsbArmyFragment extends Fragment {
 
     }
 
-    private static void UnmountImage() {
+    public void UnmountImage() {
         final ShellExecuter exe = new ShellExecuter();
         String command = "echo \"\" > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file" +
-                  " && echo 0 > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom" +
-                  " && echo 0 > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro";
+                           " && echo 0 > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom" +
+                           " && echo 0 > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro";
         exe.RunAsRootOutput(command);
     }
 
@@ -398,7 +405,7 @@ public class UsbArmyFragment extends Fragment {
         ArrayList<String> result = new ArrayList<String>();
         File image_folder = new File(image_folder_path);
         if (!image_folder.exists()){
-            nh.showMessage_long("Creating directory for storing script files..");
+            nh.showMessage_long("Creating directory for storing image files..");
             try {
                 image_folder.mkdir();
             } catch (Exception e){
