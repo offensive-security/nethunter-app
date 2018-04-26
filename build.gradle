@@ -5,12 +5,12 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.2.0-alpha12'
     }
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.1' //version required
+    gradleVersion = '4.7' //version required
 }
 
 apply plugin: 'com.android.application'
@@ -24,20 +24,20 @@ repositories {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:26.1.0'
-    compile 'com.android.support:appcompat-v7:26.1.0'
-    compile 'com.android.support:design:26.1.0'
-    compile project(':androidwversionmanager')
-    compile 'org.thoughtcrime.ssl.pinning:AndroidPinning:1.0.0'
-    compile 'com.google.android.gms:play-services-location:11.4.2'
-    compile 'joda-time:joda-time:2.9.9'
-    implementation 'com.google.guava:guava:23.2-android'
+    implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    implementation project(':androidwversionmanager')
+    implementation 'org.thoughtcrime.ssl.pinning:AndroidPinning:1.0.0'
+    implementation 'com.google.android.gms:play-services-location:15.0.0'
+    implementation 'joda-time:joda-time:2.9.9'
+    implementation 'com.google.guava:guava:25.0-android'
 }
 
 android {
 
-    compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
 
     dataBinding {
         enabled = true
@@ -50,7 +50,7 @@ android {
 
     defaultConfig {
         minSdkVersion 17
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 23
         versionName "2018.01.01"
     }

@@ -1,13 +1,13 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 26
+        targetSdkVersion 27
     }
 
     buildTypes {
@@ -27,6 +27,6 @@ repositories {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:26.1.0'
-    compile 'org.thoughtcrime.ssl.pinning:AndroidPinning:1.0.0'
+    implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'org.thoughtcrime.ssl.pinning:AndroidPinning:1.0.0'
 }
