@@ -1,11 +1,12 @@
 package com.offsec.nethunter.service;
 
-import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
@@ -16,6 +17,9 @@ import com.offsec.nethunter.R;
 import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
 
+import static android.support.v4.app.NotificationCompat.BigTextStyle;
+import static android.support.v4.app.NotificationCompat.Builder;
+
 
 public class RunAtBootService extends Service {
     private static final String CHROOT_INSTALLED_TAG = "CHROOT_INSTALLED_TAG";
@@ -24,29 +28,39 @@ public class RunAtBootService extends Service {
     private NhPaths nh;
     private Boolean runBootServices = true;
     private String doing_action = "";
-    private Notification.Builder n = null;
+    private Builder n = null;
+    private NotificationManager notificationManager;
 
     public RunAtBootService() {
     }
 
     private void doNotification(String contents) {
         if (n == null) {
-            n = new Notification.Builder(this);
+            n = new Builder(this);
         }
-        n.setStyle(new Notification.BigTextStyle().bigText(contents))
+        n.setStyle(new BigTextStyle().bigText(contents))
                 .setContentTitle(RunAtBootService.TAG)
                 //.setContentText(contents)
                 .setSmallIcon(R.drawable.ic_stat_ic_nh_notificaiton)
                 // .setContentIntent(pIntent)
-                .setAutoCancel(true);
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                .setAutoCancel(true)
+                .setChannelId(getString(R.string.channelId));
 
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(999, n.build());
     }
 
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel mChannel = new NotificationChannel(getString(R.string.channelId), getString(R.string.app_name), NotificationManager.IMPORTANCE_DEFAULT);
+            mChannel.setDescription(getString(R.string.channelDescription));
+            notificationManager = (NotificationManager) getSystemService(
+                    NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(mChannel);
+        }
         doNotification("Doing boot checks");
         nh = new NhPaths(getFilesDir().toString());
         SharedPreferences sharedpreferences = getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);

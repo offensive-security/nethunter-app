@@ -382,7 +382,8 @@
     <string name="inject_settings">Inject Settings</string>
     <!-- End GPSFragment -->
 
+    <!-- notifications -->
+    <string name="channelId">nh-channel</string>
+    <string name="channelDescription">All notifications</string>
 
-
-    <!-- TODO: Remove or change this placeholder text -->
 </resources>
