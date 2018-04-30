@@ -96,6 +96,7 @@ ChrootManagerFragment extends Fragment {
 
     private static final String FILENAME_MINIMAL = "kalifs-minimal.tar.xz";
     private static final String FILENAME_FULL = "kalifs-full.tar.xz";
+    private static final String FILENAME_BACKUP = "kalifs-backup.tar.gz";
 
     private static final String URI_MINIMAL = IMAGE_SERVER + FILENAME_MINIMAL;
     private static final String URI_FULL = IMAGE_SERVER + FILENAME_FULL;
@@ -334,7 +335,14 @@ ChrootManagerFragment extends Fragment {
 
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
         adb.setTitle("Select Chroot install mode:")
-                .setMessage("Download is the prefered mode. Get the latest chroot from the offsec servers.\n\n Also you can place a custom\nkalifs-[minimal|full].tar.xz in /sdcard\nand skip the download.")
+                .setMessage("Download is the prefered mode. Get the latest chroot from the offsec servers.\n\nYou can place a custom\nkalifs-[minimal|full].tar.xz in /sdcard\nand skip the download.\n\nAlso, You can place a back up kalifs-backup.tar.xz in /sdcard to restore your backup chroot.")
+                .setNegativeButton("Restore from SdCard", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        restoreBackup(false);
+                    }
+                })
                 .setNeutralButton("Use SdCard", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -349,8 +357,9 @@ ChrootManagerFragment extends Fragment {
                         fullOrMinimal(true);
                     }
                 });
+
         AlertDialog ad = adb.create();
-        ad.setCancelable(false);
+        ad.setCancelable(true);
         ad.show();
     }
 
@@ -397,6 +406,14 @@ ChrootManagerFragment extends Fragment {
         AlertDialog ad = adb.create();
         ad.setCancelable(false);
         ad.show();
+    }
+
+    private void restoreBackup(final Boolean shouldDownload) {
+        zipFilePath = nh.SD_PATH + "/" + FILENAME_BACKUP;
+        if (!shouldDownload) {
+            UnziptarTask mytask = new UnziptarTask();
+            mytask.execute();
+            }
     }
 
 
@@ -501,15 +518,17 @@ ChrootManagerFragment extends Fragment {
 
     private void deleteFile(String filePath) {
         File checkFile = new File(filePath);
-        if (checkFile.exists()) {
-            statusLog(filePath + " found.");
-            statusLog(getActivity().getString(R.string.deletingforroom));
-            if (checkFile.delete()) {
-                statusLog("File deleted.");
-                return;
-            } else {
-                statusLog(getActivity().getString(R.string.problemdeletingoldfile));
-                return;
+        if (!filePath.contains("kalifs-backup.tar.gz")){
+            if (checkFile.exists()) {
+                statusLog(filePath + " found.");
+                statusLog(getActivity().getString(R.string.deletingforroom));
+                if (checkFile.delete()) {
+                    statusLog("File deleted.");
+                    return;
+                } else {
+                    statusLog(getActivity().getString(R.string.problemdeletingoldfile));
+                    return;
+                }
             }
         }
     }
@@ -710,13 +729,18 @@ ChrootManagerFragment extends Fragment {
 
                 String fExists = x.RunAsRootOutput("[ -f " + zipFilePath + " ] && echo \"1\" || echo \"0\"");
                 if (fExists.equals("0")) {
-                    Log.d(TAG, "Error: No tar.xz found");
+                    if ( zipFilePath.contains("tar.gz")) Log.d(TAG, "Error: No tar.gz found");
+                    else Log.d(TAG, "Error: No tar.xz found");
                     publishProgress("Error: Missing file: " + zipFilePath + " not found.");
                     return false;
                 }
                 // Decompress, extract, and deploy the .tar.xz to the chroot destination in one step
                 publishProgress(getActivity().getString(R.string.extract_chroot));
-                x.RunAsRootOutput(nh.whichBusybox() + " tar -xJf '" + zipFilePath + "' -C '" + nh.NH_SYSTEM_PATH + "'");
+                if ( zipFilePath.contains("tar.gz")) {
+                    x.RunAsRootOutput(nh.whichBusybox() + " tar -xzf '" + zipFilePath + "' -C '" + nh.NH_SYSTEM_PATH + "'");
+                } else {
+                    x.RunAsRootOutput(nh.whichBusybox() + " tar -xJf '" + zipFilePath + "' -C '" + nh.NH_SYSTEM_PATH + "'");
+                }
             } catch (RuntimeException e) {
                 Log.d(TAG, "Error: ", e);
                 publishProgress("Error: " + e.toString());

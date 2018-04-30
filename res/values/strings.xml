@@ -121,6 +121,7 @@
     <string name="toastForNoBusybox">Uh oh!  Nethunter can\'t find busybox!</string>
     <string name="current_usb_state">Current USB state: </string>
     <string name="current_img_mount_state">Current Mounted Image: </string>
+    <string name="readonly">Read-only</string>
     <string-array name="macchanger_opts">
         <item>Random MAC</item>
         <item>Custom MAC</item>
