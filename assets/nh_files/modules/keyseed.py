@@ -112,7 +112,7 @@ dicts = {
         #"\x0d": "\\x00\\x00\\x00\\x28\\x00\\x00\\x00\\x00"
     },
     'us' : {
-        # Symbols 
+        # Symbols
         "\x20": "\\x00\\x00\\x00\\x2c\\x00\\x00\\x00\\x00",
         "\x21": "\\x20\\x00\\x00\\x1e\\x00\\x00\\x00\\x00",
         "\x22": "\\x20\\x00\\x00\\x34\\x00\\x00\\x00\\x00",
@@ -1381,7 +1381,7 @@ dicts = {
         "\x5d": "right-alt rbracket",    # ]
         "\x5e": ["lbracket", "space"],   # ^
         "\x5f": "left-shift equals",     # _
-        "\x60": "right-alt backslash",   # 
+        "\x60": "right-alt backslash",   #
         # Lowercase
         "\x61": "q",
         "\x62": "b",
