@@ -432,6 +432,9 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                         case 4:
                             getPreset("windows_rdp"); // Enable RDP in Windows
                             break;
+                        case 5:
+                            getPreset("FakeUpdateWin10"); // Open a fake windows 10 update web page
+                            break;
                     }
                 }
 
