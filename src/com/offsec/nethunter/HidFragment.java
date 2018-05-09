@@ -156,10 +156,10 @@ public class HidFragment extends Fragment {
             case 11:
                 lang = "sv";
                 break;
-            case 11:
+            case 12:
                 lang = "cm";
                 break;
-            case 11:
+            case 13:
                 lang = "ca";
                 break;
             default:
