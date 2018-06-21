@@ -49,6 +49,25 @@ if ! iptables -V;then
 fi
 
 # ================== #
+# Dependency checks
+# ================== #
+# dependency check function
+dep_check(){
+DEPS=(isc-dhcp-server isc-dhcp-common)
+for i in "${DEPS[@]}"
+do
+  PKG_OK=$($chroot_nh /usr/bin/dpkg-query -W --showformat='${Status}\n' ${i}|grep "install ok installed")
+  echo " [+] Checking for installed dependency: ${i}"
+  if [ "" == "$PKG_OK" ]; then
+    echo " [-] Missing dependency: ${i}"
+    echo " [+] Attempting to install...."
+    $chroot_nh /usr/bin/sudo apt-get -y install ${i}
+  fi
+done
+}
+
+dep_check
+# ================== #
 # Check if usb state is setup correctly before moving forward.
 # ================== #
 if [ "$(getprop sys.usb.state | grep win)" != "" ] && [ "$(getprop sys.usb.state | grep rndis)" != "" ]; then

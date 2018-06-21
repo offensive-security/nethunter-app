@@ -22,7 +22,7 @@ countime=120
 # ================== #
 # dependency check function
 dep_check(){
-DEPS=(python git python-pip python-dev screen sqlite3 python-crypto)
+DEPS=(python git python-pip python-dev screen sqlite3 python-crypto isc-dhcp-server isc-dhcp-common)
 for i in "${DEPS[@]}"
 do
   PKG_OK=$($chroot_nh /usr/bin/dpkg-query -W --showformat='${Status}\n' ${i}|grep "install ok installed")
@@ -266,10 +266,4 @@ echo " [+] Hashes saved to $store_path"
 cat $store_path
 # ================== #
 # Lets leave!!!
-# ================== #
-shutitdown
-
-
-
-
-
+# =====
