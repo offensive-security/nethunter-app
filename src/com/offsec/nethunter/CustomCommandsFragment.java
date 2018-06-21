@@ -393,6 +393,8 @@ public class CustomCommandsFragment extends Fragment {
         database.addCommand("Launch Wifite", nh.makeTermTitle("Wifite") + "wifite", "INTERACTIVE", "KALI", 0);
         database.addCommand("Dump Mifare", nh.makeTermTitle("DumpMifare") + "dumpmifare.sh", "INTERACTIVE", "KALI", 0);
         database.addCommand("USB Army", nh.makeTermTitle("USB Army") + "su -c usb_army", "INTERACTIVE", "ANDROID", 0);
+        database.addCommand("Backup Kali Chroot", nh.makeTermTitle("Backup_Kali_Chroot") + "echo \"Creating kalifs-backup.tar.gz in your /sdcard folder.\" && su -c 'bootkali backup-chroot kalifs-backup.tar.gz'",
+                "INTERACTIVE", "ANDROID", 0);
     }
 }
 
