@@ -750,6 +750,7 @@ ChrootManagerFragment extends Fragment {
                             + "mkdir -p " + nh.CHROOT_PATH + "/dev && "
                             + "mkdir -p " + nh.CHROOT_PATH + "/sdcard && "
                             + "mkdir -p " + nh.CHROOT_PATH + "/lib/modules && "
+                            + "sleep 5 && "
                             + "bootkali extract-chroot /sdcard/kalifs-backup.tar.gz"
                     );
 
