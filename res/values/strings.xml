@@ -259,7 +259,8 @@
         <item>Powershell [.ps1]</item>
         <item>Python [.py]</item>
         <item>Tomcat [.war]</item>
-        <item>Windows [.exe]</item>
+        <item>Windows [.exe/.dll]</item>
+        <item>Android [.apk]</item>
     </string-array>
     <string name="mpc_port">Port:</string>
     <string name="mpc_port_default">443</string>
@@ -381,6 +382,9 @@
     <string name="inject_settings">Inject Settings</string>
     <!-- End GPSFragment -->
 
+    <!--Notification Channel-->
+    <string name="boot_notification_channel">Boot</string>
+    <string name="boot_notification_channel_description">Notification for run at boot services</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->

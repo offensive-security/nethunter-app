@@ -50,7 +50,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     private static SharedPreferences sharedpreferences;
 
     // Language vars
-    private final static CharSequence[] languages = {"American English", "French", "German", "Spanish", "Swedish", "Italian", "British English", "Russian", "Danish", "Norwegian", "Portugese", "Belgian"};
+    private final static CharSequence[] languages = {"American English", "French", "German", "Spanish", "Swedish", "Italian", "British English", "Russian", "Danish", "Norwegian", "Portugese", "Belgian", "Canadian Multilingual", "Canadian"};
     private static String lang = "us"; // Set US as default language
     private static Boolean shouldConvert = true;
     private static final String ARG_SECTION_NUMBER = "section_number";
@@ -142,6 +142,12 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                 break;
             case 11:
                 lang = "be";
+                break;
+            case 12:
+                lang = "cm";
+                break;
+            case 13:
+                lang = "ca";
                 break;
             default:
                 lang = "us";
@@ -425,6 +431,9 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                             break;
                         case 4:
                             getPreset("windows_rdp"); // Enable RDP in Windows
+                            break;
+                        case 5:
+                            getPreset("FakeUpdateWin10"); // Open a fake windows 10 update web page
                             break;
                     }
                 }
