@@ -2,6 +2,8 @@ package com.offsec.nethunter;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -45,7 +47,8 @@ public class AppNavHomeActivity extends AppCompatActivity implements KaliGPSUpda
 
     public final static String TAG = "AppNavHomeActivity";
     private static final String CHROOT_INSTALLED_TAG = "CHROOT_INSTALLED_TAG";
-    private static final String GPS_BACKGROUND_FRAGMENT_TAG = "BG_FRAGMENT_TAG";
+    private static final String GPS_BACKGROUND_FRAGMENT_TAG = "BG_FRAGMENT_TAG"
+    public static final String BOOT_CHANNEL_ID = "BOOT_CHANNEL";
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -164,6 +167,23 @@ public class AppNavHomeActivity extends AppCompatActivity implements KaliGPSUpda
         mDrawerToggle.syncState();
         // pre-set the drawer options
         setDrawerOptions();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create the NotificationChannel
+            CharSequence name = getString(R.string.boot_notification_channel);
+            String description = getString(R.string.boot_notification_channel_description);
+            int importance = NotificationManager.IMPORTANCE_LOW;
+            NotificationChannel mChannel = new NotificationChannel(BOOT_CHANNEL_ID, name, importance);
+            mChannel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = (NotificationManager) getSystemService(
+                    NOTIFICATION_SERVICE);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(mChannel);
+            }
+        }
+
 
     }
 
