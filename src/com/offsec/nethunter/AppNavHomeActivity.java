@@ -47,7 +47,7 @@ public class AppNavHomeActivity extends AppCompatActivity implements KaliGPSUpda
 
     public final static String TAG = "AppNavHomeActivity";
     private static final String CHROOT_INSTALLED_TAG = "CHROOT_INSTALLED_TAG";
-    private static final String GPS_BACKGROUND_FRAGMENT_TAG = "BG_FRAGMENT_TAG"
+    private static final String GPS_BACKGROUND_FRAGMENT_TAG = "BG_FRAGMENT_TAG";
     public static final String BOOT_CHANNEL_ID = "BOOT_CHANNEL";
 
     /**
