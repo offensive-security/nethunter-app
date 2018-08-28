@@ -15,7 +15,7 @@
     </style>
 
     <style name="DesignTextInput" parent="Theme.Nethunter">
-        <item name="android:height">72dp</item>
+        <item name="height">72dp</item>
         <item name="android:inputType">textNoSuggestions</item>
 
     </style>

@@ -4,7 +4,7 @@
 package com.offsec.nethunter;
 
 import android.content.Context;
-import android.support.v7.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatButton;
 
 public class LauncherButton extends AppCompatButton {
 
