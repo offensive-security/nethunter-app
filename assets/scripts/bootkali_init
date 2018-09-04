@@ -18,7 +18,8 @@ else
 	exit 1
 fi
 
-##su -c setenforce 0
+## Not need to manually set to permissive mode now.
+#su -c setenforce 0
 
 ######### CHECK FOR ROOT #########
 f_checkforroot(){
@@ -38,6 +39,27 @@ nhsys=/data/local/nhsystem
 # If we continue on with bootkali even after we
 # remove chroot.  So stop here if removed or else
 # chroot is never uninstalled.
+
+## First create the chroot directory: $mnt
+if [ ! -d "$mnt" ]; then
+    mkdir -p $mnt
+fi
+
+## then check if the kali chroot image is already mount to /data/local/nhsystem/kali-armhf
+
+$busybox mountpoint -q "$mnt" || $busybox mount -t ext4 -o loop /sdcard/kali-chroot.img $mnt && echo "Kali chroot is successfully mounted."
+
+if [ ! -d "$mnt/dev" ]; then
+    mkdir -p $mnt/dev
+fi
+
+if [ ! -d "$mnt/proc" ]; then
+    mkdir -p $mnt/proc
+fi
+
+if [ ! -d "$mnt/sys" ]; then
+    mkdir -p $mnt/sys
+fi
 
 if [ ! -d "$mnt/usr" ]; then
     echo "Missing a required folder. Something isn't right"
@@ -74,7 +96,12 @@ chmod 644 $mnt/etc/resolv.conf
 ######### MOUNT #########
 
 ## Should run always (https://su.chainfire.eu/#how-mount)
+
 $busybox mount -o remount,suid /data
+
+if [ ! -d $mnt/sdcard ]; then
+    mkdir -p $mnt/sdcard
+fi
 
 mount_sdcard() {
 	mountpoint -q "$mnt/sdcard" && return 0
@@ -146,6 +173,9 @@ mount_external_storage() {
 if ! $busybox mountpoint -q $mnt/dev; then
 	f_checkforroot
 
+    if [ ! -d $mnt/system ]; then
+        mkdir -p $mnt/system
+    fi
 	$busybox mount -r -o bind /system $mnt/system
 
 	# enable depmod/modprobe support in rootfs

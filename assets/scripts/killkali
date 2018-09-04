@@ -49,5 +49,6 @@ $busybox umount $mnt/sys && echo "unmounted sys"
 $busybox umount $mnt/system && echo "unmounted system"
 $busybox umount $mnt/sdcard && echo "unmounted sdcard"
 $busybox umount $mnt/external_sd && echo "unmounted external_sd"
+$busybox umount $mnt && echo "unmounted kali-armhf"
 
 export PATH=$PRESERVED_PATH

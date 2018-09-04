@@ -149,10 +149,10 @@ else
 		$busybox chroot $mnt sudo chmod 755 $4
 	fi
 	if [ "$1" == "duck-hunt-run" ]; then
-		if [ ! -f /data/local/nhsystem/kali-armhf$2 ]; then
+		if [ ! -f $mnt$2 ]; then
 			echo "File not found"
 		else
-			echo "File /data/local/nhsystem/kali-armhf$2 found"
+			echo "File $mnt$2 found"
 			COUNT=0
             until echo volume-up | hid-keyboard /dev/hidg0 keyboard > /dev/null 2>&1; do
                 sleep 1
@@ -162,7 +162,7 @@ else
                 fi
             done
             echo "USB cable plugged"
-			sh /sdcard/nh_files/modules/duckout.sh
+			sh $mnt$2
 		fi
 	fi
 
@@ -335,9 +335,10 @@ else
 
     if [ "$1" == "backup-chroot" ] && [ "$2" != "" ]; then
         if [ -f "/sdcard/$2" ]; then
-            echo "Tar file existed already, please rename the existed filename to another first."
+            echo "/sdcard/$2 existed already, please rename the existed filename to another first."
         else
             $busybox chroot $mnt /bin/tar czf "/sdcard/$2" --hard-dereference --exclude='./system' --exclude='./sys' --exclude='./proc' --exclude='./dev' --exclude='./sdcard' --exclude='./lib/modules' -C "/" .
+            echo " [+] Done. Successfully backup to /sdcard/$2"
         fi
     fi
 fi
