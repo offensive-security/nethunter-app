@@ -45,6 +45,8 @@
         <item>Hello World</item>
         <item>OSX Perl Reverse Shell</item>
         <item>OSX Ruby Reverse Shell</item>
+        <item>Enable Windows RDP</item>
+        <item>Fake Windows 10 Update</item>
     </string-array>
 
     <string name="payload_select">Please select</string>
