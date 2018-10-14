@@ -1,3 +1,5 @@
+# Modified by @SimonPunk for OP5/5T
+
 import argparse         # Handle arguments
 import os               # To write hid comands to system
 from keyseed import *   # The bytes to translate to keyboard codes
@@ -13,7 +15,7 @@ Thanks to @byt3bl33d3r and @TheNain38 for help with original code.
 
 '''
 parser = argparse.ArgumentParser(description='Take input file or string and output it to hid')
-parser.add_argument('-l', type=str, dest='layout', choices=['us', 'fr', 'de', 'es', 'sv', 'it', 'uk', 'ru', 'dk', 'no', 'pt', 'be', 'cm', 'ca'], help='Keyboard layout')
+parser.add_argument('-l', type=str, dest='layout', choices=['us', 'fr', 'de', 'es', 'sv', 'it', 'uk', 'ru', 'dk', 'no', 'pt', 'be'], help='Keyboard layout')
 parser.add_argument('-f', '--file', type=str, help="Input file")
 parser.add_argument('-s', '--string', type=str, help="Input string")
 args = parser.parse_args()

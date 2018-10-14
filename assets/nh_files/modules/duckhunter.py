@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 #Created by @binkybear and @byt3bl33d3r
-
+# Modified by @SimonPunk for OP5/5T
 import sys
 import re
 import os
@@ -11,7 +11,7 @@ import argparse
 from decimal import Decimal #for conversion milliseconds -> seconds
 
 parser = argparse.ArgumentParser(description='Converts USB rubber ducky scripts to a Nethunter format', epilog="Quack Quack")
-parser.add_argument('-l', type=str, dest='layout', choices=['us', 'fr', 'de', 'es', 'sv', 'it', 'uk', 'ru', 'dk', 'no', 'pt', 'be', 'cm', 'ca'], help='Keyboard layout')
+parser.add_argument('-l', type=str, dest='layout', choices=['us', 'fr', 'de', 'es', 'sv', 'it', 'uk', 'ru', 'dk', 'no', 'pt', 'be'], help='Keyboard layout')
 parser.add_argument('duckyscript', help='Ducky script to convert')
 parser.add_argument('hunterscript', help='Output script')
 
@@ -39,79 +39,79 @@ def duckyRules (source):
 if __name__ == "__main__":
 
     rules = {
-        r'ALT' : u'left-alt',
-        r'GUI' : 'left-meta',
-        r'WINDOWS' : 'left-meta',
-        r'COMMAND' : 'left-meta',
-        r'ALT' : 'left-alt',
-        r'ALTGR' : 'right-alt',
-        r'CONTROL' : 'left-ctrl',
-        r'CTRL' : 'left-ctrl',
-        r'SHIFT' : 'left-shift',
-        r'MENU' : 'left-shift f10',
-        r'APP' : 'escape',
-        r'ESCAPE' : 'escape',
-        r'ESC' : 'esc',
-        r'END' : 'end',
-        r'SPACE' : 'space',
-        r'TAB' : 'tab',
-        r'PRINTSCREEN' : 'print',
-        r'ENTER' : 'enter',
-        r'UPARROW' : 'up',
-        r'UP' : 'up',
-        r'DOWNARROW' : 'down',
-        r'DOWN' : 'down',
-        r'LEFTARROW' : 'left',
-        r'LEFT' : 'left',
-        r'RIGHTARROW' : 'right',
-        r'RIGHT' : 'right',
-        r'CAPSLOCK' : 'capslock',
-        r'F1' : 'f1',
-        r'F2' : 'f2',
-        r'F3' : 'f3',
-        r'F4' : 'f4',
-        r'F5' : 'f5',
-        r'F6' : 'f6',
-        r'F7' : 'f7',
-        r'F8' : 'f8',
-        r'F9' : 'f9',
-        r'F10' : 'f10',
-        r'F11' : 'f11',
-        r'F12' : 'f12',
-        r'F13' : 'f13',
-        r'F14' : 'f14',
-        r'F15' : 'f15',
-        r'F16' : 'f16',
-        r'F17' : 'f17',
-        r'F18' : 'f18',
-        r'F19' : 'f19',
-        r'F20' : 'f20',
-        r'F21' : 'f21',
-        r'F22' : 'f22',
-        r'F23' : 'f23',
-        r'F24' : 'f24',
-        r'DELETE' : 'delete',
-        r'INSERT' : 'insert',
-        r'NUMLOCK' : 'numlock',
-        r'PAGEUP' : 'pgup',
-        r'PAGEDOWN' : 'pgdown',
-        r'PRINTSCREEN' : 'print',
-        r'PRINTSCRN' : 'print',
-        r'PRNTSCRN' : 'print',
-        r'PRTSCN' : 'print',
-        r'PRTSCR' : 'print',
-        r'PRSC' : 'print',
-        r'BREAK' : 'pause',
-        r'PAUSE' : 'pause',
-        r'SCROLLLOCK' : 'scrolllock',
-        r'BACKSPACE' : 'backspace',
-        r'BKSP' : 'backspace',
-        r'MOUSE MIDDLECLICK' : '--b3',
-        r'MOUSE RIGHTCLICK' : '--b2',
-        r'MOUSE LEFTCLICK' : '--b1',
-        r'MOUSE leftCLICK' : '--b1', # Regex is lowering LEFT to left so we need to catch it.
-        r'SLEEP' : 'DELAY',
-        r'DEFAULTDELAY' : 'DEFAULT_DELAY' # We need to add this in between each line if it's set. For debugging
+        r'\bALT\b' : u'left-alt',
+        r'\bGUI\b' : 'left-meta',
+        r'\bWINDOWS\b' : 'left-meta',
+        r'\bCOMMAND\b' : 'left-meta',
+        r'\bALT\b' : 'left-alt',
+        r'\bALTGR\b' : 'right-alt',
+        r'\bCONTROL\b' : 'left-ctrl',
+        r'\bCTRL\b' : 'left-ctrl',
+        r'\bSHIFT\b' : 'left-shift',
+        r'\bMENU\b' : 'left-shift f10',
+        r'\bAPP\b' : 'escape',
+        r'\bESCAPE\b' : 'escape',
+        r'\bESC\b' : 'esc',
+        r'\bEND\b' : 'end',
+        r'\bSPACE\b' : 'space',
+        r'\bTAB\b' : 'tab',
+        r'\bPRINTSCREEN\b' : 'print',
+        r'\bENTER\b' : 'enter',
+        r'\bUPARROW\b' : 'up',
+        r'\bUP\b' : 'up',
+        r'\bDOWNARROW\b' : 'down',
+        r'\bDOWN\b' : 'down',
+        r'\bLEFTARROW\b' : 'left',
+        r'\bLEFT\b' : 'left',
+        r'\bRIGHTARROW\b' : 'right',
+        r'\bRIGHT\b' : 'right',
+        r'\bCAPSLOCK\b' : 'capslock',
+        r'\bF1\b' : 'f1',
+        r'\bF2\b' : 'f2',
+        r'\bF3\b' : 'f3',
+        r'\bF4\b' : 'f4',
+        r'\bF5\b' : 'f5',
+        r'\bF6\b' : 'f6',
+        r'\bF7\b' : 'f7',
+        r'\bF8\b' : 'f8',
+        r'\bF9\b' : 'f9',
+        r'\bF10\b' : 'f10',
+        r'\bF11\b' : 'f11',
+        r'\bF12\b' : 'f12',
+        r'\bF13\b' : 'f13',
+        r'\bF14\b' : 'f14',
+        r'\bF15\b' : 'f15',
+        r'\bF16\b' : 'f16',
+        r'\bF17\b' : 'f17',
+        r'\bF18\b' : 'f18',
+        r'\bF19\b' : 'f19',
+        r'\bF20\b' : 'f20',
+        r'\bF21\b' : 'f21',
+        r'\bF22\b' : 'f22',
+        r'\bF23\b' : 'f23',
+        r'\bF24\b' : 'f24',
+        r'\bDELETE\b' : 'delete',
+        r'\bINSERT\b' : 'insert',
+        r'\bNUMLOCK\b' : 'numlock',
+        r'\bPAGEUP\b' : 'pgup',
+        r'\bPAGEDOWN\b' : 'pgdown',
+        r'\bPRINTSCREEN\b' : 'print',
+        r'\bPRINTSCRN\b' : 'print',
+        r'\bPRNTSCRN\b' : 'print',
+        r'\bPRTSCN\b' : 'print',
+        r'\bPRTSCR\b' : 'print',
+        r'\bPRSC\b' : 'print',
+        r'\bBREAK\b' : 'pause',
+        r'\bPAUSE\b' : 'pause',
+        r'\bSCROLLLOCK\b' : 'scrolllock',
+        r'\bBACKSPACE\b' : 'backspace',
+        r'\bBKSP\b' : 'backspace',
+        r'\bMOUSE MIDDLECLICK\b' : '--b3',
+        r'\bMOUSE RIGHTCLICK\b' : '--b2',
+        r'\bMOUSE LEFTCLICK\b' : '--b1',
+        r'\bMOUSE leftCLICK\b' : '--b1', # Regex is lowering LEFT to left so we need to catch it.
+        r'\bSLEEP\b' : 'DELAY',
+        r'\bDEFAULTDELAY\b' : 'DEFAULT_DELAY' # We need to add this in between each line if it's set. For debugging
     }
 
     # Shortcuts to Windows Command Line
@@ -193,7 +193,7 @@ if __name__ == "__main__":
                             if args.layout == "ru":
                                 char = iso_ru[char]
 
-#                            line = dicts[args.layout+'_bin'].get(char)
+                            #                            line = dicts[args.layout+'_bin'].get(char)
                             line = dicts[args.layout][char]
                             if line is not None:
                                 if isinstance(line, str):
@@ -207,7 +207,7 @@ if __name__ == "__main__":
                                 line = dicts[args.layout][char]
                                 dest.write('%s%s%s\n' % (prefixinput, line.rstrip('\n').strip(), prefixoutput))
                                 dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n') # releases key
-                              #  dest.write('sleep 0.03 \n') # Slow things down
+                            #  dest.write('sleep 0.03 \n') # Slow things down
 
                     dest.write('echo enter | hid-keyboard /dev/hidg0 keyboard\n') # Add enter
 
@@ -221,7 +221,7 @@ if __name__ == "__main__":
                             if args.layout == "ru":
                                 char = iso_ru[char]
 
-#                            line = dicts[args.layout+'_bin'].get(char)
+                            #                            line = dicts[args.layout+'_bin'].get(char)
                             line = dicts[args.layout][char]
                             if line is not None:
                                 if isinstance(line, str):
@@ -235,7 +235,7 @@ if __name__ == "__main__":
                                 line = dicts[args.layout][char]
                                 dest.write('%s%s%s\n' % (prefixinput, line.rstrip('\n').strip(), prefixoutput))
                                 dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n') # releases key
-                          #      dest.write('sleep 0.03 \n') # Slow things down
+                        #      dest.write('sleep 0.03 \n') # Slow things down
 
                 elif line.startswith('REPEAT '):
                     line = line.rstrip('\n')[7:]
