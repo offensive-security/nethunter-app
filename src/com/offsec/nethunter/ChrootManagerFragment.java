@@ -467,11 +467,7 @@ ChrootManagerFragment extends Fragment {
 
             Intent intent = new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
-            if (packages.replaceAll(" ", "").equals("gpg-key-update")) {
-                intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "echo \"Updating gpg key..\" && wget -q -O - https://archive.kali.org/archive-key.asc | apt-key add && echo \"\ngpg key is updated.\n (You can close the terminal now)\n\"");
-            } else {
-                intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "apt-get update && apt-get install " + packages + " && echo \"\nUpgrade completed.\nEnjoy. (You can close the terminal now)\n\"");
-            }
+            intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "apt-get update && apt-get install " + packages + " && echo \"\nUpgrade completed.\nEnjoy. (You can close the terminal now)\n\"");
             Log.d("PACKS:", "PACKS:" + packages);
             startActivity(intent);
 
@@ -697,7 +693,7 @@ ChrootManagerFragment extends Fragment {
         // https://developer.android.com/training/scheduling/wakelock.html
         final PowerManager powerManager = (PowerManager) getActivity().getSystemService(POWER_SERVICE);
         final PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-                "ChrootWakelockTag");
+                "myapp:ChrootWakelockTag");
 
         Boolean isStarted = false;
 

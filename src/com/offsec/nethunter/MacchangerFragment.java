@@ -29,7 +29,7 @@ import android.widget.TextView;
 
 import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
-
+import com.offsec.nethunter.utils.CheckForDevices;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -42,6 +42,7 @@ public class MacchangerFragment extends Fragment {
     private NhPaths nh;
     private static final String ARG_SECTION_NUMBER = "section_number";
     private ShellExecuter exe;
+    private CheckForDevices UserDevice;
 
     public MacchangerFragment() {
 
@@ -70,8 +71,7 @@ public class MacchangerFragment extends Fragment {
         View v = getView();
         final Spinner interfaceSpinner = (Spinner) v.findViewById(R.id.interface_opts);
         String selectedInterface = interfaceSpinner.getSelectedItem().toString();
-        String cleanInterface = selectedInterface.split(" ")[0];
-        menu.findItem(R.id.reset_mac).setTitle(String.format("Reset %s MAC", cleanInterface));
+        menu.findItem(R.id.reset_mac).setTitle(String.format("Reset %s MAC", new String(selectedInterface.split(" ")[0])));
 
 
     }
@@ -91,31 +91,48 @@ public class MacchangerFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.macchanger, container, false);
         nh = new NhPaths();
+        UserDevice = new CheckForDevices();
         exe = new ShellExecuter();
         sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
         setHasOptionsMenu(true);
-        View rootView = inflater.inflate(R.layout.macchanger, container, false);
         // get views
         final Spinner interfaceSpinner = (Spinner) rootView.findViewById(R.id.interface_opts);
         final Spinner macModeSpinner = (Spinner) rootView.findViewById(R.id.macchanger_opts);
         final Button setMacButton = (Button) rootView.findViewById(R.id.set_mac_button);
         final Button setHostname = (Button) rootView.findViewById(R.id.setHostname);
         final EditText phoneName = (EditText) rootView.findViewById(R.id.phone_nameText);
-        if (isOPO() && !sharedpreferences.contains("opo_original_mac")) {
-            Editor editor = sharedpreferences.edit();
-            editor.putString("opo_original_mac", exe.RunAsRootWithException("cat /sys/devices/fb000000.qcom,wcnss-wlan/wcnss_mac_addr"));
-            editor.apply();
+        final TextView macResult = (TextView) rootView.findViewById(R.id.macResult);
+        final TextView currMac = (TextView) rootView.findViewById(R.id.currMac);
+        final ImageButton reloadMAC = (ImageButton) rootView.findViewById(R.id.reloadMAC);
+        final View mac_layout = rootView.findViewById(R.id.mac_lay1);
+
+        // Get interface list
+        String[] ifacesList = getResources().getStringArray(R.array.interface_opts);
+        if (UserDevice.isOldDevice()) {
+            ifacesList = delFromArray(ifacesList, ifacesList.length - 2);
+        } else {
+            ifacesList = delFromArray(ifacesList, ifacesList.length - 1);
 
         }
-        else if (isOPO5() && !sharedpreferences.contains("opo_original_mac")) {
-            Editor editor = sharedpreferences.edit();
-            editor.putString("opo_origfinal_mac", exe.RunAsRootWithException("grep Intf0 /persist/wlan_mac.bin | cut -d'=' -f2 | sed -e 's/\\([0-9A-Fa-f]\\{2\\}\\)/\\1:/g' -e 's/\\(.*\\):\\$/\\1/'"));
-            editor.apply();
-        }
+        // index for the arrays
+        int current_interface = -1;
+        int current_mode = -1;
 
-        Log.d("opo_original_mac", sharedpreferences.getString("opo_original_mac", ""));
-        //###############
+        // set the last used interface
+        for (String cc : getResources().getStringArray(R.array.interface_opts)) {
+            current_interface++;
+            if (cc.equals(sharedpreferences.getString("interface_opts", cc)))
+                break;  // stop adding
+        }
+        // set the last used mode (same logic)
+        for (String cc : getResources().getStringArray(R.array.macchanger_opts)) {
+            current_mode++;
+            if (cc.equals(sharedpreferences.getString("macchanger_opts", cc))) {
+                break;
+            }
+        }
         new Thread(new Runnable() {
             public void run() {
                 final String hostname = getHostname();
@@ -128,78 +145,31 @@ public class MacchangerFragment extends Fragment {
             }
         }).start();
 
-        // ############################
-        final View mac_layout = rootView.findViewById(R.id.mac_lay1);
-        String[] ifacesList = getResources().getStringArray(R.array.interface_opts);
-        if (isOldDevice()) {
-            ifacesList = delFromArray(ifacesList, ifacesList.length - 2);
-        } else {
-            ifacesList = delFromArray(ifacesList, ifacesList.length - 1);
+        new Thread(new Runnable() {
+            public void run() {
+                if (UserDevice.isOPO() && !sharedpreferences.contains("opo_original_mac")) {
+                    Editor editor = sharedpreferences.edit();
+                    editor.putString("opo_original_mac", exe.RunAsRootWithException("cat /sys/devices/fb000000.qcom,wcnss-wlan/wcnss_mac_addr"));
+                    editor.apply();
 
-        }
+                } else if (UserDevice.isOPO5() && !sharedpreferences.contains("opo_original_mac")) {
+                    Editor editor = sharedpreferences.edit();
+                    editor.putString("opo_origfinal_mac", exe.RunAsRootWithException("grep Intf0 /persist/wlan_mac.bin | cut -d'=' -f2 | sed -e 's/\\([0-9A-Fa-f]\\{2\\}\\)/\\1:/g' -e 's/\\(.*\\):\\$/\\1/'"));
+                    editor.apply();
+                }
+                Log.d("opo_original_mac", sharedpreferences.getString("opo_original_mac", ""));
+            }
+        }).start();
+
+        // set interface
         interfaceSpinner.setAdapter(new ArrayAdapter<>(getContext(),
                 R.layout.macchanger_ifaces_item, ifacesList));
-        final TextView macResult = (TextView) rootView.findViewById(R.id.macResult);
-
-        final TextView currMac = (TextView) rootView.findViewById(R.id.currMac);
-        final ImageButton reloadMAC = (ImageButton) rootView.findViewById(R.id.reloadMAC);
-        // index for the arrays
-        int current_interface = -1;
-        int current_mode = -1;
-
-
-        // set the last used interface
-        for (String cc : getResources().getStringArray(R.array.interface_opts)) {
-            current_interface++;
-            if (cc.equals(sharedpreferences.getString("interface_opts", cc)))
-                break;  // stop adding
-        }
-        // set interface
         interfaceSpinner.setSelection(current_interface);
 
-        // set the last used mode (same logic)
-        for (String cc : getResources().getStringArray(R.array.macchanger_opts)) {
-            current_mode++;
-            if (cc.equals(sharedpreferences.getString("macchanger_opts", cc))) {
-                break;
-            }
-        }
-        // set last used mode
+        // set Mac last used mode
         macModeSpinner.setSelection(current_mode);
-
         // set listeners on item selected (for both spinners).
-        interfaceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-            @Override
-            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-
-                String selectedInterface = interfaceSpinner.getSelectedItem().toString();
-                String cleanInterface = selectedInterface.split(" ")[0];
-                //showMessage("Selected interface: \n" + items);
-                Editor editor = sharedpreferences.edit();
-                editor.putString("interface_opts", selectedInterface);  // the full text so we can compare later
-                editor.apply();
-
-
-                getCurrentMac(cleanInterface, currMac, setMacButton);  // this gets the current mac of the interface and sets it to the textview
-                // update the button text
-
-                if (macModeSpinner.getSelectedItem().toString().equals("Random MAC")) {
-                    setMacButton.setText(String.format("Set Random MAC on %s", cleanInterface));
-                }
-                if (macModeSpinner.getSelectedItem().toString().equals("Custom MAC")) {
-                    setMacButton.setText(String.format("Set Custom MAC on %s", cleanInterface));
-                }
-            }
-
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-
-            }
-
-
-        });
         setHostname.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(final View v) {
@@ -217,6 +187,38 @@ public class MacchangerFragment extends Fragment {
 
             }
         });
+
+        interfaceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+
+                String selectedInterface = interfaceSpinner.getSelectedItem().toString();
+                String cleanInterface = selectedInterface.split(" ")[0];
+                //showMessage("Selected interface: \n" + items);
+                Editor editor = sharedpreferences.edit();
+                editor.putString("interface_opts", selectedInterface);  // the full text so we can compare later
+                editor.apply();
+
+                getCurrentMac(cleanInterface, currMac, setMacButton);  // this gets the current mac of the interface and sets it to the textview
+                // update the button text
+                if (macModeSpinner.getSelectedItem().toString().equals("Random MAC")) {
+                    setMacButton.setText(String.format("Set Random MAC on %s", cleanInterface));
+                }
+                if (macModeSpinner.getSelectedItem().toString().equals("Custom MAC")) {
+                    setMacButton.setText(String.format("Set Custom MAC on %s", cleanInterface));
+                }
+            }
+
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+
+            }
+
+
+        });
+
         reloadMAC.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -275,14 +277,14 @@ public class MacchangerFragment extends Fragment {
                 if (macModeSpinner.getSelectedItem().toString().equals("Random MAC")) {
                     if (selectedDevice.equals("wlan0")) {
                         // bacon A0001 one OnePlus
-                        if (isOPO()) {
+                        if (UserDevice.isOPO()) {
                             command = "settings put global airplane_mode_on 1" +
                                     " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true" +
                                     " && echo \"" + randomMACAddress() + "\" > /sys/devices/fb000000.qcom,wcnss-wlan/wcnss_mac_addr" +
                                     " && sleep 1" +
                                     " && settings put global airplane_mode_on 0" +
                                     " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false";
-                        } else if (isOPO5()) {
+                        } else if (UserDevice.isOPO5()) {
                             String randMac = randomMACAddress();
                             command = "settings put global airplane_mode_on 1" +
                                     " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true" +
@@ -299,7 +301,10 @@ public class MacchangerFragment extends Fragment {
                                     " && svc wifi enable";
 
                         } else {
-                            command = "svc wifi disable && svc wifi enable" +
+                            command = "svc wifi disable" +
+                                    " && sleep 2" +
+                                    " && svc wifi enable" +
+                                    " && sleep 2" +
                                     " && ip link set dev wlan0 address " +
                                     randomMACAddress();
                         }
@@ -310,7 +315,7 @@ public class MacchangerFragment extends Fragment {
                         new Thread(new Runnable() {
                             public int delayTime;
                             public void run() {
-                                if (isOPO5()) {
+                                if (UserDevice.isOPO5()) {
                                     exe.RunAsRoot(finalCommandA);
                                     delayTime = 13000;
                                 } else {
@@ -359,7 +364,7 @@ public class MacchangerFragment extends Fragment {
                         }
                     }
                     if (selectedDevice.equals("wlan0")) {
-                        if (isOPO()) {
+                        if (UserDevice.isOPO()) {
                             command = "settings put global airplane_mode_on 1" +
                                     " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true" +
                                     " && echo \"" + macsArray + "\" > /sys/devices/fb000000.qcom,wcnss-wlan/wcnss_mac_addr" +
@@ -367,7 +372,7 @@ public class MacchangerFragment extends Fragment {
                                     " && settings put global airplane_mode_on 0" +
                                     " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false";
                         }
-                        else if (isOPO5()) {
+                        else if (UserDevice.isOPO5()) {
                             command = "settings put global airplane_mode_on 1" +
                                     " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true" +
                                     " && sleep 5" +
@@ -382,7 +387,10 @@ public class MacchangerFragment extends Fragment {
                                     " && sleep 3" +
                                     " && svc wifi enable";
                         } else {
-                            command = "svc wifi disable && svc wifi enable" +
+                            command = "svc wifi disable" +
+                                    " && sleep 2" +
+                                    " && svc wifi enable" +
+                                    " && sleep 2" +
                                     " && ip link set dev wlan0 address " +
                                     macsArray;
                         }
@@ -392,7 +400,7 @@ public class MacchangerFragment extends Fragment {
                         new Thread(new Runnable() {
                             public int delayTime;
                             public void run() {
-                                if (isOPO5()) {
+                                if (UserDevice.isOPO5()) {
                                     exe.RunAsRoot(finalCommandA);
                                     delayTime =  13000;
                                 } else {
@@ -485,7 +493,6 @@ public class MacchangerFragment extends Fragment {
         getCurrentMac(cleanInterface, currMac, setMacButton);
     }
 
-
     private void getCurrentMac(final String theDevice, final TextView currMac, final Button setMacButton) {
         //in the bg
 
@@ -559,7 +566,7 @@ public class MacchangerFragment extends Fragment {
         int delayTime;
         if (cleanInterface.equals("wlan0")) {
             nh.showMessage("Resetting " + cleanInterface + " MAC");
-            if (isOPO()) {
+            if (UserDevice.isOPO()) {
                 Log.d("opo_original_mac", sharedpreferences.getString("opo_original_mac", ""));
                 command = "settings put global airplane_mode_on 1" +
                         " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true" +
@@ -568,7 +575,7 @@ public class MacchangerFragment extends Fragment {
                         " && settings put global airplane_mode_on 0" +
                         " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false";
             }
-            else if (isOPO5()) {
+            else if (UserDevice.isOPO5()) {
                 command = "settings put global airplane_mode_on 1" +
                         " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true" +
                         " && sleep 5" +
@@ -596,7 +603,7 @@ public class MacchangerFragment extends Fragment {
             new Thread(new Runnable() {
                 public int delayTime;
                 public void run() {
-                    if (isOPO5()) {
+                    if (UserDevice.isOPO5()) {
                         exe.RunAsRoot(finalCommandA);
                         delayTime = 13000;
                     } else {
@@ -684,7 +691,7 @@ public class MacchangerFragment extends Fragment {
         builder.show();
     }
 
-    private String getDeviceName() {
+    /*private String getDeviceName() {
         return Build.DEVICE;
     }
 
@@ -713,7 +720,7 @@ public class MacchangerFragment extends Fragment {
                 getDeviceName().equalsIgnoreCase("deb") ||
                 getDeviceName().equalsIgnoreCase("mako");
     }
-
+    */
     private static void setHostname(String host) {
         final ShellExecuter exe = new ShellExecuter();
         exe.RunAsRootWithException("setprop net.hostname " + host);
@@ -721,6 +728,6 @@ public class MacchangerFragment extends Fragment {
 
     private String getHostname() {
         final ShellExecuter exe = new ShellExecuter();
-        return exe.RunAsRootWithException("getprop net.hostname  myhost");
+        return exe.RunAsRootWithException("getprop net.hostname");
     }
 }

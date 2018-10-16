@@ -1,18 +1,12 @@
 package com.offsec.nethunter;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+
 import java.util.ArrayList;
+
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,13 +14,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.offsec.nethunter.utils.BootKali;
 import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
 
@@ -35,13 +26,9 @@ import java.io.File;
 
 public class UsbArmyFragment extends Fragment {
 
-    private SharedPreferences sharedpreferences;
     private static NhPaths nh;
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private final ShellExecuter exe = new ShellExecuter();
 
-    private static final String image_folder_path = "/sdcard/nh_files/img_folder";
-    private static final String script_folder_path = "/sdcard/nh_files/punkscripts";
     public UsbArmyFragment() {
 
     }
@@ -56,19 +43,10 @@ public class UsbArmyFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        nh = new NhPaths();
-        sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
         View rootView = inflater.inflate(R.layout.usbarmy, container, false);
-
-        //final Button button = (Button) rootView.findViewById(R.id.updateOptions);
-        //button.setOnClickListener(new View.OnClickListener() {
-        //    public void onClick(View v) {
-        //        updateOptions();
-        //    }
-        //});
-        //setHasOptionsMenu(true);
-        getUSBInterfaces(rootView);
-
+        nh = new NhPaths();
+        final String image_folder_path = nh.APP_SD_FILES_PATH + "/img_folder";
+        final String script_folder_path = nh.APP_SD_FILES_PATH + "/punkscripts";
         final Button setusbinterface = (Button) rootView.findViewById(R.id.setusbinterface);
         final Button mountImage = (Button) rootView.findViewById(R.id.mountImage);
         final Button unmountImage = (Button) rootView.findViewById(R.id.unmountImage);
@@ -80,57 +58,21 @@ public class UsbArmyFragment extends Fragment {
         final Spinner usbAdbSpinner = (Spinner) rootView.findViewById(R.id.usb_adb);
         final Spinner imageSpinner = (Spinner) rootView.findViewById(R.id.usbarmy_img_mounter_preset_spinner);
         final Spinner scriptSpinner = (Spinner) rootView.findViewById(R.id.usbarmy_script_runner_preset_spinner);
+        final TextView usbState = (TextView) rootView.findViewById(R.id.current_usb_state);
+        final TextView imageState = (TextView) rootView.findViewById(R.id.mountedImage_state);
         final CheckBox ro_checkbox = (CheckBox) rootView.findViewById(R.id.usbarmy_ro);
-        int current_usb_target = -1;
-        int current_usb_mode = -1;
-        int current_usb_adb = -1;
-        String image_file[] = getImageFiles();
-        String script_file[] = getScriptFiles();
+
         ro_checkbox.setChecked(false);
-        for (String cc : getResources().getStringArray(R.array.usb_targets)) {
-            current_usb_target++;
-            if (cc.equals(sharedpreferences.getString("usb_targets", cc))) {
-                break;
-            }
-        }
 
-        for (String cc : getResources().getStringArray(R.array.usb_states_win_lin)) {
-            current_usb_mode++;
-            if (cc.equals(sharedpreferences.getString("usb_states", cc))) {
-                break;
-            }
-        }
-
-        for (String cc : getResources().getStringArray(R.array.usb_adb)) {
-            current_usb_adb++;
-            if (cc.equals(sharedpreferences.getString("usb_adb", cc))) {
-                break;
-            }
-        }
-
-        ArrayAdapter<String> imageAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, image_file);
-        imageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        imageSpinner.setAdapter(imageAdapter);
-
-        ArrayAdapter<String> scriptAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, script_file);
-        scriptAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        scriptSpinner.setAdapter(scriptAdapter);
-
-        usbTargetSpinner.setSelection(current_usb_target);
-        usbModeSpinner.setSelection(current_usb_mode);
-        usbAdbSpinner.setSelection(current_usb_adb);
-        imageSpinner.setSelection(0);
-        scriptSpinner.setSelection(0);
+        refreshUSB(usbState);
+        refreshImage(imageState);
+        getImageFiles(imageSpinner);
+        getScriptFiles(scriptSpinner);
 
         usbTargetSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                // update sharedpreferences
                 String items = usbTargetSpinner.getSelectedItem().toString();
-                SharedPreferences.Editor editor = sharedpreferences.edit();
-                editor.putString("usb_targets", items);
-                editor.apply();
                 if (items.equals("Windows") || items.equals("Linux")) {
                     ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.usb_states_win_lin, android.R.layout.simple_spinner_item);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -140,24 +82,6 @@ public class UsbArmyFragment extends Fragment {
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     usbModeSpinner.setAdapter(adapter);
                 }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-
-            }
-
-        });
-
-        usbModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                // update sharedpreferences
-                String items = usbModeSpinner.getSelectedItem().toString();
-                SharedPreferences.Editor editor = sharedpreferences.edit();
-                editor.putString("usb_states", items);
-                editor.apply();
 
             }
 
@@ -165,51 +89,8 @@ public class UsbArmyFragment extends Fragment {
             public void onNothingSelected(AdapterView<?> arg0) {
 
             }
-
         });
 
-        usbAdbSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                // update sharedpreferences
-                String items = usbAdbSpinner.getSelectedItem().toString();
-                SharedPreferences.Editor editor = sharedpreferences.edit();
-                editor.putString("usb_adb", items);
-                editor.apply();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-
-            }
-
-        });
-
-
-        imageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                String selectedItemText = parent.getItemAtPosition(pos).toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                //Another interface callback
-            }
-        });
-
-        scriptSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                String selectedItemText = parent.getItemAtPosition(pos).toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                //Another interface callback
-            }
-        });
         setusbinterface.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
@@ -220,7 +101,8 @@ public class UsbArmyFragment extends Fragment {
                             @Override
                             public void run() {
                                 nh.showMessage_long("USB interface changed");
-                                refreshUSB();
+                                refreshUSB(usbState);
+                                refreshImage(imageState);
                             }
                         });
                     }
@@ -245,19 +127,17 @@ public class UsbArmyFragment extends Fragment {
             }
         });
 
-
-
         reloadUSB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                refreshUSB();
+                refreshUSB(usbState);
             }
         });
 
         reloadImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                refreshImage();
+                refreshImage(imageState);
             }
         });
 
@@ -278,7 +158,7 @@ public class UsbArmyFragment extends Fragment {
                                     } else {
                                         nh.showMessage_long("Image mounted");
                                     }
-                                    refreshImage();
+                                    refreshImage(imageState);
                                 }
                             });
                         }
@@ -302,8 +182,9 @@ public class UsbArmyFragment extends Fragment {
                                     nh.showMessage_long("Image failed to unmount, please eject on the PC or disconnect the usb first and try again.");
                                 } else {
                                     nh.showMessage_long("Image unmounted");
-                                };
-                                refreshImage();
+                                }
+                                ;
+                                refreshImage(imageState);
                             }
                         });
                     }
@@ -311,32 +192,10 @@ public class UsbArmyFragment extends Fragment {
 
             }
         });
-
-        //Simon end
         return rootView;
 
     }
 
-
-    private void getUSBInterfaces(final View rootView) {
-        final TextView usbState = (TextView) rootView.findViewById(R.id.current_usb_state);
-        final TextView imageState = (TextView) rootView.findViewById(R.id.mountedImage_state);
-        new Thread(new Runnable() {
-            final ShellExecuter exe = new ShellExecuter();
-            final String outputUSB = exe.Executer("getprop sys.usb.state");
-            String outputImage = exe.Executer("cat /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file");
-            public void run() {
-                usbState.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        usbState.setText("Current USB state: \n" + outputUSB);
-                        if (outputImage.equals("")) outputImage = "No image is mounted.";
-                        imageState.setText("Current Mounted Image: \n" + outputImage);
-                    }
-                });
-            }
-        }).start();
-    }
     private static void setusbinterface(String targets, String interfaces, String adb) {
         final ShellExecuter exe = new ShellExecuter();
         if (!interfaces.equals("reset")) {
@@ -344,13 +203,14 @@ public class UsbArmyFragment extends Fragment {
                 targets = "win,";
             } else targets = "mac,";
 
-            if (adb.equals("No adb")) adb = ""; else adb = ",adb";
+            if (adb.equals("No adb")) adb = "";
+            else adb = ",adb";
             exe.RunAsRootWithException("setprop sys.usb.config " + targets + interfaces + adb);
         } else {
             if (adb.equals("No adb")) {
-                exe.RunAsRootWithException("setprop sys.usb.config reset");
+                exe.RunAsRootWithException("setprop sys.usb.config mtp"); //Default state without adb is "mtp"
             } else {
-                exe.RunAsRootWithException("setprop sys.usb.config reset,adb");
+                exe.RunAsRootWithException("setprop sys.usb.config adb"); //Default state with adb is "adb"
             }
 
         }
@@ -362,55 +222,72 @@ public class UsbArmyFragment extends Fragment {
         String command = "echo \"\" > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file";
         String ro = "0";
         if (readonly) ro = "1";
-        if (image_name.contains(".iso")) {
+        if (image_name.toLowerCase().contains(".iso")) {
             command += " && echo 1 > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom" +
-                       " && echo " + ro + " > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro";
-        } else {
+                    " && echo " + ro + " > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro";
+        } else if (image_name.toLowerCase().contains(".img")) {
             command += " && echo 0 > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom" +
-                       " && echo " + ro + " > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro";
+                    " && echo " + ro + " > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro";
+        } else {
+            nh.showMessage_long("Not sopported image file, please select either .iso or .img file only!!");
+            return;
         }
         command += " && echo \"" + image_folder_path + "/" + image_name + "\" > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file";
         exe.RunAsRootOutput(command);
-
     }
 
     public void UnmountImage() {
         final ShellExecuter exe = new ShellExecuter();
         String command = "echo \"\" > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file" +
-                           " && echo 0 > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom" +
-                           " && echo 0 > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro";
+                " && echo 0 > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom" +
+                " && echo 0 > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro";
         exe.RunAsRootOutput(command);
     }
 
-    private void refreshUSB() {
-        if (getView() == null) {
-            return;
-        }
-        final TextView usbState = (TextView) getView().findViewById(R.id.current_usb_state);
-        final ShellExecuter exe = new ShellExecuter();
-        final String outputUSB = exe.Executer("getprop sys.usb.state");
-        usbState.setText("Current USB state: \n" + outputUSB);
+    private void refreshUSB(final TextView usbState) {
+        new Thread(new Runnable() {
+            public void run() {
+                usbState.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        final TextView usbState = (TextView) getView().findViewById(R.id.current_usb_state);
+                        final ShellExecuter exe = new ShellExecuter();
+                        final String outputUSB = exe.Executer("getprop sys.usb.state");
+                        usbState.setText("Current USB state: \n" + outputUSB);
+                    }
+                });
+            }
+        }).start();
+
     }
 
-    private void refreshImage() {
-        if (getView() == null) {
-            return;
-        }
-        final TextView imageState = (TextView) getView().findViewById(R.id.mountedImage_state);
-        final ShellExecuter exe = new ShellExecuter();
-        String outputImage = exe.Executer("cat /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file");
-        if (outputImage.equals("")) outputImage = "No image is mounted.";
-        imageState.setText("Current Mounted Image: \n" + outputImage);
+    private void refreshImage(final TextView imageState) {
+        new Thread(new Runnable() {
+            public void run() {
+                imageState.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        final TextView imageState = (TextView) getView().findViewById(R.id.mountedImage_state);
+                        final ShellExecuter exe = new ShellExecuter();
+                        String outputImage = exe.Executer("cat /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file");
+                        if (outputImage.equals("")) outputImage = "No image is mounted.";
+                        imageState.setText("Current Mounted Image: \n" + outputImage);
+                    }
+                });
+            }
+        }).start();
+
     }
 
-    private String[] getImageFiles() {
+    private void getImageFiles(final Spinner imageSpinner) {
+        final String image_folder_path = nh.APP_SD_FILES_PATH + "/img_folder";
         ArrayList<String> result = new ArrayList<String>();
         File image_folder = new File(image_folder_path);
-        if (!image_folder.exists()){
+        if (!image_folder.exists()) {
             nh.showMessage_long("Creating directory for storing image files..");
             try {
                 image_folder.mkdir();
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 System.exit(-1);
             }
@@ -423,17 +300,21 @@ public class UsbArmyFragment extends Fragment {
                 }
             }
         }
-        return result.toArray(new String[0]);
+        ArrayAdapter<String> imageAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, result.toArray(new String[0]));
+        imageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        imageSpinner.setAdapter(imageAdapter);
+
     }
 
-    private String[] getScriptFiles() {
+    private void getScriptFiles(final Spinner scriptSpinner) {
+        final String script_folder_path = nh.APP_SD_FILES_PATH + "/punkscripts";
         ArrayList<String> result = new ArrayList<String>();
         File script_folder = new File(script_folder_path);
         if (!script_folder.exists()) {
             nh.showMessage_long("Creating directory for storing script files..");
             try {
                 script_folder.mkdir();
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 System.exit(-1);
             }
@@ -446,18 +327,8 @@ public class UsbArmyFragment extends Fragment {
                 }
             }
         }
-        return result.toArray(new String[0]);
+        ArrayAdapter<String> scriptAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, result.toArray(new String[0]));
+        scriptAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        scriptSpinner.setAdapter(scriptAdapter);
     }
-
-    private String getDeviceName() {
-        return Build.DEVICE;
-    }
-
-    public Boolean isOPO5() {
-        return getDeviceName().equalsIgnoreCase("A5000") ||
-                getDeviceName().equalsIgnoreCase("A5010") ||
-                getDeviceName().equalsIgnoreCase("OnePlus5") ||
-                getDeviceName().equalsIgnoreCase("OnePlus5T");
-    }
-    //Simon end
 }

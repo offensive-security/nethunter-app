@@ -23,12 +23,6 @@
             android:padding="16dp">
 
             <CheckBox
-                android:checked="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="gpg-key-update" />
-
-            <CheckBox
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="kali-linux-nethunter" />
