@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 
 # Formats payload to HID Keyboard sequences. Real rough poc for testing basic payloads.
-# Modified by @SimonPunk for OP5/5T
 
 dicts = {
     'us_bin' : {

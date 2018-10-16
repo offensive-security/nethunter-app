@@ -1,11 +1,10 @@
 #! /usr/bin/env python
 
 #Created by @binkybear and @byt3bl33d3r
-# Modified by @SimonPunk for OP5/5T
+
 import sys
 import re
 import os
-import shutil
 from keyseed import *
 import argparse
 from decimal import Decimal #for conversion milliseconds -> seconds
@@ -258,5 +257,4 @@ if __name__ == "__main__":
     src.close()
     dest.close()
     os.remove("tmp.txt")
-    shutil.copy2('/opt/duckout.sh', '/sdcard/nh_files/modules/duckout.sh')
     # print "File saved to location: " + (args.hunterscrip
