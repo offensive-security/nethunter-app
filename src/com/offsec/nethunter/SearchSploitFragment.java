@@ -304,7 +304,7 @@ public class SearchSploitFragment extends Fragment {
         if ((sel_platform != null) && (sel_type != null) && (sel_port != null)) {
             List<SearchSploit> exploitList;
             if (withFilters) {
-                exploitList = database.getAllExploitsFiltered(sel_search, sel_platform, sel_type, sel_port);
+                exploitList = database.getAllExploitsFiltered(sel_search, sel_type, sel_platform, sel_port);
             } else {
                 if (sel_search.equals("")) {
                     exploitList = full_exploitList;
