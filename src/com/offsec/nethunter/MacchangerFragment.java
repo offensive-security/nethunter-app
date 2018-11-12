@@ -291,13 +291,13 @@ public class MacchangerFragment extends Fragment {
                                     " && sleep 5" +
                                     " && settings put global airplane_mode_on 0" +
                                     " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false" +
-                                    " && while true; do if [ ! $(ip link set dev wlan0 address " + randMac + " 2>&1 > /dev/null) ]; then break; else continue; fi; done" +
-                                    " && sleep 5" +
-                                    " && svc wifi disable" +
+                                    " && while true; do if [[ ! $(ip link set dev wlan0 address " + randMac + " 2>&1 > /dev/null) ]]; then break; else continue; fi; done" +
+                                    //" && sleep 5" +
+                                    //" && svc wifi disable" +
                                     " && ifconfig wlan0 down" +
                                     " && ifconfig wlan0 hw ether " + randMac +
                                     " && ifconfig wlan0 up" +
-                                    " && sleep 3" +
+                                    //" && sleep 3" +
                                     " && svc wifi enable";
 
                         } else {
@@ -378,13 +378,13 @@ public class MacchangerFragment extends Fragment {
                                     " && sleep 5" +
                                     " && settings put global airplane_mode_on 0" +
                                     " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false" +
-                                    " && while true; do if [ ! $(ip link set dev wlan0 address " + macsArray + " 2>&1 > /dev/null) ]; then break; else continue; fi; done" +
-                                    " && sleep 5" +
-                                    " && svc wifi disable" +
+                                    " && while true; do if [[ ! $(ip link set dev wlan0 address " + macsArray + " 2>&1 > /dev/null) ]]; then break; else continue; fi; done" +
+                                    //" && sleep 5" +
+                                    //" && svc wifi disable" +
                                     " && ifconfig wlan0 down" +
                                     " && ifconfig wlan0 hw ether " + macsArray +
                                     " && ifconfig wlan0 up" +
-                                    " && sleep 3" +
+                                    //" && sleep 3" +
                                     " && svc wifi enable";
                         } else {
                             command = "svc wifi disable" +
@@ -581,13 +581,13 @@ public class MacchangerFragment extends Fragment {
                         " && sleep 5" +
                         " && settings put global airplane_mode_on 0" +
                         " && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false" +
-                        " && while true; do if [ ! $(ip link set dev wlan0 address " + sharedpreferences.getString("opo_original_mac", "") + " 2>&1 > /dev/null) ]; then break; else continue; fi; done" +
-                        " && sleep 5" +
-                        " && svc wifi disable" +
+                        " && while true; do if [[ ! $(ip link set dev wlan0 address " + sharedpreferences.getString("opo_original_mac", "") + " 2>&1 > /dev/null) ]]; then break; else continue; fi; done" +
+                        //" && sleep 5" +
+                        //" && svc wifi disable" +
                         " && ifconfig wlan0 down" +
                         " && ifconfig wlan0 hw ether " + sharedpreferences.getString("opo_original_mac", "") +
                         " && ifconfig wlan0 up" +
-                        " && sleep 3" +
+                        //" && sleep 3" +
                         " && svc wifi enable";
             } else {
                 command = "settings put global airplane_mode_on 1" +
