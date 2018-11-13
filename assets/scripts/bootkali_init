@@ -186,6 +186,12 @@ if ! $busybox mountpoint -q $mnt/dev; then
 
 	$busybox mount -o bind /dev $mnt/dev
 	$busybox mount -t devpts devpts $mnt/dev/pts
+	
+	if [ ! -d $mnt/dev/shm ]; then
+	    mkdir -p $mnt/dev/shm
+	fi
+	
+	$busybox mount -t tmpfs tmpfs $mnt/dev/shm
 	$busybox mount -t proc proc $mnt/proc
 	$busybox mount -t sysfs sysfs $mnt/sys
 
