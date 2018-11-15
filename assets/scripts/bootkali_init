@@ -25,7 +25,7 @@ fi
 f_checkforroot(){
 	perm=$(id | $busybox cut -b 5)
 	if [ "$perm" != "0" ]; then
-		echo "ROOT NOT DETECTED! Type: su or install SuperSU to fix"
+		echo "ROOT NOT DETECTED! Type: Please install SuperSU or Magisk to fix it."
 		exit 1
 	fi
 }
@@ -40,72 +40,9 @@ nhsys=/data/local/nhsystem
 # remove chroot.  So stop here if removed or else
 # chroot is never uninstalled.
 
-## First create the chroot directory: $mnt
-if [ ! -d "$mnt" ]; then
-    mkdir -p $mnt
-fi
 
-## then check if the kali chroot image is already mount to /data/local/nhsystem/kali-armhf
-
-$busybox mountpoint -q "$mnt" || $busybox mount -t ext4 -o loop /sdcard/kali-chroot.img $mnt && echo "Kali chroot is successfully mounted."
-
-if [ ! -d "$mnt/dev" ]; then
-    mkdir -p $mnt/dev
-fi
-
-if [ ! -d "$mnt/proc" ]; then
-    mkdir -p $mnt/proc
-fi
-
-if [ ! -d "$mnt/sys" ]; then
-    mkdir -p $mnt/sys
-fi
-
-if [ ! -d $mnt/dev/shm ]; then
-    mkdir -p $mnt/dev/shm
-fi
-	
-if [ ! -d "$mnt/usr" ]; then
-    echo "Missing a required folder. Something isn't right"
-    exit 1
-fi
-
-######### SET TUN ########
-mkdir -p /dev/net
-rm -f /dev/net/tun
-
-# This appears to work with miredo
-mknod /dev/net/tun c 10 200
-
-# ln -s /dev/tun /dev/net/tun 2> /dev/null
-
-######### SET DNS ########
-> $mnt/etc/resolv.conf # empty dns entries
-
-for i in 1 2 3 4; do
-	if [ -z "$(getprop net.dns${i})" ]; then
-		# we go through 1-4 dns servers and break out of loop on empty
-		break
-	else
-		# add local/device dns server first
-		echo "nameserver $(getprop net.dns${i})" >> $mnt/etc/resolv.conf
-	fi
-done
-
-# lastly add two default dns entries
-echo "nameserver 208.67.222.222" >> $mnt/etc/resolv.conf
-echo "nameserver 208.67.220.220" >> $mnt/etc/resolv.conf
-chmod 644 $mnt/etc/resolv.conf
 
 ######### MOUNT #########
-
-## Should run always (https://su.chainfire.eu/#how-mount)
-
-$busybox mount -o remount,suid /data
-
-if [ ! -d $mnt/sdcard ]; then
-    mkdir -p $mnt/sdcard
-fi
 
 mount_sdcard() {
 	mountpoint -q "$mnt/sdcard" && return 0
@@ -173,40 +110,98 @@ mount_external_storage() {
 	done
 }
 
-# If chroot's /dev is mounted, assume the chroot is already running and skip initialization
-if ! $busybox mountpoint -q $mnt/dev; then
-	f_checkforroot
+mount_kali_chroot() {
 
-    if [ ! -d $mnt/system ]; then
-        mkdir -p $mnt/system
-    fi
-	$busybox mount -r -o bind /system $mnt/system
+    $busybox mount -t ext4 -o loop /sdcard/kali-chroot.img $mnt
 
-	# enable depmod/modprobe support in rootfs
-	$busybox mount -r -o bind /system/lib/modules $mnt/lib/modules
+    mkdir -p $mnt/dev
+    mkdir -p $mnt/proc
+    mkdir -p $mnt/sys
+    mkdir -p $mnt/system
+    mkdir -p $mnt/sdcard
 
-	mount_sdcard
-	mount_external_storage
+    ######### SET TUN ########
+    mkdir -p /dev/net
+    rm -f /dev/net/tun
 
-	$busybox mount -o bind /dev $mnt/dev
-	$busybox mount -t devpts devpts $mnt/dev/pts
-	$busybox mount -t tmpfs tmpfs $mnt/dev/shm
-	$busybox mount -t proc proc $mnt/proc
-	$busybox mount -t sysfs sysfs $mnt/sys
+    # This appears to work with miredo
+    mknod /dev/net/tun c 10 200
 
-	$busybox chmod 666 /dev/null
+    # ln -s /dev/tun /dev/net/tun 2> /dev/null
 
-	# SET 250MB TO ALLOW POSTGRESQL #
-	$busybox sysctl -w kernel.shmmax=268435456
+    ######### SET DNS ########
+    > $mnt/etc/resolv.conf # empty dns entries
 
-	# NETWORK SETTINGS #
-	$busybox sysctl -w net.ipv4.ip_forward=1
-	echo "127.0.0.1		 localhost kali" > $mnt/etc/hosts
-	echo "::1				 localhost ip6-localhost ip6-loopback" >> $mnt/etc/hosts
-	echo "kali" > $mnt/proc/sys/kernel/hostname
+    for i in 1 2 3 4; do
+    	if [ -z "$(getprop net.dns${i})" ]; then
+    		# we go through 1-4 dns servers and break out of loop on empty
+    		break
+    	else
+    		# add local/device dns server first
+    		echo "nameserver $(getprop net.dns${i})" >> $mnt/etc/resolv.conf
+    	fi
+    done
 
-	echo "The Kali chroot has been started."
-	log "The Kali chroot has been started."
+    # lastly add two default dns entries
+    echo "nameserver 208.67.222.222" >> $mnt/etc/resolv.conf
+    echo "nameserver 208.67.220.220" >> $mnt/etc/resolv.conf
+    chmod 644 $mnt/etc/resolv.conf
+
+    ######### BINDING FILESYSTEM #########
+    f_checkforroot
+
+    $busybox mount -o remount,suid /data
+    $busybox mount -r -o bind /system $mnt/system
+
+    # enable depmod/modprobe support in rootfs
+    #$busybox mount -r -o bind /system/lib/modules $mnt/lib/modules
+
+    mount_sdcard
+    mount_external_storage
+
+    $busybox mount -o bind /dev $mnt/dev
+    $busybox mount -t devpts devpts $mnt/dev/pts
+    mkdir -p $mnt/dev/shm
+    $busybox mount -t tmpfs tmpfs $mnt/dev/shm
+    $busybox mount -t proc proc $mnt/proc
+    $busybox mount -t sysfs sysfs $mnt/sys
+
+    $busybox chmod 666 /dev/null
+
+    # SET 250MB TO ALLOW POSTGRESQL #
+    $busybox sysctl -w kernel.shmmax=268435456
+
+    # NETWORK SETTINGS #
+    $busybox sysctl -w net.ipv4.ip_forward=1
+    echo "127.0.0.1		 localhost kali" > $mnt/etc/hosts
+    echo "::1				 localhost ip6-localhost ip6-loopback" >> $mnt/etc/hosts
+    echo "kali" > $mnt/proc/sys/kernel/hostname
+    echo "The Kali chroot has been started."
+    echo " [!] Everytime you mount the kali chroot, Pleaes press ENTER to continue. (If chroot is already mounted, this won't prompt.)"
+    read
+    log "The Kali chroot has been started."
+
+}
+
+############ STARTING ############
+## First create the chroot directory: $mnt
+if [ ! -d "$mnt" ]; then
+    mkdir -p $mnt
+fi
+
+## then check if the kali chroot image is already mount to /data/local/nhsystem/kali-armhf
+
+if [ ! "$($busybox mountpoint $mnt | grep 'is a')" ]; then
+    echo "Mounting kali chroot..."
+    mount_kali_chroot
 else
-	echo "The Kali chroot is already running!"
+    echo "Kali chroot is already mounted."
+
+    if [ -d "$mnt/usr" ]; then
+        echo "The Kali chroot should be already running!"
+    else
+        echo "But missing a required folder. Something isn't right here...Unmounting kali chroot.."
+        $busybox umount $mnt
+        exit 1
+    fi
 fi
