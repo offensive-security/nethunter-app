@@ -38,40 +38,21 @@
         android:layout_marginRight="@dimen/base_listItem_LR"
         android:layout_marginLeft="@dimen/base_listItem_LR"
         android:id="@+id/search_filters">
-    <Spinner
-        android:layout_width="220dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/exdb_port_spinner"
-        android:layout_gravity="center_horizontal"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@+id/textView17" />
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/exdb_platform_spinner"
-        android:layout_gravity="center_horizontal"
-        android:layout_below="@+id/exdb_port_spinner"
-        android:layout_toEndOf="@+id/textView17" />
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/exdb_type_spinner"
-        android:layout_gravity="center_horizontal"
-        android:layout_below="@+id/exdb_platform_spinner"
-        android:layout_alignEnd="@+id/exdb_platform_spinner"
-        android:layout_alignStart="@+id/exdb_platform_spinner" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <Spinner
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Port"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/exdb_port_spinner"
-            android:layout_above="@+id/exdb_platform_spinner"
-            android:gravity="center_vertical" />
+            android:id="@+id/exdb_platform_spinner"
+            android:layout_gravity="center_horizontal"
+            android:layout_toEndOf="@+id/textView17" />
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/exdb_type_spinner"
+            android:layout_gravity="center_horizontal"
+            android:layout_below="@+id/exdb_platform_spinner"
+            android:layout_alignEnd="@+id/exdb_platform_spinner"
+            android:layout_alignStart="@+id/exdb_platform_spinner" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -79,7 +60,6 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Platform"
             android:id="@+id/textView17"
-            android:layout_below="@+id/exdb_port_spinner"
             android:layout_alignParentStart="true"
             android:layout_alignBottom="@+id/exdb_platform_spinner"
             android:gravity="center_vertical" />

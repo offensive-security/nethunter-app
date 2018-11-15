@@ -44,9 +44,8 @@ public class SearchSploitFragment extends Fragment {
 
 
     private Boolean withFilters = true;
-    private String sel_platform;
     private String sel_type;
-    private String sel_port;
+    private String sel_platform;
     private String sel_search = "";
     private TextView numex;
     private AlertDialog adi;
@@ -130,8 +129,11 @@ public class SearchSploitFragment extends Fragment {
                                             Toast.LENGTH_LONG).show();
                                     try {
                                         // Search List
-                                        String sd = nh.SD_PATH;
-                                        String data = nh.APP_PATH;
+
+                                        //String sd = nh.SD_PATH;
+                                        String sd = "/sdcard";
+                                        //String data = nh.APP_PATH;
+                                        String data = "/data/data/com.offsec.nethunter/files/";
                                         String DATABASE_NAME = "SearchSploit";
                                         String currentDBPath = "../databases/" + DATABASE_NAME;
                                         String backupDBPath = "/nh_files/" + DATABASE_NAME; // From SD directory.
@@ -247,23 +249,6 @@ public class SearchSploitFragment extends Fragment {
             searchSearchSploit.setVisibility(View.GONE);
         }
 
-        final List<String> portList = database.getPorts();
-        Spinner portSpin = (Spinner) rootView.findViewById(R.id.exdb_port_spinner);
-        ArrayAdapter<String> adp1 = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, portList);
-        adp1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        portSpin.setAdapter(adp1);
-        portSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                sel_port = portList.get(position);
-                loadExploits();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-            }
-        });
-
         final List<String> platformList = database.getPlatforms();
         Spinner platformSpin = (Spinner) rootView.findViewById(R.id.exdb_platform_spinner);
         ArrayAdapter<String> adp12 = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, platformList);
@@ -301,10 +286,10 @@ public class SearchSploitFragment extends Fragment {
     }
 
     private void loadExploits() {
-        if ((sel_platform != null) && (sel_type != null) && (sel_port != null)) {
+        if ((sel_platform != null) && (sel_type != null)) {
             List<SearchSploit> exploitList;
             if (withFilters) {
-                exploitList = database.getAllExploitsFiltered(sel_search, sel_type, sel_platform, sel_port);
+                exploitList = database.getAllExploitsFiltered(sel_search, sel_type, sel_platform);
             } else {
                 if (sel_search.equals("")) {
                     exploitList = full_exploitList;
@@ -359,9 +344,8 @@ class ExploitLoader extends BaseAdapter {
         // The switch
         //Switch sw;
         // the msg holder
-
-        TextView platform;
         TextView type;
+        TextView platform;
         TextView author;
         TextView date;
         // the service title
@@ -401,8 +385,8 @@ class ExploitLoader extends BaseAdapter {
             // get the reference of switch and the text view
             vH.description = (TextView) convertView.findViewById(R.id.description);
             // vH.cwSwich = (Switch) convertView.findViewById(R.id.switch1);
-            vH.platform = (TextView) convertView.findViewById(R.id.platform);
             vH.type = (TextView) convertView.findViewById(R.id.type);
+            vH.platform = (TextView) convertView.findViewById(R.id.platform);
             vH.author = (TextView) convertView.findViewById(R.id.author);
             vH.date = (TextView) convertView.findViewById(R.id.exploit_date);
             vH.viewSource = (Button) convertView.findViewById(R.id.viewSource);
@@ -423,17 +407,15 @@ class ExploitLoader extends BaseAdapter {
         String _desc = exploitItem.getDescription();
         String _date = exploitItem.getDate();
         String _author = exploitItem.getAuthor();
-        String _platform = exploitItem.getPlatform();
         String _type = exploitItem.getType();
-        Integer _port = exploitItem.getPort();
-
+        String _platform = exploitItem.getPlatform();
 
         vH.viewSource.setOnClickListener(null);
         vH.openWeb.setOnClickListener(null);
         // set service name
         vH.description.setText(_desc);
-        vH.platform.setText(_platform);
         vH.type.setText(_type);
+        vH.platform.setText(_platform);
         vH.author.setText(_author);
         vH.date.setText(_date);
         vH.viewSource.setOnClickListener(new View.OnClickListener() {
