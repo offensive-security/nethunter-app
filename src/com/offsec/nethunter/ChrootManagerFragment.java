@@ -467,7 +467,7 @@ ChrootManagerFragment extends Fragment {
 
             Intent intent = new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
-            intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "apt-get update && apt-get install " + packages + " && echo \"\nUpgrade completed.\nEnjoy. (You can close the terminal now)\n\"");
+            intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "apt update && apt install " + packages + " && echo \"\nUpgrade completed.\nEnjoy. (You can close the terminal now)\n\"");
             Log.d("PACKS:", "PACKS:" + packages);
             startActivity(intent);
 

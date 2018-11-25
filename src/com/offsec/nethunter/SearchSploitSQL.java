@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 import android.os.Environment;
 import android.util.Log;
+import java.io.File;
 
 import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
@@ -53,13 +54,11 @@ class SearchSploitSQL extends SQLiteOpenHelper {
     }
 
     Boolean doDbFeed() {
-        // Generate the csv to kali /root first as temp (so we can read it)
-        String _cmd1 = "su -c 'bootkali custom_cmd /usr/bin/python /sdcard/nh_files/modules/csv2sqlite.py /usr/share/exploitdb/files_exploits.csv /root/SearchSploit " + SearchSploit.TABLE + "'";
-        exe.RunAsRootOutput(_cmd1);
-        // Then move it to app db folder
-        String _cmd2 = "mv /data/local/nhsystem/kali-armhf/root/SearchSploit /sdcard/nh_files/";
-        exe.RunAsRootOutput(_cmd2);
-        return true;
+        File f = new File("/sdcard/nh_files/SearchSploit");
+        String _cmd1[] = {"su -c bootkali convert_exploitdb " + SearchSploit.TABLE};
+        exe.RunAsRoot(_cmd1);
+        if (f.exists() && !f.isDirectory()) return true;
+        else return false;
     }
 
     long getCount() {

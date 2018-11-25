@@ -119,10 +119,11 @@ public class SearchSploitFragment extends Fragment {
                 pd.show();
                 new Thread(new Runnable() {
                     public void run() {
-                        final Boolean isFeeded = database.doDbFeed();
+
                         searchSearchSploit.post(new Runnable() {
                             @Override
                             public void run() {
+                                final Boolean isFeeded = database.doDbFeed();
                                 if (isFeeded) {
                                     Toast.makeText(getActivity(),
                                             "DB FEED DONE",
