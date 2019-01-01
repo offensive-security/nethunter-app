@@ -5,13 +5,13 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.0-alpha08'
+        classpath 'com.android.tools.build:gradle:3.4.0-alpha09'
     }
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.1' //version required
-}
+//task wrapper(type: Wrapper) {
+//    gradleVersion = '4.1' //version required
+//}
 
 apply plugin: 'com.android.application'
 
