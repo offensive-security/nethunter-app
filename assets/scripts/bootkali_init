@@ -14,6 +14,12 @@ elif [ -x /system/bin/busybox ]; then
 	busybox=/system/bin/busybox
 elif [ -x /su/bin/busybox ]; then
 	busybox=/su/bin/busybox
+elif [ -x /data/adb/magisk/busybox ]; then
+	busybox=/data/adb/magisk/busybox
+elif [ -x /sbin/busybox ]; then
+	busybox=/sbin/busybox
+elif [ -x /sbin/.magisk/busybox/busybox ]; then
+	busybox=/sbin/.magisk/busybox/busybox
 else
 	echo "Busybox not found!  Install it, dummy!"
 	log "Busybox not found!  Install it, dummy!"
@@ -293,4 +299,3 @@ if [ $res -eq 1 ]; then
 	log " [!] mounting fs to kali chroot..."
 	mount_fs_to_kali
 fi
-

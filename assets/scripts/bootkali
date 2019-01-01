@@ -139,31 +139,42 @@ else
 	# DUCK HUNT - Rubber Ducky conversion script to nethunter
 	# Requires argument to generate based on language. e.g.:
 	# bootkali duck-hunt-convert us /sdcard/nh_files/modules/ducktest.txt /opt/duckout.sh
-	# Modified: bootkali duck-hunt-convert us /sdcard/nh_files/modules/duckcovert.txt /sdcard/nh_files/modules/duckout.sh
+	# Modified: bootkali duck-hunt-convert us /sdcard/nh_files/modules/duckconvert.txt /sdcard/nh_files/modules/duckout.sh
 	# Languages supported: us, fr, de, es,sv, it, uk, ru, dk, no, pt, be
 	#
 	# Run converted script with:
 	# bootkali duck-hunt-run {/opt/duckout.sh}
 
 	if [ "$1" == "duck-hunt-convert" ]; then
-		$busybox chroot $mnt /usr/bin/python2.7 /sdcard/nh_files/modules/duckhunter.py -l $2 $3 $4
+		$busybox chroot $mnt /usr/bin/python /sdcard/nh_files/modules/duckhunter.py -l $2 $3 $4
 	fi
 
 	if [ "$1" == "duck-hunt-run" ]; then
+	    # Check if hid-keyboard binary is present at $mnt/usr/bin/
+	    if [ ! -x $mnt/usr/bin/hid-keyboard ]; then
+	        if [ -e /sdcard/nh_files/modules/hid-keyboard ]; then
+	            cp /sdcard/nh_files/modules/hid-keyboard $mnt/usr/bin/
+	            $busybox chroot $mnt /bin/chmod 755 $mnt/usr/bin/hid-keyboard
+	        else
+	            echo " [-] hid-keyboard not found in /usr/bin"
+	            exit 1
+	        fi
+	    fi
+
 		if [ ! -f $mnt$2 ]; then
 			echo "File not found"
 		else
 			echo "File $mnt$2 found"
 			COUNT=0
-            		until echo volume-up | hid-keyboard /dev/hidg0 keyboard > /dev/null 2>&1; do
+            until $busybox chroot $mnt /bin/bash -c "echo volume-up | hid-keyboard /dev/hidg0 keyboard > /dev/null 2>&1"; do
 				sleep 1
 				COUNT=$((COUNT+1))
 				if [ $COUNT -gt 60 ]; then  #60 seconds
-					exit
+					exit 1
 				fi
 			done
 			echo "USB cable plugged"
-			sh $2
+			$busybox chroot $mnt /bin/bash $2
 		fi
 	fi
 
@@ -292,6 +303,7 @@ else
 	#SearchSploit convert_exploitdb_to_csv
 
 	if [ "$1" == "convert_exploitdb" ]; then
+	    [ -f /sdcard/nh_files/SearchSploit ] && rm /sdcard/nh_files/SearchSploit
 		$busybox chroot $mnt sudo python /sdcard/nh_files/modules/csv2sqlite.py /usr/share/exploitdb/files_exploits.csv /sdcard/nh_files/SearchSploit $2
 		[ -f /sdcard/nh_files/SearchSploit ] && return 0 || return 1
 	fi
