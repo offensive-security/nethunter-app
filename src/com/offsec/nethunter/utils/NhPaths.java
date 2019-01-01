@@ -128,7 +128,9 @@ public class NhPaths {
                 "/sbin/busybox_nh",
                 "/system/bin/busybox",
                 "/data/local/bin/busybox",
-                "/system/xbin/busybox"
+                "/system/xbin/busybox",
+                "/data/adb/magisk/busybox",
+                "/sbin/.magisk/busybox/busybox"
         };
         for (String BB_PATH : BB_PATHS) {
             File busybox = new File(BB_PATH);

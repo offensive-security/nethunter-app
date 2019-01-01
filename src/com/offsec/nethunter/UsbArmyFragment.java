@@ -210,7 +210,7 @@ public class UsbArmyFragment extends Fragment {
             if (adb.equals("No adb")) {
                 exe.RunAsRootWithException("setprop sys.usb.config mtp"); //Default state without adb is "mtp"
             } else {
-                exe.RunAsRootWithException("setprop sys.usb.config adb"); //Default state with adb is "adb"
+                exe.RunAsRootWithException("setprop sys.usb.config none,adb"); //Default state with adb is "adb"
             }
 
         }

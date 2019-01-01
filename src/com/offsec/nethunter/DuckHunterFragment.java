@@ -214,7 +214,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     private static void convert() {
         ShellExecuter exe = new ShellExecuter();
         if (updatefile()) {
-            Log.d("LANGGG", lang);
+            Log.d(TAG, lang);
             String command = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali duck-hunt-convert" +
                     " " + lang +
                     " " + DuckHunterConvertFragment.configFile +
