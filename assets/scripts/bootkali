@@ -154,7 +154,7 @@ else
 	    if [ ! -x $mnt/usr/bin/hid-keyboard ]; then
 	        if [ -e /sdcard/nh_files/modules/hid-keyboard ]; then
 	            cp /sdcard/nh_files/modules/hid-keyboard $mnt/usr/bin/
-	            $busybox chroot $mnt /bin/chmod 755 $mnt/usr/bin/hid-keyboard
+	            $busybox chroot $mnt /bin/chmod 755 /usr/bin/hid-keyboard
 	        else
 	            echo " [-] hid-keyboard not found in /usr/bin"
 	            exit 1
