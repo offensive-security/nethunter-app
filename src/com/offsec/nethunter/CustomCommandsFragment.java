@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -125,10 +126,11 @@ public class CustomCommandsFragment extends Fragment {
         String _cmd = command.getCommand();
         //String _mode = command.getExec_Mode();
         String _sendTo = command.getSend_To_Shell();
+        nh = new NhPaths();
 
         String composedCommand;
         if (_sendTo.equals("KALI")) {
-            composedCommand = "su -c bootkali custom_cmd " + _cmd;
+            composedCommand = "su -c '"+nh.APP_SCRIPTS_PATH+"/bootkali custom_cmd " + _cmd + "'";
         } else {
             // SEND TO ANDROID
             // no sure, if we add su -c , we cant exec comands as a normal android user
@@ -136,8 +138,9 @@ public class CustomCommandsFragment extends Fragment {
         }
         String bootServiceFile = bootScriptPath + "/" + custom_commands_runlevel + "_" + command.getId() + "_custom_command";
         String fileContents = shebang + _label + "\n" + composedCommand;
+        Log.d("bootScript", fileContents);
         exe.RunAsRoot(new String[]{
-                "echo '" + fileContents + "' > " + bootServiceFile,
+                "echo \"" + fileContents + "\" > " + bootServiceFile,
                 "chmod 700 " + bootServiceFile
         });
 

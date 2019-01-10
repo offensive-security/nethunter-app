@@ -232,8 +232,9 @@ class KaliServicesLoader extends BaseAdapter {
     private void addBootService(int serviceId) {
         String bootServiceFile = bootScriptPath + "/" + services[serviceId][4];
         String fileContents = shebang + services[serviceId][0] + "\n" + services[serviceId][2];
+        Log.d("bootScript", fileContents);
         exe.RunAsRoot(new String[]{
-                "echo '" + fileContents + "' > " + bootServiceFile,
+                "echo \"" + fileContents + "\" > " + bootServiceFile,
                 "chmod 700 " + bootServiceFile
         });
 
