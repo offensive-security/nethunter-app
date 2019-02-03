@@ -12,6 +12,7 @@
             android:title="@string/drawertitlecreatechroot" />
         <item
             android:id="@+id/checkforupdate_item"
+            android:enabled="false"
             android:icon="@drawable/ic_system_update_black_36dp"
             android:title="@string/drawertitlecheckupdate" />
     </group>
