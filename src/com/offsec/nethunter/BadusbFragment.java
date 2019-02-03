@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,6 +18,8 @@ import com.offsec.nethunter.utils.ShellExecuter;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import androidx.fragment.app.Fragment;
 
 public class BadusbFragment extends Fragment {
 

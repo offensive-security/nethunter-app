@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,9 +34,9 @@ import java.nio.channels.FileChannel;
 import java.util.List;
 
 import androidx.appcompat.app.AlertDialog;
-//import androidx.appcompat.widget.SearchView;
-import android.widget.SearchView;
 import androidx.fragment.app.Fragment;
+
+//import androidx.appcompat.widget.SearchView;
 
 
 public class SearchSploitFragment extends Fragment {

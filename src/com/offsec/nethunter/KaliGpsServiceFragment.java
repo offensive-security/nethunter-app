@@ -3,8 +3,6 @@ package com.offsec.nethunter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +13,9 @@ import android.widget.Toast;
 import com.offsec.nethunter.gps.KaliGPSUpdates;
 import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 
 public class KaliGpsServiceFragment extends Fragment implements KaliGPSUpdates.Receiver {

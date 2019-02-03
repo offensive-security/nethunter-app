@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +19,8 @@ import android.widget.Toast;
 import com.offsec.nethunter.utils.NhPaths;
 
 import java.util.Locale;
+
+import androidx.fragment.app.Fragment;
 
 public class MPCFragment extends Fragment {
 

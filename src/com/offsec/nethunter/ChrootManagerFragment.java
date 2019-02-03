@@ -12,9 +12,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.PowerManager;
-import androidx.fragment.app.Fragment;
-import androidx.core.app.NotificationCompat;
-import androidx.appcompat.app.AlertDialog;
 import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -57,6 +54,10 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import javax.net.ssl.HttpsURLConnection;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.NotificationCompat;
+import androidx.fragment.app.Fragment;
 
 import static android.content.Context.POWER_SERVICE;
 

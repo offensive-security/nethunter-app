@@ -21,6 +21,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,9 +33,9 @@ import com.offsec.nethunter.utils.ShellExecuter;
 import java.util.List;
 
 import androidx.appcompat.app.AlertDialog;
-//import androidx.appcompat.widget.SearchView;
-import android.widget.SearchView;
 import androidx.fragment.app.Fragment;
+
+//import androidx.appcompat.widget.SearchView;
 
 public class CustomCommandsFragment extends Fragment {
 

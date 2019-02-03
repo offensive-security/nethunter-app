@@ -3,7 +3,6 @@ package com.offsec.nethunter;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,6 +21,8 @@ import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
 
 import java.io.File;
+
+import androidx.fragment.app.Fragment;
 
 public class KaliServicesFragment extends Fragment {
     /**

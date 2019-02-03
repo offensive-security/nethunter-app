@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -25,6 +24,8 @@ import android.widget.Toast;
 import com.offsec.nethunter.utils.NhPaths;
 
 import java.util.ArrayList;
+
+import androidx.fragment.app.Fragment;
 
 public class NmapFragment extends Fragment {
 

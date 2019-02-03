@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +17,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.offsec.nethunter.utils.NhPaths;
+
+import androidx.fragment.app.Fragment;
 
 public class VNCFragment extends Fragment {
 
