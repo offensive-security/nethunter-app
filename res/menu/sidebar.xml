@@ -28,7 +28,7 @@
          <item
              android:id="@+id/custom_commands_item"
              android:icon="@drawable/ic_action_play"
-             android:title="Custom Commands" />
+             android:title="@string/drawertitlecustomcommands" />
          <item
              android:id="@+id/macchanger_item"
              android:icon="@drawable/ic_action_perm_device_information"
@@ -36,7 +36,7 @@
          <item
              android:id="@+id/vnc_item"
              android:icon="@drawable/ic_action_home"
-             android:title="VNC Manager" />
+             android:title="@string/drawertitlevncmanager" />
          <item
              android:id="@+id/hid_item"
              android:icon="@drawable/ic_action_keyboard"
@@ -80,7 +80,7 @@
         <item
             android:id="@+id/deauth_item"
             android:icon="@drawable/ic_action_network_wifi"
-            android:title="DeAuth" />
+            android:title="@string/drawertitledeauth" />
      </group>
 
 </menu>

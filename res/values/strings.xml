@@ -220,19 +220,22 @@
     <!-- sidebar menu item titles -->
     <string name="drawertitlenethunter">Home</string>
     <string name="drawertitlecreatechroot">Kali Chroot Manager</string>
+    <string name="drawertitlecheckupdate">Check App Update</string>
     <string name="drawertitlekaliservices">Kali Services</string>
+    <string name="drawertitlecustomcommands">Custom Commands</string>
+    <string name="drawertitlemacchanger">MAC Changer</string>
+    <string name="drawertitlevncmanager">VNC Manager</string>
     <string name="drawertitlehid">HID Attacks</string>
     <string name="drawertitleduckhunter">DuckHunter HID</string>
     <string name="drawertitlebadusb">Bad USB MITM Attack</string>
     <string name="drawertitlemana">Mana Wireless Toolkit</string>
-    <string name="drawertitlemacchanger">MAC Changer</string>
-    <string name="drawertitlempc">Metasploit Payload Generator</string>
     <string name="drawertitlemitmf">MITM Framework</string>
-    <string name="drawertitlecheckupdate">Check App Update</string>
-    <string name="drawertitlesearchsploit">SearchSploit</string>
     <string name="drawertitlenmap">Nmap Scan</string>
+    <string name="drawertitlempc">Metasploit Payload Generator</string>
+    <string name="drawertitlesearchsploit">SearchSploit</string>
     <string name="drawertitlepineapple">Pineapple Connector</string>
     <string name="drawertitlegps">Wardriving</string>
+    <string name="drawertitledeauth">DeAuth</string>
     <string name="InstallAndUpdateButtonText"><![CDATA[Install & Update]]></string>
     <string name="metapackagesExplanation">Choose some \"metapackages\". The chroot will also be upgraded (via \"apt-get update/dist-upgrade\").\n\nSelecting metapackages you already have installed (or no packages at all) simply update/upgrades without removing anything.\n\nDepending on what metapackages you select, you may be asked to do stuff (such as set passwords for services), so pay attention.</string>
     <string name="metapackagesAdditionalInfo">Local storage requirements may be in the 20+ GB range. This installation/update will be performed in a terminal, so watch for issues. When completed, press the back button.</string>
@@ -387,7 +390,4 @@
     <!--Notification Channel-->
     <string name="boot_notification_channel">Boot</string>
     <string name="boot_notification_channel_description">Notification for run at boot services</string>
-
-
-    <!-- TODO: Remove or change this placeholder text -->
 </resources>

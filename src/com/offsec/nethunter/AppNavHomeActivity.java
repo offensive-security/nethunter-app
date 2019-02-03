@@ -198,8 +198,8 @@ public class AppNavHomeActivity extends AppCompatActivity implements KaliGPSUpda
 
     private void checkUpdate() {
         WVersionManager versionManager = new WVersionManager(this);
-        versionManager.setVersionContentUrl("https://images.offensive-security.com/version.txt");
-        versionManager.setUpdateUrl("https://images.offensive-security.com/latest.apk");
+        versionManager.setVersionContentUrl("https://raw.githubusercontent.com/thehappydinoa/nethunter-app-builds/master/version.txt");
+        versionManager.setUpdateUrl("https://raw.githubusercontent.com/thehappydinoa/nethunter-app-builds/master/latest/latest.apk");
         versionManager.checkVersion();
         versionManager.setUpdateNowLabel("Update");
         versionManager.setIgnoreThisVersionLabel("Ignore");
