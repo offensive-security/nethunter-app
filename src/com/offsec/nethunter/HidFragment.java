@@ -207,7 +207,7 @@ public class HidFragment extends Fragment {
                     break;
             }
         }
-        nh.showMessage("Attack launched...");
+        nh.showMessage(getString(R.string.attack_launched));
         new Thread(() -> {
             ShellExecuter exe = new ShellExecuter();
             exe.RunAsRoot(command);

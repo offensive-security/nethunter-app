@@ -175,7 +175,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                         }
                     }
                     start();
-                    v.post(() -> nh.showMessage("Attack launched!"));
+                    v.post(() -> nh.showMessage(getString(R.string.attack_launched)));
                 }).start();
 
                 return true;

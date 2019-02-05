@@ -173,7 +173,7 @@ public class ManaFragment extends Fragment {
                     nh.showMessage("Invalid script!");
                     return;
             }
-            nh.showMessage("Attack Launched!");
+            nh.showMessage(getString(R.string.attack_launched));
         });
         builder.setNegativeButton("Quit", (dialog, which) -> {
         });

@@ -216,6 +216,7 @@
     <string name="unknown">Unknown</string>
     <string name="statusText">Status:</string>
     <string name="licenseInfo">Nethunter is licensed under the <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html">GPLv2</a> and source is available at <a href="https://github.com/offensive-security">github.com/offensive-security</a>.  Some icons are licensed from Google, Inc. under <a href="https://creativecommons.org/licenses/by/4.0">CC BY 4.0</a>. Android-WVersionManager and jTar is licensed under Apache 2.0.  </string>
+    <string name="attack_launched">Attack launched!</string>
 
     <!-- sidebar menu item titles -->
     <string name="drawertitlenethunter">Home</string>
@@ -394,4 +395,5 @@
     <!--Notification Channel-->
     <string name="boot_notification_channel">Boot</string>
     <string name="boot_notification_channel_description">Notification for run at boot services</string>
+
 </resources>
