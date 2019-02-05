@@ -37,7 +37,6 @@ dependencies {
 android {
 
     compileSdkVersion 28
-    buildToolsVersion '28.0.2'
 
     dataBinding {
         enabled = true

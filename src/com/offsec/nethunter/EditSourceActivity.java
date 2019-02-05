@@ -33,7 +33,7 @@ public class EditSourceActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(getResources().getColor(R.color.darkTitle));
         }
 
-        EditText source = (EditText) findViewById(R.id.source);
+        EditText source = findViewById(R.id.source);
         source.setText(String.format(Locale.getDefault(),getString(R.string.loading_file), configFilePath));
         exe.ReadFile_ASYNC(configFilePath, source);
 
@@ -68,7 +68,7 @@ public class EditSourceActivity extends AppCompatActivity {
     */
 
     public void updateSource(View view) {
-        EditText source = (EditText) findViewById(R.id.source);
+        EditText source = findViewById(R.id.source);
         String newSource = source.getText().toString();
         Boolean isSaved = exe.SaveFileContents(newSource, configFilePath);
         if (isSaved) {
