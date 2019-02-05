@@ -210,7 +210,7 @@
     <string name="unzippinganduntarring">Unzipping and untarring....</string>
     <string name="downloadfailscheck">Something went wrong verifying the downloaded file.  Whoops.  Try again.</string>
     <string name="aboutchroot">The \"chroot\" is a full installation of Kali Linux that shares processing, networking, storage, and other resources with Android. It resides in your internal app storage area and requires about 400MB for the minimal core installation.</string>
-
+    <string name="extractinganddeploying">Extracting and Deploying</string>
 
     <string name="nhwarning">Nethunter installs and uses a standard Kali Linux distribution \"under the hood\".  To support this functionality, some <u>standard Android security features such as Security Enhanced Linux (selinux) are disabled</u>.  Moreover, Kali\'s Linux processes may run with full root privileges and can therefore access system functionality well beyond the normal Android security model.  Consider therefore that this device, as a hybrid, may not be as secure as either standard Kali Linux OR standard Android, and you are advised not to install or use Nethunter on \"daily driver\" devices or devices which store or access sensitive/private data.</string>
     <string name="unknown">Unknown</string>
@@ -365,6 +365,10 @@
     <string name="pineapple_stop_OTG">Close Connection</string>
     <string name="pineapple_noupstream">No upstream</string>
     <string name="pineapple_transproxy">Forward port 80/443 to 8080/8083</string>
+    <string name="pineapple_subnet">172.16.42.0/24</string>
+    <string name="pineapple_webport">1471</string>
+    <string name="pineapple_gatewayip">172.16.42.1</string>
+    <string name="pineapple_clientip">172.16.42.42/24</string>
     <!-- End PineappleFragment -->
 
     <!-- Start GPSFragment -->
@@ -390,6 +394,4 @@
     <!--Notification Channel-->
     <string name="boot_notification_channel">Boot</string>
     <string name="boot_notification_channel_description">Notification for run at boot services</string>
-    <string name="extractinganddeploying">Extracting and Deploying</string>
-    <string name="pineapple_subnet">172.16.42.0/24</string>
 </resources>
