@@ -47,10 +47,10 @@ $busybox sysctl -w kernel.shmmax=134217728
 $busybox chmod 666 /dev/null
 
 bklog "[!] Shutting down SSH Server"
-$busybox chroot $mnt /etc/init.d/ssh stop > /dev/null 2>&1
+$busybox chroot $mnt /etc/init.d/ssh stop
 
 bklog "[!] Shutting down Postgresql"
-$busybox chroot $mnt /etc/init.d/postgresql stop > /dev/null 2>&1
+$busybox chroot $mnt /etc/init.d/postgresql stop
 
 bklog "[!] Shutting down Vncserver"
 pkill Xtightvnc
@@ -63,16 +63,11 @@ kill_pids
 
 ########## unmount everything ##########
 bklog "[!] Removing all Kali mounts.."
-if [ -d "$mnt/dev/shm" ]; then
-    $busybox umount $mnt/dev/shm 2> /dev/null && bklog "[+] umounted shm"
-fi
-
 if [ -d "$mnt/dev/pts" ]; then
-    $busybox umount $mnt/dev/pts 2> /dev/null && bklog "[+] umounted pts"
+    $busybox umount $mnt/dev/pts 2> /dev/null && bklog "[+] umounted /dev/pts"
 fi
 
 if [ -d "$mnt/dev" ]; then
-    [ -e "$mnt/dev/null" ] && rm $mnt/dev/null
     $busybox umount $mnt/dev 2> /dev/null && bklog "[+] umounted dev"
     rmdir $mnt/dev
 fi
@@ -92,20 +87,7 @@ if [ -d "$mnt/sdcard" ]; then
     rmdir $mnt/sdcard
 fi
 
-if [ -d "$mnt/external_sd" ]; then
-    $busybox umount $mnt/external_sd 2> /dev/null && bklog "[+] umounted external_sd"
-    rmdir $mnt/external_sd
-fi
-
-if [ -d "$mnt/mnt/usbdisk" ]; then
-    $busybox umount $mnt/mnt/usbdisk 2> /dev/null && bklog "[+] umounted /mnt/usbdisk"
-    rmdir $mnt/mnt/usbdisk
-fi
-
-if [ -d "$mnt/mnt" ]; then
-    $busybox umount $mnt/mnt 2> /dev/null && bklog "[+] umounted /mnt/usbdisk"
-    rmdir $mnt/mnt
-fi
+[ -e "$mnt/dev/null" ] && rm $mnt/dev/null && rmdir $mnt/dev && bklog "[+] removed /dev/null"
 
 ###### umount the chroot as well if it is being mounted. Here the directory method will not be affected. ######
 if [ "$(losetup -a | grep $chroot_image)" ]; then

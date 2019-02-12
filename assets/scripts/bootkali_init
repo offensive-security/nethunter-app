@@ -22,7 +22,7 @@ fi
 ######### VARIABLES #########
 mnt=/data/local/nhsystem/kali-armhf
 nhsys=/data/local/nhsystem
-chroot_image=/sdcard/kali-chroot.img ## for encrypted device
+chroot_image=/sdcard/kali-chroot.img ## for File method
 
 ######### CHECK FOR ENCRYPTION #########
 isEncrypted=false
@@ -70,7 +70,7 @@ mount_sdcard() {
 		/sdcard
 	do
 		[ -d "$sdcard" ] &&
-			$busybox mount -o bind "$sdcard" "$mnt/sdcard" && echo "binded sdcard" &&
+			$busybox mount -o bind "$sdcard" "$mnt/sdcard" && bklog "[+] binded sdcard" &&
 				return 0
 	done
 	return 1
@@ -88,45 +88,10 @@ mount_external_sd() {
 		/external_sd
 	do
 		[ -d "$external_sd" ] &&
-			$busybox mount -o bind "$external_sd" "$mnt/external_sd" && echo "binded external_sd" &&
+			$busybox mount -o bind "$external_sd" "$mnt/external_sd" && bklog "[+] binded external_sd" &&
 				return 0
 	done
 	return 1
-}
-
-mount_usbdisk() {
-	if [ -d "$mnt/mnt/usbdisk" ]; then
-		mountpoint -q "$mnt/mnt/usbdisk" && return 0
-	fi
-	mkdir -p $mnt/mnt/usbdisk
-	for usbdisk in /storage/usb*; do
-		[ -d "$usbdisk" ] &&
-			$busybox mount -o bind "$usbdisk" "$mnt/mnt/usbdisk" &&
-				return 0
-	done
-	return 1
-}
-
-mount_external_storage() {
-	external_sd_mounted=false
-	usbdisk_mounted=false
-	mount_external_sd && external_sd_mounted=true
-	mount_usbdisk && usbdisk_mounted=true
-
-	# try marshmallow storage names
-	for storage in /storage/*-*; do
-		# if both mount successfully then skip
-		$external_sd_mounted && $usbdisk_mounted && return
-		if [ -d "$storage" ]; then
-			if ! $external_sd_mounted; then
-				$busybox mount -o bind "$storage" "$mnt/external_sd" &&
-					external_sd_mounted=true
-			elif ! $usbdisk_mounted; then
-				$busybox mount -o bind "$storage" "$mnt/usbdisk" &&
-					usbdisk_mounted=true
-			fi
-		fi
-	done
 }
 
 ## [ MOUNTING AND BINDING FILESYSTEM ] ##
@@ -137,65 +102,44 @@ mount_fs_to_kali() {
 
 	######### SET FD, Thanks @feefik and @zer0conf ########
 	if [ ! -e "/dev/fd" -o ! -e "/dev/stdin" -o ! -e "/dev/stdout" -o ! -e "/dev/stderr" ]; then
-		[ -e "/dev/fd" ] || ln -s /proc/self/fd /dev/ && echo "linked /proc/self/fd to /dev/"
-		[ -e "/dev/stdin" ] || ln -s /proc/self/fd/0 /dev/stdin && echo "linked /proc/self/fd/0 to /dev/stdin"
-		[ -e "/dev/stdout" ] || ln -s /proc/self/fd/1 /dev/stdout && echo "linked /proc/self/fd/2 to /dev/stdout"
-		[ -e "/dev/stderr" ] || ln -s /proc/self/fd/2 /dev/stderr && echo "linked /proc/self/fd/3 to /dev/stderr"
-	fi
-
-	######### SET tty ########
-	if [ ! -e "/dev/tty0" ]; then
-		ln -s /dev/null /dev/tty0 && echo "linked /dev/null to /dev/tty0"
+		[ -e "/dev/fd" ] || ln -s /proc/self/fd /dev/ && bklog "[+] linked /proc/self/fd to /dev/"
+		[ -e "/dev/stdin" ] || ln -s /proc/self/fd/0 /dev/stdin && bklog "[+] linked /proc/self/fd/0 to /dev/stdin"
+		[ -e "/dev/stdout" ] || ln -s /proc/self/fd/1 /dev/stdout && bklog "[+] linked /proc/self/fd/2 to /dev/stdout"
+		[ -e "/dev/stderr" ] || ln -s /proc/self/fd/2 /dev/stderr && bklog "[+] linked /proc/self/fd/3 to /dev/stderr"
 	fi
 
 	######### SET TUN ########
 	if [ ! -e "/dev/net/tun" ]; then
 		[ ! -d "/dev/net" ] && mkdir -p /dev/net
-	mknod /dev/net/tun c 10 200
-	fi
-
-	######### SET PROC ########
-	if [ ! "$(mountpoint $mnt/proc 2> /dev/null | grep 'is a')" ]; then
-		[ ! -d $mnt/proc ] && mkdir -p $mnt/proc
-		$busybox mount -t proc proc $mnt/proc && echo "mounted /proc"
-	fi
-
-	######### SET SYS ########
-	if [ ! "$(mountpoint $mnt/sys 2> /dev/null | grep 'is a')" ]; then
-		[ ! -d $mnt/sys ] && mkdir -p $mnt/sys
-		$busybox mount -t sysfs sys $mnt/sys && echo "mounted /sys"
+	mknod /dev/net/tun c 10 200 && bklog "[+] created /dev/net/tun"
 	fi
 
 	######### SET DEV ########
 	if [ ! "$(mountpoint $mnt/dev 2> /dev/null | grep 'is a')" ]; then
 		[ ! -d $mnt/dev ] && mkdir -p $mnt/dev
-		$busybox mount -o bind /dev $mnt/dev && echo "binded /dev"
-	fi
-
-	######### SET DEV SHM ########
-	if [ ! "$(mountpoint /dev/shm 2> /dev/null | grep 'is a')" ]; then
-		[ ! -d /dev/shm ] && mkdir -p /dev/shm
-		$busybox mount -o rw,nosuid,nodev,mode=1777 -t tmpfs tmpfs /dev/shm && echo "mounted /dev/shm"
-	fi
-
-	if [ ! "$(mountpoint $mnt/dev/shm 2> /dev/null | grep 'is a')" ]; then
-		$busybox mount -o bind /dev/shm $mnt/dev/shm && echo "binded /dev/shm"
+		$busybox mount -o bind /dev $mnt/dev && bklog "[+] binded /dev"
 	fi
 
 	######### SET DEV PTS ########
-	if [ ! "$(mountpoint /dev/pts 2> /dev/null | grep 'is a')" ]; then
-		[ ! -d /dev/pts ] && mkdir -p /dev/pts
-		$busybox mount -o rw,nosuid,noexec,gid=5,mode=620,ptmxmode=000 -t devpts devpts /dev/pts && echo "mounted /dev/pts"
+	if [ ! "$(mountpoint $mnt/dev/pts 2> /dev/null | grep 'is a')" ]; then
+		$busybox mount -t devpts devpts $mnt/dev/pts && bklog "[+] mounted /dev/pts"
 	fi
 
-	if [ ! "$(mountpoint $mnt/dev/pts 2> /dev/null | grep 'is a')" ]; then
-		$busybox mount -o bind /dev/pts $mnt/dev/pts && echo "binded /dev/pts"
+	######### SET PROC ########
+	if [ ! "$(mountpoint $mnt/proc 2> /dev/null | grep 'is a')" ]; then
+		[ ! -d $mnt/proc ] && mkdir -p $mnt/proc
+		$busybox mount -t proc proc $mnt/proc && bklog "[+] mounted /proc"
+	fi
+
+	######### SET SYS ########
+	if [ ! "$(mountpoint $mnt/sys 2> /dev/null | grep 'is a')" ]; then
+		[ ! -d $mnt/sys ] && mkdir -p $mnt/sys
+		$busybox mount -t sysfs sys $mnt/sys && bklog "[+] mounted /sys"
 	fi
 
 	######### SET INTERNAL | EXTERNAL SDCARD | USBDISK ########
 	mount_sdcard
 	mount_external_sd
-	mount_usbdisk
 
 	#########
 	$busybox chmod 666 /dev/null
@@ -283,6 +227,7 @@ fi
 
 
 ## Lastly check if all Filesystems are mounted.
+bklog "[!] Checking chroot environment."
 f_isAllReady
 local res=$?
 if [ $res -eq 1 ]; then
