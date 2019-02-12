@@ -29,6 +29,6 @@ repositories {
 dependencies {
     //compile "com.android.support:support-v4:19.0.+"
     implementation 'com.android.support:support-v4:28.0.0'
-    implementation 'com.google.firebase:firebase-messaging:17.3.3'
+    implementation 'com.google.firebase:firebase-messaging:17.3.4'
     implementation 'org.thoughtcrime.ssl.pinning:AndroidPinning:1.0.0'
 }
