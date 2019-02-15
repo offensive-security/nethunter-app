@@ -294,7 +294,7 @@ public class UsbArmyFragment extends Fragment {
                                 final ShellExecuter exe = new ShellExecuter();
                                 String output = exe.Executer("cat /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file");
                                 if (!output.equals("")) {
-                                    nh.showMessage("Image failed to unmount, please disconnect the usb first and try again.");
+                                    nh.showMessage("Image failed to unmount, please eject on the PC or disconnect the usb first and try again.");
                                 } else {
                                     nh.showMessage("Image unmounted");
                                 };
@@ -403,7 +403,7 @@ public class UsbArmyFragment extends Fragment {
         for (File file : filesInFolder) {
             if (!file.isDirectory()) {
                 if (file.getName().contains(".img") || file.getName().contains(".iso")) {
-                    result.add(new String(file.getName()));
+                    result.add(file.getName());
                 }
             }
         }
@@ -417,7 +417,7 @@ public class UsbArmyFragment extends Fragment {
         for (File file : filesInFolder) {
             if (!file.isDirectory()) {
                 if (file.getName().contains(".sh")) {
-                    result.add(new String(file.getName()));
+                    result.add(file.getName());
                 }
             }
         }

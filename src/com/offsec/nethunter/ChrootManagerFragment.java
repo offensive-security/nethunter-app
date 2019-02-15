@@ -81,9 +81,8 @@ import static android.content.Context.POWER_SERVICE;
  * on some devices
  */
 
-
-public class ChrootManagerFragment extends Fragment {
-
+public class
+ChrootManagerFragment extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final String TAG = "CreateChroot";
@@ -448,10 +447,10 @@ public class ChrootManagerFragment extends Fragment {
         try {
             Intent intent = new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
-            if (packages.equals("kali-linux-nethunter")) {
-                intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "echo \"Updating gpg key..\" && wget -q -O - https://archive.kali.org/archive-key.asc | apt-key add && apt-get update && apt-get install " + packages + " -y && apt-get install kali-linux-full && apt-get dist-upgrade -y && echo \"\nKali Linux Nethunter setup is complete.\nEnjoy. (You can close the terminal now)\n\"");
+            if (packages.equals("FixedUpdatingToLatestKali")) {
+                intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "echo \"Updating gpg key..\" && wget -q -O - https://archive.kali.org/archive-key.asc | apt-key add && apt-get update && apt-get install kali-linux-all -y && apt-get dist-upgrade -y && echo \"\nKali Linux Nethunter setup is complete.\nEnjoy. (You can close the terminal now)\n\"");
             } else {
-                intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "apt-get install " + packages + " && echo \"\nUpgrade completed.\nEnjoy. (You can close the terminal now)\n\"");
+                intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "apt-get update && apt-get install " + packages + " && echo \"\nUpgrade completed.\nEnjoy. (You can close the terminal now)\n\"");
             }
             Log.d("PACKS:", "PACKS:" + packages);
             startActivity(intent);
