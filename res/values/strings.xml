@@ -352,6 +352,8 @@
     <string name="cancel">Cancel</string>
     <string name="extract_chroot">Decompressing and deploying the Chroot… (~5–10 min)</string>
 
+    <string name="mount_chroot">Mounting partitions</string>
+    <string name="extract_chroot_gz">Decompressing and deploying the Chroot again in order to complete the symlink, this is a MUST process we need to go through… (~5–10 min)</string>
     <!-- Start NMAP -->
     <string name="nmap_hint">scanme.nmap.org, 192.168.0.1; 10.0.0–255.1&#8211;254</string>
     <string-array name="nmap_interface_array">
