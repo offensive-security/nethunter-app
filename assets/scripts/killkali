@@ -47,8 +47,25 @@ $busybox umount $mnt/dev && echo "unmounted dev"
 $busybox umount $mnt/proc && echo "unmounted proc"
 $busybox umount $mnt/sys && echo "unmounted sys"
 $busybox umount $mnt/system && echo "unmounted system"
-$busybox umount $mnt/sdcard && echo "unmounted sdcard"
+$busybox umount $mnt/sdcard && echo "unmounted $mnt$sdcard"
 $busybox umount $mnt/external_sd && echo "unmounted external_sd"
-$busybox umount $mnt && echo "unmounted kali-armhf"
+if [ $($busybox umount $mnt 2>&1 > /dev/null) ]; then
+    echo " [-] Unable to umount the kali chroot image."
+    echo " [-] Please close all the kali terminals and umount all the mointpoint on kali chroot first then try again."
+else
+    echo "unmounted kali-armhf"
+fi
+
+if [ -d "$mnt/dev" ]; then
+    rmdir $mnt/dev
+fi
+
+if [ -d "$mnt/proc" ]; then
+    rmdir $mnt/proc
+fi
+
+if [ -d "$mnt/sys" ]; then
+    rmdir $mnt/sys
+fi
 
 export PATH=$PRESERVED_PATH
