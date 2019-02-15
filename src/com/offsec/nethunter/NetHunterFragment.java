@@ -3,7 +3,6 @@ package com.offsec.nethunter;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Build;
 import android.os.StrictMode;
 import androidx.fragment.app.Fragment;
 import android.util.Log;
@@ -142,20 +141,10 @@ public class NetHunterFragment extends Fragment {
         new Thread(new Runnable(){
 
             public void run(){
-
-                if (isOPO5()) {
-                    try {
-                        Process p = Runtime.getRuntime().exec("su -c getprop sys.usb.config > /data/local/usb.config.tmp && su -c setprop sys.usb.config `cat /data/local/usb.config.tmp`,hid");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                else {
-                    try {
-                        Process p = Runtime.getRuntime().exec("su -c getprop sys.usb.config > /data/local/usb.config.tmp && su -c setprop sys.usb.config `cat /data/local/usb.config.tmp`,hid");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    Process p = Runtime.getRuntime().exec("su -c getprop sys.usb.config > /data/local/usb.config.tmp && su -c setprop sys.usb.config `cat /data/local/usb.config.tmp`,hid");
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
 
@@ -370,15 +359,5 @@ public class NetHunterFragment extends Fragment {
         } catch (Exception e) {
             Toast.makeText(getContext(), "Error copying: " + text, Toast.LENGTH_SHORT).show();
         }
-    }
-    private String getDeviceName() {
-        return Build.DEVICE;
-    }
-
-    public Boolean isOPO5() {
-        return getDeviceName().equalsIgnoreCase("A5000") ||
-                getDeviceName().equalsIgnoreCase("A5010") ||
-                getDeviceName().equalsIgnoreCase("OnePlus5") ||
-                getDeviceName().equalsIgnoreCase("OnePlus5T");
     }
 }

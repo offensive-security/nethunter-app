@@ -9,6 +9,11 @@
     <string name="nethunter_current_interfaces">Network Interfaces</string>
     <string name="nethunter_external_ip">External IP</string>
     <string name="nethunter_hid_detect">HID Interfaces</string>
+    <string name="nethunter_usb_detect">USB Interfaces</string>
+    <string name="nethunter_img_mounter">Image Mounter</string>
+    <string name="nethunter_img_mounter_desc">Place your own image file into "/sdcard/nh_files/img_folder"</string>
+    <string name="nethunter_script_runner_desc">Place your own script file into "/sdcard/nh_files/punkscripts"</string>
+    <string name="nethunter_script_runner">Script Runner</string>
     <string name="nethunter_busybox_detect">Busybox Version</string>
     <string name="nethunter_kernelver_detect">Kernel Version</string>
     <string name="nethunter_terminal_detect">Nethunter Terminal Status</string>
@@ -109,10 +114,15 @@
     <string name="macSeparator">:</string>
     <string name="changeMAC">Change MAC</string>
     <string name="reloadMAC">Reload MAC</string>
+    <string name="reloadUSB">reloadUSB</string>
+    <string name="reloadImage">reloadImage</string>
     <string name="randomMAC">Random MAC</string>
     <string name="customMAC">Custom MAC</string>
+    <string name="ResetUSB">Reset USB</string>
     <string name="autorunningscripts">Nethunter: auto-running startup scripts</string>
     <string name="toastForNoBusybox">Uh oh!  Nethunter can\'t find busybox!</string>
+    <string name="current_usb_state">Current USB state: </string>
+    <string name="current_img_mount_state">Current Mounted Image: </string>
     <string-array name="macchanger_opts">
         <item>Random MAC</item>
         <item>Custom MAC</item>
@@ -124,8 +134,8 @@
         <item>rndis0 (USB > Ethernet)</item>
         <item>usb0 (USB > Ethernet Nexus7 2013 when tethering | badusb)</item>
     </string-array>
-    <string-array name="usb_states">
-        <item>Reset</item>
+    <string-array name="usb_states_win_lin">
+        <item>reset</item>
         <item>mtp,hid</item>
         <item>hid</item>
         <item>mass_storage</item>
@@ -135,8 +145,20 @@
         <item>rndis,mass_storage</item>
         <item>rndis,hid,mass_storage</item>
     </string-array>
+    <string-array name="usb_states_mac">
+        <item>reset</item>
+        <item>mtp,hid</item>
+        <item>hid</item>
+        <item>mass_storage</item>
+        <item>ecm</item>
+        <item>hid,mass_storage</item>
+        <item>ecm,hid</item>
+        <item>ecm,mass_storage</item>
+        <item>ecm,hid,mass_storage</item>
+    </string-array>
     <string-array name="usb_targets">
         <item>Windows</item>
+	<item>Linux</item>
         <item>Mac OS</item>
     </string-array>
     <string-array name="usb_adb">
@@ -242,8 +264,8 @@
     <string name="drawertitlekaliservices">Kali Services</string>
     <string name="drawertitlehid">HID Attacks</string>
     <string name="drawertitleduckhunter">DuckHunter HID</string>
-    <string name="drawertitlebadusb">Bad USB MITM Attack</string>
     <string name="drawertitlemana">Mana Wireless Toolkit</string>
+    <string name="drawertitleusbarmy">USB Army</string>
     <string name="drawertitlemacchanger">MAC Changer</string>
     <string name="drawertitlempc">Metasploit Payload Generator</string>
     <string name="drawertitlemitmf">MITM Framework</string>

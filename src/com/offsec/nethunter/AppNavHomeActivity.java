@@ -318,10 +318,10 @@ public class AppNavHomeActivity extends AppCompatActivity implements KaliGPSUpda
                                         .addToBackStack(null)
                                         .commit();
                                 break;
-                            case R.id.badusb_item:
+                            case R.id.usbarmy_item:
                                 fragmentManager
                                         .beginTransaction()
-                                        .replace(R.id.container, BadusbFragment.newInstance(itemId))
+                                        .replace(R.id.container, UsbArmyFragment.newInstance(itemId))
                                         .addToBackStack(null)
                                         .commit();
                                 break;

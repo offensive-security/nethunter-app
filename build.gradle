@@ -32,6 +32,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:15.0.1'
     implementation 'joda-time:joda-time:2.10'
     implementation 'com.google.guava:guava:24.1-jre'
+    implementation 'com.android.support:design:27.1.0'
     compile 'com.android.support:support-v4:27.1.0'
     compile 'com.android.support:appcompat-v7:27.1.0'
     compile 'com.android.support:design:27.1.0'

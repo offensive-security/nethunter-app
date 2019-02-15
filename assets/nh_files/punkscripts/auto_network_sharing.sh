@@ -21,14 +21,14 @@ echo " [!] Bringing down $INTERFACE and revert the iptables"
 pkill dhcpd
 echo 0 > /proc/sys/net/ipv4/ip_forward
 # Revert iptables setting dumped from kernel log.
-iptables -t nat -D tetherctrl_nat_POSTROUTING -o  $UPSTREAM -j MASQUERADE
-ip6tables -D tetherctrl_FORWARD -g tetherctrl_counters
-iptables -D tetherctrl_FORWARD -i  $UPSTREAM -o  $INTERFACE -m state --state ESTABLISHED,RELATED -g tetherctrl_counters
-iptables -D tetherctrl_FORWARD -i  $INTERFACE -o  $UPSTREAM -m state --state INVALID -j DROP
-iptables -D tetherctrl_FORWARD -i  $INTERFACE -o  $UPSTREAM -g tetherctrl_counters
-ip6tables -t raw -D tetherctrl_raw_PREROUTING -i  $INTERFACE -m rpfilter --invert ! -s fe80::/64 -j DROP
-iptables -A tetherctrl_FORWARD -j DROP
-iptables -D tetherctrl_FORWARD -j DROP
+iptables -t nat -D natctrl_nat_POSTROUTING -o $UPSTREAM -j MASQUERADE
+ip6tables -D natctrl_FORWARD -g natctrl_tether_counters
+iptables -D natctrl_FORWARD -i $UPSTREAM -o $INTERFACE -m state --state ESTABLISHED,RELATED -g natctrl_tether_counters
+iptables -D natctrl_FORWARD -i $INTERFACE -o $UPSTREAM -m state --state INVALID -j DROP
+iptables -D natctrl_FORWARD -i $INTERFACE -o $UPSTREAM -g natctrl_tether_counters
+ip6tables -t raw -D natctrl_raw_PREROUTING -i $INTERFACE -m rpfilter --invert ! -s fe80::/64 -j DROP
+iptables -A natctrl_FORWARD -j DROP
+iptables -D natctrl_FORWARD -j DROP
 # Bring down interface
 ip link set $INTERFACE down
 ip addr flush dev $INTERFACE
@@ -49,7 +49,7 @@ if ! iptables -V;then
 fi
 
 # ================== #
-# Check if usb state is setup correctly before moving forward. 
+# Check if usb state is setup correctly before moving forward.
 # ================== #
 if [ "$(getprop sys.usb.state | grep win)" != "" ] && [ "$(getprop sys.usb.state | grep rndis)" != "" ]; then
     INTERFACE=rndis0
@@ -71,7 +71,6 @@ else
     echo " [-] Upstream interface not found, please check again!"
     exit
 fi
-
 # ================== #
 # Bring up interface and setup iptables
 # ================== #
@@ -86,14 +85,14 @@ ip route append $net_addr.0/24 dev $INTERFACE src $iface_addr proto kernel scope
 #ip route add default via $iface_addr dev $INTERFACE
 echo 1 > /proc/sys/net/ipv4/ip_forward
 # Setup iptables rules dumped from kernel log
-iptables -t nat -A tetherctrl_nat_POSTROUTING -o  $UPSTREAM -j MASQUERADE
-ip6tables -A tetherctrl_FORWARD -g tetherctrl_counters
-iptables -A tetherctrl_FORWARD -i  $UPSTREAM -o  $INTERFACE -m state --state ESTABLISHED,RELATED -g tetherctrl_counters
-iptables -A tetherctrl_FORWARD -i  $INTERFACE -o  $UPSTREAM -m state --state INVALID -j DROP
-iptables -A tetherctrl_FORWARD -i  $INTERFACE -o  $UPSTREAM -g tetherctrl_counters
-ip6tables -t raw -A tetherctrl_raw_PREROUTING -i  $INTERFACE -m rpfilter --invert ! -s fe80::/64 -j DROP
-iptables -D tetherctrl_FORWARD -j DROP
-iptables -A tetherctrl_FORWARD -j DROP
+iptables -t nat -A natctrl_nat_POSTROUTING -o $UPSTREAM -j MASQUERADE
+ip6tables -A natctrl_FORWARD -g natctrl_tether_counters
+iptables -A natctrl_FORWARD -i $UPSTREAM -o $INTERFACE -m state --state ESTABLISHED,RELATED -g natctrl_tether_counters
+iptables -A natctrl_FORWARD -i $INTERFACE -o $UPSTREAM -m state --state INVALID -j DROP
+iptables -A natctrl_FORWARD -i $INTERFACE -o $UPSTREAM -g natctrl_tether_counters
+ip6tables -t raw -A natctrl_raw_PREROUTING -i $INTERFACE -m rpfilter --invert ! -s fe80::/64 -j DROP
+iptables -D natctrl_FORWARD -j DROP
+iptables -A natctrl_FORWARD -j DROP
 
 # ================== #
 # Remove all previous leases, pid and conf files
