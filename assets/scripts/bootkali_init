@@ -19,7 +19,7 @@ else
 fi
 
 ## Not need to manually set to permissive mode now.
-#su -c setenforce 0
+#su -c 'setenforce 0'
 
 ######### CHECK FOR ROOT #########
 f_checkforroot(){

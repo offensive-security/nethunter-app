@@ -10,6 +10,7 @@ import android.location.LocationManager;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.StrictMode;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -227,6 +228,13 @@ public class LocationUpdateService extends Service implements GpsdServer.Connect
         public void onLocationChanged(Location location) {
             String nmeaSentence = nmeaSentenceFromLocation(location);
 
+            // Workaround to allow network operations in main thread
+            if (android.os.Build.VERSION.SDK_INT > 8)
+            {
+                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                StrictMode.setThreadPolicy(policy);
+            }
+
             if (clientSocket != null) {
 
                 PrintWriter out = null;
@@ -235,8 +243,8 @@ public class LocationUpdateService extends Service implements GpsdServer.Connect
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                Log.d(TAG, "NMEA update: "+nmeaSentence);
                 out.println(nmeaSentence);
-
 
                 if (updateReceiver != null) {
                     if (firstupdate) {
