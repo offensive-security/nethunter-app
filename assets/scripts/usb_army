@@ -1,9 +1,10 @@
 #!/system/bin/sh
 unset LD_PRELOAD
+script_path=/sdcard/nh_files/punkscripts
 
-[ -f /sdcard/nh_files/usb_army.sh ] || {
-echo "Please place the 'usb_army.sh' under '/sdcard/nh_files/punkscripts'"
+[ -f $script_path/usb_army.sh ] || {
+echo "Please place the 'usb_army.sh' under '$script_path/'"
 exit 1
 }
 
-sh /sdcard/nh_files/punkscripts/usb_army.sh
+sh $script_path/usb_army.sh
