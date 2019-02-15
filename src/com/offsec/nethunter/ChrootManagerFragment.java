@@ -448,7 +448,11 @@ public class ChrootManagerFragment extends Fragment {
         try {
             Intent intent = new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
-            intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "echo \"Updating gpg key..\" && wget -q -O - https://archive.kali.org/archive-key.asc | apt-key add && apt-get update && apt-get install " + packages + " -y && apt-get dist-upgrade -y && echo \"\nKali Linux Nethunter setup is complete.\nEnjoy. (You can close the terminal now)\n\"");
+            if (packages.equals("kali-linux-nethunter")) {
+                intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "echo \"Updating gpg key..\" && wget -q -O - https://archive.kali.org/archive-key.asc | apt-key add && apt-get update && apt-get install " + packages + " -y && apt-get install kali-linux-full && apt-get dist-upgrade -y && echo \"\nKali Linux Nethunter setup is complete.\nEnjoy. (You can close the terminal now)\n\"");
+            } else {
+                intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "apt-get install " + packages + " && echo \"\nUpgrade completed.\nEnjoy. (You can close the terminal now)\n\"");
+            }
             Log.d("PACKS:", "PACKS:" + packages);
             startActivity(intent);
 
@@ -759,12 +763,6 @@ public class ChrootManagerFragment extends Fragment {
         final ProgressDialog mProgressDialog;
         final NotificationManager mNotifyManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getActivity());
-        //private final int NOTIFY_ID = 1003;
-        //There are hardcoding only for show it's just strings
-        //private String name = "my_package_channel";
-        //private String id = "my_package_channel_2"; // The user-visible name of the channel.
-        //private String description = "my_package_first_channel"; // The user-visible description of the channel.
-        //private int importance = NotificationManager.IMPORTANCE_LOW;
 
         private boolean isRunning = true;
         double last_perc = 0.0;
