@@ -582,7 +582,8 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     public static class DuckHunterPreviewFragment extends Fragment {
 
         // Error reading chroot_path
-        public static final String configFilePath = nh.CHROOT_PATH + "/opt/";
+        //public static final String configFilePath = nh.CHROOT_PATH + "/opt/";
+	public static final String configFilePath = "/data/local/nhsystem/kali-armhf/opt/"; // hardcoded
         public static final String configFileFilename = "duckout.sh";
 
         @Override
