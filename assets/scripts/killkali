@@ -1,20 +1,18 @@
 #!/system/bin/sh
 
+SCRIPT_PATH=$(readlink -f $0)
+. ${SCRIPT_PATH%/*}/bootkali_log
+
 if [ -x /system/xbin/busybox_nh ]; then
 	busybox=/system/xbin/busybox_nh
-elif [ -x /sbin/busybox_nh ]; then
-	busybox=/sbin/busybox_nh
 elif [ -x /system/xbin/busybox ]; then
 	busybox=/system/xbin/busybox
-elif [ -x /data/local/bin/busybox ]; then
-	busybox=/data/local/bin/busybox
 elif [ -x /system/bin/busybox ]; then
 	busybox=/system/bin/busybox
-elif [ -x /su/bin/busybox ]; then
-	busybox=/su/bin/busybox
+elif [ -x /data/adb/magisk/busybox ]; then
+	busybox=/data/adb/magisk/busybox
 else
-	echo "Busybox not found!  Install it, dummy!"
-	log "Busybox not found!  Install it, dummy!"
+	bklog "Busybox not found!  Install it, dummy!"
 	exit
 fi
 
@@ -31,17 +29,26 @@ unset LD_PRELOAD
 
 $busybox sysctl -w kernel.shmmax=134217728
 
-echo "Shutting down SSH Server"
+bklog "[!] Shutting down SSH Server"
 $busybox chmod 666 /dev/null
 
 $busybox chroot $mnt /etc/init.d/ssh stop
 
-echo "Shutting down Postgresql"
+bklog "[!] Shutting down Postgresql"
 $busybox chroot $mnt /etc/init.d/postgresql stop
+
+bklog "[!] Shutting down Vncserver"
+pkill Xtightvnc
+rm -f $mnt/root/.vnc/*.log *.pid > /dev/null 2>&1
+rm -f $mnt/tmp/.X*-.lock .X*-unix/* > /dev/null 2>&1
+
+########## Kill all running kali terminals first ##########
+bklog "[!] Killing all running kali terminals.."
+kill_pids
 
 # unmount everything
 
-echo "Removing all Kali mounts"
+bklog "[!] Removing all Kali mounts.."
 $busybox umount $mnt/dev/pts && echo "unmounted pts"
 $busybox umount $mnt/dev && echo "unmounted dev"
 $busybox umount $mnt/proc && echo "unmounted proc"
@@ -50,10 +57,10 @@ $busybox umount $mnt/system && echo "unmounted system"
 $busybox umount $mnt/sdcard && echo "unmounted $mnt$sdcard"
 $busybox umount $mnt/external_sd && echo "unmounted external_sd"
 if [ $($busybox umount $mnt 2>&1 > /dev/null) ]; then
-    echo " [-] Unable to umount the kali chroot image."
-    echo " [-] Please close all the kali terminals and umount all the mointpoint on kali chroot first then try again."
+    bklog " [-] Unable to umount the kali chroot image."
+    bklog " [-] Please close all the kali terminals and umount all the mointpoint on kali chroot first then try again."
 else
-    echo "unmounted kali-armhf"
+    bklog "unmounted kali-armhf"
 fi
 
 if [ -d "$mnt/dev" ]; then
@@ -66,6 +73,27 @@ fi
 
 if [ -d "$mnt/sys" ]; then
     rmdir $mnt/sys
+fi
+
+###### umount the chroot as well if it is being mounted. Here the directory method will not be affected. ######
+if [ "$(losetup -a | grep $chroot_image)" ]; then
+    if [ "$($busybox umount $mnt 2>&1 > /dev/null)" ]; then
+        bklog "[-] Unable to umount the kali chroot image."
+        bklog "[!] If so, please try to close all the kali terminals first, secondly manually umount all the mointpoints on kali chroot, and lastly kill all the running services like ssh, vnc, webservice etc..."
+    else
+	bklog "[+] umounted kali-armhf"
+    fi
+fi
+
+# Run e2fsck everytime we umount the kali chroot image on enrypted device.
+if [ -f "$chroot_image" ]; then
+    bklog "[!] Running e2fsck to check image $chroot_image.."
+    e2fsck -y $chroot_image
+fi
+
+# Check again if chroot image is really umounted.
+if [ "$(losetup -a | grep $chroot_image)" ]; then
+    bklog "[!] $mnt is still being mounted. Something is wrong!" && read
 fi
 
 export PATH=$PRESERVED_PATH
