@@ -333,7 +333,7 @@ ChrootManagerFragment extends Fragment {
 
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
         adb.setTitle("Select Chroot install mode:")
-                .setMessage("Download is the prefered mode. Get the latest chroot from the offsec servers.\n\nYou can place a custom\nkalifs-[minimal|full].tar.xz in /sdcard\nand skip the download.\n\nAlso, You can place a back up kalifs-backup.tar.xz in /sdcard to restore your backup chroot.")
+                .setMessage("Download is the prefered mode. Get the latest chroot from the offsec servers.\n\nYou can place a custom\nkalifs-[minimal|full].tar.xz in /sdcard\nand skip the download.\n\nAlso, You can place a back up kalifs-backup.tar.gz in /sdcard to restore your backup chroot.")
                 .setNegativeButton("Restore from SdCard", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -741,12 +741,6 @@ ChrootManagerFragment extends Fragment {
                     //Create folders for symlink
                     publishProgress(getActivity().getString(R.string.extract_chroot_gz));
                     x.RunAsRootOutput(nh.whichBusybox() + " mount -o remount,suid /data && chmod +s " + nh.CHROOT_PATH + "/usr/bin/sudo && "
-                            + "mkdir -p " + nh.CHROOT_PATH + "/system && "
-                            + "mkdir -p " + nh.CHROOT_PATH + "/sys && "
-                            + "mkdir -p " + nh.CHROOT_PATH + "/proc && "
-                            + "mkdir -p " + nh.CHROOT_PATH + "/dev && "
-                            + "mkdir -p " + nh.CHROOT_PATH + "/sdcard && "
-                            + "mkdir -p " + nh.CHROOT_PATH + "/lib/modules && "
                             + "sleep 5 && "
                             + "bootkali extract-chroot /sdcard/kalifs-backup.tar.gz"
                     );
