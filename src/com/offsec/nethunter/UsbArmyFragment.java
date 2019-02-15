@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -79,11 +80,13 @@ public class UsbArmyFragment extends Fragment {
         final Spinner usbAdbSpinner = (Spinner) rootView.findViewById(R.id.usb_adb);
         final Spinner imageSpinner = (Spinner) rootView.findViewById(R.id.usbarmy_img_mounter_preset_spinner);
         final Spinner scriptSpinner = (Spinner) rootView.findViewById(R.id.usbarmy_script_runner_preset_spinner);
+        final CheckBox ro_checkbox = (CheckBox) rootView.findViewById(R.id.usbarmy_ro);
         int current_usb_target = -1;
         int current_usb_mode = -1;
         int current_usb_adb = -1;
         String image_file[] = getImageFiles();
         String script_file[] = getScriptFiles();
+        ro_checkbox.setChecked(false);
         for (String cc : getResources().getStringArray(R.array.usb_targets)) {
             current_usb_target++;
             if (cc.equals(sharedpreferences.getString("usb_targets", cc))) {
@@ -210,19 +213,16 @@ public class UsbArmyFragment extends Fragment {
         setusbinterface.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                new Thread(new Runnable() {
-                    public void run() {
-                        setusbinterface(usbTargetSpinner.getSelectedItem().toString(), usbModeSpinner.getSelectedItem().toString(), usbAdbSpinner.getSelectedItem().toString());
-                        v.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                nh.showMessage("USB interface changed");
-                                refreshUSB();
-                            }
-                        });
-                    }
-                }).start();
-
+                if (scriptSpinner.getCount() != 0) {
+                    new Thread(new Runnable() {
+                        public void run() {
+                            Intent intent = new Intent("com.offsec.nhterm.RUN_SCRIPT");
+                            intent.addCategory(Intent.CATEGORY_DEFAULT);
+                            intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("ScriptRunner") + "su -c \"sh " + script_folder_path + "/" + scriptSpinner.getSelectedItem().toString() + "\"");
+                            startActivity(intent);
+                        }
+                    }).start();
+                } else nh.showMessage_long("No shell script file is selected to run");
             }
         });
 
@@ -266,12 +266,18 @@ public class UsbArmyFragment extends Fragment {
             public void onClick(final View v) {
                 new Thread(new Runnable() {
                     public void run() {
-                        mountImage(image_folder_path, imageSpinner.getSelectedItem().toString());
+                        mountImage(image_folder_path, imageSpinner.getSelectedItem().toString(), ro_checkbox.isChecked());
                         v.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                nh.showMessage("Image mounted");
-                                refreshImage();
+                                @Override
+                                public void run() {
+                                    final ShellExecuter exe = new ShellExecuter();
+                                    String output = exe.Executer("cat /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file");
+                                    if (output.equals("")) {
+                                        nh.showMessage_long("Failed to change image file, please eject on the PC or disconnect the usb first and try again.");
+                                    } else {
+                                        nh.showMessage_long("Image mounted");
+                                    }
+                                    refreshImage();
                             }
                         });
                     }
@@ -304,10 +310,11 @@ public class UsbArmyFragment extends Fragment {
 
             }
         });
-        //Simon end
+
         return rootView;
 
     }
+
 
     private void getUSBInterfaces(final View rootView) {
 
@@ -350,17 +357,19 @@ public class UsbArmyFragment extends Fragment {
 
     }
 
-    private static void mountImage(String script_path, String script_name) {
+    public void mountImage(String image_folder_path, String image_name, boolean readonly) {
         final ShellExecuter exe = new ShellExecuter();
         String command = "echo \"\" > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file";
-        if (script_path.contains(".iso")) {
+        String ro = "0";
+        if (readonly) ro = "1";
+        if (image_name.contains(".iso")) {
             command += " && echo 1 > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom" +
-                       " && echo 1 > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro";
+                       " && echo " + ro + " > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro";
         } else {
             command += " && echo 0 > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/cdrom" +
-                       " && echo 0 > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro";
+                       " && echo " + ro + " > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/ro";
         }
-        command += " && echo \"" + script_path + "/" + script_name + "\" > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file";
+	command += " && echo \"" + image_folder_path + "/" + image_name + "\" > /config/usb_gadget/g1/functions/mass_storage.0/lun.0/file";
         exe.RunAsRootOutput(command);
 
     }
