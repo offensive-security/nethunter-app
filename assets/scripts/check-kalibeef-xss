@@ -1,5 +1,5 @@
 unset LD_PRELOAD
-if [[ -n $(ps |grep ruby|grep 104) ]]; then
+if [[ $(ps | grep ruby | grep 116) ]]; then
 	echo "1"
 else
 	echo "0"
