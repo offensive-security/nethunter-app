@@ -3,6 +3,7 @@ package com.offsec.nethunter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -17,6 +18,20 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.offsec.nethunter.utils.NhPaths;
+import com.offsec.nethunter.utils.ShellExecuter;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.AttributeView;
+import java.nio.file.attribute.FileOwnerAttributeView;
+import java.nio.file.attribute.GroupPrincipal;
+import java.nio.file.attribute.PosixFileAttributeView;
+import java.nio.file.attribute.PosixFileAttributes;
+import java.nio.file.attribute.UserPrincipal;
+import java.util.UUID;
 
 import androidx.fragment.app.Fragment;
 
@@ -113,29 +128,41 @@ public class VNCFragment extends Fragment {
                 return;
             }
 
-            String _R_IP = ((EditText) getView().findViewById(R.id.vnc_R_IP)).getText().toString();
-            String _R_PORT = ((EditText) getView().findViewById(R.id.vnc_R_PORT)).getText().toString();
+            String _R_IP = ((EditText) getView().findViewById(R.id.vnc_R_IP)).getText().toString().replaceAll(" ", "");
+            String _R_PORT = ((EditText) getView().findViewById(R.id.vnc_R_PORT)).getText().toString().replaceAll(" ", "");
             String _PASSWD = ((EditText) getView().findViewById(R.id.vnc_PASSWD)).getText().toString();
-            String _NICK = ((EditText) getView().findViewById(R.id.vnc_CONN_NICK)).getText().toString();
+            String _NICK = ((EditText) getView().findViewById(R.id.vnc_CONN_NICK)).getText().toString().replaceAll(" ","");
             String _USER = ((EditText) getView().findViewById(R.id.vnc_USER)).getText().toString();
             int _RESOLUTION = ((Spinner) getView().findViewById(R.id.resolution_spinner)).getSelectedItemPosition();
-            if (!_R_IP.equals("") && !_R_PORT.equals("") && !_NICK.equals("")) {
-                Intent intent = getActivity().getApplicationContext().getPackageManager().getLaunchIntentForPackage("com.offsec.nhvnc");
-                intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-                intent.putExtra("com.offsec.nhvnc.EXTRA_CONN_DATA", true);
-                intent.putExtra("R_IP", _R_IP);
-                intent.putExtra("R_PORT", _R_PORT);
-                intent.putExtra("PASSWD", _PASSWD);
-                intent.putExtra("NICK", _NICK);
-                intent.putExtra("USER", _USER);
-                intent.putExtra("COLORMODEL", _RESOLUTION);
 
-                startActivity(intent);
+            if (!_R_IP.equals("") && !_R_PORT.equals("") && !_NICK.equals("")) {
+
+            //Intent intent = getActivity().getApplicationContext().getPackageManager().getLaunchIntentForPackage("com.offsec.nhvnc");
+            Intent intent = getActivity().getApplicationContext().getPackageManager().getLaunchIntentForPackage("com.realvnc.viewer.android");
+            if (intent == null) {
+                    Toast.makeText(getActivity().getApplicationContext(), "RealVNC app not found!", Toast.LENGTH_SHORT).show();
+            } else {
+                    ShellExecuter exe = new ShellExecuter();
+                    String command;
+                    String uuid = UUID.randomUUID().toString();
+                    command = "su -c '/data/data/com.offsec.nethunter/files/scripts/bootkali vnc start " + uuid + " " + _NICK + " " + _R_IP + " " + _R_PORT + " " + _PASSWD + "'";
+                    exe.RunAsRootWithException(command);
+
+                    //intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                    //intent.putExtra("com.offsec.nhvnc.EXTRA_CONN_DATA", true);
+                    //intent.putExtra("R_IP", _R_IP);
+                    //intent.putExtra("R_PORT", _R_PORT);
+                    //intent.putExtra("PASSWD", _PASSWD);
+                    //intent.putExtra("NICK", _NICK);
+                    //intent.putExtra("USER", _USER);
+                    //intent.putExtra("COLORMODEL", _RESOLUTION);
+                    //startActivity(intent);
+                }
             }
 
         } catch (Exception e) {
             Log.d("errorLaunching", e.toString());
-            Toast.makeText(getActivity().getApplicationContext(), "NetHunter VNC not found!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity().getApplicationContext(), "VNC VNC not found!", Toast.LENGTH_SHORT).show();
         }
     }
 
