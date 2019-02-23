@@ -69,19 +69,6 @@ public class NetHunterFragment extends Fragment {
         addClickListener(v -> getExternalIp(), rootView);
         getInterfaces(rootView);
 
-        // HID Switch for newer kernels to turn on HID
-        HIDSwitch = rootView.findViewById(R.id.hidSWITCH);
-        HIDSwitch.setOnClickListener(v -> {
-
-            if(HIDSwitch.isChecked())
-            {
-                setHIDON();
-            }
-            else {
-                setHIDOff();
-            }
-        });
-
         return rootView;
     }
 
@@ -125,43 +112,11 @@ public class NetHunterFragment extends Fragment {
 
     }
 
-    private void setHIDON() {
-        new Thread(() -> {
-
-                if (isOPO5()) {
-                    try {
-                        Process p = Runtime.getRuntime().exec("su -c getprop sys.usb.config > /data/local/usb.config.tmp && su -c setprop sys.usb.config `cat /data/local/usb.config.tmp`,hid");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                else {
-                    try {
-                        Process p = Runtime.getRuntime().exec("su -c getprop sys.usb.config > /data/local/usb.config.tmp && su -c setprop sys.usb.config `cat /data/local/usb.config.tmp`,hid");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-            }
-        }).start();
-    }
-
-    private void setHIDOff() {
-        new Thread(() -> {
-            try {
-                Process p = Runtime.getRuntime().exec("su -c setprop sys.usb.config `cat /data/local/usb.config.tmp` && su -c rm /data/local/usb.config.tmp");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
-
-
     private void getInterfaces(final View rootView) {
 
         nh = new NhPaths();
 
         final boolean installed = appInstalledOrNot("com.offsec.nhterm");
-
 
         // 1 thread, 2 commands
         final TextView netIfaces = rootView.findViewById(R.id.editTextNET); // NET IFACES

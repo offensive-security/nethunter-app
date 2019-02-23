@@ -57,13 +57,6 @@
             android:id="@+id/listViewHid"
             />
 
-        <Switch
-            android:id="@+id/hidSWITCH"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Turn on HID (newer kernels only) "
-            android:checked="true"/>
-
         <TextView
             android:id="@+id/editTextHID"
             android:layout_width="wrap_content"

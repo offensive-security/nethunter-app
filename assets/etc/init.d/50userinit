@@ -1,3 +1,139 @@
 #!/system/bin/sh
 
-echo "No start up."
+log running userinit.sh
+if [ -x /system/xbin/busybox ]; then
+   busybox=/system/xbin/busybox
+elif [ -x /data/local/bin/busybox ]; then
+      busybox=/data/local/bin/busybox
+elif [ -x /system/bin/busybox ]; then
+   busybox=/system/bin/busybox
+else
+   echo "Busybox not found!  Install it, dummy!";
+   log "Busybox not found!  Install it, dummy!";
+   exit;
+fi
+
+log Running userinit.sh...
+
+mount_sdcard() {
+	mountpoint -q "$mnt/sdcard" && return 0
+
+	for sdcard in \
+		"$EXTERNAL_STORAGE" \
+		/storage/emulated/0 \
+		/storage/emulated/legacy \
+		/storage/sdcard0 \
+		/sdcard
+	do
+		[ -d "$sdcard" ] &&
+			$busybox mount -o bind "$sdcard" "$mnt/sdcard" &&
+				return 0
+	done
+	return 1
+}
+
+mount_external_sd() {
+	mountpoint -q "$mnt/external_sd" && return 0
+
+	for external_sd in \
+		/storage/extSdCard \
+		/storage/sdcard1 \
+		/storage/external_sd \
+		/external_sd
+	do
+		[ -d "$external_sd" ] &&
+			$busybox mount -o bind "$external_sd" "$mnt/external_sd" &&
+				return 0
+	done
+	return 1
+}
+
+mount_usbdisk() {
+	mountpoint -q "$mnt/mnt/usbdisk" && return 0
+
+	for usbdisk in /storage/usb*; do
+		[ -d "$usbdisk" ] &&
+			$busybox mount -o bind "$usbdisk" "$mnt/mnt/usbdisk" &&
+				return 0
+	done
+	return 1
+}
+
+mount_external_storage() {
+	external_sd_mounted=false
+	usbdisk_mounted=false
+	mount_external_sd && external_sd_mounted=true
+	mount_usbdisk && usbdisk_mounted=true
+
+	# try marshmallow storage names
+	for storage in /storage/*-*; do
+		# if both mount successfully then skip
+		$external_sd_mounted && $usbdisk_mounted && return
+		if [ -d "$storage" ]; then
+			if ! $external_sd_mounted; then
+				$busybox mount -o bind "$storage" "$mnt/external_sd" &&
+					external_sd_mounted=true
+			elif ! $usbdisk_mounted; then
+				$busybox mount -o bind "$storage" "$mnt/usbdisk" &&
+					usbdisk_mounted=true
+			fi
+		fi
+	done
+}
+
+#########  EXPORT #########
+#mount -o remount,rw -t yaffs2 /dev/block/mtdblock3 /system
+export bin=/system/bin
+export mnt=/data/local/nhsystem/kali-armhf
+PRESERVED_PATH=$PATH
+export PATH=/usr/bin:/usr/sbin:/bin:/usr/local/bin:/usr/local/sbin:$PATH
+export TERM=linux
+export TERMINFO=/etc/terminfo
+export HOME=/root
+export LOGNAME=root
+
+#########  MOUNT #########
+$busybox mount -o remount,suid /data
+$busybox mount -r -o bind /system $mnt/system
+mount_sdcard
+mount_external_storage
+##$busybox mount -o bind /sdcard $mnt/sdcard
+$busybox mount -o bind /dev $mnt/dev
+$busybox mount -t devpts devpts $mnt/dev/pts
+$busybox mount -t proc proc $mnt/proc
+$busybox mount -t sysfs sysfs $mnt/sys
+
+$busybox chmod 666 /dev/null
+
+# SET 250MB TO ALLOW POSTGRESQL #
+$busybox sysctl -w kernel.shmmax=268435456 &>/dev/null
+
+######### SET DNS ########
+
+rm -f /data/local/nhsystem/kali-armhf/etc/resolv.conf # remove dns entries
+touch /data/local/nhsystem/kali-armhf/etc/resolv.conf # create empty resolv.conf
+
+for i in 1 2 3 4; do
+   if [[  -z $(getprop net.dns${i}) ]]; then
+      # we go through 1-4 dns servers and break out of loop on empty
+      break
+   else
+      # add local/device dns server first
+      echo "nameserver $(getprop net.dns${i})" >> /data/local/nhsystem/kali-armhf/etc/resolv.conf
+   fi
+done
+
+# lastly add two default dns entries
+echo "nameserver 208.67.222.222" >> /data/local/nhsystem/kali-armhf/etc/resolv.conf
+echo "nameserver 208.67.220.220" >> /data/local/nhsystem/kali-armhf/etc/resolv.conf
+
+# NETWORK SETTINGS #
+$busybox sysctl -w net.ipv4.ip_forward=1 &>/dev/null
+echo "127.0.0.1       localhost kali" > $mnt/etc/hosts
+echo "::1             localhost ip6-localhost ip6-loopback" >> $mnt/etc/hosts
+echo "kali" > $mnt/proc/sys/kernel/hostname
+
+# execute startup script
+
+log userinit.sh is completed.
+
