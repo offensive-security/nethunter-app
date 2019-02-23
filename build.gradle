@@ -37,6 +37,8 @@ dependencies {
 android {
 
     compileSdkVersion 28
+    buildToolsVersion '28.0.3'
+
 
     dataBinding {
         enabled = true
@@ -51,7 +53,8 @@ android {
         minSdkVersion 17
         targetSdkVersion 28
         versionCode 22
-        versionName "2019.02"
+        versionName "2019.2"
+
     }
 
     sourceSets {

@@ -1,0 +1,5 @@
+#!/system/bin/sh
+
+# this runs first
+# set SElinux to permissive
+setenforce 0
