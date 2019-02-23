@@ -1,5 +1,5 @@
 unset LD_PRELOAD
-if [[ -n $(ps |grep '/usr/sbin/hostapd') ]]; then
+if [[ $(ps | grep hostapd) ]]; then
     echo "1"
 else
     echo "0"
