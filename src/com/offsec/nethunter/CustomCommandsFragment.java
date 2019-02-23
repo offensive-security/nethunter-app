@@ -370,6 +370,8 @@ public class CustomCommandsFragment extends Fragment {
         database.addCommand("Wlan1 Monitor Mode", nh.makeTermTitle("Wlan1 Monitor UP") + "sudo ifconfig wlan1 down && sudo iwconfig wlan1 mode monitor && sudo ifconfig wlan1 up && echo \"wlan1 Monitor mode enabled\" && sleep 3 && exit", "INTERACTIVE", "KALI", 0);
         database.addCommand("Launch Wifite", nh.makeTermTitle("Wifite") + "wifite", "INTERACTIVE", "KALI", 0);
         database.addCommand("Dump Mifare", nh.makeTermTitle("DumpMifare") + "dumpmifare.sh", "INTERACTIVE", "KALI", 0);
+        database.addCommand("Backup Kali chroot", nh.makeTermTitle("Backup_Kali_Chroot") + "echo \"Creating kalifs-backup.tar.gz in your /sdcard folder.\" && su -c 'bootkali backup-chroot kalifs-backup.tar.gz'",
+                "INTERACTIVE", "ANDROID", 0);
     }
 }
 
