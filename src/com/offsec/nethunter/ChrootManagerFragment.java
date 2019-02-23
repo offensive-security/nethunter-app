@@ -757,8 +757,8 @@ ChrootManagerFragment extends Fragment {
                     JSONObject jsonObject;
                     try {
                         jsonObject = new JSONObject(jsonstring);
-                        SHA512_FULL = "68a3c557e14ec301fd37831793485c2280b9f706975cff3f9f9cf4000c9703b27dd21b5e076bded0ceff6e5652efc225b0dc76aa391ac5a7e90d683e3b43b647";
-                        SHA512_MINIMAL = "86752fba98b54daf5f66d04b1306ebebb25ea434bd5f17aa53b53c75aef6e9309084e0e6c01b94461dcb5615e4dd9eb97ac1d8973ebadcd1f6962b99312ae7e5";
+                        SHA512_FULL = "1c981b91b188488aec143a94d79aa2e7d81fd01badea99ff9b5a4c21ed588b485f8cadcf2edcb0ff26f3c6def3ca27beb8d60f8712c3dadf8d0ed41198dcb8c7";
+                        SHA512_MINIMAL = "805f5e4dccb8468f53f670346771880b011e1819bd251b6be2f3a8c2e275c87d96ca91ff8916872abfbc68e17c60886ecae0b2be0de6f7ebe7e84945c7de5ccb";
                         if (isFull) {
                             // asign the value so the integryty check works ^^
                             SHA512 = SHA512_FULL;
