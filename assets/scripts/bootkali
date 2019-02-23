@@ -145,8 +145,9 @@ else
 	# bootkali duck-hunt-run {/opt/duckout.sh}
 
 	if [ "$1" == "duck-hunt-convert" ]; then
-		$busybox chroot $mnt sudo python /sdcard/nh_files/modules/duckhunter.py -l $2 $3 $4
-		$busybox chroot $mnt sudo chmod 755 $4
+		$busybox chroot $mnt /usr/bin/python2.7 /sdcard/nh_files/modules/duckhunter.py -l $2 $3 $4
+		## $busybox chroot $mnt sudo chmod 755 $4
+
 	fi
 	if [ "$1" == "duck-hunt-run" ]; then
 		if [ ! -f /data/local/nhsystem/kali-armhf$2 ]; then
@@ -295,6 +296,14 @@ else
 		$busybox chroot $mnt sudo $commmand
 	fi
 
+	#SearchSploit convert_exploitdb_to_csv
+
+	if [ "$1" == "convert_exploitdb" ]; then
+	    [ -f /sdcard/nh_files/SearchSploit ] && rm /sdcard/nh_files/SearchSploit
+		$busybox chroot $mnt sudo python /sdcard/nh_files/modules/csv2sqlite.py /usr/share/exploitdb/files_exploits.csv /sdcard/nh_files/SearchSploit $2
+		[ -f /sdcard/nh_files/SearchSploit ] && return 0 || return 1
+	fi
+
 	#MFOC MIFARE DUMP
 
 	if [ "$1" == "dumpmifare" ]; then
@@ -324,4 +333,25 @@ else
 		printf "And remember to use the 'Maintain Chroot' button in the Chroot Manager to keep your chroot up-to-date and to install new metapackages.\n\n"
 		echo -e "\e[0m"
 	fi
+	#Extract kali chroot with symlink.
+
+    if [ "$1" == "extract-chroot" ] && [ "$2" != "" ]; then
+    	$busybox chroot $mnt /bin/tar xzf "$2" --hard-dereference --keep-old-files --keep-directory-symlink -C "/" > /dev/null 2>&1
+    fi
+
+    #Backup kali chroot
+
+	if [ "$1" == "backup-chroot" ] && [ "$2" != "" ]; then
+		if [ -f "/sdcard/$2" ]; then
+			bklog "[-] /sdcard/$2 existed already, please rename the existed filename to another first."
+		else
+			$busybox chroot $mnt sudo /bin/tar czf "/sdcard/$2" --hard-dereference --exclude='./system' --exclude='./sys' --exclude='./proc' --exclude='./dev' --exclude='./sdcard' --exclude='./lib/modules' -C "/" .
+			bklog "[+] Done. Successfully backup to /sdcard/$2"
+		fi
+	fi
+
+	if [ "$1" == "test" ]; then
+        $busybox chroot $mnt sudo printenv
+    fi
 fi
+
