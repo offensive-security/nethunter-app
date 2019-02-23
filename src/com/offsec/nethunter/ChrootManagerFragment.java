@@ -406,7 +406,7 @@ public class ChrootManagerFragment extends Fragment {
         try {
             Intent intent = new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
-            intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "apt-get install " + packages + " && echo \"\nKali Linux Nethunter setup is complete.\nEnjoy. (You can close the terminal now)\n\"");
+            intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "echo \"Updating gpg key..\" && wget -q -O - https://archive.kali.org/archive-key.asc | apt-key add && apt-get update && apt-get install " + packages + " -y && apt-get dist-upgrade -y && echo \"\nKali Linux Nethunter setup is complete.\nEnjoy. (You can close the terminal now)\n\"");
             Log.d("PACKS:", "PACKS:" + packages);
             startActivity(intent);
 
@@ -702,6 +702,12 @@ public class ChrootManagerFragment extends Fragment {
         final ProgressDialog mProgressDialog;
         final NotificationManager mNotifyManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getActivity());
+        //private final int NOTIFY_ID = 1003;
+        //There are hardcoding only for show it's just strings
+        //private String name = "my_package_channel";
+        //private String id = "my_package_channel_2"; // The user-visible name of the channel.
+        //private String description = "my_package_first_channel"; // The user-visible description of the channel.
+        //private int importance = NotificationManager.IMPORTANCE_LOW;
         private final Context context;
         double last_perc = 0.0;
         double humanSize = 0.0;
@@ -751,8 +757,8 @@ public class ChrootManagerFragment extends Fragment {
                     JSONObject jsonObject;
                     try {
                         jsonObject = new JSONObject(jsonstring);
-                        SHA512_FULL = jsonObject.getString("chroot_sha512_full");
-                        SHA512_MINIMAL = jsonObject.getString("chroot_sha512_min");
+                        SHA512_FULL = "86752fba98b54daf5f66d04b1306ebebb25ea434bd5f17aa53b53c75aef6e9309084e0e6c01b94461dcb5615e4dd9eb97ac1d8973ebadcd1f6962b99312ae7e5";
+                        SHA512_MINIMAL = "FAE5DEAAD07E45F712101457BAD8FA196110D842AA420FD49C6A591871AFEB8CDDB1353675707EEF8CDFAE2E80B55E454EF54FA21965E22BFFB6D30E03B8FF17";
                         if (isFull) {
                             // asign the value so the integryty check works ^^
                             SHA512 = SHA512_FULL;
