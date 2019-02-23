@@ -54,3 +54,6 @@ libsuperuser-release/libsuperuser-release.iml
 androidwversionmanager/androidwversionmanager.iml
 *.iml
 /release
+
+/res/values/secrets.xml
+signing.properties

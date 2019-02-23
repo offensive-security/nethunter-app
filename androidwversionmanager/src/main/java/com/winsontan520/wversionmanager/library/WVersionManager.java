@@ -1,7 +1,5 @@
 package com.winsontan520.wversionmanager.library;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,6 +26,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 public class WVersionManager implements IWVersionManager {
     private static final String TAG = "WVersionManager";
     private final String[] pins = new String[]{"b3fc3c6ba754e3f0b05b57efe5f202f655a8e483"};
@@ -41,7 +42,7 @@ public class WVersionManager implements IWVersionManager {
     private final String PREF_IGNORE_VERSION_CODE = "w.ignore.version.code";
     private final String PREF_REMINDER_TIME = "w.reminder.time";
 
-    private final Activity activity;
+    private final AppCompatActivity activity;
     private Drawable icon;
     private String title;
     private String message;
@@ -60,7 +61,7 @@ public class WVersionManager implements IWVersionManager {
     private int mMode = 100; // default mode
     private OnReceiveListener mOnReceiveListener;
 
-    public WVersionManager(Activity act) {
+    public WVersionManager(AppCompatActivity act) {
         this.activity = act;
         this.listener = new AlertDialogButtonListener();
         this.customTagHandler = new CustomTagHandler();

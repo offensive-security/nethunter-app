@@ -2,7 +2,6 @@ package com.offsec.nethunter.service;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +10,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.offsec.nethunter.AppNavHomeActivity;
 import com.offsec.nethunter.ChrootManagerFragment;
 import com.offsec.nethunter.KaliServicesFragment;
 import com.offsec.nethunter.R;
@@ -20,10 +20,15 @@ import com.offsec.nethunter.utils.ShellExecuter;
 import static android.support.v4.app.NotificationCompat.BigTextStyle;
 import static android.support.v4.app.NotificationCompat.Builder;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.JobIntentService;
 
-public class RunAtBootService extends Service {
+
+
+public class RunAtBootService extends JobIntentService {
     private static final String CHROOT_INSTALLED_TAG = "CHROOT_INSTALLED_TAG";
     private static final String TAG = "Nethunter: Startup";
+    private static final int JOB_ID = 1;
     private final ShellExecuter x = new ShellExecuter();
     private NhPaths nh;
     private Boolean runBootServices = true;
@@ -31,8 +36,14 @@ public class RunAtBootService extends Service {
     private Builder n = null;
     private NotificationManager notificationManager;
 
+
     public RunAtBootService() {
     }
+
+    public static void enqueueWork(Context context, Intent work) {
+        enqueueWork(context, RunAtBootService.class, JOB_ID, work);
+    }
+
 
     private void doNotification(String contents) {
         if (n == null) {
@@ -40,7 +51,6 @@ public class RunAtBootService extends Service {
         }
         n.setStyle(new BigTextStyle().bigText(contents))
                 .setContentTitle(RunAtBootService.TAG)
-                //.setContentText(contents)
                 .setSmallIcon(R.drawable.ic_stat_ic_nh_notificaiton)
                 // .setContentIntent(pIntent)
                 .setAutoCancel(true)
@@ -136,24 +146,17 @@ public class RunAtBootService extends Service {
         }
 
         if (userinit(runBootServices)) {
-            Toast.makeText(getBaseContext(), "Boot end: ALL OK", Toast.LENGTH_SHORT).show();
-//            doNotification("Boot ended. All fine. Action performed: " + doing_action + " OK");
+//            Toast.makeText(getBaseContext(), "Boot end: ALL OK", Toast.LENGTH_SHORT).show();
+            doNotification("Boot ended. All fine. Action performed: " + doing_action + " OK");
         } else {
             if (!runBootServices) {
-                Toast.makeText(getBaseContext(), "Not runing boot scripts. OK", Toast.LENGTH_SHORT).show();
-//                doNotification("Boot ended. All fine. Action performed: " + doing_action + " OK");
+//                Toast.makeText(getBaseContext(), "Not runing boot scripts. OK", Toast.LENGTH_SHORT).show();
+                doNotification("Boot ended. All fine. Action performed: " + doing_action + " OK");
             } else {
                 doNotification("Boot ended. No busybox found!");
             }
         }
         // put change MAC addresses here.
-        stopSelf();
-        return super.onStartCommand(intent, flags, startId);
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null; // don't support binding for now.
     }
 
     private boolean userinit(Boolean ShouldRun) {
@@ -173,7 +176,7 @@ public class RunAtBootService extends Service {
             // init.d
             String[] runner = {busybox + " run-parts " + nh.APP_INITD_PATH};
             exe.RunAsRoot(runner);
-            Toast.makeText(getBaseContext(), getString(R.string.autorunningscripts), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getBaseContext(), getString(R.string.autorunningscripts), Toast.LENGTH_SHORT).show();
             return true;
         }
         Toast.makeText(getBaseContext(), getString(R.string.toastForNoBusybox), Toast.LENGTH_SHORT).show();

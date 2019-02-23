@@ -181,33 +181,32 @@ public class BootKali {
     // sends a command to kali
     // no blocking but atm no output
     public void run_bg() {
-        new Thread(new Runnable() {
-            public void run() {
-                String output = "";
-                String line;
-                try {
-                    Process process = Runtime.getRuntime().exec("su");
-                    OutputStream stdin = process.getOutputStream();
-                    InputStream stderr = process.getErrorStream();
-                    //InputStream stdout = process.getInputStream();
-                    stdin.write((BOOTKALI + KALI_COMMAND).getBytes());
-                    stdin.flush();
-                    stdin.close();
-                    BufferedReader br = new BufferedReader(new InputStreamReader(stderr));
-                    while ((line = br.readLine()) != null) {
-                        Log.e("Shell out:", output);
-                        Log.e("Shell Error:", line);
-                    }
-                    br.close();
-                    process.waitFor();
-                    process.destroy();
-                } catch (IOException | InterruptedException e) {
-                    e.printStackTrace();
+        new Thread(() -> {
+            String output = "";
+            String line;
+            try {
+                Process process = Runtime.getRuntime().exec("su");
+                OutputStream stdin = process.getOutputStream();
+                InputStream stderr = process.getErrorStream();
+                //InputStream stdout = process.getInputStream();
+                stdin.write((BOOTKALI + KALI_COMMAND).getBytes());
+                stdin.flush();
+                stdin.close();
+                BufferedReader br = new BufferedReader(new InputStreamReader(stderr));
+                while ((line = br.readLine()) != null) {
+                    Log.e("Shell out:", output);
+                    Log.e("Shell Error:", line);
                 }
+                br.close();
+                process.waitFor();
+                process.destroy();
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
             }
         }).start();
     }
 
+    // these don't seem to be used
     public String GET_TERM_CMD() {
         return "su -c \"" + TERM_CMD + "\"";
     }

@@ -34,7 +34,7 @@
             android:paddingBottom="20px"
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
-            android:src="@android:drawable/divider_horizontal_bright" />
+            app:srcCompat="@android:drawable/divider_horizontal_bright" />
 
         <TextView
             android:layout_width="wrap_content"

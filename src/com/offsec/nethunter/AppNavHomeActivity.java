@@ -1,10 +1,10 @@
 package com.offsec.nethunter;
 
 import android.Manifest;
-import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -12,26 +12,15 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 import com.offsec.nethunter.gps.KaliGPSUpdates;
 import com.offsec.nethunter.gps.LocationUpdateService;
 import com.offsec.nethunter.utils.CheckForRoot;
@@ -41,11 +30,23 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.Stack;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+
 public class AppNavHomeActivity extends AppCompatActivity implements KaliGPSUpdates.Provider {
 
     public final static String TAG = "AppNavHomeActivity";
     private static final String CHROOT_INSTALLED_TAG = "CHROOT_INSTALLED_TAG";
     private static final String GPS_BACKGROUND_FRAGMENT_TAG = "BG_FRAGMENT_TAG";
+    public static final String BOOT_CHANNEL_ID = "BOOT_CHANNEL";
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -88,21 +89,18 @@ public class AppNavHomeActivity extends AppCompatActivity implements KaliGPSUpda
             ab.setHomeButtonEnabled(true);
             ab.setDisplayHomeAsUpEnabled(true);
         }
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
 
-        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationView = findViewById(R.id.navigation_view);
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout navigationHeadView = (LinearLayout) inflater.inflate(R.layout.sidenav_header, null);
         navigationView.addHeaderView(navigationHeadView);
 
-        FloatingActionButton readmeButton = (FloatingActionButton) navigationHeadView.findViewById(R.id.info_fab);
-        readmeButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                //checkUpdate();
-                showLicense();
-                return false;
-            }
+        FloatingActionButton readmeButton = navigationHeadView.findViewById(R.id.info_fab);
+        readmeButton.setOnTouchListener((v, event) -> {
+            //checkUpdate();
+            showLicense();
+            return false;
         });
 
         /// moved build info to the menu
@@ -112,8 +110,8 @@ public class AppNavHomeActivity extends AppCompatActivity implements KaliGPSUpda
         prefs = getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
 
         final String buildTime = sdf.format(BuildConfig.BUILD_TIME);
-        TextView buildInfo1 = (TextView) navigationHeadView.findViewById(R.id.buildinfo1);
-        TextView buildInfo2 = (TextView) navigationHeadView.findViewById(R.id.buildinfo2);
+        TextView buildInfo1 = navigationHeadView.findViewById(R.id.buildinfo1);
+        TextView buildInfo2 = navigationHeadView.findViewById(R.id.buildinfo2);
         buildInfo1.setText(String.format("Version: %s (%s)", BuildConfig.VERSION_NAME, Build.TAGS));
         buildInfo2.setText(String.format("Built by %s at %s", BuildConfig.BUILD_NAME, buildTime));
 
@@ -153,17 +151,31 @@ public class AppNavHomeActivity extends AppCompatActivity implements KaliGPSUpda
                 mDrawerLayout, R.string.drawer_opened, R.string.drawer_closed);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        mDrawerLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    setDrawerOptions();
-                }
+        mDrawerLayout.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                setDrawerOptions();
             }
         });
         mDrawerToggle.syncState();
         // pre-set the drawer options
         setDrawerOptions();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create the NotificationChannel
+            CharSequence name = getString(R.string.boot_notification_channel);
+            String description = getString(R.string.boot_notification_channel_description);
+            int importance = NotificationManager.IMPORTANCE_LOW;
+            NotificationChannel mChannel = new NotificationChannel(BOOT_CHANNEL_ID, name, importance);
+            mChannel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = (NotificationManager) getSystemService(
+                    NOTIFICATION_SERVICE);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(mChannel);
+            }
+        }
+
 
     }
 
@@ -194,12 +206,7 @@ public class AppNavHomeActivity extends AppCompatActivity implements KaliGPSUpda
         AlertDialog.Builder adb = new AlertDialog.Builder(this);
         adb.setTitle("README INFO")
                 .setMessage(readmeData)
-                .setNegativeButton("Close", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                }); //nhwarning
+                .setNegativeButton("Close", (dialog, which) -> dialog.cancel()); //nhwarning
         AlertDialog ad = adb.create();
         ad.setCancelable(false);
         ad.getWindow().getAttributes().windowAnimations = R.style.DialogStyle;
@@ -226,164 +233,161 @@ public class AppNavHomeActivity extends AppCompatActivity implements KaliGPSUpda
 
     private void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                        // only change it if is no the same as the last one
-                        if (lastSelected != menuItem) {
-                            //remove last
-                            lastSelected.setChecked(false);
-                            // udpate for the next
-                            lastSelected = menuItem;
-                        }
-                        //set checked
-                        menuItem.setChecked(true);
-                        mDrawerLayout.closeDrawers();
-                        mTitle = menuItem.getTitle();
-                        titles.push(mTitle.toString());
-
-                        FragmentManager fragmentManager = getSupportFragmentManager();
-                        int itemId = menuItem.getItemId();
-                        switch (itemId) {
-                            case R.id.nethunter_item:
-                                fragmentManager
-                                        .beginTransaction()
-                                        .replace(R.id.container, NetHunterFragment.newInstance(itemId))
-                                        .addToBackStack(null)
-                                        .commit();
-                                break;
-                            /*
-                            case R.id.kalilauncher_item:
-                                fragmentManager
-                                        .beginTransaction()
-                                        .replace(R.id.container, KaliLauncherFragment.newInstance(itemId))
-                                        .addToBackStack(null)
-                                        .commit();
-                                break;
-                            */
-                            case R.id.deauth_item:
-                                fragmentManager
-                                        .beginTransaction()
-                                        .replace(R.id.container, DeAuthFragment.newInstance(itemId))
-                                        .addToBackStack(null)
-                                        .commit();
-                                break;
-                            case R.id.kaliservices_item:
-                                fragmentManager
-                                        .beginTransaction()
-                                        .replace(R.id.container, KaliServicesFragment.newInstance(itemId))
-                                        .addToBackStack(null)
-                                        .commit();
-                                break;
-
-                            case R.id.custom_commands_item:
-                                fragmentManager
-                                        .beginTransaction()
-                                        .replace(R.id.container, CustomCommandsFragment.newInstance(itemId))
-                                        .addToBackStack(null)
-                                        .commit();
-                                break;
-
-                            case R.id.hid_item:
-                                fragmentManager
-                                        .beginTransaction()
-                                        .replace(R.id.container, HidFragment.newInstance(itemId))
-                                        .addToBackStack(null)
-                                        .commit();
-                                break;
-                            case R.id.duckhunter_item:
-                                fragmentManager
-                                        .beginTransaction()
-                                        .replace(R.id.container, DuckHunterFragment.newInstance(itemId))
-                                        .addToBackStack(null)
-                                        .commit();
-                                break;
-                            case R.id.badusb_item:
-                                fragmentManager
-                                        .beginTransaction()
-                                        .replace(R.id.container, BadusbFragment.newInstance(itemId))
-                                        .addToBackStack(null)
-                                        .commit();
-                                break;
-                            case R.id.mana_item:
-                                fragmentManager
-                                        .beginTransaction()
-                                        .replace(R.id.container, ManaFragment.newInstance(itemId))
-                                        .addToBackStack(null)
-                                        .commit();
-                                break;
-                            case R.id.macchanger_item:
-                                fragmentManager
-                                        .beginTransaction()
-                                        .replace(R.id.container, MacchangerFragment.newInstance(itemId))
-                                        .addToBackStack(null)
-                                        .commit();
-                                break;
-                            case R.id.createchroot_item:
-                                fragmentManager
-                                        .beginTransaction()
-                                        .replace(R.id.container, ChrootManagerFragment.newInstance(itemId))
-                                        .addToBackStack(null)
-                                        .commit();
-                                break;
-                            case R.id.mpc_item:
-                                fragmentManager
-                                        .beginTransaction()
-                                        .replace(R.id.container, MPCFragment.newInstance(itemId))
-                                        .addToBackStack(null)
-                                        .commit();
-                                break;
-                            case R.id.mitmf_item:
-                                fragmentManager
-                                        .beginTransaction()
-                                        .replace(R.id.container, MITMfFragment.newInstance(itemId))
-                                        .addToBackStack(null)
-                                        .commit();
-                                break;
-                            case R.id.vnc_item:
-                                fragmentManager
-                                        .beginTransaction()
-                                        .replace(R.id.container, VNCFragment.newInstance(itemId))
-                                        .addToBackStack(null)
-                                        .commit();
-                                break;
-                            case R.id.searchsploit_item:
-                                fragmentManager
-                                        .beginTransaction()
-                                        .replace(R.id.container, SearchSploitFragment.newInstance(itemId))
-                                        .addToBackStack(null)
-                                        .commit();
-                                break;
-                            case R.id.nmap_item:
-                                fragmentManager
-                                        .beginTransaction()
-                                        .replace(R.id.container, NmapFragment.newInstance(itemId))
-                                        .addToBackStack(null)
-                                        .commit();
-                                break;
-                            case R.id.pineapple_item:
-                                fragmentManager
-                                        .beginTransaction()
-                                        .replace(R.id.container, PineappleFragment.newInstance(itemId))
-                                        .addToBackStack(null)
-                                        .commit();
-                                break;
-
-                            case R.id.gps_item:
-                                fragmentManager
-                                        .beginTransaction()
-                                        .replace(R.id.container, KaliGpsServiceFragment.newInstance(itemId))
-                                        .addToBackStack(null)
-                                        .commit();
-                                break;
-
-                            case R.id.checkforupdate_item:
-                                checkUpdate();
-                                break;
-                        }
-                        restoreActionBar();
-                        return true;
+                menuItem -> {
+                    // only change it if is no the same as the last one
+                    if (lastSelected != menuItem) {
+                        //remove last
+                        lastSelected.setChecked(false);
+                        // update for the next
+                        lastSelected = menuItem;
                     }
+                    //set checked
+                    menuItem.setChecked(true);
+                    mDrawerLayout.closeDrawers();
+                    mTitle = menuItem.getTitle();
+                    titles.push(mTitle.toString());
+
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    int itemId = menuItem.getItemId();
+                    switch (itemId) {
+                        case R.id.nethunter_item:
+                            fragmentManager
+                                    .beginTransaction()
+                                    .replace(R.id.container, NetHunterFragment.newInstance(itemId))
+                                    .addToBackStack(null)
+                                    .commit();
+                            break;
+                        /*
+                        case R.id.kalilauncher_item:
+                            fragmentManager
+                                    .beginTransaction()
+                                    .replace(R.id.container, KaliLauncherFragment.newInstance(itemId))
+                                    .addToBackStack(null)
+                                    .commit();
+                            break;
+                        */
+                        case R.id.deauth_item:
+                            fragmentManager
+                                    .beginTransaction()
+                                    .replace(R.id.container, DeAuthFragment.newInstance(itemId))
+                                    .addToBackStack(null)
+                                    .commit();
+                            break;
+                        case R.id.kaliservices_item:
+                            fragmentManager
+                                    .beginTransaction()
+                                    .replace(R.id.container, KaliServicesFragment.newInstance(itemId))
+                                    .addToBackStack(null)
+                                    .commit();
+                            break;
+
+                        case R.id.custom_commands_item:
+                            fragmentManager
+                                    .beginTransaction()
+                                    .replace(R.id.container, CustomCommandsFragment.newInstance(itemId))
+                                    .addToBackStack(null)
+                                    .commit();
+                            break;
+
+                        case R.id.hid_item:
+                            fragmentManager
+                                    .beginTransaction()
+                                    .replace(R.id.container, HidFragment.newInstance(itemId))
+                                    .addToBackStack(null)
+                                    .commit();
+                            break;
+                        case R.id.duckhunter_item:
+                            fragmentManager
+                                    .beginTransaction()
+                                    .replace(R.id.container, DuckHunterFragment.newInstance(itemId))
+                                    .addToBackStack(null)
+                                    .commit();
+                            break;
+                        case R.id.badusb_item:
+                            fragmentManager
+                                    .beginTransaction()
+                                    .replace(R.id.container, BadusbFragment.newInstance(itemId))
+                                    .addToBackStack(null)
+                                    .commit();
+                            break;
+                        case R.id.mana_item:
+                            fragmentManager
+                                    .beginTransaction()
+                                    .replace(R.id.container, ManaFragment.newInstance(itemId))
+                                    .addToBackStack(null)
+                                    .commit();
+                            break;
+                        case R.id.macchanger_item:
+                            fragmentManager
+                                    .beginTransaction()
+                                    .replace(R.id.container, MacchangerFragment.newInstance(itemId))
+                                    .addToBackStack(null)
+                                    .commit();
+                            break;
+                        case R.id.createchroot_item:
+                            fragmentManager
+                                    .beginTransaction()
+                                    .replace(R.id.container, ChrootManagerFragment.newInstance(itemId))
+                                    .addToBackStack(null)
+                                    .commit();
+                            break;
+                        case R.id.mpc_item:
+                            fragmentManager
+                                    .beginTransaction()
+                                    .replace(R.id.container, MPCFragment.newInstance(itemId))
+                                    .addToBackStack(null)
+                                    .commit();
+                            break;
+                        case R.id.mitmf_item:
+                            fragmentManager
+                                    .beginTransaction()
+                                    .replace(R.id.container, MITMfFragment.newInstance(itemId))
+                                    .addToBackStack(null)
+                                    .commit();
+                            break;
+                        case R.id.vnc_item:
+                            fragmentManager
+                                    .beginTransaction()
+                                    .replace(R.id.container, VNCFragment.newInstance(itemId))
+                                    .addToBackStack(null)
+                                    .commit();
+                            break;
+                        case R.id.searchsploit_item:
+                            fragmentManager
+                                    .beginTransaction()
+                                    .replace(R.id.container, SearchSploitFragment.newInstance(itemId))
+                                    .addToBackStack(null)
+                                    .commit();
+                            break;
+                        case R.id.nmap_item:
+                            fragmentManager
+                                    .beginTransaction()
+                                    .replace(R.id.container, NmapFragment.newInstance(itemId))
+                                    .addToBackStack(null)
+                                    .commit();
+                            break;
+                        case R.id.pineapple_item:
+                            fragmentManager
+                                    .beginTransaction()
+                                    .replace(R.id.container, PineappleFragment.newInstance(itemId))
+                                    .addToBackStack(null)
+                                    .commit();
+                            break;
+
+                        case R.id.gps_item:
+                            fragmentManager
+                                    .beginTransaction()
+                                    .replace(R.id.container, KaliGpsServiceFragment.newInstance(itemId))
+                                    .addToBackStack(null)
+                                    .commit();
+                            break;
+
+                        case R.id.checkforupdate_item:
+                            checkUpdate();
+                            break;
+                    }
+                    restoreActionBar();
+                    return true;
                 });
     }
 

@@ -1,14 +1,13 @@
 package com.offsec.nethunter;
 
-import android.databinding.BaseObservable;
-import android.databinding.Bindable;
-import android.databinding.InverseBindingAdapter;
-import android.databinding.InverseBindingMethod;
-import android.databinding.InverseBindingMethods;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.CheckBox;
+
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
+import androidx.databinding.InverseBindingAdapter;
 
 public class MITMFViewModel extends BaseObservable {
 

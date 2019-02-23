@@ -27,7 +27,7 @@
         android:ems="10"
         android:id="@+id/pineapple_gatewayip"
         android:digits="0123456789."
-        android:text="172.16.42.1" />
+        android:text="@string/pineapple_gatewayip" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:id="@+id/pineapple_webport"
-        android:text="1471"
+        android:text="@string/pineapple_webport"
         android:inputType="number" />
 
     <TextView
@@ -56,7 +56,7 @@
         android:ems="10"
         android:id="@+id/pineapple_clientip"
         android:digits="0123456789."
-        android:text="172.16.42.42/24" />
+        android:text="@string/pineapple_clientip" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -71,7 +71,7 @@
         android:ems="10"
         android:id="@+id/pineapple_cidr"
         android:digits="0123456789."
-        android:text="172.16.42.0/24" />
+        android:text="@string/pineapple_subnet" />
 
 
     <CheckBox
