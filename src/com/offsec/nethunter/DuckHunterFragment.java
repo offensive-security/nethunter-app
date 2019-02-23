@@ -58,7 +58,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     private static final String TAG = "DuckHunterFragment";
     private static NhPaths nh;
     private static String prwText = "";
-    private boolean isHIDenable = false
+    private boolean isHIDenable = false;
 
     public DuckHunterFragment() {
     }
