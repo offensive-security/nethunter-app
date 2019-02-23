@@ -41,7 +41,6 @@ public class VNCFragment extends Fragment {
     private String xwidth;
     private String xheight;
     private String localhostonly = "";
-
     private boolean isbVNCinstalled = false;
     NhPaths nh;
     private static final String ARG_SECTION_NUMBER = "section_number";
@@ -114,7 +113,6 @@ public class VNCFragment extends Fragment {
             intentClickListener_VNC(); // since is a kali command we can send it as is
         });
 
-
 	check_bVNC();
         return rootView;
     }
@@ -147,7 +145,7 @@ public class VNCFragment extends Fragment {
             //Intent intent = getActivity().getApplicationContext().getPackageManager().getLaunchIntentForPackage("com.offsec.nhvnc");
             Intent intent = getActivity().getApplicationContext().getPackageManager().getLaunchIntentForPackage("com.realvnc.viewer.android");
             if (intent == null) {
-                    Toast.makeText(getActivity().getApplicationContext(), "Make sure ip,port,nickname & password are not empty!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity().getApplicationContext(), "RealVNC app not found!", Toast.LENGTH_SHORT).show();
             } else {
                     ShellExecuter exe = new ShellExecuter();
                     String command;
@@ -169,7 +167,7 @@ public class VNCFragment extends Fragment {
 
         } catch (Exception e) {
             Log.d("errorLaunching", e.toString());
-            Toast.makeText(getActivity().getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
+            //Toast.makeText(getActivity().getApplicationContext(), "VNC VNC not found!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -195,5 +193,4 @@ public class VNCFragment extends Fragment {
             }
         }).start();
     }
-
 }

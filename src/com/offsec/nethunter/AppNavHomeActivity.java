@@ -485,17 +485,16 @@ public class AppNavHomeActivity extends AppCompatActivity implements KaliGPSUpda
                         5);
             }
         }
+        //    Log.d("HOLA", "CODE0: " + permnum);
+        //    if (ContextCompat.checkSelfPermission(this,
+        //            "com.offsec.nhvnc.permission.OPEN_VNC_CONN")
+        //            != PackageManager.PERMISSION_GRANTED) {
+        //        ActivityCompat.requestPermissions(this,
+        //                new String[]{"com.offsec.nhvnc.permission.OPEN_VNC_CONN"},
+        //                6);
+        //    }
+        //}
         if (permnum == 6) {
-            Log.d("HOLA", "CODE0: " + permnum);
-            if (ContextCompat.checkSelfPermission(this,
-                    "com.offsec.nhvnc.permission.OPEN_VNC_CONN")
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{"com.offsec.nhvnc.permission.OPEN_VNC_CONN"},
-                        6);
-            }
-        }
-        if (permnum == 7) {
             Log.d("HOLA", "CODE0: " + permnum);
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)
@@ -505,7 +504,7 @@ public class AppNavHomeActivity extends AppCompatActivity implements KaliGPSUpda
                         7);
             }
         }
-        if (permnum == 8) {
+        if (permnum == 7) {
             Log.d("HOLA", "CODE0: " + permnum);
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_COARSE_LOCATION)

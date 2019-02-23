@@ -3,9 +3,9 @@ unset LD_PRELOAD
 
 
 start_sql="/data/data/com.offsec.nethunter/files/scripts/sqlite3 /data/data/com.iiordanov.freebVNC/databases/VncDatabase"
-[ ! "$5" ] && $5 = "kali"
+
 if [ ! $(dumpsys window windows | grep -E 'mCurrentFocus|mFocusedApp' | grep com.iiordanov.bVNC.RemoteCanvasActivity) ]; then
-    if [ ! -f /data/data/com.iiordanov.freebVNC/databases/VncDatabase ]; then
+        if [ ! -f /data/data/com.iiordanov.freebVNC/databases/VncDatabase ] || [ ! $($start_sql "SELECT _id FROM CONNECTION_BEAN WHERE _id = '1'") ]; then
         am start -n com.iiordanov.freebVNC/com.iiordanov.bVNC.bVNC
         sleep 0.5
         input keyevent KEYCODE_ESCAPE
