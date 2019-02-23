@@ -100,6 +100,12 @@ else
 		$busybox chroot $mnt service openvpn stop
 	fi
 
+	#Open VNC
+
+	if [ "$1" == "vnc" ] && [ "$2" == "start" ]; then
+        	echo "good"
+	fi
+
 	# HID Keyboard Command a.k.a Teensy style
 	# Supported keyboard layouts: US, FR, EN, ES
 	# We can pass language options to bootkali like:
