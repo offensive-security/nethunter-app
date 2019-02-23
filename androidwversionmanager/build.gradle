@@ -32,5 +32,5 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.0.0-rc02'
     implementation 'com.android.support:support-v4:27.1.0'
     implementation 'com.google.firebase:firebase-messaging:11.4.2'
-    implementation 'org.thoughtcrime.ssl.pinning:AndroidPinning:1.0.0
+    implementation 'org.thoughtcrime.ssl.pinning:AndroidPinning:1.0.0'
 }
