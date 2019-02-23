@@ -1,0 +1,884 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="nethunter-app" default="all">
+
+
+  <property file="nethunter-app.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+
+  <!-- Compiler options -->
+
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="700m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/*.rbc/**"/>
+    <exclude name="**/*.yarb/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/vssver.scc/**"/>
+    <exclude name="**/vssver2.scc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.war"/>
+    <include name="*.swc"/>
+    <include name="*.apk"/>
+    <include name="*.zip"/>
+    <include name="*.egg"/>
+    <include name="*.ane"/>
+    <include name="*.jar"/>
+    <include name="*.ear"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <exclude name="**/?*.java"/>
+    <exclude name="**/?*.form"/>
+    <exclude name="**/?*.class"/>
+    <exclude name="**/?*.groovy"/>
+    <exclude name="**/?*.scala"/>
+    <exclude name="**/?*.flex"/>
+    <exclude name="**/?*.kt"/>
+    <exclude name="**/?*.clj"/>
+    <exclude name="**/?*.aj"/>
+  </patternset>
+
+  <!-- JDK definitions -->
+
+  <property name="project.jdk.home" value="${jdk.home.1.8_(1)}"/>
+  <property name="project.jdk.bin" value="${jdk.bin.1.8_(1)}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath.1.8_(1)"/>
+
+
+  <!-- Project Libraries -->
+
+  <path id="library.gradle:_android.arch.core:common:1.0.0@jar.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/modules-2/files-2.1/android.arch.core/common/1.0.0/a2d487452376193fc8c103dd2b9bd5f2b1b44563/common-1.0.0.jar"/>
+  </path>
+
+  <path id="library.gradle:_android.arch.lifecycle:common:1.0.0@jar.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/modules-2/files-2.1/android.arch.lifecycle/common/1.0.0/e414a4cb28434e25c4f6aa71426eb20cf4874ae9/common-1.0.0.jar"/>
+  </path>
+
+  <path id="library.gradle:_android.arch.lifecycle:common:1.0.3@jar.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/modules-2/files-2.1/android.arch.lifecycle/common/1.0.3/7d7f60c4783872861222166f6164215f8951c7b1/common-1.0.3.jar"/>
+  </path>
+
+  <path id="library.gradle:_android.arch.lifecycle:runtime-1.0.0.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/runtime-1.0.0.aar/d5364528b8fee6cc58adeabd15d901d6/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/runtime-1.0.0.aar/d5364528b8fee6cc58adeabd15d901d6/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_android.arch.lifecycle:runtime-1.0.3.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/runtime-1.0.3.aar/93c9f19eca4b06a778d46c1bab16fd60/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/runtime-1.0.3.aar/93c9f19eca4b06a778d46c1bab16fd60/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.android.databinding:adapters-3.1.0.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/adapters-3.1.0.aar/cfe4ef2ed0fe60b3132fbd992e39185b/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/adapters-3.1.0.aar/cfe4ef2ed0fe60b3132fbd992e39185b/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.android.databinding:baselibrary:3.1.0@jar.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/modules-2/files-2.1/com.android.databinding/baseLibrary/3.1.0/f459d107e4331b04b9befd47ab89dfb8fa7aa61d/baseLibrary-3.1.0.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.android.databinding:library-3.1.0.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/library-3.1.0.aar/96e17e6b565e7bda6af77b48b71b8a74/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/library-3.1.0.aar/96e17e6b565e7bda6af77b48b71b8a74/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.android.support:animated-vector-drawable-26.1.0.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-26.1.0.aar/0bcc3ccb783b23197f5bfdccd9af6916/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-26.1.0.aar/0bcc3ccb783b23197f5bfdccd9af6916/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.android.support:appcompat-v7-26.1.0.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/appcompat-v7-26.1.0.aar/6e95b24bc1db98e0c374b735750fce5b/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/appcompat-v7-26.1.0.aar/6e95b24bc1db98e0c374b735750fce5b/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.android.support:design-26.1.0.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/design-26.1.0.aar/5e6cd762bb0d6f2188da7eae3981455a/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/design-26.1.0.aar/5e6cd762bb0d6f2188da7eae3981455a/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.android.support:recyclerview-v7-26.1.0.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/recyclerview-v7-26.1.0.aar/b84185acc3000b47fb95f89b807c9c23/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/recyclerview-v7-26.1.0.aar/b84185acc3000b47fb95f89b807c9c23/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.android.support:support-annotations:26.1.0@jar.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/modules-2/files-2.1/com.android.support/support-annotations/26.1.0/814258103cf26a15fcc26ecce35f5b7d24b73f8/support-annotations-26.1.0.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.android.support:support-compat-26.1.0.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/support-compat-26.1.0.aar/1838d0ba3409ae5e2babdb9148700de3/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/support-compat-26.1.0.aar/1838d0ba3409ae5e2babdb9148700de3/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.android.support:support-core-ui-26.1.0.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/support-core-ui-26.1.0.aar/9d118306a81c7557828f224b84765101/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/support-core-ui-26.1.0.aar/9d118306a81c7557828f224b84765101/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.android.support:support-core-utils-26.1.0.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/support-core-utils-26.1.0.aar/08b221f3316b4faa785165277516f9bd/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/support-core-utils-26.1.0.aar/08b221f3316b4faa785165277516f9bd/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.android.support:support-fragment-26.1.0.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/support-fragment-26.1.0.aar/ae2bd27b9197ab6555cf60ed00f1a0d4/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/support-fragment-26.1.0.aar/ae2bd27b9197ab6555cf60ed00f1a0d4/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.android.support:support-media-compat-26.1.0.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/support-media-compat-26.1.0.aar/566867ec34965f5d480f64ddeb8962b1/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/support-media-compat-26.1.0.aar/566867ec34965f5d480f64ddeb8962b1/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.android.support:support-v4-26.1.0.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/support-v4-26.1.0.aar/100aed137edb211b06d1db740015e15f/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/support-v4-26.1.0.aar/100aed137edb211b06d1db740015e15f/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.android.support:support-vector-drawable-26.1.0.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-26.1.0.aar/84c80e10707add18a87db74b6405dea1/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-26.1.0.aar/84c80e10707add18a87db74b6405dea1/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.android.support:transition-26.1.0.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/transition-26.1.0.aar/f3363a30e538ce231e9cb5237c1b6f74/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/transition-26.1.0.aar/f3363a30e538ce231e9cb5237c1b6f74/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.google.android.gms:play-services-base-11.4.2.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/play-services-base-11.4.2.aar/78bf64879ebcbcbb584bc111eb3caacf/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/play-services-base-11.4.2.aar/78bf64879ebcbcbb584bc111eb3caacf/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.google.android.gms:play-services-base-license-11.4.2.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/play-services-base-license-11.4.2.aar/3299eb7c55db0347fbf4c700d2fdd0f9/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/play-services-base-license-11.4.2.aar/3299eb7c55db0347fbf4c700d2fdd0f9/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.google.android.gms:play-services-basement-11.4.2.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/play-services-basement-11.4.2.aar/a599d3acfef7d13b569b1aa7f0ea0d74/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/play-services-basement-11.4.2.aar/a599d3acfef7d13b569b1aa7f0ea0d74/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.google.android.gms:play-services-basement-license-11.4.2.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/play-services-basement-license-11.4.2.aar/37409bbf89cc7ba9aa1ba9224605c361/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/play-services-basement-license-11.4.2.aar/37409bbf89cc7ba9aa1ba9224605c361/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.google.android.gms:play-services-location-11.4.2.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/play-services-location-11.4.2.aar/7b88e8d349488a6f58b013f06b823b57/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/play-services-location-11.4.2.aar/7b88e8d349488a6f58b013f06b823b57/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.google.android.gms:play-services-location-license-11.4.2.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/play-services-location-license-11.4.2.aar/ffaccfe35af5e47d76b1c01b629a23d7/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/play-services-location-license-11.4.2.aar/ffaccfe35af5e47d76b1c01b629a23d7/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.google.android.gms:play-services-tasks-11.4.2.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/play-services-tasks-11.4.2.aar/9733e737e95da7a761730748ee59ef1c/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/play-services-tasks-11.4.2.aar/9733e737e95da7a761730748ee59ef1c/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.google.android.gms:play-services-tasks-license-11.4.2.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/play-services-tasks-license-11.4.2.aar/631d475a0d4bfdb2a27b7c88ebd95738/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/play-services-tasks-license-11.4.2.aar/631d475a0d4bfdb2a27b7c88ebd95738/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.google.code.findbugs:jsr305:1.3.9@jar.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/1.3.9/40719ea6961c0cb6afaeb6a921eaa1f6afd4cfdf/jsr305-1.3.9.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.google.errorprone:error_prone_annotations:2.0.18@jar.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/modules-2/files-2.1/com.google.errorprone/error_prone_annotations/2.0.18/5f65affce1684999e2f4024983835efc3504012e/error_prone_annotations-2.0.18.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.google.firebase:firebase-common-11.4.2.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/firebase-common-11.4.2.aar/ff96e4a2d624107574977ea4e48eb406/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/firebase-common-11.4.2.aar/ff96e4a2d624107574977ea4e48eb406/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.google.firebase:firebase-common-license-11.4.2.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/firebase-common-license-11.4.2.aar/241c95369543c3084545c57ee524b327/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/firebase-common-license-11.4.2.aar/241c95369543c3084545c57ee524b327/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.google.firebase:firebase-iid-11.4.2.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.4.2.aar/91dfdfcd4c9d9e9ab86afeb4d1a3f26a/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.4.2.aar/91dfdfcd4c9d9e9ab86afeb4d1a3f26a/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.google.firebase:firebase-iid-license-11.4.2.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/firebase-iid-license-11.4.2.aar/be50f999f39f6410551a3ef636ca5a95/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/firebase-iid-license-11.4.2.aar/be50f999f39f6410551a3ef636ca5a95/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.google.firebase:firebase-messaging-11.4.2.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/firebase-messaging-11.4.2.aar/a0aa08b8cfb116309a8ee50d82f5b11c/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/firebase-messaging-11.4.2.aar/a0aa08b8cfb116309a8ee50d82f5b11c/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.google.firebase:firebase-messaging-license-11.4.2.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/firebase-messaging-license-11.4.2.aar/811212fbf6630fab031291c3fad84a92/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/firebase-messaging-license-11.4.2.aar/811212fbf6630fab031291c3fad84a92/jars/classes.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.google.guava:guava:23.2-android@jar.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/23.2-android/769da367a0c58a23afe14a559f08bacc41c9905f/guava-23.2-android.jar"/>
+  </path>
+
+  <path id="library.gradle:_com.google.j2objc:j2objc-annotations:1.1@jar.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/modules-2/files-2.1/com.google.j2objc/j2objc-annotations/1.1/976d8d30bebc251db406f2bdb3eb01962b5685b3/j2objc-annotations-1.1.jar"/>
+  </path>
+
+  <path id="library.gradle:_joda-time:joda-time:2.9.9@jar.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/modules-2/files-2.1/joda-time/joda-time/2.9.9/f7b520c458572890807d143670c9b24f4de90897/joda-time-2.9.9.jar"/>
+  </path>
+
+  <path id="library.gradle:_org.apache.http.legacy-android-26.classpath">
+    <pathelement location="${basedir}/../../../../root/Android/Sdk/platforms/android-26/optional/org.apache.http.legacy.jar"/>
+  </path>
+
+  <path id="library.gradle:_org.codehaus.mojo:animal-sniffer-annotations:1.14@jar.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/modules-2/files-2.1/org.codehaus.mojo/animal-sniffer-annotations/1.14/775b7e22fb10026eed3f86e8dc556dfafe35f2d5/animal-sniffer-annotations-1.14.jar"/>
+  </path>
+
+  <path id="library.gradle:_org.thoughtcrime.ssl.pinning:androidpinning-1.0.0.classpath">
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/AndroidPinning-1.0.0.aar/b30bc11a4ab81038273ac353988c4ffc/res"/>
+    <pathelement location="${basedir}/../../../../root/.gradle/caches/transforms-1/files-1.1/AndroidPinning-1.0.0.aar/b30bc11a4ab81038273ac353988c4ffc/jars/classes.jar"/>
+  </path>
+  <!-- Register Custom Compiler Taskdefs -->
+  <property name="javac2.home" value="${idea.home}/lib"/>
+  <path id="javac2.classpath">
+    <pathelement location="${javac2.home}/javac2.jar"/>
+    <pathelement location="${javac2.home}/jdom.jar"/>
+    <pathelement location="${javac2.home}/asm-all.jar"/>
+    <pathelement location="${javac2.home}/jgoodies-forms.jar"/>
+  </path>
+  <target name="register.custom.compilers">
+    <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
+    <taskdef name="instrumentIdeaExtensions" classname="com.intellij.ant.InstrumentIdeaExtensions" classpathref="javac2.classpath"/>
+  </target>
+
+  <!-- Modules -->
+
+
+  <!-- Module androidwversionmanager -->
+
+  <dirname property="module.androidwversionmanager.basedir" file="${ant.file}"/>
+
+
+  <property name="module.jdk.home.androidwversionmanager" value="${jdk.home.android_api_26_platform_(1)}"/>
+  <property name="module.jdk.bin.androidwversionmanager" value="${jdk.bin.android_api_26_platform_(1)}"/>
+  <property name="module.jdk.classpath.androidwversionmanager" value="jdk.classpath.android_api_26_platform_(1)"/>
+
+  <property name="compiler.args.androidwversionmanager" value="-encoding UTF-8 -source 1.7 -target 1.7 ${compiler.args}"/>
+
+  <property name="androidwversionmanager.output.dir" value="${module.androidwversionmanager.basedir}/androidwversionmanager/build/intermediates/classes/debug"/>
+  <property name="androidwversionmanager.testoutput.dir" value="${module.androidwversionmanager.basedir}/androidwversionmanager/build/intermediates/classes/test/debug"/>
+
+  <path id="androidwversionmanager.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+
+  <path id="androidwversionmanager.module.production.classpath">
+    <path refid="${module.jdk.classpath.androidwversionmanager}"/>
+    <path refid="library.gradle:_org.thoughtcrime.ssl.pinning:androidpinning-1.0.0.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-iid-11.4.2.classpath"/>
+    <path refid="library.gradle:_android.arch.lifecycle:common:1.0.0@jar.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-core-ui-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-basement-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-core-utils-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-fragment-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-tasks-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_android.arch.core:common:1.0.0@jar.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-messaging-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-common-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-media-compat-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-annotations:26.1.0@jar.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-iid-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-common-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-basement-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-compat-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-v4-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-tasks-11.4.2.classpath"/>
+    <path refid="library.gradle:_android.arch.lifecycle:runtime-1.0.0.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-messaging-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_org.apache.http.legacy-android-26.classpath"/>
+  </path>
+
+  <path id="androidwversionmanager.runtime.production.module.classpath">
+    <pathelement location="${androidwversionmanager.output.dir}"/>
+    <path refid="library.gradle:_org.thoughtcrime.ssl.pinning:androidpinning-1.0.0.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-iid-11.4.2.classpath"/>
+    <path refid="library.gradle:_android.arch.lifecycle:common:1.0.0@jar.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-core-ui-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-basement-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-core-utils-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-fragment-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-tasks-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_android.arch.core:common:1.0.0@jar.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-messaging-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-common-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-media-compat-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-annotations:26.1.0@jar.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-iid-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-common-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-basement-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-compat-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-v4-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-tasks-11.4.2.classpath"/>
+    <path refid="library.gradle:_android.arch.lifecycle:runtime-1.0.0.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-messaging-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_org.apache.http.legacy-android-26.classpath"/>
+  </path>
+
+  <path id="androidwversionmanager.module.classpath">
+    <path refid="${module.jdk.classpath.androidwversionmanager}"/>
+    <pathelement location="${androidwversionmanager.output.dir}"/>
+    <path refid="library.gradle:_org.thoughtcrime.ssl.pinning:androidpinning-1.0.0.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-iid-11.4.2.classpath"/>
+    <path refid="library.gradle:_android.arch.lifecycle:common:1.0.0@jar.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-core-ui-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-basement-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-core-utils-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-fragment-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-tasks-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_android.arch.core:common:1.0.0@jar.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-messaging-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-common-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-media-compat-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-annotations:26.1.0@jar.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-iid-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-common-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-basement-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-compat-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-v4-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-tasks-11.4.2.classpath"/>
+    <path refid="library.gradle:_android.arch.lifecycle:runtime-1.0.0.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-messaging-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_org.apache.http.legacy-android-26.classpath"/>
+  </path>
+
+  <path id="androidwversionmanager.runtime.module.classpath">
+    <pathelement location="${androidwversionmanager.testoutput.dir}"/>
+    <pathelement location="${androidwversionmanager.output.dir}"/>
+    <path refid="library.gradle:_org.thoughtcrime.ssl.pinning:androidpinning-1.0.0.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-iid-11.4.2.classpath"/>
+    <path refid="library.gradle:_android.arch.lifecycle:common:1.0.0@jar.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-core-ui-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-basement-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-core-utils-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-fragment-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-tasks-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_android.arch.core:common:1.0.0@jar.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-messaging-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-common-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-media-compat-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-annotations:26.1.0@jar.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-iid-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-common-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-basement-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-compat-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-v4-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-tasks-11.4.2.classpath"/>
+    <path refid="library.gradle:_android.arch.lifecycle:runtime-1.0.0.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-messaging-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_org.apache.http.legacy-android-26.classpath"/>
+  </path>
+
+
+  <patternset id="excluded.from.module.androidwversionmanager">
+    <patternset refid="ignored.files"/>
+  </patternset>
+
+  <patternset id="excluded.from.compilation.androidwversionmanager">
+    <patternset refid="excluded.from.module.androidwversionmanager"/>
+  </patternset>
+
+  <path id="androidwversionmanager.module.sourcepath">
+    <dirset dir="${module.androidwversionmanager.basedir}/androidwversionmanager">
+      <include name="build/generated/source/apt/debug"/>
+      <include name="build/generated/source/r/debug"/>
+      <include name="build/generated/source/aidl/debug"/>
+      <include name="build/generated/source/buildConfig/debug"/>
+      <include name="build/generated/source/rs/debug"/>
+      <include name="build/generated/res/rs/debug"/>
+      <include name="build/generated/res/resValues/debug"/>
+      <include name="src/main/res"/>
+      <include name="src/main/java"/>
+    </dirset>
+  </path>
+
+  <path id="androidwversionmanager.module.test.sourcepath">
+    <dirset dir="${module.androidwversionmanager.basedir}/androidwversionmanager">
+      <include name="build/generated/source/r/androidTest/debug"/>
+      <include name="build/generated/source/aidl/androidTest/debug"/>
+      <include name="build/generated/source/buildConfig/androidTest/debug"/>
+      <include name="build/generated/source/rs/androidTest/debug"/>
+      <include name="build/generated/res/rs/androidTest/debug"/>
+      <include name="build/generated/res/resValues/androidTest/debug"/>
+    </dirset>
+  </path>
+
+
+  <target name="compile.module.androidwversionmanager" depends="compile.module.androidwversionmanager.production,compile.module.androidwversionmanager.tests" description="Compile module androidwversionmanager"/>
+
+  <target name="compile.module.androidwversionmanager.production" depends="register.custom.compilers" description="Compile module androidwversionmanager; production classes">
+    <mkdir dir="${androidwversionmanager.output.dir}"/>
+    <javac2 destdir="${androidwversionmanager.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.androidwversionmanager}/javac">
+      <compilerarg line="${compiler.args.androidwversionmanager}"/>
+      <bootclasspath refid="androidwversionmanager.module.bootclasspath"/>
+      <classpath refid="androidwversionmanager.module.production.classpath"/>
+      <src refid="androidwversionmanager.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.androidwversionmanager"/>
+    </javac2>
+
+    <copy todir="${androidwversionmanager.output.dir}">
+      <fileset dir="${module.androidwversionmanager.basedir}/androidwversionmanager/build/generated/source/apt/debug">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.androidwversionmanager.basedir}/androidwversionmanager/build/generated/source/r/debug">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.androidwversionmanager.basedir}/androidwversionmanager/build/generated/source/aidl/debug">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.androidwversionmanager.basedir}/androidwversionmanager/build/generated/source/buildConfig/debug">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.androidwversionmanager.basedir}/androidwversionmanager/build/generated/source/rs/debug">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.androidwversionmanager.basedir}/androidwversionmanager/build/generated/res/rs/debug">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.androidwversionmanager.basedir}/androidwversionmanager/build/generated/res/resValues/debug">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.androidwversionmanager.basedir}/androidwversionmanager/src/main/res">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.androidwversionmanager.basedir}/androidwversionmanager/src/main/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="compile.module.androidwversionmanager.tests" depends="register.custom.compilers,compile.module.androidwversionmanager.production" description="compile module androidwversionmanager; test classes" unless="skip.tests">
+    <mkdir dir="${androidwversionmanager.testoutput.dir}"/>
+    <javac2 destdir="${androidwversionmanager.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.androidwversionmanager}/javac">
+      <compilerarg line="${compiler.args.androidwversionmanager}"/>
+      <bootclasspath refid="androidwversionmanager.module.bootclasspath"/>
+      <classpath refid="androidwversionmanager.module.classpath"/>
+      <src refid="androidwversionmanager.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.androidwversionmanager"/>
+    </javac2>
+
+    <copy todir="${androidwversionmanager.testoutput.dir}">
+      <fileset dir="${module.androidwversionmanager.basedir}/androidwversionmanager/build/generated/source/r/androidTest/debug">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.androidwversionmanager.basedir}/androidwversionmanager/build/generated/source/aidl/androidTest/debug">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.androidwversionmanager.basedir}/androidwversionmanager/build/generated/source/buildConfig/androidTest/debug">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.androidwversionmanager.basedir}/androidwversionmanager/build/generated/source/rs/androidTest/debug">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.androidwversionmanager.basedir}/androidwversionmanager/build/generated/res/rs/androidTest/debug">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.androidwversionmanager.basedir}/androidwversionmanager/build/generated/res/resValues/androidTest/debug">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="clean.module.androidwversionmanager" description="cleanup module">
+    <delete dir="${androidwversionmanager.output.dir}"/>
+    <delete dir="${androidwversionmanager.testoutput.dir}"/>
+  </target>
+
+
+  <!-- Module nethunter-app -->
+
+  <dirname property="module.nethunter-app.basedir" file="${ant.file}"/>
+
+
+  <property name="module.jdk.home.nethunter-app" value="${jdk.home.android_api_26_platform_(1)}"/>
+  <property name="module.jdk.bin.nethunter-app" value="${jdk.bin.android_api_26_platform_(1)}"/>
+  <property name="module.jdk.classpath.nethunter-app" value="jdk.classpath.android_api_26_platform_(1)"/>
+
+  <property name="compiler.args.nethunter-app" value="-encoding UTF-8 -source 1.8 -target 1.8 ${compiler.args}"/>
+
+  <property name="nethunter-app.output.dir" value="${module.nethunter-app.basedir}/build/intermediates/classes/debug"/>
+  <property name="nethunter-app.testoutput.dir" value="${module.nethunter-app.basedir}/build/intermediates/classes/test/debug"/>
+
+  <path id="nethunter-app.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+
+  <path id="nethunter-app.module.production.classpath">
+    <path refid="${module.jdk.classpath.nethunter-app}"/>
+    <path refid="library.gradle:_com.google.guava:guava:23.2-android@jar.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-location-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:animated-vector-drawable-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.code.findbugs:jsr305:1.3.9@jar.classpath"/>
+    <path refid="library.gradle:_com.android.support:transition-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:appcompat-v7-26.1.0.classpath"/>
+    <path refid="library.gradle:_org.codehaus.mojo:animal-sniffer-annotations:1.14@jar.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-fragment-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-tasks-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_android.arch.core:common:1.0.0@jar.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-media-compat-26.1.0.classpath"/>
+    <path refid="library.gradle:_joda-time:joda-time:2.9.9@jar.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-annotations:26.1.0@jar.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-iid-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-basement-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-v4-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-compat-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-messaging-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_org.thoughtcrime.ssl.pinning:androidpinning-1.0.0.classpath"/>
+    <path refid="library.gradle:_com.google.errorprone:error_prone_annotations:2.0.18@jar.classpath"/>
+    <path refid="library.gradle:_com.android.support:recyclerview-v7-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.j2objc:j2objc-annotations:1.1@jar.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-iid-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.databinding:library-3.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-vector-drawable-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-core-ui-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-base-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-basement-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-core-utils-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.databinding:adapters-3.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-base-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.databinding:baselibrary:3.1.0@jar.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-messaging-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-location-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-common-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:design-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-common-11.4.2.classpath"/>
+    <path refid="library.gradle:_android.arch.lifecycle:runtime-1.0.3.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-tasks-11.4.2.classpath"/>
+    <path refid="library.gradle:_android.arch.lifecycle:common:1.0.3@jar.classpath"/>
+    <pathelement location="${androidwversionmanager.output.dir}"/>
+  </path>
+
+  <path id="nethunter-app.runtime.production.module.classpath">
+    <pathelement location="${nethunter-app.output.dir}"/>
+    <path refid="library.gradle:_com.google.guava:guava:23.2-android@jar.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-location-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:animated-vector-drawable-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.code.findbugs:jsr305:1.3.9@jar.classpath"/>
+    <path refid="library.gradle:_com.android.support:transition-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:appcompat-v7-26.1.0.classpath"/>
+    <path refid="library.gradle:_org.codehaus.mojo:animal-sniffer-annotations:1.14@jar.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-fragment-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-tasks-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_android.arch.core:common:1.0.0@jar.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-media-compat-26.1.0.classpath"/>
+    <path refid="library.gradle:_joda-time:joda-time:2.9.9@jar.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-annotations:26.1.0@jar.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-iid-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-basement-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-v4-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-compat-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-messaging-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_org.thoughtcrime.ssl.pinning:androidpinning-1.0.0.classpath"/>
+    <path refid="library.gradle:_com.google.errorprone:error_prone_annotations:2.0.18@jar.classpath"/>
+    <path refid="library.gradle:_com.android.support:recyclerview-v7-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.j2objc:j2objc-annotations:1.1@jar.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-iid-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.databinding:library-3.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-vector-drawable-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-core-ui-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-base-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-basement-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-core-utils-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.databinding:adapters-3.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-base-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.databinding:baselibrary:3.1.0@jar.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-messaging-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-location-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-common-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:design-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-common-11.4.2.classpath"/>
+    <path refid="library.gradle:_android.arch.lifecycle:runtime-1.0.3.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-tasks-11.4.2.classpath"/>
+    <path refid="library.gradle:_android.arch.lifecycle:common:1.0.3@jar.classpath"/>
+    <path refid="androidwversionmanager.runtime.production.module.classpath"/>
+  </path>
+
+  <path id="nethunter-app.module.classpath">
+    <path refid="${module.jdk.classpath.nethunter-app}"/>
+    <pathelement location="${nethunter-app.output.dir}"/>
+    <path refid="library.gradle:_com.google.guava:guava:23.2-android@jar.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-location-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:animated-vector-drawable-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.code.findbugs:jsr305:1.3.9@jar.classpath"/>
+    <path refid="library.gradle:_com.android.support:transition-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:appcompat-v7-26.1.0.classpath"/>
+    <path refid="library.gradle:_org.codehaus.mojo:animal-sniffer-annotations:1.14@jar.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-fragment-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-tasks-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_android.arch.core:common:1.0.0@jar.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-media-compat-26.1.0.classpath"/>
+    <path refid="library.gradle:_joda-time:joda-time:2.9.9@jar.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-annotations:26.1.0@jar.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-iid-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-basement-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-v4-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-compat-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-messaging-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_org.thoughtcrime.ssl.pinning:androidpinning-1.0.0.classpath"/>
+    <path refid="library.gradle:_com.google.errorprone:error_prone_annotations:2.0.18@jar.classpath"/>
+    <path refid="library.gradle:_com.android.support:recyclerview-v7-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.j2objc:j2objc-annotations:1.1@jar.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-iid-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.databinding:library-3.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-vector-drawable-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-core-ui-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-base-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-basement-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-core-utils-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.databinding:adapters-3.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-base-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.databinding:baselibrary:3.1.0@jar.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-messaging-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-location-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-common-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:design-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-common-11.4.2.classpath"/>
+    <path refid="library.gradle:_android.arch.lifecycle:runtime-1.0.3.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-tasks-11.4.2.classpath"/>
+    <path refid="library.gradle:_android.arch.lifecycle:common:1.0.3@jar.classpath"/>
+    <pathelement location="${androidwversionmanager.testoutput.dir}"/>
+    <pathelement location="${androidwversionmanager.output.dir}"/>
+  </path>
+
+  <path id="nethunter-app.runtime.module.classpath">
+    <pathelement location="${nethunter-app.testoutput.dir}"/>
+    <pathelement location="${nethunter-app.output.dir}"/>
+    <path refid="library.gradle:_com.google.guava:guava:23.2-android@jar.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-location-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:animated-vector-drawable-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.code.findbugs:jsr305:1.3.9@jar.classpath"/>
+    <path refid="library.gradle:_com.android.support:transition-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:appcompat-v7-26.1.0.classpath"/>
+    <path refid="library.gradle:_org.codehaus.mojo:animal-sniffer-annotations:1.14@jar.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-fragment-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-tasks-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_android.arch.core:common:1.0.0@jar.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-media-compat-26.1.0.classpath"/>
+    <path refid="library.gradle:_joda-time:joda-time:2.9.9@jar.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-annotations:26.1.0@jar.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-iid-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-basement-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-v4-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-compat-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-messaging-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_org.thoughtcrime.ssl.pinning:androidpinning-1.0.0.classpath"/>
+    <path refid="library.gradle:_com.google.errorprone:error_prone_annotations:2.0.18@jar.classpath"/>
+    <path refid="library.gradle:_com.android.support:recyclerview-v7-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.j2objc:j2objc-annotations:1.1@jar.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-iid-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.databinding:library-3.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-vector-drawable-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-core-ui-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-base-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-basement-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:support-core-utils-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.android.databinding:adapters-3.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-base-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.databinding:baselibrary:3.1.0@jar.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-messaging-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-location-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-common-license-11.4.2.classpath"/>
+    <path refid="library.gradle:_com.android.support:design-26.1.0.classpath"/>
+    <path refid="library.gradle:_com.google.firebase:firebase-common-11.4.2.classpath"/>
+    <path refid="library.gradle:_android.arch.lifecycle:runtime-1.0.3.classpath"/>
+    <path refid="library.gradle:_com.google.android.gms:play-services-tasks-11.4.2.classpath"/>
+    <path refid="library.gradle:_android.arch.lifecycle:common:1.0.3@jar.classpath"/>
+    <path refid="androidwversionmanager.runtime.module.classpath"/>
+  </path>
+
+
+  <patternset id="excluded.from.module.nethunter-app">
+    <patternset refid="ignored.files"/>
+  </patternset>
+
+  <patternset id="excluded.from.compilation.nethunter-app">
+    <patternset refid="excluded.from.module.nethunter-app"/>
+  </patternset>
+
+  <path id="nethunter-app.module.sourcepath">
+    <dirset dir="${module.nethunter-app.basedir}">
+      <include name="build/generated/source/apt/debug"/>
+      <include name="build/generated/source/r/debug"/>
+      <include name="build/generated/source/aidl/debug"/>
+      <include name="build/generated/source/buildConfig/debug"/>
+      <include name="build/generated/source/rs/debug"/>
+      <include name="build/generated/res/rs/debug"/>
+      <include name="build/generated/res/resValues/debug"/>
+      <include name="res"/>
+      <include name="assets"/>
+      <include name="src"/>
+    </dirset>
+  </path>
+
+  <path id="nethunter-app.module.test.sourcepath">
+    <dirset dir="${module.nethunter-app.basedir}">
+      <include name="build/generated/source/r/androidTest/debug"/>
+      <include name="build/generated/source/aidl/androidTest/debug"/>
+      <include name="build/generated/source/buildConfig/androidTest/debug"/>
+      <include name="build/generated/source/rs/androidTest/debug"/>
+      <include name="build/generated/res/rs/androidTest/debug"/>
+      <include name="build/generated/res/resValues/androidTest/debug"/>
+    </dirset>
+  </path>
+
+
+  <target name="compile.module.nethunter-app" depends="compile.module.nethunter-app.production,compile.module.nethunter-app.tests" description="Compile module nethunter-app"/>
+
+  <target name="compile.module.nethunter-app.production" depends="register.custom.compilers,compile.module.androidwversionmanager" description="Compile module nethunter-app; production classes">
+    <mkdir dir="${nethunter-app.output.dir}"/>
+    <javac2 destdir="${nethunter-app.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.nethunter-app}/javac">
+      <compilerarg line="${compiler.args.nethunter-app}"/>
+      <bootclasspath refid="nethunter-app.module.bootclasspath"/>
+      <classpath refid="nethunter-app.module.production.classpath"/>
+      <src refid="nethunter-app.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.nethunter-app"/>
+    </javac2>
+
+    <copy todir="${nethunter-app.output.dir}">
+      <fileset dir="${module.nethunter-app.basedir}/build/generated/source/apt/debug">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.nethunter-app.basedir}/build/generated/source/r/debug">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.nethunter-app.basedir}/build/generated/source/aidl/debug">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.nethunter-app.basedir}/build/generated/source/buildConfig/debug">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.nethunter-app.basedir}/build/generated/source/rs/debug">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.nethunter-app.basedir}/build/generated/res/rs/debug">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.nethunter-app.basedir}/build/generated/res/resValues/debug">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.nethunter-app.basedir}/res">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.nethunter-app.basedir}/assets">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.nethunter-app.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="compile.module.nethunter-app.tests" depends="register.custom.compilers,compile.module.nethunter-app.production" description="compile module nethunter-app; test classes" unless="skip.tests">
+    <mkdir dir="${nethunter-app.testoutput.dir}"/>
+    <javac2 destdir="${nethunter-app.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.nethunter-app}/javac">
+      <compilerarg line="${compiler.args.nethunter-app}"/>
+      <bootclasspath refid="nethunter-app.module.bootclasspath"/>
+      <classpath refid="nethunter-app.module.classpath"/>
+      <src refid="nethunter-app.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.nethunter-app"/>
+    </javac2>
+
+    <copy todir="${nethunter-app.testoutput.dir}">
+      <fileset dir="${module.nethunter-app.basedir}/build/generated/source/r/androidTest/debug">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.nethunter-app.basedir}/build/generated/source/aidl/androidTest/debug">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.nethunter-app.basedir}/build/generated/source/buildConfig/androidTest/debug">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.nethunter-app.basedir}/build/generated/source/rs/androidTest/debug">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.nethunter-app.basedir}/build/generated/res/rs/androidTest/debug">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.nethunter-app.basedir}/build/generated/res/resValues/androidTest/debug">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="clean.module.nethunter-app" description="cleanup module">
+    <delete dir="${nethunter-app.output.dir}"/>
+    <delete dir="${nethunter-app.testoutput.dir}"/>
+  </target>
+
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+
+  <target name="clean" depends="clean.module.androidwversionmanager, clean.module.nethunter-app" description="cleanup all"/>
+
+  <target name="build.modules" depends="init, clean, compile.module.androidwversionmanager, compile.module.nethunter-app" description="build all modules"/>
+
+  <target name="all" depends="build.modules" description="build all"/>
+</project>
+

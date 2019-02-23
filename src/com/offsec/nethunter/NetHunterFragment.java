@@ -3,6 +3,7 @@ package com.offsec.nethunter;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Build;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -126,10 +127,20 @@ public class NetHunterFragment extends Fragment {
 
     private void setHIDON() {
         new Thread(() -> {
-            try {
-                Process p = Runtime.getRuntime().exec("su -c getprop sys.usb.config > /data/local/usb.config.tmp && su -c setprop sys.usb.config `cat /data/local/usb.config.tmp`,hid");
-            } catch (IOException e) {
-                e.printStackTrace();
+
+                if (isOPO5()) {
+                    try {
+                        Process p = Runtime.getRuntime().exec("su -c getprop sys.usb.config > /data/local/usb.config.tmp && su -c setprop sys.usb.config `cat /data/local/usb.config.tmp`,hid");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    try {
+                        Process p = Runtime.getRuntime().exec("su -c getprop sys.usb.config > /data/local/usb.config.tmp && su -c setprop sys.usb.config `cat /data/local/usb.config.tmp`,hid");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
             }
         }).start();
     }
@@ -324,5 +335,15 @@ public class NetHunterFragment extends Fragment {
         } catch (Exception e) {
             Toast.makeText(getContext(), "Error copying: " + text, Toast.LENGTH_SHORT).show();
         }
+    }
+    private String getDeviceName() {
+        return Build.DEVICE;
+    }
+
+    public Boolean isOPO5() {
+        return getDeviceName().equalsIgnoreCase("A5000") ||
+                getDeviceName().equalsIgnoreCase("A5010") ||
+                getDeviceName().equalsIgnoreCase("OnePlus5") ||
+                getDeviceName().equalsIgnoreCase("OnePlus5T");
     }
 }

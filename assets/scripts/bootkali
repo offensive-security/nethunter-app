@@ -103,7 +103,7 @@ else
 	#Open VNC
 
 	if [ "$1" == "vnc" ] && [ "$2" == "start" ]; then
-        	echo "good"
+        	        	sh /data/data/com.offsec.nethunter/files/scripts/start-vnc $3 $4 $5 $6 $7 $8
 	fi
 
 	# HID Keyboard Command a.k.a Teensy style
