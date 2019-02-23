@@ -10,9 +10,6 @@ import android.location.LocationManager;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -28,6 +25,10 @@ import org.joda.time.format.DateTimeFormatter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 
 public class LocationUpdateService extends Service implements GpsdServer.ConnectionListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -114,14 +115,12 @@ public class LocationUpdateService extends Service implements GpsdServer.Connect
         double longitude = location.getLongitude();
         char ewSuffix = longitude < 0 ? 'W' : 'E';
         longitude = Math.abs(longitude);
-        @SuppressLint("DefaultLocale")
-
-        String lat = String.format("%02d%02d.%04d,%c",
+        @SuppressLint("DefaultLocale") String lat = String.format("%02d%02d.%04d,%c",
                 (int) latitude,
                 (int) (latitude * 60) % 60,
                 (int) (latitude * 60 * 10000) % 10000,
                 nsSuffix);
-        String lon = String.format("%03d%02d.%04d,%c",
+        @SuppressLint("DefaultLocale") String lon = String.format("%03d%02d.%04d,%c",
                 (int) longitude,
                 (int) (longitude * 60) % 60,
                 (int) (longitude * 60 * 10000) % 10000,
@@ -169,11 +168,7 @@ public class LocationUpdateService extends Service implements GpsdServer.Connect
         this.updateReceiver = receiver;
 
         GpsdServer gpsdServer = null;
-        try {
-            gpsdServer = new GpsdServer(this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        gpsdServer = new GpsdServer(this);
         if (gpsdServer != null) {
             gpsdServer.execute(null, null);
             Log.d(TAG, "GPSDServer Async Task Begun");

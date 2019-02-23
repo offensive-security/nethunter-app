@@ -2,9 +2,6 @@ package com.offsec.nethunter;
 
 import android.os.Build;
 import android.os.Bundle;
-import androidx.core.app.NavUtils;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -13,6 +10,10 @@ import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
 
 import java.util.Locale;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
 
 public class EditSourceActivity extends AppCompatActivity {
 
@@ -32,7 +33,7 @@ public class EditSourceActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(getResources().getColor(R.color.darkTitle));
         }
 
-        EditText source = (EditText) findViewById(R.id.source);
+        EditText source = findViewById(R.id.source);
         source.setText(String.format(Locale.getDefault(),getString(R.string.loading_file), configFilePath));
         exe.ReadFile_ASYNC(configFilePath, source);
 
@@ -67,7 +68,7 @@ public class EditSourceActivity extends AppCompatActivity {
     */
 
     public void updateSource(View view) {
-        EditText source = (EditText) findViewById(R.id.source);
+        EditText source = findViewById(R.id.source);
         String newSource = source.getText().toString();
         Boolean isSaved = exe.SaveFileContents(newSource, configFilePath);
         if (isSaved) {

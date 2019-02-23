@@ -3,12 +3,12 @@ package com.offsec.nethunter.utils;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
-import androidx.appcompat.app.AlertDialog;
 import android.util.Log;
 
 import com.offsec.nethunter.R;
+
+import androidx.appcompat.app.AlertDialog;
 
 
 
@@ -46,21 +46,15 @@ public class CheckForRoot  extends AsyncTask<String, Boolean, String> {
             AlertDialog.Builder adb = new AlertDialog.Builder(ctx);
             adb.setTitle(R.string.rootdialogtitle)
                     .setMessage(R.string.rootdialogmessage)
-                    .setPositiveButton(R.string.rootdialogposbutton, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                            cancel(true);
-                            CheckForRoot mytask = new CheckForRoot(ctx);
-                            mytask.execute();
-                        }
+                    .setPositiveButton(R.string.rootdialogposbutton, (dialog, which) -> {
+                        dialog.cancel();
+                        cancel(true);
+                        CheckForRoot mytask = new CheckForRoot(ctx);
+                        mytask.execute();
                     })
-                    .setNegativeButton(R.string.rootdialognegbutton, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            cancel(true);
-                            ((Activity) ctx).finish();
-                        }
+                    .setNegativeButton(R.string.rootdialognegbutton, (dialog, which) -> {
+                        cancel(true);
+                        ((Activity) ctx).finish();
                     });
             AlertDialog ad = adb.create();
             ad.setCancelable(false);

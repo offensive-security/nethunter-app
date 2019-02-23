@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -15,7 +14,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -25,6 +23,8 @@ import android.widget.Toast;
 import com.offsec.nethunter.utils.NhPaths;
 
 import java.util.ArrayList;
+
+import androidx.fragment.app.Fragment;
 
 public class NmapFragment extends Fragment {
 
@@ -69,38 +69,32 @@ public class NmapFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.nmap, container, false);
 
         // Default advanced options as invisible
-        final LinearLayout AdvLayout = (LinearLayout) rootView.findViewById(R.id.nmap_adv_layout);
+        final LinearLayout AdvLayout = rootView.findViewById(R.id.nmap_adv_layout);
         AdvLayout.setVisibility(View.GONE);
 
         SharedPreferences sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
         Context mContext = getActivity().getApplicationContext();
 
         // Switch to activate open/close of advanced options
-        Switch advswitch = (Switch) rootView.findViewById(R.id.nmap_adv_switch);
+        Switch advswitch = rootView.findViewById(R.id.nmap_adv_switch);
         advswitch.setChecked(false);
-        advswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    Log.d(TAG, "Advanced Options Open");
-                    AdvLayout.setVisibility(View.VISIBLE);
-                } else {
-                    Log.d(TAG, "Advanced Options Closed");
-                    AdvLayout.setVisibility(View.GONE);
-                }
+        advswitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                Log.d(TAG, "Advanced Options Open");
+                AdvLayout.setVisibility(View.VISIBLE);
+            } else {
+                Log.d(TAG, "Advanced Options Closed");
+                AdvLayout.setVisibility(View.GONE);
             }
         });
 
-        final Button searchButton = (Button) rootView.findViewById(R.id.nmap_scan_button);
+        final Button searchButton = rootView.findViewById(R.id.nmap_scan_button);
         searchButton.setOnClickListener(
-                new View.OnClickListener() {
-                    public void onClick(View view) {
-                        getCmd();
-                    }
-                });
+                view -> getCmd());
 
 
         // NMAP Interface Spinner
-        Spinner typeSpinner = (Spinner) rootView.findViewById(R.id.nmap_int_spinner);
+        Spinner typeSpinner = rootView.findViewById(R.id.nmap_int_spinner);
         ArrayAdapter<CharSequence> typeAdapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.nmap_interface_array, android.R.layout.simple_spinner_item);
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -144,7 +138,7 @@ public class NmapFragment extends Fragment {
         });
 
         // NMAP Technique Spinner
-        Spinner techSpinner = (Spinner) rootView.findViewById(R.id.nmap_scan_tech_spinner);
+        Spinner techSpinner = rootView.findViewById(R.id.nmap_scan_tech_spinner);
         ArrayAdapter<CharSequence> techAdapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.nmap_scantechnique_array, android.R.layout.simple_spinner_item);
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -207,15 +201,11 @@ public class NmapFragment extends Fragment {
         });
 
         // Search button
-        addClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                intentClickListener_NH("nmap " + getCmd());
-            }
-        }, rootView);
+        addClickListener(v -> intentClickListener_NH("nmap " + getCmd()), rootView);
 
 
         // NMAP Timing Spinner
-        Spinner timeSpinner = (Spinner) rootView.findViewById(R.id.nmap_timing_spinner);
+        Spinner timeSpinner = rootView.findViewById(R.id.nmap_timing_spinner);
         ArrayAdapter<CharSequence> timeAdapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.nmap_timing_array, android.R.layout.simple_spinner_item);
         timeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -267,122 +257,105 @@ public class NmapFragment extends Fragment {
             }
         });
 
-        final CheckBox allCheckbox = (CheckBox) rootView.findViewById(R.id.nmap_all_check);
-        allCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (buttonView.isChecked()) {
-                    searchall = " -A";
-                    addToCmd(searchall);
-                    Log.d(TAG, searchall);
-                } else {
-                    removeFromCmd(searchall);
-                    Log.d(TAG, searchall);
-                }
-
+        final CheckBox allCheckbox = rootView.findViewById(R.id.nmap_all_check);
+        allCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (buttonView.isChecked()) {
+                searchall = " -A";
+                addToCmd(searchall);
+                Log.d(TAG, searchall);
+            } else {
+                removeFromCmd(searchall);
+                Log.d(TAG, searchall);
             }
+
         });
 
         // Checkbox for Fastmode
-        final CheckBox fastmodeCheckbox = (CheckBox) rootView.findViewById(R.id.nmap_fastmode_check);
-        View.OnClickListener checkBoxListener = new View.OnClickListener() {
-            public void onClick(View v) {
-                if (fastmodeCheckbox.isChecked()) {
-                    fastmode = " -F";
-                    addToCmd(fastmode);
-                } else {
-                    removeFromCmd(fastmode);
-                }
+        final CheckBox fastmodeCheckbox = rootView.findViewById(R.id.nmap_fastmode_check);
+        View.OnClickListener checkBoxListener = v -> {
+            if (fastmodeCheckbox.isChecked()) {
+                fastmode = " -F";
+                addToCmd(fastmode);
+            } else {
+                removeFromCmd(fastmode);
             }
         };
         fastmodeCheckbox.setOnClickListener(checkBoxListener);
 
         // Checkbox for Ping Scan only
-        final CheckBox pingCheckbox = (CheckBox) rootView.findViewById(R.id.nmap_ping_check);
-        checkBoxListener = new View.OnClickListener() {
-            public void onClick(View v) {
-                if (pingCheckbox.isChecked()) {
-                    fastmode = " -sn";
-                    addToCmd(fastmode);
-                } else {
-                    removeFromCmd(fastmode);
-                }
+        final CheckBox pingCheckbox = rootView.findViewById(R.id.nmap_ping_check);
+        checkBoxListener = v -> {
+            if (pingCheckbox.isChecked()) {
+                fastmode = " -sn";
+                addToCmd(fastmode);
+            } else {
+                removeFromCmd(fastmode);
             }
         };
         pingCheckbox.setOnClickListener(checkBoxListener);
 
         // Checkbox for Top Ports
-        final CheckBox topportsCheckbox = (CheckBox) rootView.findViewById(R.id.nmap_top_ports_check);
-        checkBoxListener = new View.OnClickListener() {
-            public void onClick(View v) {
-                if (topportsCheckbox.isChecked()) {
-                    topports = " --top-ports 20";
-                    addToCmd(topports);
-                } else {
-                    removeFromCmd(topports);
-                }
+        final CheckBox topportsCheckbox = rootView.findViewById(R.id.nmap_top_ports_check);
+        checkBoxListener = v -> {
+            if (topportsCheckbox.isChecked()) {
+                topports = " --top-ports 20";
+                addToCmd(topports);
+            } else {
+                removeFromCmd(topports);
             }
         };
         topportsCheckbox.setOnClickListener(checkBoxListener);
 
         // Checkbox for UDP Scan
-        final CheckBox udpCheckbox = (CheckBox) rootView.findViewById(R.id.nmap_udp_checkbox);
-        checkBoxListener = new View.OnClickListener() {
-            public void onClick(View v) {
-                if (udpCheckbox.isChecked()) {
-                    udpscan = " -sU";
-                    addToCmd(udpscan);
-                } else {
-                    removeFromCmd(udpscan);
-                }
+        final CheckBox udpCheckbox = rootView.findViewById(R.id.nmap_udp_checkbox);
+        checkBoxListener = v -> {
+            if (udpCheckbox.isChecked()) {
+                udpscan = " -sU";
+                addToCmd(udpscan);
+            } else {
+                removeFromCmd(udpscan);
             }
         };
         allCheckbox.setOnClickListener(checkBoxListener);
 
 
         // Checkbox for IPv6
-        final CheckBox ipv6box = (CheckBox) rootView.findViewById(R.id.nmap_ipv6_check);
-        checkBoxListener = new View.OnClickListener() {
-            public void onClick(View v) {
-                if (ipv6box.isChecked()) {
-                    ipv6check = " -6";
-                    addToCmd(ipv6check);
-                } else {
-                    removeFromCmd(ipv6check);
-                }
+        final CheckBox ipv6box = rootView.findViewById(R.id.nmap_ipv6_check);
+        checkBoxListener = v -> {
+            if (ipv6box.isChecked()) {
+                ipv6check = " -6";
+                addToCmd(ipv6check);
+            } else {
+                removeFromCmd(ipv6check);
             }
         };
         ipv6box.setOnClickListener(checkBoxListener);
 
         // Checkbox for Service Version
-        final CheckBox svbox = (CheckBox) rootView.findViewById(R.id.nmap_SV_checkbox);
-        checkBoxListener = new View.OnClickListener() {
-            public void onClick(View v) {
-                if (svbox.isChecked()) {
-                    sv = " -sV";
-                    addToCmd(sv);
-                } else {
-                    removeFromCmd(sv);
-                }
+        final CheckBox svbox = rootView.findViewById(R.id.nmap_SV_checkbox);
+        checkBoxListener = v -> {
+            if (svbox.isChecked()) {
+                sv = " -sV";
+                addToCmd(sv);
+            } else {
+                removeFromCmd(sv);
             }
         };
         svbox.setOnClickListener(checkBoxListener);
 
         // Checkbox for OS Detect
-        final CheckBox osdetectbox = (CheckBox) rootView.findViewById(R.id.nmap_osonly_check);
-        checkBoxListener = new View.OnClickListener() {
-            public void onClick(View v) {
-                if (osdetectbox.isChecked()) {
-                    OSdetect = " -O";
-                    addToCmd(OSdetect);
-                } else {
-                    removeFromCmd(OSdetect);
-                }
+        final CheckBox osdetectbox = rootView.findViewById(R.id.nmap_osonly_check);
+        checkBoxListener = v -> {
+            if (osdetectbox.isChecked()) {
+                OSdetect = " -O";
+                addToCmd(OSdetect);
+            } else {
+                removeFromCmd(OSdetect);
             }
         };
         osdetectbox.setOnClickListener(checkBoxListener);
 
-        searchBar = (EditText) rootView.findViewById(R.id.nmap_searchbar);
+        searchBar = rootView.findViewById(R.id.nmap_searchbar);
         searchBar.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -402,7 +375,7 @@ public class NmapFragment extends Fragment {
         });
 
         // Ports text field
-        portsBar = (EditText) rootView.findViewById(R.id.nmap_ports);
+        portsBar = rootView.findViewById(R.id.nmap_ports);
         portsBar.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -436,8 +409,8 @@ public class NmapFragment extends Fragment {
     }
 
     private static void cleanCmd() {
-        for (int j = CommandComposed.size() - 1; j >= 0; j--) {
-            CommandComposed.remove(j);
+        if (CommandComposed.size() > 0) {
+            CommandComposed.subList(0, CommandComposed.size()).clear();
         }
     }
 

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +17,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.offsec.nethunter.utils.NhPaths;
+
+import androidx.fragment.app.Fragment;
 
 public class VNCFragment extends Fragment {
 
@@ -61,50 +62,40 @@ public class VNCFragment extends Fragment {
             xwidth = Integer.toString(screen_width);
             xheight = Integer.toString(screen_height);
         }
-        Button SetupVNCButton = (Button) rootView.findViewById(R.id.set_up_vnc);
-        Button StartVNCButton = (Button) rootView.findViewById(R.id.start_vnc);
-        Button StopVNCButton = (Button) rootView.findViewById(R.id.stop_vnc);
-        Button OpenVNCButton = (Button) rootView.findViewById(R.id.vncClientStart);
+        Button SetupVNCButton = rootView.findViewById(R.id.set_up_vnc);
+        Button StartVNCButton = rootView.findViewById(R.id.start_vnc);
+        Button StopVNCButton = rootView.findViewById(R.id.stop_vnc);
+        Button OpenVNCButton = rootView.findViewById(R.id.vncClientStart);
 
         String[] resolutions = new String[]{"Native", "256 Colors", "64 Colors"};
-        Spinner resolution_spinner = (Spinner) rootView.findViewById(R.id.resolution_spinner);
+        Spinner resolution_spinner = rootView.findViewById(R.id.resolution_spinner);
         resolution_spinner.setAdapter(new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_list_item_1, resolutions));
 
         // Checkbox for localhost only
-        final CheckBox localhostCheckBox = (CheckBox) rootView.findViewById(R.id.vnc_checkBox);
+        final CheckBox localhostCheckBox = rootView.findViewById(R.id.vnc_checkBox);
         localhostCheckBox.setChecked(true);
-        View.OnClickListener checkBoxListener = new View.OnClickListener() {
-            public void onClick(View v) {
-                if (localhostCheckBox.isChecked()) {
-                    localhostonly = "-localhost ";
-                } else {
-                    localhostonly = "";
-                }
+        View.OnClickListener checkBoxListener = v -> {
+            if (localhostCheckBox.isChecked()) {
+                localhostonly = "-localhost ";
+            } else {
+                localhostonly = "";
             }
         };
         localhostCheckBox.setOnClickListener(checkBoxListener);
 
-        addClickListener(SetupVNCButton, new View.OnClickListener() {
-            public void onClick(View v) {
-                intentClickListener_NH("vncpasswd && exit"); // since is a kali command we can send it as is
-            }
+        addClickListener(SetupVNCButton, v -> {
+            intentClickListener_NH("vncpasswd && exit"); // since is a kali command we can send it as is
         });
-        addClickListener(StartVNCButton, new View.OnClickListener() {
-            public void onClick(View v) {
-                intentClickListener_NH("vncserver :1 " + localhostonly + "-geometry " + xwidth + "x" + xheight + " && echo \"Closing terminal in 5 secs\" && sleep 5 && exit"); // since is a kali command we can send it as is
-                Log.d(TAG, localhostonly);
-            }
+        addClickListener(StartVNCButton, v -> {
+            intentClickListener_NH("vncserver :1 " + localhostonly + "-geometry " + xwidth + "x" + xheight + " && echo \"Closing terminal in 5 secs\" && sleep 5 && exit"); // since is a kali command we can send it as is
+            Log.d(TAG, localhostonly);
         });
-        addClickListener(StopVNCButton, new View.OnClickListener() {
-            public void onClick(View v) {
-                intentClickListener_NH("vncserver -kill :1 && echo \"Closing terminal in 5 secs\" && sleep 5 && exit"); // since is a kali command we can send it as is
-            }
+        addClickListener(StopVNCButton, v -> {
+            intentClickListener_NH("vncserver -kill :1 && echo \"Closing terminal in 5 secs\" && sleep 5 && exit"); // since is a kali command we can send it as is
         });
-        addClickListener(OpenVNCButton, new View.OnClickListener() {
-            public void onClick(View v) {
-                intentClickListener_VNC(); // since is a kali command we can send it as is
-            }
+        addClickListener(OpenVNCButton, v -> {
+            intentClickListener_VNC(); // since is a kali command we can send it as is
         });
 
 
@@ -143,7 +134,7 @@ public class VNCFragment extends Fragment {
             }
 
         } catch (Exception e) {
-            Log.d("errorLAinching", e.toString());
+            Log.d("errorLaunching", e.toString());
             Toast.makeText(getActivity().getApplicationContext(), "NetHunter VNC not found!", Toast.LENGTH_SHORT).show();
         }
     }
