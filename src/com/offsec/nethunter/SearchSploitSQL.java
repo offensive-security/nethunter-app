@@ -39,6 +39,7 @@ class SearchSploitSQL extends SQLiteOpenHelper {
                 SearchSploit.TYPE + " TEXT," +
                 SearchSploit.PORT + " INTEGER)";
         database.execSQL(CREATE_SEARCHSPLOIT_TABLE);
+        database.disableWriteAheadLogging();
     }
 
     public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {

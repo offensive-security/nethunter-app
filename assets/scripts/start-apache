@@ -1,5 +1,3 @@
 unset LD_PRELOAD
-/system/xbin/chroot /data/local/nhsystem/kali-armhf /bin/bash -c "chmod 777 /dev/null"
-LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin /system/xbin/chroot /data/local/nhsystem/kali-armhf /usr/sbin/apachectl start
-
-
+busybox chroot /data/local/nhsystem/kali-armhf /bin/bash -c "chmod 777 /dev/null"
+busybox chroot /data/local/nhsystem/kali-armhf /bin/bash -c "/etc/init.d/apache2 start"

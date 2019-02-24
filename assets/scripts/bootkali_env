@@ -2,6 +2,7 @@
 
 ######### IMPORT BOOTKALI INITIALIZATION #########
 SCRIPT_PATH=$(readlink -f $0)
+. ${SCRIPT_PATH%/*}/bootkali_log
 . ${SCRIPT_PATH%/*}/bootkali_init
 
 ######### EXPORT ENVIRONMENT #########

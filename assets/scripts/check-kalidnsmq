@@ -1,5 +1,5 @@
 unset LD_PRELOAD
-if [[ -n $(ps |grep '/usr/sbin/dnsmasq') ]]; then
+if [[ $(ps | grep dnsmasq) ]]; then
     echo "1"
 else
     echo "0"

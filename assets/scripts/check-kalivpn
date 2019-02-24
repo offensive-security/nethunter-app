@@ -1,7 +1,6 @@
 unset LD_PRELOAD
-if [[ -n $(ps |grep '/usr/sbin/openvpn') ]]; then
+if [[ $(ps | grep openvpn) ]]; then
     echo "1"
 else
     echo "0"
 fi
-

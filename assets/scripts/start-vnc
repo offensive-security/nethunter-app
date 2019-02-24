@@ -1,0 +1,25 @@
+#!/system/bin/sh
+unset LD_PRELOAD
+
+
+start_sql="/data/data/com.offsec.nethunter/files/scripts/sqlite3 /data/data/com.iiordanov.freebVNC/databases/VncDatabase"
+
+if [ ! $(dumpsys window windows | grep -E 'mCurrentFocus|mFocusedApp' | grep com.iiordanov.bVNC.RemoteCanvasActivity) ]; then
+        if [ ! -f /data/data/com.iiordanov.freebVNC/databases/VncDatabase ] || [ ! $($start_sql "SELECT _id FROM CONNECTION_BEAN WHERE _id = '1'") ]; then
+        am start -n com.iiordanov.freebVNC/com.iiordanov.bVNC.bVNC
+        sleep 0.5
+        input keyevent KEYCODE_ESCAPE
+        $start_sql "INSERT INTO CONNECTION_BEAN (_id, SSHPORT, NICKNAME, ADDRESS, PORT, PASSWORD, USERNAME, COLORMODEL) VALUES (1, 22, '$1', '$2', '$3', '$4', '$5', '$6');"
+        $start_sql "INSERT INTO MOST_RECENT (_id, CONNECTION_ID, SHOW_SPLASH_VERSION, TEXT_INDEX) VALUES (1, 1, 0, 0);"
+        am start -S com.iiordanov.freebVNC/com.iiordanov.bVNC.bVNC
+        sleep 0.5
+        input keyevent KEYCODE_ESCAPE
+    else
+        $start_sql "UPDATE CONNECTION_BEAN SET NICKNAME = '$1', ADDRESS = '$2', PORT = '$3', PASSWORD = '$4', USERNAME = '$5', COLORMODEL = '$6' WHERE _id = '1';"
+        am start -n com.iiordanov.freebVNC/com.iiordanov.bVNC.bVNC
+        sleep 0.5
+        input keyevent KEYCODE_ESCAPE
+    fi
+else
+    am start -n com.iiordanov.freebVNC/com.iiordanov.bVNC.bVNC
+fi
