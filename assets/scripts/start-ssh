@@ -1,4 +1,3 @@
 unset LD_PRELOAD
-chroot /data/local/nhsystem/kali-armhf /bin/bash -c "chmod 777 /dev/null"
-chroot /data/local/nhsystem/kali-armhf /bin/bash -c "/etc/init.d/ssh start"
-
+busybox chroot /data/local/nhsystem/kali-armhf /bin/bash -c "chmod 777 /dev/null"
+busybox chroot /data/local/nhsystem/kali-armhf /bin/bash -c "/etc/init.d/ssh start"

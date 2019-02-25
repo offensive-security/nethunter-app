@@ -35,6 +35,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -57,6 +58,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     private static final String TAG = "DuckHunterFragment";
     private static NhPaths nh;
     private static String prwText = "";
+    private boolean isHIDenable = false;
 
     public DuckHunterFragment() {
     }
@@ -88,6 +90,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
         });
         setHasOptionsMenu(true);
         sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
+	check_HID_enable();
         return rootView;
     }
 
@@ -159,24 +162,35 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.duckConvertAttack:
-                setLang();
-                nh.showMessage("Launching Attack");
-                if (getView() == null) {
-                    return true;
-                }
-                final View v = getView();
-                new Thread(() -> {
-                    if (shouldConvert) {
-                        convert();
-                        try {
-                            Thread.sleep(2000);  // Slow down
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                if (isHIDenable) {
+                    setLang();
+                    nh.showMessage("Launching Attack");
+                    if (getView() == null) {
+                        return true;
+                    }
+                    final View v = getView();
+                    new Thread(new Runnable() {
+                        public void run() {
+                            if (shouldConvert) {
+                                convert();
+                                try {
+                                    Thread.sleep(2000);  // Slow down
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            start();
+                            v.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    nh.showMessage("Attack launched!");
+                                }
+                            });
                         }
                     }
-                    start();
-                    v.post(() -> nh.showMessage(getString(R.string.attack_launched)));
-                }).start();
+                    }).start();
+                } else {
+                    nh.showMessage_long("HID interfaces are not enabled or something wrong with the permission of /dev/hidg*, make sure they are enabled and permissions are granted as 666");
+                }
 
                 return true;
             case R.id.chooseLanguage:
@@ -208,7 +222,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
         ShellExecuter exe = new ShellExecuter();
         if (updatefile()) {
             String[] command = new String[1];
-            Log.d("LANGGG", lang);
+            Log.d(TAG, lang);
             command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali duck-hunt-convert " + lang +
                     " /sdcard/nh_files/modules/duckconvert.txt " + "/opt/" +
                     DuckHunterPreviewFragment.configFileFilename + "'";
@@ -344,6 +358,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
             EditText source = rootView.findViewById(R.id.editSource);
 
+            String duckyscript_file[] = getDuckyScriptFiles();
             source.addTextChangedListener(new TextWatcher() {
 
                 @Override
@@ -383,34 +398,33 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
 
             // Duckhunter preset spinner templates
-            Spinner presetSpinner = rootView.findViewById(R.id.duckhunter_preset_spinner);
-            ArrayAdapter<CharSequence> presetAdapter = ArrayAdapter.createFromResource(getActivity(),
-                    R.array.duckhunter_preset_array, android.R.layout.simple_spinner_item);
-            presetAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            presetSpinner.setAdapter(presetAdapter);
-            presetSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            Spinner duckyscriptSpinner = (Spinner) rootView.findViewById(R.id.duckhunter_preset_spinner);
+            ArrayAdapter<String> duckyscriptAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, duckyscript_file);
+            duckyscriptAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            duckyscriptSpinner.setAdapter(duckyscriptAdapter);
+            duckyscriptSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                    String selectedItemText = parent.getItemAtPosition(pos).toString();
-                    switch (pos) {
-                        case 0:
-                            break;
-                        case 1:
-                            getPreset("helloworld"); // Hello World!
-                            break;
-                        case 2:
-                            getPreset("osx_perl_reverse_shell"); // OSX Perl: Reverse Shell
-                            break;
-                        case 3:
-                            getPreset("osx_ruby_reverse_shell"); // OSX Ruby: Reverse Shell
-                            break;
-                        case 4:
-                            getPreset("windows_rdp"); // Enable RDP in Windows
-                            break;
-                        case 5:
-                            getPreset("FakeUpdateWin10"); // Open a fake windows 10 update web page
-                            break;
-                    }
+                    //String selectedItemText = parent.getSelectedItem().toString();
+                    getPreset(duckyscriptSpinner.getSelectedItem().toString());
+                    //switch (pos) {
+                    //   case 0:
+                    //        break;
+                    //    case 1:
+                    //        getPreset("helloworld"); // Hello World!
+                    //        break;
+                    //    case 2:
+                    //        getPreset("osx_perl_reverse_shell"); // OSX Perl: Reverse Shell
+                    //        break;
+                    //    case 3:
+                    //        getPreset("osx_ruby_reverse_shell"); // OSX Ruby: Reverse Shell
+                    //        break;
+                    //    case 4:
+                    //        getPreset("windows_rdp"); // Enable RDP in Windows
+                    //        break;
+		    //	  case 5:
+		    //	      getPreset("fake_win10_update");
+                    //}
                 }
 
                 @Override
@@ -547,13 +561,26 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
             }
         }
+
+        private String[] getDuckyScriptFiles() {
+            ArrayList<String> result = new ArrayList<String>();
+            File script_folder = new File("/sdcard/nh_files/duckyscripts");
+            File[] filesInFolder = script_folder.listFiles();
+            for (File file : filesInFolder) {
+                if (!file.isDirectory()) {
+                    result.add(file.getName());
+                }
+            }
+            return result.toArray(new String[0]);
+        }
     } //end of class
 
 
     public static class DuckHunterPreviewFragment extends Fragment {
 
         // Error reading chroot_path
-        public static final String configFilePath = nh.CHROOT_PATH + "/opt/";
+        //public static final String configFilePath = nh.CHROOT_PATH + "/opt/";
+        public static final String configFilePath = "/data/local/nhsystem/kali-armhf/opt/";
         public static final String configFileFilename = "duckout.sh";
 
         @Override
@@ -610,5 +637,22 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
             }).start();
 
         }
+    }
+
+
+    private void check_HID_enable() {
+        new Thread(new Runnable() {
+             public void run() {
+                ShellExecuter exe_check = new ShellExecuter();
+                String hidgs[] = {"/dev/hidg0", "/dev/hidg1"};
+                for (String hidg : hidgs) {
+                    if (!exe_check.RunAsRootOutput("su -c \"stat -c '%a' " + hidg + "\"").equals("666")) {
+                        isHIDenable = false;
+                        break;
+                    }
+                    isHIDenable = true;
+                }
+            }
+        }).start();
     }
 }

@@ -1,0 +1,5 @@
+#!/system/bin/sh
+unset LD_PRELOAD
+
+current_state="$(getprop sys.usb.state)"
+usb_state=("mtp" "adb" "rndis" "rndis,adb" "")

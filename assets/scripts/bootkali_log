@@ -1,0 +1,10 @@
+#!/system/bin/sh
+
+######### Log function for bootkali* script #########
+bklog() {
+    ## normal output to terminal
+    echo "$1"
+    ## log it into logcat so that we can run "logcat | grep bklog" to see only the log messages from bootkali script
+    log -t "bklog" "$(basename $0) -> $1"
+}
+

@@ -108,13 +108,21 @@ public class NhPaths {
         toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
         toast.show();
     }
+    public void showMessage_long(String message) {
+        int duration = Toast.LENGTH_LONG;
+        Toast toast = Toast.makeText(getAppContext(), message, Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
+        toast.show();
+    }
     public String whichBusybox() {
         String[] BB_PATHS = {
                 "/system/xbin/busybox_nh",
                 "/sbin/busybox_nh",
                 "/system/bin/busybox",
                 "/data/local/bin/busybox",
-                "/system/xbin/busybox"
+                "/system/xbin/busybox",
+                "/data/adb/magisk/busybox",
+                "/sbin/.magisk/busybox/busybox"
         };
         for (String BB_PATH : BB_PATHS) {
             File busybox = new File(BB_PATH);

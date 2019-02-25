@@ -17,8 +17,4 @@
         android:id="@+id/start_service"
         android:title="@string/execute_attack"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/stop_service"
-        android:title="@string/reset_usb"
-        app:showAsAction="never" />
 </menu>

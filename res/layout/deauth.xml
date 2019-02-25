@@ -23,6 +23,7 @@
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:editable="false"
         android:id="@+id/TerminalOutputDeAuth"
         android:padding="16sp"
         android:background="@android:color/black"

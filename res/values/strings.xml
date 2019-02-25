@@ -113,6 +113,7 @@
     <string name="customMAC">Custom MAC</string>
     <string name="autorunningscripts">Nethunter: auto-running startup scripts</string>
     <string name="toastForNoBusybox">Uh oh!  Nethunter can\'t find busybox!</string>
+    <string name="readonly">Read-only</string>
     <string-array name="macchanger_opts">
         <item>Random MAC</item>
         <item>Custom MAC</item>
@@ -123,6 +124,25 @@
         <item>eth0 (Ethernet)</item>
         <item>rndis0 (USB > Ethernet)</item>
         <item>usb0 (USB > Ethernet Nexus7 2013 when tethering | badusb)</item>
+    </string-array>
+    <string-array name="usb_states">
+        <item>Reset</item>
+        <item>mtp,hid</item>
+        <item>hid</item>
+        <item>mass_storage</item>
+        <item>rndis</item>
+        <item>hid,mass_storage</item>
+        <item>rndis,hid</item>
+        <item>rndis,mass_storage</item>
+        <item>rndis,hid,mass_storage</item>
+    </string-array>
+    <string-array name="usb_targets">
+        <item>Windows</item>
+        <item>Mac OS</item>
+    </string-array>
+    <string-array name="usb_adb">
+        <item>No adb</item>
+        <item>adb</item>
     </string-array>
 
     <!-- MITMf -->
