@@ -33,7 +33,6 @@ import com.offsec.nethunter.utils.ShellExecuter;
 import java.util.List;
 
 import androidx.appcompat.app.AlertDialog;
-//import androidx.appcompat.widget.SearchView;
 import android.widget.SearchView;
 import androidx.fragment.app.Fragment;
 
