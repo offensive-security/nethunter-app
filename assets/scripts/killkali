@@ -5,14 +5,25 @@ SCRIPT_PATH=$(readlink -f $0)
 
 if [ -x /system/xbin/busybox_nh ]; then
 	busybox=/system/xbin/busybox_nh
+elif [ -x /sbin/busybox_nh ]; then
+	busybox=/sbin/busybox_nh
 elif [ -x /system/xbin/busybox ]; then
 	busybox=/system/xbin/busybox
+elif [ -x /data/local/bin/busybox ]; then
+	busybox=/data/local/bin/busybox
 elif [ -x /system/bin/busybox ]; then
 	busybox=/system/bin/busybox
+elif [ -x /su/bin/busybox ]; then
+	busybox=/su/bin/busybox
 elif [ -x /data/adb/magisk/busybox ]; then
 	busybox=/data/adb/magisk/busybox
+elif [ -x /sbin/busybox ]; then
+	busybox=/sbin/busybox
+elif [ -x /sbin/.magisk/busybox/busybox ]; then
+	busybox=/sbin/.magisk/busybox/busybox
 else
-	bklog "Busybox not found!  Install it, dummy!"
+	echo "Busybox not found!  Install it, dummy!"
+	log "Busybox not found!  Install it, dummy!"
 	exit
 fi
 
@@ -81,6 +92,7 @@ else
 fi
 
 if [ -d "$mnt/dev" ]; then
+    [ -e "$mnt/dev/null" ] && rm $mnt/dev/null
     $busybox umount $mnt/dev 2> /dev/null && echo "umounted dev"
     rmdir $mnt/dev
 fi
