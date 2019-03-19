@@ -15,7 +15,7 @@ SCRIPT_PATH=$(readlink -f $0)
 # start-rev-met, start-rev-met-elevated-win[8-7]
 
 if [ $# -eq 0 ]; then
-	$busybox chroot $mnt /bin/bash -i
+	$busybox chroot $mnt /usr/bin/sudo -i -u root
 else
 
 	#APACHE
@@ -146,9 +146,8 @@ else
 
 	if [ "$1" == "duck-hunt-convert" ]; then
 		$busybox chroot $mnt /usr/bin/python2.7 /sdcard/nh_files/modules/duckhunter.py -l $2 $3 $4
-		## $busybox chroot $mnt sudo chmod 755 $4
-
 	fi
+	
 	if [ "$1" == "duck-hunt-run" ]; then
 		# Check if hid-keyboard binary is present at $mnt/usr/bin/
 		if [ ! -x $mnt/usr/bin/hid-keyboard ]; then
@@ -259,13 +258,6 @@ else
 		$busybox chroot $mnt sudo /usr/sbin/gpsd -n tcp://127.0.0.1:$2
 	fi
 
-
-	#KALIMENU
-
-	if [ "$1" == "kalimenu" ]; then
-		$busybox chroot $mnt sudo /usr/bin/kalimenu
-	fi
-
 	#YCABLE
 
 	if [ "$1" == "ycable" ] && [ "$2" == "start" ]; then
@@ -322,7 +314,7 @@ else
 	#MFOC MIFARE DUMP
 
 	if [ "$1" == "dumpmifare" ]; then
-		$busybox chroot $mnt /usr/bin/dumpmifare.sh
+		$busybox chroot $mnt sudo /usr/bin/dumpmifare.sh
 	fi
 
 	#APT-GET
