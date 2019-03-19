@@ -62,6 +62,12 @@ public class ShellExecuter {
             }
             os.writeBytes("exit\n");
             os.flush();
+            try {
+                process.waitFor();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
