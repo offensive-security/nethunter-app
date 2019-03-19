@@ -187,18 +187,25 @@ if __name__ == "__main__":
                 elif line.startswith('STRING '):
                     line = line[7:]
                     for char in line:
-
                         if char != '\n':
                             if args.layout == "ru":
                                 char = iso_ru[char]
-
-                            line = dicts[args.layout+'_bin'].get(char)
+                            if (char == 'g') or (char == 'G'):
+                                line = dicts[args.layout+'_bin'].get(char)
+                                temp_prefix = prefix
+                                temp_suffix = suffix
+                            else:
+                                line = dicts[args.layout][char]
+                                temp_prefix = prefixinput
+                                temp_suffix = prefixoutput
                             if line is not None:
                                 if isinstance(line, str):
-                                    dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
-                                else:
+                                    dest.write('%s%s%s\n' % (temp_prefix, line.rstrip('\n').strip(), temp_suffix))
+                                    dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n')
+                                else:   
+                
                                     for elem in line:
-                                        dest.write('%s%s%s\n' % (prefix, elem.rstrip('\n').strip(), suffix))
+                                        dest.write('%s%s%s\n' % (temp_prefix, elem.rstrip('\n').strip(), temp_suffix))
                             else:
                                 line = dicts[args.layout][char]
                                 dest.write('%s%s%s\n' % (prefixinput, line.rstrip('\n').strip(), prefixoutput))
@@ -217,13 +224,20 @@ if __name__ == "__main__":
                             if args.layout == "ru":
                                 char = iso_ru[char]
 
-                            line = dicts[args.layout+'_bin'].get(char)
+                            if (char == 'g') or (char == 'G'):
+                                line = dicts[args.layout+'_bin'].get(char)
+                                temp_prefix = prefix
+                                temp_suffix = suffix
+                            else:
+                                line = dicts[args.layout][char]
+                                temp_prefix = prefixinput
+                                temp_suffix = prefixoutput
                             if line is not None:
                                 if isinstance(line, str):
-                                    dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
+                                        dest.write('%s%s%s\n' % (temp_prefix, line.rstrip('\n').strip(), temp_suffix))
                                 else:
                                     for elem in line:
-                                        dest.write('%s%s%s\n' % (prefix, elem.rstrip('\n').strip(), suffix))
+                                        dest.write('%s%s%s\n' % (temp_prefix, elem.rstrip('\n').strip(), temp_suffix))
                             else:
                                 line = dicts[args.layout][char]
                                 dest.write('%s%s%s\n' % (prefixinput, line.rstrip('\n').strip(), prefixoutput))
