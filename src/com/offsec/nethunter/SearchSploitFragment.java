@@ -119,8 +119,8 @@ public class SearchSploitFragment extends Fragment {
             pd.setCancelable(false);
             pd.show();
             new Thread(() -> {
-                final Boolean isFeeded = database.doDbFeed();
                 searchSearchSploit.post(() -> {
+                    final Boolean isFeeded = database.doDbFeed();
                     if (isFeeded) {
                         Toast.makeText(getActivity(),
                                 "DB FEED DONE",
