@@ -54,9 +54,6 @@ f_checkforroot(){
 	fi
 }
 
-######### VARIABLES #########
-mnt=/data/local/nhsystem/kali-armhf
-
 ######### MOUNT #########
 
 mount_sdcard() {
