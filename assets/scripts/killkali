@@ -22,8 +22,7 @@ elif [ -x /sbin/busybox ]; then
 elif [ -x /sbin/.magisk/busybox/busybox ]; then
 	busybox=/sbin/.magisk/busybox/busybox
 else
-	echo "Busybox not found!  Install it, dummy!"
-	log "Busybox not found!  Install it, dummy!"
+        bklog "[-] Busybox not found! Install it, dummy!"
 	exit
 fi
 
@@ -57,7 +56,7 @@ kill_pids() {
 $busybox sysctl -w kernel.shmmax=134217728
 $busybox chmod 666 /dev/null
 
-echo "Shutting down SSH Server"
+bklog "[!] Shutting down SSH Server"
 $busybox chroot $mnt /etc/init.d/ssh stop > /dev/null 2>&1
 
 bklog "[!] Shutting down Postgresql"
@@ -72,17 +71,17 @@ rm -f $mnt/tmp/.X*-.lock .X*-unix/* > /dev/null 2>&1
 bklog "[!] Killing all running kali terminals.."
 kill_pids
 
-echo "Shutting down Vncserver"
+bklog "[!] Shutting down Vncserver"
 pkill Xtightvnc
 rm -f $mnt/root/.vnc/*.log *.pid > /dev/null 2>&1
 rm -f $mnt/tmp/.X*-.lock .X*-unix/* > /dev/null 2>&1
 
 ########## Kill all running kali terminals first ##########
-echo " [!] Killing all running kali terminals.."
+bklog "[!] Killing all running kali terminals.."
 kill_pids
 
 ########## unmount everything ##########
-echo " [!] Removing all Kali mounts.."
+bklog "[!] Removing all Kali mounts.."
 
 if [ $($busybox umount $mnt 2>&1 > /dev/null) ]; then
     bklog " [-] Unable to umount the kali chroot image."
@@ -98,32 +97,32 @@ if [ -d "$mnt/dev" ]; then
 fi
 
 if [ -d "$mnt/proc" ]; then
-    $busybox umount $mnt/proc 2> /dev/null && echo "umounted proc"
+    $busybox umount $mnt/proc 2> /dev/null && bklog "[+] unmounted proc"
     rmdir $mnt/proc
 fi
 
 if [ -d "$mnt/sys" ]; then
-    $busybox umount $mnt/sys 2> /dev/null && echo "umounted sys"
+    $busybox umount $mnt/sys 2> /dev/null && bklog "[+] unmounted sys"
     rmdir $mnt/sys
 fi
 
 if [ -d "$mnt/sdcard" ]; then
-    $busybox umount $mnt/sdcard 2> /dev/null && echo "umounted sdcard"
+    $busybox umount $mnt/sdcard 2> /dev/null && bklog "[+] unmounted sdcard"
     rmdir $mnt/sdcard
 fi
 
 if [ -d "$mnt/external_sd" ]; then
-    $busybox umount $mnt/external_sd 2> /dev/null && echo "umounted external_sd"
+    $busybox umount $mnt/external_sd 2> /dev/null && bklog "[+] unmounted external_sd"
     rmdir $mnt/external_sd
 fi
 
 if [ -d "$mnt/mnt/usbdisk" ]; then
-    $busybox umount $mnt/mnt/usbdisk 2> /dev/null && echo "umounted /mnt/usbdisk"
+    $busybox umount $mnt/mnt/usbdisk 2> /dev/null && bklog "[+] unmounted /mnt/usbdisk"
     rmdir $mnt/mnt/usbdisk
 fi
 
 if [ -d "$mnt/mnt" ]; then
-    $busybox umount $mnt/mnt 2> /dev/null && echo "umounted /mnt/usbdisk"
+    $busybox umount $mnt/mnt 2> /dev/null && bklog "[+] unmounted /mnt"
     rmdir $mnt/mnt
 fi
 
