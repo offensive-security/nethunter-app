@@ -16,5 +16,8 @@ export USER=root
 export LOGNAME=root
 unset LD_PRELOAD
 
+######### Custom initial scripts can run here #########
+[ ! -f $mnt$HOME/.hushlogin ] && touch $mnt$HOME/.hushlogin
+
 ######### TERMINAL SETUP #########
 clear
