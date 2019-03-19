@@ -5,6 +5,10 @@ SCRIPT_PATH=$(readlink -f $0)
 . ${SCRIPT_PATH%/*}/bootkali_log
 . ${SCRIPT_PATH%/*}/bootkali_init
 
+######### log the time when the script is run #########
+[ -d $nhfiles/logs ] || mkdir $nhfiles/logs
+echo "$(date +%F_%T) || $(basename $0) is run." >> "$nhfiles/logs/$(date +%F)"
+
 ######### EXPORT ENVIRONMENT #########
 export bin=/system/bin
 export mnt=$mnt
