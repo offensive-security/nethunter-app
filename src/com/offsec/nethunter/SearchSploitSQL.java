@@ -58,11 +58,11 @@ class SearchSploitSQL extends SQLiteOpenHelper {
     }
 
     Boolean doDbFeed() {
-        // copy csv to /sdcard as temp (so we can read it)
-        String _cmd = "su -c bootkali custom_cmd csv2sqlite.py /usr/share/exploitdb/files.csv /sdcard/nh_files/SearchSploit " + SearchSploit.TABLE;
-        // move to app db folder
-        exe.RunAsRootOutput(_cmd);
-        return true;
+        File f = new File("/sdcard/nh_files/SearchSploit");
+        String _cmd1[] = {"su -c bootkali convert_exploitdb " + SearchSploit.TABLE};
+        exe.RunAsRoot(_cmd1);
+        if (f.exists() && !f.isDirectory()) return true;
+        else return false;
     }
 
     long getCount() {
