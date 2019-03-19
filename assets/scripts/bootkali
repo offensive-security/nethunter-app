@@ -145,7 +145,7 @@ else
 	# bootkali duck-hunt-run {/opt/duckout.sh}
 
 	if [ "$1" == "duck-hunt-convert" ]; then
-		$busybox chroot $mnt /usr/bin/python2.7 /sdcard/nh_files/modules/duckhunter.py -l $2 $3 $4
+		$busybox chroot $mnt /usr/bin/python /sdcard/nh_files/modules/duckhunter.py -l $2 $3 $4
 	fi
 	
 	if [ "$1" == "duck-hunt-run" ]; then
