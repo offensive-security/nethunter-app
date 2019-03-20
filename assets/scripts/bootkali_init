@@ -150,10 +150,8 @@ f_mount_chroot_image() {
 
 	######### SET DEV SHM ########
 	if [ ! "$(mountpoint $mnt/dev/shm 2> /dev/null | grep 'is a')" ]; then
-		[ ! -d /dev/shm ] && mkdir -p /dev/shm
 		[ ! -d $mnt/dev/shm ] && mkdir -p $mnt/dev/shm
-		$busybox mount -o rw,nosuid,nodev,mode=1777 -t tmpfs tmpfs /dev/shm
-		$busybox mount -o bind /dev/shm $mnt/dev/shm && bklog "[+] mounted /dev/shm"
+		$busybox mount -o rw,nosuid,nodev,mode=1777 -t tmpfs tmpfs $mnt/dev/shm && bklog "[+] mounted /dev/shm"
 	fi
 
 	######### SET PROC ########
