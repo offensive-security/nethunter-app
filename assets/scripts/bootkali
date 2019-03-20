@@ -349,7 +349,7 @@ else
     #Backup kali chroot
 
 	if [ "$1" == "backup-chroot" ] && [ "$2" != "" ]; then
-		if [ -f "/sdcard/$2" ]; then
+		if [ -f "$mnt/sdcard/$2" ]; then
 			bklog "[-] /sdcard/$2 existed already, please rename the existed filename to another first."
 		else
 			$busybox chroot $mnt sudo /bin/tar czf "/sdcard/$2" --hard-dereference --exclude='./system' --exclude='./sys' --exclude='./proc' --exclude='./dev' --exclude='./sdcard' --exclude='./lib/modules' -C "/" .
