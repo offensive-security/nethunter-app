@@ -75,7 +75,7 @@ f_kill_pids() {
 ########## umount the fs one by one ##########
 f_umount_fs() {
 	$busybox umount -f $mnt/$1 && bklog "[+] umounted $mnt/$1" || bklog "[-] failed to umounted $mnt/$1"
-	[ "$1" != "dev/pts" ] && rmdir $mnt/$1 && bklog "[+] removed $mnt/$1"
+	[ "$1" != "dev/pts" -a "$1" != "dev/shm" ] && rmdir $mnt/$1 && bklog "[+] removed $mnt/$1"
 }
 
 ########## umount if chroot directory is NOT a mountpoint(directory method) ##########
@@ -83,16 +83,23 @@ f_dir_umount() {
 	f_kill_service
 	f_kill_pids
 	bklog "[!] Removing all fs mounts.."
-	fs=(dev/pts dev proc sys sdcard)
+	fs=(dev/pts dev/shm dev proc sys sdcard)
 	for i in "${fs[@]}"; do
 		f_umount_fs "$i"
 	done
+	[ -e $mnt/dev/null ] && bklog "[!] Find orphen $mnt/dev/null" && rm -f $mnt/dev/null && bklog "[+] removed $mnt/dev/null"
 }
 
 ########## umount if chroot directory iss a mountpoint(File method) ##########
 f_img_umount() {
 	f_kill_service
 	f_kill_pids
+	 "[!] Removing all fs mounts.."
+	fs=(dev/pts dev proc sys sdcard)
+	for i in "${fs[@]}"; do
+		f_umount_fs "$i"
+	done
+	[ -e $mnt/dev/null ] && bklog "[!] Find orphen $mnt/dev/null" && rm -f $mnt/dev/null && bklog "[+] removed $mnt/dev/null"
 	if [ "$(losetup -a | grep $chroot_image)" ]; then
 		if [ "$($busybox umount $mnt 2>&1 > /dev/null)" ]; then
 			bklog "[-] Unable to umount the kali chroot image."
