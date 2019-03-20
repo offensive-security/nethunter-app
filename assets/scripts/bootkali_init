@@ -25,21 +25,29 @@ else
 	exit 1
 fi
 
-## Not need to manually set to permissive mode now as patched in kernel.
-#su -c setenforce 0
 
 ######### VARIABLES #########
 mnt=/data/local/nhsystem/kali-armhf
 nhsys=/data/local/nhsystem
 chroot_image=/sdcard/kali-chroot.img ## for File method
+nhfiles=/sdcard/nh_files
+is_Dir_or_File=""
 
 ######### CHECK FOR ENCRYPTION #########
 isEncrypted=false
 [ "$(getprop ro.crypto.state)" = "encrypted" ] && isEncrypted=true
 
-######### CHECK IF EVERYTHING IS READY #########
+######### CHECK IF CHROOT DIR EXISTS #########
+f_chk_chroot() {
+	[ ! -d $mnt ] && bklog "[-] $mnt directory is not found." && return 1
+	[ ! -f $mnt/usr/bin/sudo -a ! -f $chroot_image ] && bklog "[-] No chroot image file or possible chroot file exists." && return 1
+	[ -f $mnt/usr/bin/sudo ] && is_Dir_or_File="Directory" && bklog "[+] Found existing chroot directory." && return 0
+	[ -f $chroot_image ] && is_Dir_or_File="File" && bklog "[+] Found existing chroot image file." && return 0
+}
+
+######### CHECK IF FS IS ALL MOUNTED ALREADY #########
 f_isAllReady(){
-    fs=(proc sys dev dev/shm dev/pts sdcard)
+    fs=(proc sys dev dev/pts sdcard)
     for i in "${fs[@]}"; do
         if [ "$(grep $mnt/$i /proc/mounts)" ]; then
             bklog "[+] $i was mounted already."
@@ -49,24 +57,15 @@ f_isAllReady(){
             return 1
         fi
     done
+
+	[ ! -e "/dev/net/tun" ] && return 1
     [ ! -e "/dev/fd" -o ! -e "/dev/stdin" -o ! -e "/dev/stdout" -o ! -e "/dev/stderr" ] && return 1
-    [ -e "/dev/tty0" ] || return 1
-    [ -e "/dev/net/tun" ] || return 1
-	return 0
+	bklog "[+] The Kali chroot has been started already." && return 0
 }
 
-######### CHECK FOR ROOT #########
-f_checkforroot(){
-	perm=$(id | $busybox cut -b 5)
-	if [ "$perm" != "0" ]; then
-		bklog "[-] ROOT NOT DETECTED! Type: Please install SuperSU or Magisk to fix it."
-		exit 1
-	fi
-}
+######### MOUNT SDCARD #########
 
-######### MOUNT #########
-
-mount_sdcard() {
+f_mount_sdcard() {
 	if [ -d "$mnt/sdcard" ]; then
 		mountpoint -q "$mnt/sdcard" && return 0
 	fi
@@ -85,7 +84,7 @@ mount_sdcard() {
 	return 1
 }
 
-mount_external_sd() {
+f_mount_external_sd() {
 	if [ -d "$mnt/external_sd" ]; then
 		mountpoint -q "$mnt/external_sd" && return 0
 	fi
@@ -103,10 +102,25 @@ mount_external_sd() {
 	return 1
 }
 
-## [ MOUNTING AND BINDING FILESYSTEM ] ##
-mount_fs_to_kali() {
+f_mount_chroot_image() {
+	if [ "$(losetup -a | grep $chroot_image)" ]; then
+		bklog "[!] $chroot_image is already mounted as loop device."
+		if [ "$($busybox mount $(losetup -a | grep $chroot_image | awk -F':' '{print $1}') $mnt)" ]; then
+			bklog "[-] Failed to mount image. Please verify the image is valid." && exit 1
+		else
+			bklog "[+] mounted $chroot_image to $mnt"
+		fi
+	else
+		if [ "$($busybox mount -o loop $chroot_image $mnt)" ]; then
+			bklog "[-] Failed to mount image. Please verify the image is valid." && exit 1
+		else
+			bklog "[+] mounted $chroot_image to $mnt"
+		fi
+	fi
+}
 
-	f_checkforroot
+	######### [ MOUNTING AND BINDING FILESYSTEM ] #########
+        f_mount_fs_to_kali() {
 	$busybox mount -o remount,suid /data && chmod +s $mnt/usr/bin/sudo
 
 	######### SET FD, Thanks @feefik and @zer0conf ########
@@ -147,8 +161,8 @@ mount_fs_to_kali() {
 	fi
 
 	######### SET INTERNAL | EXTERNAL SDCARD | USBDISK ########
-	mount_sdcard
-	mount_external_sd
+	f_mount_sdcard
+	f_mount_external_sd
 
 	#########
 	$busybox chmod 666 /dev/null
@@ -183,63 +197,26 @@ mount_fs_to_kali() {
 	bklog "[+] The Kali chroot has been started."
 }
 
-############ STARTING ############
-## First create the chroot directory: $mnt
-if [ ! -d "$mnt" ]; then
-	mkdir -p $mnt
-fi
+##################################
+########## Main Script ###########
+##################################
 
-## Second check if the kali chroot image is already mounted to $mnt or chroot is installed already by Directory method
-if [ ! "$($busybox chroot $mnt /bin/uname -n 2> /dev/null)" ]; then
-	bklog "[-] Kali chroot is not yet mounted from $chroot_image or installed by directory mothod..."
-	## For enrypted device with chroot image
-	if [ "$isEncrypted" = true ] && [ -f $chroot_image ]; then
-		bklog "[!] This is encrypted device and $chroot_image is found.\n [!] mounting $chroot_image to $mnt now.."
-		## But first check if the image has been setup to loop device already, then we avoid adding it to loop device again.
-		if [ "$(losetup -a | grep $chroot_image)" ]; then
-			bklog "[!] $chroot_image is already mounted as loop device."
-            if [ "$($busybox mount $(losetup -a | grep $chroot_image | awk -F':' '{print $1}') $mnt)" ]; then
-                bklog "[-] Failed to mount image. Please verify the image is valid." && exit 1
-            else
-                bklog "[+] mounted $chroot_image to $mnt"
-            fi
-        else
-            if [ "$($busybox mount -o loop $chroot_image $mnt)" ]; then
-                bklog "[-] Failed to mount image. Please verify the image is valid." && exit 1
-            else
-                bklog "[+] mounted $chroot_image to $mnt"
-            fi
-		fi
-	## For uncrypted device with chroot image
-	elif [ "$isEncrypted" = false ] && [ -f $chroot_image ]; then
-		bklog "[!] This is unencrypted device and $chroot_image is found\n [!] mounting $chroot_image to $mnt now.."
-		## But first check if the image has been setup to loop device already, then we avoid adding it to loop device again.
-		if [ "$(losetup -a | grep $chroot_image)" ]; then
-            bklog "[!] $chroot_image is already mounted as loop device."
-            if [ "$($busybox mount $(losetup -a | grep $chroot_image | awk -F':' '{print $1}') $mnt)" ]; then
-                bklog "[-] Failed to mount image. Please verify the image is valid." && exit 1
-            else
-                bklog "[+] mounted $chroot_image to $mnt"
-            fi
-        else
-            if [ "$($busybox mount -o loop $chroot_image $mnt)" ]; then
-                bklog "[-] Failed to mount image. Please verify the image is valid." && exit 1
-            else
-                bklog "[+] mounted $chroot_image to $mnt"
-            fi
-        fi
-	else
-		bklog "[-] No $chroot_image is found, Please make sure kali chroot is either installed by directory method(extract .tar.gz method) or $chroot_image is presented."
-		exit 1
-	fi
+######### First to check if chroot directory exists #########
+bklog "[!] Checking chroot environment."
+f_chk_chroot
+res=$?
+if [ $res -eq 1 ]; then
+	bklog "[-] Please check again. Aborted."
+	exit 1
 fi
 
 
 ## Lastly check if all Filesystems are mounted.
-bklog "[!] Checking chroot environment."
 f_isAllReady
-local res=$?
+res=$?
 if [ $res -eq 1 ]; then
-	bklog "[!] mounting fs to kali chroot..."
-	mount_fs_to_kali
+	bklog "[!] Mounting fs to kali chroot."
+	[ "$is_Dir_or_File" == "File" ] && f_mount_chroot_image
+	f_mount_fs_to_kali
+fi
 fi
