@@ -75,7 +75,7 @@ f_kill_pids() {
 ########## umount the fs one by one ##########
 f_umount_fs() {
 	$busybox umount -f $mnt/$1 && bklog "[+] umounted $mnt/$1" || bklog "[-] failed to umounted $mnt/$1"
-	[ "$1" != "dev/pts" -a "$1" != "dev/shm" ] && rmdir $mnt/$1 && bklog "[+] removed $mnt/$1"
+	[ "$1" != "dev/pts" ] && rmdir $mnt/$1 && bklog "[+] removed $mnt/$1"
 }
 
 ########## umount if chroot directory is NOT a mountpoint(directory method) ##########
