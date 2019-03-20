@@ -87,7 +87,7 @@ f_dir_umount() {
 	for i in "${fs[@]}"; do
 		f_umount_fs "$i"
 	done
-	[ -e $mnt/dev/null ] && bklog "[!] Find orphen $mnt/dev/null" && rm -f $mnt/dev/null && bklog "[+] removed $mnt/dev/null"
+	[ -e $mnt/dev/null ] && bklog "[!] Found orphen $mnt/dev/null" && rm -f $mnt/dev/null && bklog "[+] removed $mnt/dev/null" && f_umount_fs dev
 }
 
 ########## umount if chroot directory iss a mountpoint(File method) ##########
