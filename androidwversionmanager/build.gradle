@@ -28,6 +28,7 @@ repositories {
 
 dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0-rc02'
+    implementation 'com.google.firebase:firebase-messaging:17.4.0'
     implementation 'org.thoughtcrime.ssl.pinning:AndroidPinning:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.0.0-rc02'
 }
