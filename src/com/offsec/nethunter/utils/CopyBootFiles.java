@@ -73,6 +73,7 @@ class CopyBootFiles extends AsyncTask<String, String, String> {
               bootkali_list.add("bootkali_init");
               bootkali_list.add("bootkali_login");
               bootkali_list.add("bootkali_bash");
+              bootkali_list.add("bootkali_env");
               bootkali_list.add("killkali");
 
               Log.d(COPY_ASSETS_TAG, "COPYING FILES....");
