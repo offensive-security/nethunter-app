@@ -29,7 +29,7 @@ class SearchSploitSQL extends SQLiteOpenHelper {
     }
 
     public void onCreate(SQLiteDatabase database) {
-        String CREATE_SEARCHSPLOIT_TABLE = "CREATE TABLE  IF NOT EXISTS " + SearchSploit.TABLE +
+        String CREATE_SEARCHSPLOIT_TABLE = "CREATE TABLE IF NOT EXISTS " + SearchSploit.TABLE +
                 " (" + SearchSploit.ID + " INTEGER PRIMARY KEY, " +
                 SearchSploit.FILE + " TEXT," +
                 SearchSploit.DESCRIPTION + " TEXT," +
@@ -37,7 +37,7 @@ class SearchSploitSQL extends SQLiteOpenHelper {
                 SearchSploit.AUTHOR + " TEXT," +
                 SearchSploit.PLATFORM + " TEXT," +
                 SearchSploit.TYPE + " TEXT," +
-                SearchSploit.PORT + " INTEGER)";
+                SearchSploit.PORT + " INTEGER DEFAULT 0)";
         database.execSQL(CREATE_SEARCHSPLOIT_TABLE);
         database.disableWriteAheadLogging();
     }
@@ -58,7 +58,9 @@ class SearchSploitSQL extends SQLiteOpenHelper {
 
     Boolean doDbFeed() {
         // copy csv to /sdcard as temp (so we can read it)
-        String _cmd = "su -c bootkali custom_cmd csv2sqlite.py /usr/share/exploitdb/files.csv /sdcard/nh_files/SearchSploit " + SearchSploit.TABLE;
+        String _cmd = "su -c bootkali\n" + "csv2sqlite.py /usr/share/exploitdb/files_exploits.csv SearchSploit " + SearchSploit.TABLE + "\n" +
+                "sqlite3 SearchSploit 'UPDATE " + SearchSploit.TABLE + " SET " +  SearchSploit.PORT + " = 0 WHERE " + SearchSploit.PORT + " IS NULL;'\n" +
+                "mv SearchSploit /sdcard/nh_files/SearchSploit\n";
         // move to app db folder
         exe.RunAsRootOutput(_cmd);
         return true;
@@ -118,8 +120,8 @@ class SearchSploitSQL extends SQLiteOpenHelper {
                 _exploit.setDescription(cursor.getString(2));      // desc
                 _exploit.setDate(cursor.getString(3));             // date
                 _exploit.setAuthor(cursor.getString(4));           // author
-                _exploit.setPlatform(cursor.getString(5));         // platform
-                _exploit.setType(cursor.getString(6));             // type
+                _exploit.setType(cursor.getString(5));             // type
+                _exploit.setPlatform(cursor.getString(6));         // platform
                 _exploit.setPort(cursor.getInt(7));                // port
                 commandList.add(_exploit);
             } while (cursor.moveToNext());
