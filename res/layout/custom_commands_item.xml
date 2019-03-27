@@ -44,16 +44,16 @@
         android:layout_alignParentStart="true" />
 
     <Button
+        android:id="@+id/runCommand"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Run"
-        android:id="@+id/runCommand"
-        android:layout_marginRight="@dimen/base_listItem_LR"
-        android:layout_marginTop="@dimen/base_listItem_LR"
-        android:textColor="#ff95ff84"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/base_listItem_LR"
+        android:layout_marginRight="@dimen/base_listItem_LR"
+        android:text="Run"
+        android:textColor="@android:color/holo_blue_dark" />
 
     <TextView
         android:layout_width="wrap_content"
