@@ -127,6 +127,11 @@ mount_fs_to_kali() {
 		$busybox mount -t devpts devpts $mnt/dev/pts && bklog "[+] mounted /dev/pts"
 	fi
 
+	######### SET DEV SHM ########
+	if [ ! -d $mnt/dev/shm ]; then
+	    mkdir -p $mnt/dev/shm
+	fi
+
 	######### SET PROC ########
 	if [ ! "$(mountpoint $mnt/proc 2> /dev/null | grep 'is a')" ]; then
 		[ ! -d $mnt/proc ] && mkdir -p $mnt/proc
