@@ -4,4 +4,4 @@
 SCRIPT_PATH=$(readlink -f $0)
 . ${SCRIPT_PATH%/*}/bootkali_env
 
-$busybox chroot $mnt /bin/bash -i
+$busybox chroot $mnt /bin/bash -c "if [ ! -f $HOME/.hushlogin ]; then touch $HOME/.hushlogin; fi; /bin/login -f root"
