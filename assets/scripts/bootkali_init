@@ -15,7 +15,7 @@ else
 fi
 
 
-## Not need to manually set to permissive mode now as patched in kernel.
+## No longer needed as SELinux is set to permissive mode via "10setenforce" init script.
 #su -c setenforce 0
 
 ######### VARIABLES #########
@@ -53,9 +53,6 @@ f_checkforroot(){
 		exit 1
 	fi
 }
-
-######### VARIABLES #########
-mnt=/data/local/nhsystem/kali-armhf
 
 ######### MOUNT #########
 
@@ -116,30 +113,40 @@ mount_fs_to_kali() {
 	mknod /dev/net/tun c 10 200 && bklog "[+] created /dev/net/tun"
 	fi
 
-	######### SET DEV ########
+	######### MOUNT DEV ########
 	if [ ! "$(mountpoint $mnt/dev 2> /dev/null | grep 'is a')" ]; then
 		[ ! -d $mnt/dev ] && mkdir -p $mnt/dev
-		$busybox mount -o bind /dev $mnt/dev && bklog "[+] binded /dev"
+		$busybox mount -o bind /dev $mnt/dev && bklog "[+] mounted /dev"
 	fi
 
-	######### SET DEV PTS ########
+	######### MOUNT DEV PTS ########
 	if [ ! "$(mountpoint $mnt/dev/pts 2> /dev/null | grep 'is a')" ]; then
 		$busybox mount -t devpts devpts $mnt/dev/pts && bklog "[+] mounted /dev/pts"
 	fi
 
-	######### SET PROC ########
+	######### MOUNT PROC ########
 	if [ ! "$(mountpoint $mnt/proc 2> /dev/null | grep 'is a')" ]; then
 		[ ! -d $mnt/proc ] && mkdir -p $mnt/proc
 		$busybox mount -t proc proc $mnt/proc && bklog "[+] mounted /proc"
 	fi
 
-	######### SET SYS ########
+	######### MOUNT SYS ########
 	if [ ! "$(mountpoint $mnt/sys 2> /dev/null | grep 'is a')" ]; then
 		[ ! -d $mnt/sys ] && mkdir -p $mnt/sys
 		$busybox mount -t sysfs sys $mnt/sys && bklog "[+] mounted /sys"
 	fi
 
-	######### SET INTERNAL | EXTERNAL SDCARD | USBDISK ########
+	######### MOUNT SYSTEM ########
+    if [ ! "$(mountpoint $mnt/system 2> /dev/null | grep 'is a')" ]; then
+    	[ ! -d $mnt/system ] && mkdir -p $mnt/system
+    	$busybox mount -r -o bind /system $mnt/system && bklog "[+] mounted /system"
+    fi
+    #enable depmod/modprobe support in rootfs
+    if [ ! "$(mountpoint $mnt/system/lib/modules 2> /dev/null | grep 'is a')" ]; then
+       $busybox mount -r -o bind /system/lib/modules $mnt/system/lib/modules && bklog "[+] mounted /system/lib/modules"
+    fi
+
+	######### MOUNT INTERNAL | EXTERNAL SDCARD | USBDISK ########
 	mount_sdcard
 	mount_external_sd
 
