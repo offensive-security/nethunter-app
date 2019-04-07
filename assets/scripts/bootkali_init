@@ -142,8 +142,8 @@ mount_fs_to_kali() {
     	$busybox mount -r -o bind /system $mnt/system && bklog "[+] mounted /system"
     fi
     #enable depmod/modprobe support in rootfs
-    if [ ! "$(mountpoint $mnt/system/lib/modules 2> /dev/null | grep 'is a')" ]; then
-       $busybox mount -r -o bind /system/lib/modules $mnt/system/lib/modules && bklog "[+] mounted /system/lib/modules"
+    if [ ! "$(mountpoint $mnt/lib/modules 2> /dev/null | grep 'is a')" ]; then
+       $busybox mount -r -o bind /system/lib/modules $mnt/lib/modules && bklog "[+] mounted /lib/modules"
     fi
 
 	######### MOUNT INTERNAL | EXTERNAL SDCARD | USBDISK ########
