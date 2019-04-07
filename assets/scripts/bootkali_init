@@ -181,8 +181,8 @@ mount_kali_chroot() {
     fi
 
     #enable depmod/modprobe support in rootfs
-    if [ ! "$(mountpoint $mnt/system/lib/modules 2> /dev/null | grep 'is a')" ]; then
-       $busybox mount -r -o bind /system/lib/modules $mnt/system/lib/modules && bklog "[+] mounted /system/lib/modules"
+    if [ ! "$(mountpoint $mnt/lib/modules 2> /dev/null | grep 'is a')" ]; then
+       $busybox mount -r -o bind /system/lib/modules $mnt/lib/modules && bklog "[+] mounted /lib/modules"
     fi
 
 	######### MOUNT INTERNAL | EXTERNAL SDCARD | USBDISK ########
@@ -206,9 +206,6 @@ mount_kali_chroot() {
 			echo "nameserver $(getprop net.dns${i})" >> $mnt/etc/resolv.conf
 		fi
 	done
-
-    # enable depmod/modprobe support in rootfs
-    #$busybox mount -r -o bind /system/lib/modules $mnt/lib/modules
 
     mount_sdcard
     mount_external_storage
