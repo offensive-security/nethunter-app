@@ -49,19 +49,22 @@ kill_pids
 # unmount everything
 
 bklog "[!] Removing all Kali mounts .."
+$busybox umount $mnt/dev/shm && echo "unmounted shm"
 $busybox umount $mnt/dev/pts && echo "unmounted pts"
 $busybox umount $mnt/dev && echo "unmounted dev"
 $busybox umount $mnt/proc && echo "unmounted proc"
 $busybox umount $mnt/sys && echo "unmounted sys"
 $busybox umount $mnt/system && echo "unmounted system"
+$busybox umount $mnt/lib/modules && echo "unmounted modules"
 $busybox umount $mnt/sdcard && echo "unmounted $mnt$sdcard"
 $busybox umount $mnt/external_sd && echo "unmounted external_sd"
 
-if [ $($busybox umount $mnt 2>&1 > /dev/null) ]; then
-    bklog " [-] Unable to umount the kali chroot image."
-    bklog " [-] Please close all the kali terminals and umount all the mointpoint on kali chroot first then try again."
-else
-    bklog "unmounted kali-armhf"
+if [ -d "$mnt/dev/shm" ]; then
+    rmdir $mnt/dev/shm
+fi
+
+if [ -d "$mnt/dev/pts" ]; then
+    rmdir $mnt/dev/pts
 fi
 
 if [ -d "$mnt/dev" ]; then
@@ -96,5 +99,27 @@ fi
 if [ "$(losetup -a | grep $chroot_image)" ]; then
     bklog "[!] $mnt is still being mounted. Something is wrong!" && read
 fi
+
+if [ -d "$mnt/system" ]; then
+    rmdir $mnt/system
+fi
+
+if [ -d "$mnt/sdcard" ]; then
+    rmdir $mnt/sdcard
+fi
+
+if [ -d "$mnt/external_sd" ]; then
+    rmdir $mnt/external_sd
+fi
+
+if [ $($busybox umount $mnt 2>&1 > /dev/null) ]; then
+    echo " [-] Unable to umount the kali chroot image."
+    echo " [-] Please close all the kali terminals and umount all the mointpoint on kali chroot first then try again."
+else
+    echo "unmounted kali-armhf"
+fi
+
+# Run e2fsck everytime it umount the kali chroot image.
+e2fsck -y /sdcard/kali-chroot.img
 
 export PATH=$PRESERVED_PATH
