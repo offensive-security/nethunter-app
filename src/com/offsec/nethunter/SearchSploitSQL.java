@@ -26,15 +26,16 @@ class SearchSploitSQL extends SQLiteOpenHelper {
     }
 
     public void onCreate(SQLiteDatabase database) {
-        String CREATE_SEARCHSPLOIT_TABLE = "CREATE TABLE IF NOT EXISTS " + SearchSploit.TABLE +
+        String CREATE_SEARCHSPLOIT_TABLE = "CREATE TABLE  IF NOT EXISTS " + SearchSploit.TABLE +
                 " (" + SearchSploit.ID + " INTEGER PRIMARY KEY, " +
                 SearchSploit.FILE + " TEXT," +
                 SearchSploit.DESCRIPTION + " TEXT," +
                 SearchSploit.DATE + " TEXT," +
                 SearchSploit.AUTHOR + " TEXT," +
                 SearchSploit.TYPE + " TEXT," +
-		SearchSploit.PLATFORM + " TEXT," +
+           		  SearchSploit.PLATFORM + " TEXT," +
                 SearchSploit.PORT + " INTEGER DEFAULT 0)";
+
         database.execSQL(CREATE_SEARCHSPLOIT_TABLE);
         database.disableWriteAheadLogging();
     }
@@ -117,8 +118,8 @@ class SearchSploitSQL extends SQLiteOpenHelper {
                 _exploit.setDescription(cursor.getString(2));      // desc
                 _exploit.setDate(cursor.getString(3));             // date
                 _exploit.setAuthor(cursor.getString(4));           // author
-                _exploit.setType(cursor.getString(5));             // type
-                _exploit.setPlatform(cursor.getString(6));         // platform
+                _exploit.setPlatform(cursor.getString(5));         // platform
+                _exploit.setType(cursor.getString(6));             // type
                 _exploit.setPort(cursor.getInt(7));                // port
                 commandList.add(_exploit);
             } while (cursor.moveToNext());
