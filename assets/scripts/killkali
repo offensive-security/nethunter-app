@@ -55,6 +55,7 @@ $busybox umount $mnt/dev && echo "unmounted dev"
 $busybox umount $mnt/proc && echo "unmounted proc"
 $busybox umount $mnt/sys && echo "unmounted sys"
 $busybox umount $mnt/system && echo "unmounted system"
+$busybox umount $mnt/lib/modules && echo "unmounted modules"
 $busybox umount $mnt/sdcard && echo "unmounted $mnt$sdcard"
 $busybox umount $mnt/external_sd && echo "unmounted external_sd"
 
