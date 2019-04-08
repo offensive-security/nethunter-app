@@ -113,6 +113,7 @@ mount_kali_chroot() {
     $busybox mount -t ext4 -o loop /sdcard/kali-chroot.img $mnt
 
     mkdir -p $mnt/dev
+    mkdir -p $mnt/dev/shm
     mkdir -p $mnt/proc
     mkdir -p $mnt/sys
     mkdir -p $mnt/system
@@ -145,39 +146,44 @@ mount_kali_chroot() {
     echo "nameserver 208.67.220.220" >> $mnt/etc/resolv.conf
     chmod 644 $mnt/etc/resolv.conf
 
-    ######### BINDING FILESYSTEM #########
+    ######### MOUNTING FILESYSTEM IN CHROOT #########
     f_checkforroot
 
+    ######### REMOUNT DATA ########
     $busybox mount -o remount,suid /data
-    $busybox mount -r -o bind /system $mnt/system
 
-	  ######### MOUNT DEV ########
-	  if [ ! "$(mountpoint $mnt/dev 2> /dev/null | grep 'is a')" ]; then
-		[ ! -d $mnt/dev ] && mkdir -p $mnt/dev
-		$busybox mount -o bind /dev $mnt/dev && bklog "[+] mounted /dev"
-	  fi
+    ######### MOUNT DEV ########
+    if [ ! "$(mountpoint $mnt/dev 2> /dev/null | grep 'is a')" ]; then
+        [ ! -d $mnt/dev ] && mkdir -p $mnt/dev
+        $busybox mount -o bind /dev $mnt/dev && bklog "[+] mounted /dev"
+    fi
 
-	  ######### MOUNT DEV PTS ########
-	  if [ ! "$(mountpoint $mnt/dev/pts 2> /dev/null | grep 'is a')" ]; then
-		$busybox mount -t devpts devpts $mnt/dev/pts && bklog "[+] mounted /dev/pts"
-	  fi
+    ######### MOUNT DEV PTS ########
+    if [ ! "$(mountpoint $mnt/dev/pts 2> /dev/null | grep 'is a')" ]; then
+        $busybox mount -t devpts devpts $mnt/dev/pts && bklog "[+] mounted /dev/pts"
+    fi
+    
+    ######### MOUNT DEV SHM ########
+    if [ ! "$(mountpoint $mnt/dev/shm 2> /dev/null | grep 'is a')" ]; then
+        $busybox mount -t tmpfs tmpfs $mnt/dev/shm && bklog "[+] mounted /dev/shm"
+    fi
 
-	  ######### MOUNT PROC ########
-	  if [ ! "$(mountpoint $mnt/proc 2> /dev/null | grep 'is a')" ]; then
-		[ ! -d $mnt/proc ] && mkdir -p $mnt/proc
-		$busybox mount -t proc proc $mnt/proc && bklog "[+] mounted /proc"
-	  fi
+    ######### MOUNT PROC ########
+    if [ ! "$(mountpoint $mnt/proc 2> /dev/null | grep 'is a')" ]; then
+        [ ! -d $mnt/proc ] && mkdir -p $mnt/proc
+        $busybox mount -t proc proc $mnt/proc && bklog "[+] mounted /proc"
+    fi
 
   	######### MOUNT SYS ########
-	  if [ ! "$(mountpoint $mnt/sys 2> /dev/null | grep 'is a')" ]; then
-		[ ! -d $mnt/sys ] && mkdir -p $mnt/sys
-		$busybox mount -t sysfs sys $mnt/sys && bklog "[+] mounted /sys"
-	  fi
+    if [ ! "$(mountpoint $mnt/sys 2> /dev/null | grep 'is a')" ]; then
+        [ ! -d $mnt/sys ] && mkdir -p $mnt/sys
+        $busybox mount -t sysfs sys $mnt/sys && bklog "[+] mounted /sys"
+    fi
 
-	  ######### MOUNT SYSTEM ########
+    ######### MOUNT SYSTEM ########
     if [ ! "$(mountpoint $mnt/system 2> /dev/null | grep 'is a')" ]; then
-    	[ ! -d $mnt/system ] && mkdir -p $mnt/system
-    	$busybox mount -r -o bind /system $mnt/system && bklog "[+] mounted /system"
+        [ ! -d $mnt/system ] && mkdir -p $mnt/system
+        $busybox mount -r -o bind /system $mnt/system && bklog "[+] mounted /system"
     fi
 
     #enable depmod/modprobe support in rootfs
@@ -186,36 +192,26 @@ mount_kali_chroot() {
     fi
 
 	######### MOUNT INTERNAL | EXTERNAL SDCARD | USBDISK ########
-	mount_sdcard
-	mount_external_sd
-
-	#########
-	$busybox chmod 666 /dev/null
-
-	######### SET 250MB TO ALLOW POSTGRESQL #########
-	$busybox sysctl -w kernel.shmmax=268435456
-
-	######### SET DNS ########
-	> $mnt/etc/resolv.conf # empty dns entries
-	for i in 1 2 3 4; do
-		if [ -z "$(getprop net.dns${i})" ]; then
-			# we go through 1-4 dns servers and break out of loop on empty
-			break
-		else
- 			# add local/device dns server first
-			echo "nameserver $(getprop net.dns${i})" >> $mnt/etc/resolv.conf
-		fi
-	done
-
     mount_sdcard
-    mount_external_storage
+    mount_external_sd
 
-    $busybox mount -o bind /dev $mnt/dev
-    $busybox mount -t devpts devpts $mnt/dev/pts
-    mkdir -p $mnt/dev/shm
-    $busybox mount -t tmpfs tmpfs $mnt/dev/shm
-    $busybox mount -t proc proc $mnt/proc
-    $busybox mount -t sysfs sysfs $mnt/sys
+    #########
+    $busybox chmod 666 /dev/null
+
+    ######### SET 250MB TO ALLOW POSTGRESQL #########
+    $busybox sysctl -w kernel.shmmax=268435456
+
+    ######### SET DNS ########
+    > $mnt/etc/resolv.conf # empty dns entries
+    for i in 1 2 3 4; do
+        if [ -z "$(getprop net.dns${i})" ]; then
+        # we go through 1-4 dns servers and break out of loop on empty
+            break
+        else
+        # add local/device dns server first
+            echo "nameserver $(getprop net.dns${i})" >> $mnt/etc/resolv.conf
+        fi
+    done
 
     $busybox chmod 666 /dev/null
 
@@ -240,7 +236,7 @@ if [ ! -d "$mnt" ]; then
     mkdir -p $mnt
 fi
 
-## then check if the kali chroot image is already mount to /data/local/nhsystem/kali-armhf
+## then check if the kali chroot image is already mounted on /data/local/nhsystem/kali-armhf
 
 if [ ! "$($busybox mountpoint $mnt | grep 'is a')" ]; then
     echo "Mounting kali chroot..."
