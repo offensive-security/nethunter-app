@@ -191,7 +191,7 @@ mount_kali_chroot() {
        $busybox mount -r -o bind /system/lib/modules $mnt/lib/modules && bklog "[+] mounted /lib/modules"
     fi
 
-	######### MOUNT INTERNAL | EXTERNAL SDCARD | USBDISK ########
+    ######### MOUNT INTERNAL | EXTERNAL SDCARD | USBDISK ########
     mount_sdcard
     mount_external_sd
 
@@ -224,8 +224,10 @@ mount_kali_chroot() {
     echo "::1				 localhost ip6-localhost ip6-loopback" >> $mnt/etc/hosts
     echo "kali" > $mnt/proc/sys/kernel/hostname
     echo "The Kali chroot has been started."
-    echo " [!] Everytime you mount the kali chroot, Pleaes press ENTER to continue. (If chroot is already mounted, this won't prompt.)"
-    read
+    if [ -f /sdcard/nh_files/debug ]; then
+        echo " [!] Everytime you mount the kali chroot, please press ENTER to continue. (If chroot is already mounted, this won't prompt.)"
+        read
+    fi
     log "The Kali chroot has been started."
 
 }
