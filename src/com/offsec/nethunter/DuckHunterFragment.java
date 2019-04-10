@@ -58,7 +58,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     private static final String TAG = "DuckHunterFragment";
     private static NhPaths nh;
     private static String prwText = "";
-    private boolean isHIDenable = false;
+    //private boolean isHIDenable = false;
 
     public DuckHunterFragment() {
     }
@@ -90,7 +90,6 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
         });
         setHasOptionsMenu(true);
         sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
-	check_HID_enable();
         return rootView;
     }
 
@@ -162,6 +161,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.duckConvertAttack:
+                boolean isHIDenable = check_HID_enable();
                 if (isHIDenable) {
                     setLang();
                     nh.showMessage("Launching Attack");
@@ -203,7 +203,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
     private static Boolean updatefile() {
         try {
-            File myFile = new File(nh.APP_SD_FILES_PATH, DuckHunterConvertFragment.configFilePath);
+            File myFile = new File(DuckHunterConvertFragment.configFile);
             myFile.createNewFile();
             FileOutputStream fOut = new FileOutputStream(myFile);
             OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
@@ -221,20 +221,23 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     private static void convert() {
         ShellExecuter exe = new ShellExecuter();
         if (updatefile()) {
-            String[] command = new String[1];
             Log.d(TAG, lang);
-            command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali duck-hunt-convert " + lang +
-                    " /sdcard/nh_files/modules/duckconvert.txt " + "/opt/" +
-                    DuckHunterPreviewFragment.configFileFilename + "'";
-            exe.RunAsRoot(command);
+            String command = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali duck-hunt-convert" +
+                    " " + lang +
+                    " " + DuckHunterConvertFragment.configFile +
+                    " " + DuckHunterPreviewFragment.configFile + "'";
+            String check_output = exe.RunAsRootOutput(command);
+            if (check_output.equals("1")){
+                nh.showMessage_long("Something's wrong when generating the duckout script!");
+            }
         }
     }
 
     private void start() {
         String[] command = new String[1];
-        command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali duck-hunt-run /opt/duckout.sh'";
-        String command_string = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali duck-hunt-run /opt/duckout.sh'";
-        Log.d(TAG, command_string);
+        command[0] = "su -c '" + nh.APP_SCRIPTS_PATH + "/bootkali duck-hunt-run" +
+                    " " + DuckHunterPreviewFragment.configFile + "'";
+        Log.d(TAG, command[0]);
         ShellExecuter exe = new ShellExecuter();
         exe.RunAsRoot(command);
     }
@@ -263,7 +266,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                         e.printStackTrace();
                     }
                     try {
-                        Process p = Runtime.getRuntime().exec("su -c cat " + DuckHunterPreviewFragment.configFilePath + DuckHunterPreviewFragment.configFileFilename);
+                        Process p = Runtime.getRuntime().exec("su -c cat " + DuckHunterPreviewFragment.configFile);
                         p.waitFor();
                         BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
                         String line;
@@ -343,7 +346,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
     public static class DuckHunterConvertFragment extends Fragment implements View.OnClickListener {
 
-        public static final String configFilePath = "/modules/duckconvert.txt";
+        public static final String configFile = nh.APP_SD_FILES_PATH + "/modules/duckconvert.txt";
         public static final String loadFilePath = "/scripts/ducky/";
         private static final int PICKFILE_RESULT_CODE = 1;
 
@@ -376,7 +379,8 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                 }
             });
             //File appFolder = getActivity().getFilesDir();
-            File file = new File(nh.APP_SD_FILES_PATH, configFilePath);
+            File file = new File(configFile);
+            //File file = new File(nh.CHROOT_PATH, configFilePath);
             StringBuilder text = new StringBuilder();
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file));
@@ -407,24 +411,6 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                 public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                     //String selectedItemText = parent.getSelectedItem().toString();
                     getPreset(duckyscriptSpinner.getSelectedItem().toString());
-                    //switch (pos) {
-                    //   case 0:
-                    //        break;
-                    //    case 1:
-                    //        getPreset("helloworld"); // Hello World!
-                    //        break;
-                    //    case 2:
-                    //        getPreset("osx_perl_reverse_shell"); // OSX Perl: Reverse Shell
-                    //        break;
-                    //    case 3:
-                    //        getPreset("osx_ruby_reverse_shell"); // OSX Ruby: Reverse Shell
-                    //        break;
-                    //    case 4:
-                    //        getPreset("windows_rdp"); // Enable RDP in Windows
-                    //        break;
-		    //	  case 5:
-		    //	      getPreset("fake_win10_update");
-                    //}
                 }
 
                 @Override
@@ -564,7 +550,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
 
         private String[] getDuckyScriptFiles() {
             ArrayList<String> result = new ArrayList<String>();
-            File script_folder = new File("/sdcard/nh_files/duckyscripts");
+            File script_folder = new File(nh.APP_SD_FILES_PATH + "/duckyscripts");
             File[] filesInFolder = script_folder.listFiles();
             for (File file : filesInFolder) {
                 if (!file.isDirectory()) {
@@ -579,16 +565,16 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
     public static class DuckHunterPreviewFragment extends Fragment {
 
         // Error reading chroot_path
-        //public static final String configFilePath = nh.CHROOT_PATH + "/opt/";
-        public static final String configFilePath = "/data/local/nhsystem/kali-armhf/opt/";
-        public static final String configFileFilename = "duckout.sh";
+        public static final String configFile = nh.APP_SD_FILES_PATH + "/modules/duckout.sh";
+        //public static final String configFilePath = "/data/local/nhsystem/kali-armhf/opt/"; //hardcode it.
+        //public static final String configFileFilename = "duckout.sh";
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
             View rootView = inflater.inflate(R.layout.duck_hunter_preview, container, false);
+            nh.showMessage(configFile);
             readFileForPreview();
-
             return rootView;
         }
 
@@ -602,6 +588,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
         }
 
         public void readFileForPreview() {
+
             if (getView() == null) {
                 return;
             }
@@ -619,7 +606,7 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
                     }
                 }
                 try {
-                    Process p = Runtime.getRuntime().exec("su -c cat " + configFilePath + configFileFilename);
+                    Process p = Runtime.getRuntime().exec("su -c cat " + configFile);
                     p.waitFor();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
                     String line;
@@ -639,20 +626,15 @@ public class DuckHunterFragment extends Fragment implements ActionBar.TabListene
         }
     }
 
-
-    private void check_HID_enable() {
-        new Thread(new Runnable() {
-             public void run() {
-                ShellExecuter exe_check = new ShellExecuter();
-                String hidgs[] = {"/dev/hidg0", "/dev/hidg1"};
-                for (String hidg : hidgs) {
-                    if (!exe_check.RunAsRootOutput("su -c \"stat -c '%a' " + hidg + "\"").equals("666")) {
-                        isHIDenable = false;
-                        break;
-                    }
-                    isHIDenable = true;
-                }
+    private boolean check_HID_enable() {
+        ShellExecuter exe_check = new ShellExecuter();
+        String hidgs[] = {"/dev/hidg0", "/dev/hidg1"};
+        for (String hidg : hidgs) {
+            if (!exe_check.RunAsRootOutput("su -c \"stat -c '%a' " + hidg + "\"").equals("666")) {
+                return false;
             }
-        }).start();
+
+        }
+        return true;
     }
 }

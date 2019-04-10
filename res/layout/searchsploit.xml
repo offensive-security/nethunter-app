@@ -58,16 +58,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Platform"
-            android:id="@+id/textView17"
-            android:layout_alignParentStart="true"
-            android:layout_alignBottom="@+id/exdb_platform_spinner"
-            android:gravity="center_vertical" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Type"
             android:layout_alignTop="@+id/exdb_type_spinner"
             android:layout_alignParentStart="true"

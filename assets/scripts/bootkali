@@ -15,7 +15,7 @@ SCRIPT_PATH=$(readlink -f $0)
 # start-rev-met, start-rev-met-elevated-win[8-7]
 
 if [ $# -eq 0 ]; then
-	$busybox chroot $mnt /bin/bash -c "if [ ! -f $HOME/.hushlogin ]; then touch $HOME/.hushlogin; fi; /bin/login -f root"
+	$busybox chroot $mnt /usr/bin/sudo -i -u root
 else
 
 	#APACHE
@@ -34,6 +34,7 @@ else
 		sleep 10
 		am start -a android.intent.action.VIEW -d http://127.0.0.1:3000/ui/authentication
 	fi
+
 	if [ "$1" == "beef-xss" ] && [ "$2" == "stop" ]; then
 		$busybox chroot $mnt sudo service beef-xss stop
 	fi
@@ -103,7 +104,7 @@ else
 	#Open VNC
 
 	if [ "$1" == "vnc" ] && [ "$2" == "start" ]; then
-        	        	sh /data/data/com.offsec.nethunter/files/scripts/start-vnc $3 $4 $5 $6 $7 $8
+		sh /data/data/com.offsec.nethunter/files/scripts/start-vnc $3 $4 $5 $6 $7 $8
 	fi
 
 	# HID Keyboard Command a.k.a Teensy style
@@ -259,13 +260,6 @@ else
 		$busybox chroot $mnt sudo /usr/sbin/gpsd -n tcp://127.0.0.1:$2
 	fi
 
-
-	#KALIMENU
-
-	if [ "$1" == "kalimenu" ]; then
-		$busybox chroot $mnt sudo /usr/bin/kalimenu
-	fi
-
 	#YCABLE
 
 	if [ "$1" == "ycable" ] && [ "$2" == "start" ]; then
@@ -319,10 +313,17 @@ else
 		[ -f /sdcard/nh_files/SearchSploit ] && return 0 || return 1
 	fi
 
+	#SearchSploit convert_exploitdb_to_csv
+
+	if [ "$1" == "convert_exploitdb" ]; then
+		$busybox chroot $mnt sudo python /sdcard/nh_files/modules/csv2sqlite.py /usr/share/exploitdb/files_exploits.csv /sdcard/nh_files/SearchSploit $2
+		[ -f /sdcard/nh_files/SearchSploit ] && return 0 || return 1
+	fi
+
 	#MFOC MIFARE DUMP
 
 	if [ "$1" == "dumpmifare" ]; then
-		$busybox chroot $mnt /usr/bin/dumpmifare.sh
+		$busybox chroot $mnt sudo /usr/bin/dumpmifare.sh
 	fi
 
 	#APT-GET
@@ -348,25 +349,14 @@ else
 		printf "And remember to use the 'Maintain Chroot' button in the Chroot Manager to keep your chroot up-to-date and to install new metapackages.\n\n"
 		echo -e "\e[0m"
 	fi
-	#Extract kali chroot with symlink.
 
-    if [ "$1" == "extract-chroot" ] && [ "$2" != "" ]; then
-    	$busybox chroot $mnt /bin/tar xzf "$2" --hard-dereference --keep-old-files --keep-directory-symlink -C "/" > /dev/null 2>&1
-    fi
-
-    #Backup kali chroot
-
-	if [ "$1" == "backup-chroot" ] && [ "$2" != "" ]; then
-		if [ -f "/sdcard/$2" ]; then
-			bklog "[-] /sdcard/$2 existed already, please rename the existed filename to another first."
-		else
-			$busybox chroot $mnt sudo /bin/tar czf "/sdcard/$2" --hard-dereference --exclude='./system' --exclude='./sys' --exclude='./proc' --exclude='./dev' --exclude='./sdcard' --exclude='./lib/modules' -C "/" .
-			bklog "[+] Done. Successfully backup to /sdcard/$2"
-		fi
+	if [ "$1" == "test" ]; then
+        $busybox chroot $mnt sudo printenv
 	fi
 
 	if [ "$1" == "test" ]; then
         $busybox chroot $mnt sudo printenv
     fi
+
 fi
 

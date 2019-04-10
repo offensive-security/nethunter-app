@@ -146,7 +146,6 @@ ChrootManagerFragment extends Fragment {
 
         // extracte files location
 
-
         installLogFile = nh.SD_PATH + "/nh_install_" + new SimpleDateFormat("yyyyMMdd_hhmmss'.log'", Locale.US).format(new Date());
         return rootView;
     }
@@ -407,10 +406,7 @@ ChrootManagerFragment extends Fragment {
             intent.addCategory(Intent.CATEGORY_DEFAULT);
             intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "echo \"Updating gpg key..\" && wget -q -O - https://archive.kali.org/archive-key.asc | apt-key add && apt-get update && apt-get install " + packages + " -y && apt-get dist-upgrade -y && echo \"\nKali Linux Nethunter setup is complete.\nEnjoy. (You can close the terminal now)\n\"");
             if (packages.equals("FixedUpdatingToLatestKali")) {
-                intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "echo \"Updating gpg key..\" && wget -q -O - https://archive.kali.org/archive-key.asc | apt-key add && apt-get update && apt-get install kali-linux-all -y && apt-get dist-upgrade -y && echo \"\nKali Linux Nethunter setup is complete.\nEnjoy. (You can close the terminal now)\n\"");
-            } else {
-                intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "apt-get update && apt-get install " + packages + " && echo \"\nUpgrade completed.\nEnjoy. (You can close the terminal now)\n\"");
-            }
+            intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "apt-get update && apt-get install " + packages + " && echo \"\nUpgrade completed.\nEnjoy. (You can close the terminal now)\n\"");
             Log.d("PACKS:", "PACKS:" + packages);
             startActivity(intent);
 
@@ -618,7 +614,7 @@ ChrootManagerFragment extends Fragment {
         // https://developer.android.com/training/scheduling/wakelock.html
         final PowerManager powerManager = (PowerManager) getActivity().getSystemService(POWER_SERVICE);
         final PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-                "ChrootWakelockTag");
+                "myapp:ChrootWakelockTag");
 
         Boolean isStarted = false;
 
@@ -659,8 +655,10 @@ ChrootManagerFragment extends Fragment {
                 }
                 // Decompress, extract, and deploy the .tar.xz to the chroot destination in one step
                 publishProgress(getActivity().getString(R.string.extract_chroot));
-                if ( zipFilePath.contains("tar.gz")) {
-                    x.RunAsRootOutput(nh.whichBusybox() + " tar -xzf '" + zipFilePath + "' -C '" + nh.NH_SYSTEM_PATH + "'");
+                Log.d(TAG, "Restoring kali chroot from " + zipFilePath + " to " + nh.NH_SYSTEM_PATH);
+
+                if (zipFilePath.contains("tar.gz")) {
+                    x.RunAsRootOutput(nh.APP_SCRIPTS_PATH + "/chroot_restore " + zipFilePath + " " + nh.NH_SYSTEM_PATH);
                 } else {
                     x.RunAsRootOutput(nh.whichBusybox() + " tar -xJf '" + zipFilePath + "' -C '" + nh.NH_SYSTEM_PATH + "'");
                 }

@@ -22,6 +22,7 @@ import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.SearchView;
 
 import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
@@ -245,25 +246,6 @@ public class SearchSploitFragment extends Fragment {
             public void onNothingSelected(AdapterView<?> parentView) {
             }
         });
-
-        final List<String> typeList = database.getTypes();
-        Spinner typeSpin = rootView.findViewById(R.id.exdb_type_spinner);
-        ArrayAdapter<String> adp13 = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, typeList);
-        adp13.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        typeSpin.setAdapter(adp13);
-        typeSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                sel_type = typeList.get(position);
-                loadExploits();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-            }
-        });
-        loadExploits();
-    }
 
     private void loadExploits() {
         if ((sel_platform != null) && (sel_type != null)) {

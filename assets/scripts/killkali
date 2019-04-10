@@ -23,19 +23,37 @@ export PATH=/usr/bin:/usr/sbin:/bin:/usr/local/bin:/usr/local/sbin:$PATH
 export TERM=linux
 export HOME=/root
 export LOGNAME=root
+export chroot_image=/sdcard/kali-chroot.img
 unset LD_PRELOAD
 
-# set shmmax to 128mb to free memory#
+kill_pids() {
+    local lsof_full=$(lsof | awk '{print $1}' | grep -c '^lsof')
+    if [ "${lsof_full}" -eq 0 ]; then
+        local pids=$(lsof | grep "$mnt" | awk '{print $1}' | uniq)
+    else
+        local pids=$(lsof | grep "$mnt" | awk '{print $2}' | uniq)
+    fi
+    if [ -n "${pids}" ]; then
+        kill -9 ${pids} 2> /dev/null
+        return $?
+    fi
+    return 0
+}
+
+########## Shutdown kali service ##########
+## set shmmax to 128mb to free memory ##
 
 $busybox sysctl -w kernel.shmmax=134217728
-
-bklog "[!] Shutting down SSH Server"
 $busybox chmod 666 /dev/null
 
-$busybox chroot $mnt /etc/init.d/ssh stop
+bklog "[!] Shutting down dbus"
+$busybox chroot $mnt /etc/init.d/dbus stop
+
+bklog "Shutting down SSH Server"
+$busybox chroot $mnt /etc/init.d/ssh stop > /dev/null 2>&1
 
 bklog "[!] Shutting down Postgresql"
-$busybox chroot $mnt /etc/init.d/postgresql stop
+$busybox chroot $mnt /etc/init.d/postgresql stop > /dev/null 2>&1
 
 bklog "[!] Shutting down VNCserver"
 pkill Xtightvnc
@@ -43,40 +61,42 @@ rm -f $mnt/root/.vnc/*.log *.pid > /dev/null 2>&1
 rm -f $mnt/tmp/.X*-.lock .X*-unix/* > /dev/null 2>&1
 
 ########## Kill all running kali terminals first ##########
-bklog "[!] Killing all running kali terminals.."
+echo " [!] Killing all running kali terminals.."
 kill_pids
 
-# unmount everything
-
-bklog "[!] Removing all Kali mounts .."
-$busybox umount $mnt/dev/shm && echo "unmounted shm"
-$busybox umount $mnt/dev/pts && echo "unmounted pts"
-$busybox umount $mnt/dev && echo "unmounted dev"
-$busybox umount $mnt/proc && echo "unmounted proc"
-$busybox umount $mnt/sys && echo "unmounted sys"
-$busybox umount $mnt/system && echo "unmounted system"
-$busybox umount $mnt/lib/modules && echo "unmounted modules"
-$busybox umount $mnt/sdcard && echo "unmounted $mnt$sdcard"
-$busybox umount $mnt/external_sd && echo "unmounted external_sd"
-
 if [ -d "$mnt/dev/shm" ]; then
-    rmdir $mnt/dev/shm
+    $busybox umount $mnt/dev/shm 2> /dev/null && echo "umounted shm"
 fi
 
 if [ -d "$mnt/dev/pts" ]; then
-    rmdir $mnt/dev/pts
+    $busybox umount $mnt/dev/pts 2> /dev/null && echo "umounted pts"
 fi
 
 if [ -d "$mnt/dev" ]; then
-    rmdir $mnt/dev
+    $busybox umount $mnt/dev 2> /dev/null && echo "umounted dev"
 fi
 
 if [ -d "$mnt/proc" ]; then
-    rmdir $mnt/proc
+    $busybox umount $mnt/proc 2> /dev/null && echo "umounted proc"
 fi
 
 if [ -d "$mnt/sys" ]; then
-    rmdir $mnt/sys
+    $busybox umount $mnt/sys 2> /dev/null && echo "umounted sys"
+fi
+
+if [ -d "$mnt/sdcard" ]; then
+    $busybox umount $mnt/sdcard 2> /dev/null && echo "umounted sdcard"
+    rmdir $mnt/sdcard
+fi
+
+if [ -d "$mnt/external_sd" ]; then
+    $busybox umount $mnt/external_sd 2> /dev/null && echo "umounted external_sd"
+    rmdir $mnt/external_sd
+fi
+
+if [ -d "$mnt/mnt/usbdisk" ]; then
+    $busybox umount $mnt/mnt/usbdisk 2> /dev/null && echo "umounted /mnt/usbdisk"
+    rmdir $mnt/mnt/usbdisk
 fi
 
 ###### umount the chroot as well if it is being mounted. Here the directory method will not be affected. ######
@@ -89,10 +109,30 @@ if [ "$(losetup -a | grep $chroot_image)" ]; then
     fi
 fi
 
+if [ -d "$mnt/mnt" ]; then
+    $busybox umount $mnt/mnt 2> /dev/null && echo "umounted /mnt/usbdisk"
+    rmdir $mnt/mnt
+fi
+
+###### umount the chroot as well if it is being mounted. Here the directory method will not be affected. ######
+if [ "$(losetup -a | grep $chroot_image)" ]; then
+    if [ "$($busybox umount $mnt 2>&1 > /dev/null)" ]; then
+        echo " [-] Unable to umount the kali chroot image."
+        echo " [!] If so, please try to close all the kali terminals first, secondly manually umount all the mointpoints on kali chroot, and lastly kill all the running services like ssh, vnc, webservice etc..."
+    else
+        echo "umounted kali-armhf"
+    fi
+fi
+
 # Run e2fsck everytime we umount the kali chroot image on enrypted device.
 if [ -f "$chroot_image" ]; then
-    bklog "[!] Running e2fsck to check image $chroot_image.."
+    echo " [!] Running e2fsck to check image $chroot_image.."
     e2fsck -y $chroot_image
+fi
+
+# Check again if chroot image is really umounted.
+if [ "$(losetup -a | grep $chroot_image)" ]; then
+    echo " [!] $mnt is still being mounted. Something is wrong!" && read
 fi
 
 # Check again if chroot image is really umounted.
