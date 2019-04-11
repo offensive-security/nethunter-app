@@ -246,39 +246,49 @@ public class SearchSploitFragment extends Fragment {
             public void onNothingSelected(AdapterView<?> parentView) {
             }
         });
+        loadExploits();
+    }
 
-    private void loadExploits() {
-        if ((sel_platform != null) && (sel_type != null)) {
-            List<SearchSploit> exploitList;
-            if (withFilters) {
-                exploitList = database.getAllExploitsFiltered(sel_search, sel_type, sel_platform);
-            } else {
-                if (sel_search.equals("")) {
-                    exploitList = full_exploitList;
+        private void loadExploits() {
+            if ((sel_platform != null) && (sel_type != null)) {
+                List<SearchSploit> exploitList;
+                if (withFilters) {
+                    exploitList = database.getAllExploitsFiltered(sel_search, sel_type, sel_platform);
                 } else {
-                    exploitList = database.getAllExploitsRaw(sel_search);
+                    if (sel_search.equals("")) {
+                        exploitList = full_exploitList;
+                    } else {
+                        exploitList = database.getAllExploitsRaw(sel_search);
+                    }
                 }
-            }
-            if (exploitList == null) {
-                new android.os.Handler().postDelayed(
-                        () -> loadExploits(), 1500);
-                return;
-            }
-            numex.setText(String.format("%d results", exploitList.size()));
-            ExploitLoader exploitAdapter = new ExploitLoader(mContext, exploitList);
-            searchSploitListView.setAdapter(exploitAdapter);
-            if (!isLoaded) {
-                // preloading the long list lets see if is more performant
-                // preload in the background.
-                new Thread(() -> full_exploitList = database.getAllExploitsRaw("")).start();
+                if (exploitList == null) {
+                    new android.os.Handler().postDelayed(
+                            new Runnable() {
+                                public void run() {
+                                    loadExploits();
+                                }
+                            }, 1500);
+                    return;
+                }
+                numex.setText(String.format("%d results", exploitList.size()));
+                ExploitLoader exploitAdapter = new ExploitLoader(mContext, exploitList);
+                searchSploitListView.setAdapter(exploitAdapter);
+                if (!isLoaded) {
+                    // preloading the long list lets see if is more performant
+                    // preload in the background.
+                    new Thread(new Runnable() {
+                        public void run() {
+                            full_exploitList = database.getAllExploitsRaw("");
+                        }
+                    }).start();
 
-                adi.dismiss();
-                isLoaded = true;
-                hideSoftKeyboard(getView());
+                    adi.dismiss();
+                    isLoaded = true;
+                    hideSoftKeyboard(getView());
+                }
             }
         }
     }
-}
 
 class ExploitLoader extends BaseAdapter {
 
@@ -340,7 +350,7 @@ class ExploitLoader extends BaseAdapter {
             vH.description = convertView.findViewById(R.id.description);
             // vH.cwSwich = (Switch) convertView.findViewById(R.id.switch1);
             vH.type = convertView.findViewById(R.id.type);
-	    vH.platform = convertView.findViewById(R.id.platform);
+	        vH.platform = convertView.findViewById(R.id.platform);
             vH.author = convertView.findViewById(R.id.author);
             vH.date = convertView.findViewById(R.id.exploit_date);
             vH.viewSource = convertView.findViewById(R.id.viewSource);
@@ -369,7 +379,7 @@ class ExploitLoader extends BaseAdapter {
         // set service name
         vH.description.setText(_desc);
         vH.type.setText(_type);
-	vH.platform.setText(_platform);
+	    vH.platform.setText(_platform);
         vH.author.setText(_author);
         vH.date.setText(_date);
         vH.viewSource.setOnClickListener(v -> {
@@ -402,6 +412,5 @@ class ExploitLoader extends BaseAdapter {
     public long getItemId(int position) {
         return position;
     }
-
 
 }

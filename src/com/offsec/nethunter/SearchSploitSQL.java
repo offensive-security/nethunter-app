@@ -62,7 +62,7 @@ class SearchSploitSQL extends SQLiteOpenHelper {
         // Then move it to app db folder
         String _cmd2 = "mv /data/local/nhsystem/kali-armhf/root/SearchSploit /sdcard/nh_files/";
         exe.RunAsRootOutput(_cmd2);
-        else return false;
+        return true;
     }
 
     long getCount() {
