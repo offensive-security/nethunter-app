@@ -119,7 +119,7 @@ public class NhPaths {
 
     public void showMessage_long(String message) {
         int duration = Toast.LENGTH_LONG;
-        Toast toast = Toast.makeText(getAppContext(), message, Toast.duration);
+        Toast toast = Toast.makeText(getAppContext(), message, duration);
         toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
         toast.show();
     }
