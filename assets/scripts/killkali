@@ -29,6 +29,9 @@ unset LD_PRELOAD
 
 $busybox sysctl -w kernel.shmmax=134217728
 
+bklog "[!] Shutting down dbus"
+$busybox chroot $mnt /etc/init.d/dbus stop
+
 bklog "[!] Shutting down SSH Server"
 $busybox chmod 666 /dev/null
 
