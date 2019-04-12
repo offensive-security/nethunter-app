@@ -2,15 +2,12 @@ package com.offsec.nethunter;
 
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.StrictMode;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,6 +30,9 @@ import com.offsec.nethunter.utils.ShellExecuter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
 
 
 public class MacchangerFragment extends Fragment {
@@ -68,7 +68,7 @@ public class MacchangerFragment extends Fragment {
             return;
         }
         View v = getView();
-        final Spinner interfaceSpinner = (Spinner) v.findViewById(R.id.interface_opts);
+        final Spinner interfaceSpinner = v.findViewById(R.id.interface_opts);
         String selectedInterface = interfaceSpinner.getSelectedItem().toString();
         String cleanInterface = selectedInterface.split(" ")[0];
         menu.findItem(R.id.reset_mac).setTitle(String.format("Reset %s MAC", cleanInterface));
@@ -97,11 +97,11 @@ public class MacchangerFragment extends Fragment {
         setHasOptionsMenu(true);
         View rootView = inflater.inflate(R.layout.macchanger, container, false);
         // get views
-        final Spinner interfaceSpinner = (Spinner) rootView.findViewById(R.id.interface_opts);
-        final Spinner macModeSpinner = (Spinner) rootView.findViewById(R.id.macchanger_opts);
-        final Button setMacButton = (Button) rootView.findViewById(R.id.set_mac_button);
-        final Button setHostname = (Button) rootView.findViewById(R.id.setHostname);
-        final EditText phoneName = (EditText) rootView.findViewById(R.id.phone_nameText);
+        final Spinner interfaceSpinner = rootView.findViewById(R.id.interface_opts);
+        final Spinner macModeSpinner = rootView.findViewById(R.id.macchanger_opts);
+        final Button setMacButton = rootView.findViewById(R.id.set_mac_button);
+        final Button setHostname = rootView.findViewById(R.id.setHostname);
+        final EditText phoneName = rootView.findViewById(R.id.phone_nameText);
         if (isOPO() && !sharedpreferences.contains("opo_original_mac")) {
             Editor editor = sharedpreferences.edit();
             editor.putString("opo_original_mac", exe.RunAsRootWithException("cat /sys/devices/fb000000.qcom,wcnss-wlan/wcnss_mac_addr"));
@@ -110,16 +110,9 @@ public class MacchangerFragment extends Fragment {
         }
         Log.d("opo_original_mac", sharedpreferences.getString("opo_original_mac", ""));
         //###############
-        new Thread(new Runnable() {
-            public void run() {
-                final String hostname = getHostname();
-                phoneName.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        phoneName.setText(hostname);
-                    }
-                });
-            }
+        new Thread(() -> {
+            final String hostname = getHostname();
+            phoneName.post(() -> phoneName.setText(hostname));
         }).start();
 
         // ############################
@@ -133,10 +126,10 @@ public class MacchangerFragment extends Fragment {
         }
         interfaceSpinner.setAdapter(new ArrayAdapter<>(getContext(),
                 R.layout.macchanger_ifaces_item, ifacesList));
-        final TextView macResult = (TextView) rootView.findViewById(R.id.macResult);
+        final TextView macResult = rootView.findViewById(R.id.macResult);
 
-        final TextView currMac = (TextView) rootView.findViewById(R.id.currMac);
-        final ImageButton reloadMAC = (ImageButton) rootView.findViewById(R.id.reloadMAC);
+        final TextView currMac = rootView.findViewById(R.id.currMac);
+        final ImageButton reloadMAC = rootView.findViewById(R.id.reloadMAC);
         // index for the arrays
         int current_interface = -1;
         int current_mode = -1;
@@ -194,30 +187,14 @@ public class MacchangerFragment extends Fragment {
 
 
         });
-        setHostname.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                new Thread(new Runnable() {
-                    public void run() {
-                        setHostname(phoneName.getText().toString());
-                        v.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                nh.showMessage("Hostname changed");
-                            }
-                        });
-                    }
-                }).start();
-
-            }
-        });
-        reloadMAC.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String selectedInterface = interfaceSpinner.getSelectedItem().toString();
-                String cleanInterface = selectedInterface.split(" ")[0];
-                getCurrentMac(cleanInterface, currMac, setMacButton);
-            }
+        setHostname.setOnClickListener(v -> new Thread(() -> {
+            setHostname(phoneName.getText().toString());
+            v.post(() -> nh.showMessage("Hostname changed"));
+        }).start());
+        reloadMAC.setOnClickListener(v -> {
+            String selectedInterface = interfaceSpinner.getSelectedItem().toString();
+            String cleanInterface = selectedInterface.split(" ")[0];
+            getCurrentMac(cleanInterface, currMac, setMacButton);
         });
 
         macModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -286,23 +263,14 @@ public class MacchangerFragment extends Fragment {
                         }
 
                         final String finalCommand = command;
-                        new Thread(new Runnable() {
-                            public void run() {
-                                exe.RunAsRootWithException(finalCommand);
-                                macModeSpinner.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        new android.os.Handler().postDelayed(
-                                                new Runnable() {
-                                                    public void run() {
-                                                        nh.showMessage("Refreshing the current MAC.");
-                                                        refreshMAc();
+                        new Thread(() -> {
+                            exe.RunAsRootWithException(finalCommand);
+                            macModeSpinner.post(() -> new android.os.Handler().postDelayed(
+                                    () -> {
+                                        nh.showMessage("Refreshing the current MAC.");
+                                        refreshMAc();
 
-                                                    }
-                                                }, 1000);
-                                    }
-                                });
-                            }
+                                    }, 1000));
                         }).start();
                     } else {
                         exe.RunAsRootWithException(nh.whichBusybox() + " ifconfig " + selectedDevice + " down");
@@ -312,12 +280,10 @@ public class MacchangerFragment extends Fragment {
                         // macResult.setText();
 
                         new android.os.Handler().postDelayed(
-                                new Runnable() {
-                                    public void run() {
-                                        exe.RunAsRootWithException(nh.whichBusybox() + " ifconfig " + selectedDevice + " up");
-                                        nh.showMessage("Refreshing the current MAC.");
-                                        refreshMAc();
-                                    }
+                                () -> {
+                                    exe.RunAsRootWithException(nh.whichBusybox() + " ifconfig " + selectedDevice + " up");
+                                    nh.showMessage("Refreshing the current MAC.");
+                                    refreshMAc();
                                 }, 500);
                     }
 
@@ -344,22 +310,13 @@ public class MacchangerFragment extends Fragment {
                                     macsArray;
                         }
                         final String finalCommand = command;
-                        new Thread(new Runnable() {
-                            public void run() {
-                                exe.RunAsRootWithException(finalCommand);
-                                macModeSpinner.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        new android.os.Handler().postDelayed(
-                                                new Runnable() {
-                                                    public void run() {
-                                                        nh.showMessage("Refreshing the current MAC.");
-                                                        refreshMAc();
-                                                    }
-                                                }, 1000);
-                                    }
-                                });
-                            }
+                        new Thread(() -> {
+                            exe.RunAsRootWithException(finalCommand);
+                            macModeSpinner.post(() -> new android.os.Handler().postDelayed(
+                                    () -> {
+                                        nh.showMessage("Refreshing the current MAC.");
+                                        refreshMAc();
+                                    }, 1000));
                         }).start();
 
                     } else {
@@ -369,12 +326,10 @@ public class MacchangerFragment extends Fragment {
                         // macResult.setText();
 
                         new android.os.Handler().postDelayed(
-                                new Runnable() {
-                                    public void run() {
-                                        exe.RunAsRootWithException(nh.whichBusybox() + " ifconfig " + selectedDevice + " up");
-                                        nh.showMessage("Refreshing the current MAC.");
-                                        refreshMAc();
-                                    }
+                                () -> {
+                                    exe.RunAsRootWithException(nh.whichBusybox() + " ifconfig " + selectedDevice + " up");
+                                    nh.showMessage("Refreshing the current MAC.");
+                                    refreshMAc();
                                 }, 500);
 
                     }
@@ -404,12 +359,12 @@ public class MacchangerFragment extends Fragment {
         }
         View v = getView();
         // edittext for the custom MAC addr
-        final EditText mac1 = (EditText) v.findViewById(R.id.mac1);
-        final EditText mac2 = (EditText) v.findViewById(R.id.mac2);
-        final EditText mac3 = (EditText) v.findViewById(R.id.mac3);
-        final EditText mac4 = (EditText) v.findViewById(R.id.mac4);
-        final EditText mac5 = (EditText) v.findViewById(R.id.mac5);
-        final EditText mac6 = (EditText) v.findViewById(R.id.mac6);
+        final EditText mac1 = v.findViewById(R.id.mac1);
+        final EditText mac2 = v.findViewById(R.id.mac2);
+        final EditText mac3 = v.findViewById(R.id.mac3);
+        final EditText mac4 = v.findViewById(R.id.mac4);
+        final EditText mac5 = v.findViewById(R.id.mac5);
+        final EditText mac6 = v.findViewById(R.id.mac6);
 
         String delimiter_default = ":";
 
@@ -425,9 +380,9 @@ public class MacchangerFragment extends Fragment {
         if (getView() == null) {
             return;
         }
-        final Spinner interfaceSpinner = (Spinner) getView().findViewById(R.id.interface_opts);
-        final TextView currMac = (TextView) getView().findViewById(R.id.currMac);
-        final Button setMacButton = (Button) getView().findViewById(R.id.set_mac_button);
+        final Spinner interfaceSpinner = getView().findViewById(R.id.interface_opts);
+        final TextView currMac = getView().findViewById(R.id.currMac);
+        final Button setMacButton = getView().findViewById(R.id.set_mac_button);
         String selectedInterface = interfaceSpinner.getSelectedItem().toString();
         String cleanInterface = selectedInterface.split(" ")[0];
         getCurrentMac(cleanInterface, currMac, setMacButton);
@@ -439,57 +394,49 @@ public class MacchangerFragment extends Fragment {
 
         currMac.setText(String.format("Reading %s", theDevice));
 
-        new Thread(new Runnable() {
-            public void run() {
+        new Thread(() -> {
 
-                try {
+            try {
 
-                    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-                    StrictMode.setThreadPolicy(policy);
-
-
-                    String fileMac = "/sys/class/net/" + theDevice + "/address";
-                    final String _res;
-
-                    _res = exe.ReadFile_SYNC(fileMac); // get the response
-
-                    currMac.post(new Runnable() {
-                        public void run() {
-                            if (_res.equals("")) {
-                                String notFound = "MAC not found";
-                                currMac.setText(notFound);
-                                setMacButton.setEnabled(false);
-                                setMacButton.setText(String.format("%s not detected", theDevice)); //interface is down| not plugged etc
-                            } else {
-
-                                setMacButton.setEnabled(true);
-                                currMac.setText(_res); //set the current mac if found
-
-                                sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
-                                String slt = sharedpreferences.getString("macchanger_opts", "");
+                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                StrictMode.setThreadPolicy(policy);
 
 
-                                // update button
-                                if (slt.equals("Random MAC")) {
-                                    setMacButton.setText(String.format("Set Random MAC on %s", theDevice));
-                                }
+                String fileMac = "/sys/class/net/" + theDevice + "/address";
+                final String _res;
 
-                                if (slt.equals("Custom MAC")) {
-                                    setMacButton.setText(String.format("Set Custom MAC on %s", theDevice));
+                _res = exe.ReadFile_SYNC(fileMac); // get the response
 
-                                }
-                            }
+                currMac.post(() -> {
+                    if (_res.equals("")) {
+                        String notFound = "MAC not found";
+                        currMac.setText(notFound);
+                        setMacButton.setEnabled(false);
+                        setMacButton.setText(String.format("%s not detected", theDevice)); //interface is down| not plugged etc
+                    } else {
+
+                        setMacButton.setEnabled(true);
+                        currMac.setText(_res); //set the current mac if found
+
+                        sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
+                        String slt = sharedpreferences.getString("macchanger_opts", "");
+
+
+                        // update button
+                        if (slt.equals("Random MAC")) {
+                            setMacButton.setText(String.format("Set Random MAC on %s", theDevice));
+                        }
+
+                        if (slt.equals("Custom MAC")) {
+                            setMacButton.setText(String.format("Set Custom MAC on %s", theDevice));
 
                         }
-                    });
+                    }
 
-                } catch (final Exception e) {
-                    currMac.post(new Runnable() {
-                        public void run() {
-                            currMac.setText(String.format("Error getting %s MAC: %s", theDevice, e));
-                        }
-                    });
-                }
+                });
+
+            } catch (final Exception e) {
+                currMac.post(() -> currMac.setText(String.format("Error getting %s MAC: %s", theDevice, e)));
             }
         }).start();
 
@@ -500,7 +447,7 @@ public class MacchangerFragment extends Fragment {
             return;
         }
         View v = getView();
-        final Spinner interfaceSpinner = (Spinner) v.findViewById(R.id.interface_opts);
+        final Spinner interfaceSpinner = v.findViewById(R.id.interface_opts);
         String selectedInterface = interfaceSpinner.getSelectedItem().toString();
         final String cleanInterface = selectedInterface.split(" ")[0];
         String command;
@@ -523,22 +470,13 @@ public class MacchangerFragment extends Fragment {
 
             }
             final String finalCommand = command;
-            new Thread(new Runnable() {
-                public void run() {
-                    exe.RunAsRootWithException(finalCommand);
-                    interfaceSpinner.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            new android.os.Handler().postDelayed(
-                                    new Runnable() {
-                                        public void run() {
-                                            nh.showMessage("Refreshing the current MAC.");
-                                            refreshMAc();
-                                        }
-                                    }, 1000);
-                        }
-                    });
-                }
+            new Thread(() -> {
+                exe.RunAsRootWithException(finalCommand);
+                interfaceSpinner.post(() -> new android.os.Handler().postDelayed(
+                        () -> {
+                            nh.showMessage("Refreshing the current MAC.");
+                            refreshMAc();
+                        }, 1000));
             }).start();
         } else {
             nh.showMessage("Resetting " + cleanInterface + " MAC");
@@ -548,12 +486,10 @@ public class MacchangerFragment extends Fragment {
             exe.RunAsRootWithException(resetCmd);
 
             new android.os.Handler().postDelayed(
-                    new Runnable() {
-                        public void run() {
-                            exe.RunAsRootWithException(nh.whichBusybox() + " ifconfig " + cleanInterface + " up");
-                            nh.showMessage("Refreshing the current MAC.");
-                            refreshMAc();
-                        }
+                    () -> {
+                        exe.RunAsRootWithException(nh.whichBusybox() + " ifconfig " + cleanInterface + " up");
+                        nh.showMessage("Refreshing the current MAC.");
+                        refreshMAc();
                     }, 500);
 
         }
@@ -581,12 +517,8 @@ public class MacchangerFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Saving mac:");
         builder.setMessage("Not implemented WIP");
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("OK", (dialog, which) -> {
 
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
         });
         builder.show();
 
@@ -596,12 +528,7 @@ public class MacchangerFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Load saved MAC:");
         builder.setMessage("Not implemented WIP");
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
+        builder.setPositiveButton("OK", (dialog, which) -> {
 
         });
         builder.show();

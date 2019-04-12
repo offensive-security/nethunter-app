@@ -1,15 +1,9 @@
 package com.offsec.nethunter;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,6 +25,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 //import android.app.Fragment;
 //import android.support.v4.app.FragmentActivity;
@@ -61,7 +61,7 @@ public class ManaFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.mana, container, false);
         TabsPagerAdapter tabsPagerAdapter = new TabsPagerAdapter(getActivity().getSupportFragmentManager());
 
-        mViewPager = (ViewPager) rootView.findViewById(R.id.pagerMana);
+        mViewPager = rootView.findViewById(R.id.pagerMana);
         mViewPager.setAdapter(tabsPagerAdapter);
 
         mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -122,74 +122,62 @@ public class ManaFragment extends Fragment {
     private void startMana() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Script to execute:");
-        builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (selectedScriptIndex) {
-                    // launching mana on the terminal so it doesnt die suddenly
-                    case 0:
-                        nh.showMessage("Starting MANA NAT FULL");
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            intentClickListener_NH(nh.makeTermTitle("MANA-FULL") + "/usr/share/mana-toolkit/run-mana/start-nat-full-lollipop.sh");
-                        } else {
-                            intentClickListener_NH(nh.makeTermTitle("MANA-FULL") + "/usr/share/mana-toolkit/run-mana/start-nat-full-kitkat.sh");
-                        }
-                        break;
-                    case 1:
-                        nh.showMessage("Starting MANA NAT SIMPLE");
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            intentClickListener_NH(nh.makeTermTitle("MANA-SIMPLE") + "/usr/share/mana-toolkit/run-mana/start-nat-simple-lollipop.sh");
-                        } else {
-                            intentClickListener_NH(nh.makeTermTitle("MANA-SIMPLE") + "/usr/share/mana-toolkit/run-mana/start-nat-simple-kitkat.sh");
-                        }
-                        break;
-                    case 2:
-                        nh.showMessage("Starting MANA Bettercap");
-                        intentClickListener_NH(nh.makeTermTitle("MANA-BETTERCAP") + "/usr/bin/start-nat-transproxy-lollipop.sh");
-                        break;
-                    case 3:
-                        nh.showMessage("Starting MANA NAT SIMPLE && BDF");
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            intentClickListener_NH(nh.makeTermTitle("MANA-BDF") + "/usr/share/mana-toolkit/run-mana/start-nat-simple-bdf-lollipop.sh");
-                        } else {
-                            intentClickListener_NH(nh.makeTermTitle("MANA-BDF") + "/usr/share/mana-toolkit/run-mana/start-nat-simple-bdf-kitkat.sh");
-                        }
-                        // we wait ~10 secs before launching msf
-                        new android.os.Handler().postDelayed(
-                                new Runnable() {
-                                    public void run() {
-                                        nh.showMessage("Starting MSF with BDF resource.rc");
-                                        intentClickListener_NH(nh.makeTermTitle("MSF") + "msfconsole -q -r /usr/share/bdfproxy/bdfproxy_msf_resource.rc");
-                                    }
-                                }, 10000);
-                        break;
-                    case 4:
-                        nh.showMessage("Starting HOSTAPD-WPE");
-                        intentClickListener_NH(nh.makeTermTitle("HOSTAPD-WPE") + "ifconfig wlan1 up && /usr/bin/hostapd-wpe /sdcard/nh_files/configs/hostapd-wpe.conf");
-                        break;
-                    case 5:
-                        nh.showMessage("Starting HOSTAPD-WPE with Karma");
-                        intentClickListener_NH(nh.makeTermTitle("HOSTAPD-WPE-KARMA") + "ifconfig wlan1 up && /usr/bin/hostapd-wpe -k /sdcard/nh_files/configs/hostapd-wpe.conf");
-                        break;
-                    default:
-                        nh.showMessage("Invalid script!");
-                        return;
-                }
-                nh.showMessage("Attack Launched!");
+        builder.setPositiveButton("Start", (dialog, which) -> {
+            switch (selectedScriptIndex) {
+                // launching mana on the terminal so it doesnt die suddenly
+                case 0:
+                    nh.showMessage("Starting MANA NAT FULL");
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        intentClickListener_NH(nh.makeTermTitle("MANA-FULL") + "/usr/share/mana-toolkit/run-mana/start-nat-full-lollipop.sh");
+                    } else {
+                        intentClickListener_NH(nh.makeTermTitle("MANA-FULL") + "/usr/share/mana-toolkit/run-mana/start-nat-full-kitkat.sh");
+                    }
+                    break;
+                case 1:
+                    nh.showMessage("Starting MANA NAT SIMPLE");
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        intentClickListener_NH(nh.makeTermTitle("MANA-SIMPLE") + "/usr/share/mana-toolkit/run-mana/start-nat-simple-lollipop.sh");
+                    } else {
+                        intentClickListener_NH(nh.makeTermTitle("MANA-SIMPLE") + "/usr/share/mana-toolkit/run-mana/start-nat-simple-kitkat.sh");
+                    }
+                    break;
+                case 2:
+                    nh.showMessage("Starting MANA Bettercap");
+                    intentClickListener_NH(nh.makeTermTitle("MANA-BETTERCAP") + "/usr/bin/start-nat-transproxy-lollipop.sh");
+                    break;
+                case 3:
+                    nh.showMessage("Starting MANA NAT SIMPLE && BDF");
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        intentClickListener_NH(nh.makeTermTitle("MANA-BDF") + "/usr/share/mana-toolkit/run-mana/start-nat-simple-bdf-lollipop.sh");
+                    } else {
+                        intentClickListener_NH(nh.makeTermTitle("MANA-BDF") + "/usr/share/mana-toolkit/run-mana/start-nat-simple-bdf-kitkat.sh");
+                    }
+                    // we wait ~10 secs before launching msf
+                    new android.os.Handler().postDelayed(
+                            new Runnable() {
+                                public void run() {
+                                    nh.showMessage("Starting MSF with BDF resource.rc");
+                                    intentClickListener_NH(nh.makeTermTitle("MSF") + "msfconsole -q -r /usr/share/bdfproxy/bdfproxy_msf_resource.rc");
+                                }
+                            }, 10000);
+                    break;
+                case 4:
+                    nh.showMessage("Starting HOSTAPD-WPE");
+                    intentClickListener_NH(nh.makeTermTitle("HOSTAPD-WPE") + "ifconfig wlan1 up && /usr/bin/hostapd-wpe /sdcard/nh_files/configs/hostapd-wpe.conf");
+                    break;
+                case 5:
+                    nh.showMessage("Starting HOSTAPD-WPE with Karma");
+                    intentClickListener_NH(nh.makeTermTitle("HOSTAPD-WPE-KARMA") + "ifconfig wlan1 up && /usr/bin/hostapd-wpe -k /sdcard/nh_files/configs/hostapd-wpe.conf");
+                    break;
+                default:
+                    nh.showMessage("Invalid script!");
+                    return;
             }
+            nh.showMessage(getString(R.string.attack_launched));
         });
-        builder.setNegativeButton("Quit", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
+        builder.setNegativeButton("Quit", (dialog, which) -> {
         });
-        builder.setSingleChoiceItems(scripts, selectedScriptIndex, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                selectedScriptIndex = which;
-            }
-        });
+        builder.setSingleChoiceItems(scripts, selectedScriptIndex, (dialog, which) -> selectedScriptIndex = which);
         builder.show();
 
     }
@@ -281,42 +269,39 @@ public class ManaFragment extends Fragment {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.mana_hostapd, container, false);
-            Button button = (Button) rootView.findViewById(R.id.updateButton);
+            Button button = rootView.findViewById(R.id.updateButton);
             loadOptions(rootView);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ShellExecuter exe = new ShellExecuter();
-                    File file = new File(configFilePath);
-                    String source = null;
-                    try {
-                        source = Files.toString(file, Charsets.UTF_8);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    if (getView() == null) {
-                        return;
-                    }
-                    EditText ifc = (EditText) getView().findViewById(R.id.ifc);
-                    EditText bssid = (EditText) getView().findViewById(R.id.bssid);
-                    EditText ssid = (EditText) getView().findViewById(R.id.ssid);
-                    EditText channel = (EditText) getView().findViewById(R.id.channel);
-                    EditText enableKarma = (EditText) getView().findViewById(R.id.enable_karma);
-                    EditText karmaLoud = (EditText) getView().findViewById(R.id.karma_loud);
-                    // FIXED BY BINKYBEAR <3
-                    if (source != null) {
-                        source = source.replaceAll("(?m)^interface=(.*)$", "interface=" + ifc.getText().toString());
-                        source = source.replaceAll("(?m)^bssid=(.*)$", "bssid=" + bssid.getText().toString());
-                        source = source.replaceAll("(?m)^ssid=(.*)$", "ssid=" + ssid.getText().toString());
-                        source = source.replaceAll("(?m)^channel=(.*)$", "channel=" + channel.getText().toString());
-                        source = source.replaceAll("(?m)^enable_mana=(.*)$", "enable_mana=" + enableKarma.getText().toString());
-                        source = source.replaceAll("(?m)^mana_loud=(.*)$", "mana_loud=" + karmaLoud.getText().toString());
-
-                        exe.SaveFileContents(source, configFilePath);
-                        nh.showMessage("Source updated");
-                    }
-
+            button.setOnClickListener(v -> {
+                ShellExecuter exe = new ShellExecuter();
+                File file = new File(configFilePath);
+                String source = null;
+                try {
+                    source = Files.toString(file, Charsets.UTF_8);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+                if (getView() == null) {
+                    return;
+                }
+                EditText ifc = getView().findViewById(R.id.ifc);
+                EditText bssid = getView().findViewById(R.id.bssid);
+                EditText ssid = getView().findViewById(R.id.ssid);
+                EditText channel = getView().findViewById(R.id.channel);
+                EditText enableKarma = getView().findViewById(R.id.enable_karma);
+                EditText karmaLoud = getView().findViewById(R.id.karma_loud);
+                // FIXED BY BINKYBEAR <3
+                if (source != null) {
+                    source = source.replaceAll("(?m)^interface=(.*)$", "interface=" + ifc.getText().toString());
+                    source = source.replaceAll("(?m)^bssid=(.*)$", "bssid=" + bssid.getText().toString());
+                    source = source.replaceAll("(?m)^ssid=(.*)$", "ssid=" + ssid.getText().toString());
+                    source = source.replaceAll("(?m)^channel=(.*)$", "channel=" + channel.getText().toString());
+                    source = source.replaceAll("(?m)^enable_mana=(.*)$", "enable_mana=" + enableKarma.getText().toString());
+                    source = source.replaceAll("(?m)^mana_loud=(.*)$", "mana_loud=" + karmaLoud.getText().toString());
+
+                    exe.SaveFileContents(source, configFilePath);
+                    nh.showMessage("Source updated");
+                }
+
             });
             return rootView;
         }
@@ -325,90 +310,88 @@ public class ManaFragment extends Fragment {
         public void loadOptions(View rootView) {
 
 
-            final EditText ifc = (EditText) rootView.findViewById(R.id.ifc);
-            final EditText bssid = (EditText) rootView.findViewById(R.id.bssid);
-            final EditText ssid = (EditText) rootView.findViewById(R.id.ssid);
-            final EditText channel = (EditText) rootView.findViewById(R.id.channel);
-            final EditText enableKarma = (EditText) rootView.findViewById(R.id.enable_karma);
-            final EditText karmaLoud = (EditText) rootView.findViewById(R.id.karma_loud);
+            final EditText ifc = rootView.findViewById(R.id.ifc);
+            final EditText bssid = rootView.findViewById(R.id.bssid);
+            final EditText ssid = rootView.findViewById(R.id.ssid);
+            final EditText channel = rootView.findViewById(R.id.channel);
+            final EditText enableKarma = rootView.findViewById(R.id.enable_karma);
+            final EditText karmaLoud = rootView.findViewById(R.id.karma_loud);
 
-            new Thread(new Runnable() {
-                public void run() {
-                    ShellExecuter exe = new ShellExecuter();
-                    String text = exe.ReadFile_SYNC(configFilePath);
+            new Thread(() -> {
+                ShellExecuter exe = new ShellExecuter();
+                String text = exe.ReadFile_SYNC(configFilePath);
 
-                    String regExpatInterface = "^interface=(.*)$";
-                    Pattern patternIfc = Pattern.compile(regExpatInterface, Pattern.MULTILINE);
-                    final Matcher matcherIfc = patternIfc.matcher(text);
+                String regExpatInterface = "^interface=(.*)$";
+                Pattern patternIfc = Pattern.compile(regExpatInterface, Pattern.MULTILINE);
+                final Matcher matcherIfc = patternIfc.matcher(text);
 
-                    String regExpatbssid = "^bssid=(.*)$";
-                    Pattern patternBssid = Pattern.compile(regExpatbssid, Pattern.MULTILINE);
-                    final Matcher matcherBssid = patternBssid.matcher(text);
+                String regExpatbssid = "^bssid=(.*)$";
+                Pattern patternBssid = Pattern.compile(regExpatbssid, Pattern.MULTILINE);
+                final Matcher matcherBssid = patternBssid.matcher(text);
 
-                    String regExpatssid = "^ssid=(.*)$";
-                    Pattern patternSsid = Pattern.compile(regExpatssid, Pattern.MULTILINE);
-                    final Matcher matcherSsid = patternSsid.matcher(text);
+                String regExpatssid = "^ssid=(.*)$";
+                Pattern patternSsid = Pattern.compile(regExpatssid, Pattern.MULTILINE);
+                final Matcher matcherSsid = patternSsid.matcher(text);
 
-                    String regExpatChannel = "^channel=(.*)$";
-                    Pattern patternChannel = Pattern.compile(regExpatChannel, Pattern.MULTILINE);
-                    final Matcher matcherChannel = patternChannel.matcher(text);
+                String regExpatChannel = "^channel=(.*)$";
+                Pattern patternChannel = Pattern.compile(regExpatChannel, Pattern.MULTILINE);
+                final Matcher matcherChannel = patternChannel.matcher(text);
 
-                    String regExpatEnableKarma = "^enable_mana=(.*)$";
-                    Pattern patternEnableKarma = Pattern.compile(regExpatEnableKarma, Pattern.MULTILINE);
-                    final Matcher matcherEnableKarma = patternEnableKarma.matcher(text);
+                String regExpatEnableKarma = "^enable_mana=(.*)$";
+                Pattern patternEnableKarma = Pattern.compile(regExpatEnableKarma, Pattern.MULTILINE);
+                final Matcher matcherEnableKarma = patternEnableKarma.matcher(text);
 
-                    String regExpatKarmaLoud = "^mana_loud=(.*)$";
-                    Pattern patternKarmaLoud = Pattern.compile(regExpatKarmaLoud, Pattern.MULTILINE);
-                    final Matcher matcherKarmaLoud = patternKarmaLoud.matcher(text);
+                String regExpatKarmaLoud = "^mana_loud=(.*)$";
+                Pattern patternKarmaLoud = Pattern.compile(regExpatKarmaLoud, Pattern.MULTILINE);
+                final Matcher matcherKarmaLoud = patternKarmaLoud.matcher(text);
 
-                    ifc.post(new Runnable() {
-                        @Override
-                        public void run() {
-                        /*
-                         * Interface
-                         */
-                            if (matcherIfc.find()) {
-                                String ifcValue = matcherIfc.group(1);
-                                ifc.setText(ifcValue);
-                            }
-                        /*
-                         * bssid
-                         */
-                            if (matcherBssid.find()) {
-                                String bssidVal = matcherBssid.group(1);
-                                bssid.setText(bssidVal);
-                            }
-                        /*
-                         * ssid
-                         */
-                            if (matcherSsid.find()) {
-                                String ssidVal = matcherSsid.group(1);
-                                ssid.setText(ssidVal);
-                            }
-                        /*
-                         * channel
-                         */
-                            if (matcherChannel.find()) {
-                                String channelVal = matcherChannel.group(1);
-                                channel.setText(channelVal);
-                            }
-                        /*
-                         * enable_mana
-                         */
-                            if (matcherEnableKarma.find()) {
-                                String enableKarmaVal = matcherEnableKarma.group(1);
-                                enableKarma.setText(enableKarmaVal);
-                            }
-                       /*
-                       * mana_loud
-                       */
-                            if (matcherKarmaLoud.find()) {
-                                String karmaLoudVal = matcherKarmaLoud.group(1);
-                                karmaLoud.setText(karmaLoudVal);
-                            }
+                ifc.post(new Runnable() {
+                    @Override
+                    public void run() {
+                    /*
+                     * Interface
+                     */
+                        if (matcherIfc.find()) {
+                            String ifcValue = matcherIfc.group(1);
+                            ifc.setText(ifcValue);
                         }
-                    });
-                }
+                    /*
+                     * bssid
+                     */
+                        if (matcherBssid.find()) {
+                            String bssidVal = matcherBssid.group(1);
+                            bssid.setText(bssidVal);
+                        }
+                    /*
+                     * ssid
+                     */
+                        if (matcherSsid.find()) {
+                            String ssidVal = matcherSsid.group(1);
+                            ssid.setText(ssidVal);
+                        }
+                    /*
+                     * channel
+                     */
+                        if (matcherChannel.find()) {
+                            String channelVal = matcherChannel.group(1);
+                            channel.setText(channelVal);
+                        }
+                    /*
+                     * enable_mana
+                     */
+                        if (matcherEnableKarma.find()) {
+                            String enableKarmaVal = matcherEnableKarma.group(1);
+                            enableKarma.setText(enableKarmaVal);
+                        }
+                   /*
+                   * mana_loud
+                   */
+                        if (matcherKarmaLoud.find()) {
+                            String karmaLoudVal = matcherKarmaLoud.group(1);
+                            karmaLoud.setText(karmaLoudVal);
+                        }
+                    }
+                });
             }).start();
         }
 
@@ -423,52 +406,47 @@ public class ManaFragment extends Fragment {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.mana_hostapd_wpe, container, false);
 
-            Button button = (Button) rootView.findViewById(R.id.wpe_updateButton);
-            Button gencerts = (Button) rootView.findViewById(R.id.wpe_generate_certs);
+            Button button = rootView.findViewById(R.id.wpe_updateButton);
+            Button gencerts = rootView.findViewById(R.id.wpe_generate_certs);
             loadOptions(rootView);
 
-            gencerts.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    Intent intent =
-                            new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
-                    intent.addCategory(Intent.CATEGORY_DEFAULT);
-                    intent.putExtra("com.offsec.nhterm.iInitialCommand", "cd /usr/share/hostapd-wpe/certs && ./bootstrap");
-                    startActivity(intent);
-                }
+            gencerts.setOnClickListener(v -> {
+                Intent intent =
+                        new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
+                intent.addCategory(Intent.CATEGORY_DEFAULT);
+                intent.putExtra("com.offsec.nhterm.iInitialCommand", "cd /usr/share/hostapd-wpe/certs && ./bootstrap");
+                startActivity(intent);
             });
 
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ShellExecuter exe = new ShellExecuter();
-                    File file = new File(configFilePath);
-                    String source = null;
-                    try {
-                        source = Files.toString(file, Charsets.UTF_8);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    if (getView() == null) {
-                        return;
-                    }
-                    EditText ifc = (EditText) getView().findViewById(R.id.wpe_ifc);
-                    EditText bssid = (EditText) getView().findViewById(R.id.wpe_bssid);
-                    EditText ssid = (EditText) getView().findViewById(R.id.wpe_ssid);
-                    EditText channel = (EditText) getView().findViewById(R.id.wpe_channel);
-                    EditText privatekey = (EditText) getView().findViewById(R.id.wpe_private_key);
-
-                    if (source != null) {
-                        source = source.replaceAll("(?m)^interface=(.*)$", "interface=" + ifc.getText().toString());
-                        source = source.replaceAll("(?m)^bssid=(.*)$", "bssid=" + bssid.getText().toString());
-                        source = source.replaceAll("(?m)^ssid=(.*)$", "ssid=" + ssid.getText().toString());
-                        source = source.replaceAll("(?m)^channel=(.*)$", "channel=" + channel.getText().toString());
-                        source = source.replaceAll("(?m)^private_key_passwd=(.*)$", "private_key_passwd=" + privatekey.getText().toString());
-
-                        exe.SaveFileContents(source, configFilePath);
-                        nh.showMessage("Source updated");
-                    }
-
+            button.setOnClickListener(v -> {
+                ShellExecuter exe = new ShellExecuter();
+                File file = new File(configFilePath);
+                String source = null;
+                try {
+                    source = Files.toString(file, Charsets.UTF_8);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+                if (getView() == null) {
+                    return;
+                }
+                EditText ifc = getView().findViewById(R.id.wpe_ifc);
+                EditText bssid = getView().findViewById(R.id.wpe_bssid);
+                EditText ssid = getView().findViewById(R.id.wpe_ssid);
+                EditText channel = getView().findViewById(R.id.wpe_channel);
+                EditText privatekey = getView().findViewById(R.id.wpe_private_key);
+
+                if (source != null) {
+                    source = source.replaceAll("(?m)^interface=(.*)$", "interface=" + ifc.getText().toString());
+                    source = source.replaceAll("(?m)^bssid=(.*)$", "bssid=" + bssid.getText().toString());
+                    source = source.replaceAll("(?m)^ssid=(.*)$", "ssid=" + ssid.getText().toString());
+                    source = source.replaceAll("(?m)^channel=(.*)$", "channel=" + channel.getText().toString());
+                    source = source.replaceAll("(?m)^private_key_passwd=(.*)$", "private_key_passwd=" + privatekey.getText().toString());
+
+                    exe.SaveFileContents(source, configFilePath);
+                    nh.showMessage("Source updated");
+                }
+
             });
             return rootView;
         }
@@ -476,79 +454,77 @@ public class ManaFragment extends Fragment {
 
         public void loadOptions(View rootView) {
 
-            final EditText ifc = (EditText) rootView.findViewById(R.id.wpe_ifc);
-            final EditText bssid = (EditText) rootView.findViewById(R.id.wpe_bssid);
-            final EditText ssid = (EditText) rootView.findViewById(R.id.wpe_ssid);
-            final EditText channel = (EditText) rootView.findViewById(R.id.wpe_channel);
-            final EditText privatekey = (EditText) rootView.findViewById(R.id.wpe_private_key);
+            final EditText ifc = rootView.findViewById(R.id.wpe_ifc);
+            final EditText bssid = rootView.findViewById(R.id.wpe_bssid);
+            final EditText ssid = rootView.findViewById(R.id.wpe_ssid);
+            final EditText channel = rootView.findViewById(R.id.wpe_channel);
+            final EditText privatekey = rootView.findViewById(R.id.wpe_private_key);
 
-            new Thread(new Runnable() {
-                public void run() {
-                    ShellExecuter exe = new ShellExecuter();
-                    Log.d("exe: ", configFilePath);
-                    String text = exe.ReadFile_SYNC(configFilePath);
+            new Thread(() -> {
+                ShellExecuter exe = new ShellExecuter();
+                Log.d("exe: ", configFilePath);
+                String text = exe.ReadFile_SYNC(configFilePath);
 
-                    String regExpatInterface = "^interface=(.*)$";
-                    Pattern patternIfc = Pattern.compile(regExpatInterface, Pattern.MULTILINE);
-                    final Matcher matcherIfc = patternIfc.matcher(text);
+                String regExpatInterface = "^interface=(.*)$";
+                Pattern patternIfc = Pattern.compile(regExpatInterface, Pattern.MULTILINE);
+                final Matcher matcherIfc = patternIfc.matcher(text);
 
-                    String regExpatbssid = "^bssid=(.*)$";
-                    Pattern patternBssid = Pattern.compile(regExpatbssid, Pattern.MULTILINE);
-                    final Matcher matcherBssid = patternBssid.matcher(text);
+                String regExpatbssid = "^bssid=(.*)$";
+                Pattern patternBssid = Pattern.compile(regExpatbssid, Pattern.MULTILINE);
+                final Matcher matcherBssid = patternBssid.matcher(text);
 
-                    String regExpatssid = "^ssid=(.*)$";
-                    Pattern patternSsid = Pattern.compile(regExpatssid, Pattern.MULTILINE);
-                    final Matcher matcherSsid = patternSsid.matcher(text);
+                String regExpatssid = "^ssid=(.*)$";
+                Pattern patternSsid = Pattern.compile(regExpatssid, Pattern.MULTILINE);
+                final Matcher matcherSsid = patternSsid.matcher(text);
 
-                    String regExpatChannel = "^channel=(.*)$";
-                    Pattern patternChannel = Pattern.compile(regExpatChannel, Pattern.MULTILINE);
-                    final Matcher matcherChannel = patternChannel.matcher(text);
+                String regExpatChannel = "^channel=(.*)$";
+                Pattern patternChannel = Pattern.compile(regExpatChannel, Pattern.MULTILINE);
+                final Matcher matcherChannel = patternChannel.matcher(text);
 
-                    String regExpatEnablePrivateKey = "^private_key_passwd=(.*)$";
-                    Pattern patternEnablePrivateKey = Pattern.compile(regExpatEnablePrivateKey, Pattern.MULTILINE);
-                    final Matcher matcherPrivateKey = patternEnablePrivateKey.matcher(text);
+                String regExpatEnablePrivateKey = "^private_key_passwd=(.*)$";
+                Pattern patternEnablePrivateKey = Pattern.compile(regExpatEnablePrivateKey, Pattern.MULTILINE);
+                final Matcher matcherPrivateKey = patternEnablePrivateKey.matcher(text);
 
-                    ifc.post(new Runnable() {
-                        @Override
-                        public void run() {
-                        /*
-                         * Interface
-                         */
-                            if (matcherIfc.find()) {
-                                String ifcValue = matcherIfc.group(1);
-                                ifc.setText(ifcValue);
-                            }
-                        /*
-                         * bssid
-                         */
-                            if (matcherBssid.find()) {
-                                String bssidVal = matcherBssid.group(1);
-                                bssid.setText(bssidVal);
-                            }
-                        /*
-                         * ssid
-                         */
-                            if (matcherSsid.find()) {
-                                String ssidVal = matcherSsid.group(1);
-                                ssid.setText(ssidVal);
-                            }
-                        /*
-                         * channel
-                         */
-                            if (matcherChannel.find()) {
-                                String channelVal = matcherChannel.group(1);
-                                channel.setText(channelVal);
-                            }
-                        /*
-                         * Private Key File
-                         */
-                            if (matcherPrivateKey.find()) {
-                                String PrivateKeyVal = matcherPrivateKey.group(1);
-                                privatekey.setText(PrivateKeyVal);
-                            }
+                ifc.post(new Runnable() {
+                    @Override
+                    public void run() {
+                    /*
+                     * Interface
+                     */
+                        if (matcherIfc.find()) {
+                            String ifcValue = matcherIfc.group(1);
+                            ifc.setText(ifcValue);
                         }
-                    });
-                }
+                    /*
+                     * bssid
+                     */
+                        if (matcherBssid.find()) {
+                            String bssidVal = matcherBssid.group(1);
+                            bssid.setText(bssidVal);
+                        }
+                    /*
+                     * ssid
+                     */
+                        if (matcherSsid.find()) {
+                            String ssidVal = matcherSsid.group(1);
+                            ssid.setText(ssidVal);
+                        }
+                    /*
+                     * channel
+                     */
+                        if (matcherChannel.find()) {
+                            String channelVal = matcherChannel.group(1);
+                            channel.setText(channelVal);
+                        }
+                    /*
+                     * Private Key File
+                     */
+                        if (matcherPrivateKey.find()) {
+                            String PrivateKeyVal = matcherPrivateKey.group(1);
+                            privatekey.setText(PrivateKeyVal);
+                        }
+                    }
+                });
             }).start();
         }
 
@@ -565,23 +541,20 @@ public class ManaFragment extends Fragment {
             final View rootView = inflater.inflate(R.layout.source_short, container, false);
 
             String description = getResources().getString(R.string.mana_dhcpd);
-            TextView desc = (TextView) rootView.findViewById(R.id.description);
+            TextView desc = rootView.findViewById(R.id.description);
             desc.setText(description);
 
 
-            EditText source = (EditText) rootView.findViewById(R.id.source);
+            EditText source = rootView.findViewById(R.id.source);
             exe.ReadFile_ASYNC(configFilePath, source);
-            Button button = (Button) rootView.findViewById(R.id.update);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    EditText source = (EditText) rootView.findViewById(R.id.source);
-                    Boolean isSaved = exe.SaveFileContents(source.getText().toString(), configFilePath);
-                    if (isSaved) {
-                        nh.showMessage("Source updated");
-                    } else {
-                        nh.showMessage("Source not updated");
-                    }
+            Button button = rootView.findViewById(R.id.update);
+            button.setOnClickListener(v -> {
+                EditText source1 = rootView.findViewById(R.id.source);
+                Boolean isSaved = exe.SaveFileContents(source1.getText().toString(), configFilePath);
+                if (isSaved) {
+                    nh.showMessage("Source updated");
+                } else {
+                    nh.showMessage("Source not updated");
                 }
             });
             return rootView;
@@ -599,26 +572,23 @@ public class ManaFragment extends Fragment {
 
             View rootView = inflater.inflate(R.layout.source_short, container, false);
             String description = getResources().getString(R.string.mana_dnsspoof);
-            TextView desc = (TextView) rootView.findViewById(R.id.description);
+            TextView desc = rootView.findViewById(R.id.description);
             desc.setText(description);
 
             configFilePath = nh.CHROOT_PATH + "/etc/mana-toolkit/dnsspoof.conf";
 
-            EditText source = (EditText) rootView.findViewById(R.id.source);
+            EditText source = rootView.findViewById(R.id.source);
             exe.ReadFile_ASYNC(configFilePath, source);
 
-            Button button = (Button) rootView.findViewById(R.id.update);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (getView() == null) {
-                        return;
-                    }
-                    EditText source = (EditText) getView().findViewById(R.id.source);
-                    String newSource = source.getText().toString();
-                    exe.SaveFileContents(newSource, configFilePath);
-                    nh.showMessage("Source updated");
+            Button button = rootView.findViewById(R.id.update);
+            button.setOnClickListener(v -> {
+                if (getView() == null) {
+                    return;
                 }
+                EditText source1 = getView().findViewById(R.id.source);
+                String newSource = source1.getText().toString();
+                exe.SaveFileContents(newSource, configFilePath);
+                nh.showMessage("Source updated");
             });
             return rootView;
         }
@@ -632,7 +602,7 @@ public class ManaFragment extends Fragment {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
-            TextView desc = (TextView) rootView.findViewById(R.id.description);
+            TextView desc = rootView.findViewById(R.id.description);
 
             desc.setText(getResources().getString(R.string.mana_nat_full));
 
@@ -643,22 +613,19 @@ public class ManaFragment extends Fragment {
             }
 
 
-            EditText source = (EditText) rootView.findViewById(R.id.source);
+            EditText source = rootView.findViewById(R.id.source);
             ShellExecuter exe = new ShellExecuter();
             exe.ReadFile_ASYNC(configFilePath, source);
-            Button button = (Button) rootView.findViewById(R.id.update);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (getView() == null) {
-                        return;
-                    }
-                    EditText source = (EditText) getView().findViewById(R.id.source);
-                    String newSource = source.getText().toString();
-                    ShellExecuter exe = new ShellExecuter();
-                    exe.SaveFileContents(newSource, configFilePath);
-                    nh.showMessage("Source updated");
+            Button button = rootView.findViewById(R.id.update);
+            button.setOnClickListener(v -> {
+                if (getView() == null) {
+                    return;
                 }
+                EditText source1 = getView().findViewById(R.id.source);
+                String newSource = source1.getText().toString();
+                ShellExecuter exe1 = new ShellExecuter();
+                exe1.SaveFileContents(newSource, configFilePath);
+                nh.showMessage("Source updated");
             });
             return rootView;
         }
@@ -679,27 +646,24 @@ public class ManaFragment extends Fragment {
             }
 
             String description = getResources().getString(R.string.mana_nat_simple);
-            TextView desc = (TextView) rootView.findViewById(R.id.description);
+            TextView desc = rootView.findViewById(R.id.description);
             desc.setText(description);
 
 
-            EditText source = (EditText) rootView.findViewById(R.id.source);
+            EditText source = rootView.findViewById(R.id.source);
             ShellExecuter exe = new ShellExecuter();
             exe.ReadFile_ASYNC(configFilePath, source);
 
-            Button button = (Button) rootView.findViewById(R.id.update);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (getView() == null) {
-                        return;
-                    }
-                    EditText source = (EditText) getView().findViewById(R.id.source);
-                    String newSource = source.getText().toString();
-                    ShellExecuter exe = new ShellExecuter();
-                    exe.SaveFileContents(newSource, configFilePath);
-                    nh.showMessage("Source updated");
+            Button button = rootView.findViewById(R.id.update);
+            button.setOnClickListener(v -> {
+                if (getView() == null) {
+                    return;
                 }
+                EditText source1 = getView().findViewById(R.id.source);
+                String newSource = source1.getText().toString();
+                ShellExecuter exe1 = new ShellExecuter();
+                exe1.SaveFileContents(newSource, configFilePath);
+                nh.showMessage("Source updated");
             });
             return rootView;
         }
@@ -717,26 +681,23 @@ public class ManaFragment extends Fragment {
             configFilePath = nh.CHROOT_PATH + "/usr/bin/start-nat-transproxy-lollipop.sh";
 
             String description = getResources().getString(R.string.mana_bettercap_description);
-            TextView desc = (TextView) rootView.findViewById(R.id.description);
+            TextView desc = rootView.findViewById(R.id.description);
             desc.setText(description);
 
-            EditText source = (EditText) rootView.findViewById(R.id.source);
+            EditText source = rootView.findViewById(R.id.source);
             ShellExecuter exe = new ShellExecuter();
             exe.ReadFile_ASYNC(configFilePath, source);
 
-            Button button = (Button) rootView.findViewById(R.id.update);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (getView() == null) {
-                        return;
-                    }
-                    EditText source = (EditText) getView().findViewById(R.id.source);
-                    String newSource = source.getText().toString();
-                    ShellExecuter exe = new ShellExecuter();
-                    exe.SaveFileContents(newSource, configFilePath);
-                    nh.showMessage("Source updated");
+            Button button = rootView.findViewById(R.id.update);
+            button.setOnClickListener(v -> {
+                if (getView() == null) {
+                    return;
                 }
+                EditText source1 = getView().findViewById(R.id.source);
+                String newSource = source1.getText().toString();
+                ShellExecuter exe1 = new ShellExecuter();
+                exe1.SaveFileContents(newSource, configFilePath);
+                nh.showMessage("Source updated");
             });
             return rootView;
         }
@@ -752,28 +713,25 @@ public class ManaFragment extends Fragment {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
 
             String description = getResources().getString(R.string.bdfproxy_cfg);
-            TextView desc = (TextView) rootView.findViewById(R.id.description);
+            TextView desc = rootView.findViewById(R.id.description);
             desc.setText(description);
             // use the good one?
             configFilePath = nh.APP_SD_FILES_PATH + "/configs/bdfproxy.cfg";
             Log.d("BDFPATH", configFilePath);
-            EditText source = (EditText) rootView.findViewById(R.id.source);
+            EditText source = rootView.findViewById(R.id.source);
             ShellExecuter exe = new ShellExecuter();
             exe.ReadFile_ASYNC(configFilePath, source);
 
-            Button button = (Button) rootView.findViewById(R.id.update);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (getView() == null) {
-                        return;
-                    }
-                    EditText source = (EditText) getView().findViewById(R.id.source);
-                    String newSource = source.getText().toString();
-                    ShellExecuter exe = new ShellExecuter();
-                    exe.SaveFileContents(newSource, configFilePath);
-                    nh.showMessage("Source updated");
+            Button button = rootView.findViewById(R.id.update);
+            button.setOnClickListener(v -> {
+                if (getView() == null) {
+                    return;
                 }
+                EditText source1 = getView().findViewById(R.id.source);
+                String newSource = source1.getText().toString();
+                ShellExecuter exe1 = new ShellExecuter();
+                exe1.SaveFileContents(newSource, configFilePath);
+                nh.showMessage("Source updated");
             });
             return rootView;
         }
@@ -800,24 +758,21 @@ public class ManaFragment extends Fragment {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
 
             String description = getResources().getString(R.string.mana_nat_simple_bdf);
-            TextView desc = (TextView) rootView.findViewById(R.id.description);
+            TextView desc = rootView.findViewById(R.id.description);
             desc.setText(description);
-            EditText source = (EditText) rootView.findViewById(R.id.source);
+            EditText source = rootView.findViewById(R.id.source);
             ShellExecuter exe = new ShellExecuter();
             exe.ReadFile_ASYNC(configFilePath, source);
-            Button button = (Button) rootView.findViewById(R.id.update);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (getView() == null) {
-                        return;
-                    }
-                    EditText source = (EditText) getView().findViewById(R.id.source);
-                    String newSource = source.getText().toString();
-                    ShellExecuter exe = new ShellExecuter();
-                    exe.SaveFileContents(newSource, configFilePath);
-                    nh.showMessage("Source updated");
+            Button button = rootView.findViewById(R.id.update);
+            button.setOnClickListener(v -> {
+                if (getView() == null) {
+                    return;
                 }
+                EditText source1 = getView().findViewById(R.id.source);
+                String newSource = source1.getText().toString();
+                ShellExecuter exe1 = new ShellExecuter();
+                exe1.SaveFileContents(newSource, configFilePath);
+                nh.showMessage("Source updated");
             });
             return rootView;
         }

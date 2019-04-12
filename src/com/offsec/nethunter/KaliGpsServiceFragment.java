@@ -3,8 +3,6 @@ package com.offsec.nethunter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +13,9 @@ import android.widget.Toast;
 import com.offsec.nethunter.gps.KaliGPSUpdates;
 import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 
 public class KaliGpsServiceFragment extends Fragment implements KaliGPSUpdates.Receiver {
@@ -45,30 +46,24 @@ public class KaliGpsServiceFragment extends Fragment implements KaliGPSUpdates.R
 
         nh = new NhPaths();
 
-        addClickListener(R.id.start_kismet, new View.OnClickListener() {
-            public void onClick(View v) {
+        addClickListener(R.id.start_kismet, v -> {
 
-                if (gpsProvider != null) {
-                    gpsProvider.onLocationUpdatesRequested(KaliGpsServiceFragment.this);
-                    gpsTextView.append("Starting gps updates \n");
-                }
+            if (gpsProvider != null) {
+                gpsProvider.onLocationUpdatesRequested(KaliGpsServiceFragment.this);
+                gpsTextView.append("Starting gps updates \n");
             }
         }, rootView);
 
-        addClickListener(R.id.gps_stop, new View.OnClickListener() {
-            public void onClick(View v) {
-                if (gpsProvider != null) {
-                    gpsProvider.onStopRequested();
-                    gpsTextView.append("Stopping gps updates \n");
-                    new Thread(new Runnable() {
-                        public void run() {
-                            ShellExecuter exe = new ShellExecuter();
-                            String command = "su -c '" + nh.APP_SCRIPTS_PATH + "/stop-gpsd'";
-                            Log.d(TAG, command);
-                            exe.RunAsRootOutput(command);
-                        }
-                    }).start();
-                }
+        addClickListener(R.id.gps_stop, v -> {
+            if (gpsProvider != null) {
+                gpsProvider.onStopRequested();
+                gpsTextView.append("Stopping gps updates \n");
+                new Thread(() -> {
+                    ShellExecuter exe = new ShellExecuter();
+                    String command = "su -c '" + nh.APP_SCRIPTS_PATH + "/stop-gpsd'";
+                    Log.d(TAG, command);
+                    exe.RunAsRootOutput(command);
+                }).start();
             }
         }, rootView);
 
@@ -78,7 +73,7 @@ public class KaliGpsServiceFragment extends Fragment implements KaliGPSUpdates.R
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        gpsTextView = (TextView) view.findViewById(R.id.gps_textview);
+        gpsTextView = view.findViewById(R.id.gps_textview);
     }
 
     private void addClickListener(int buttonId, View.OnClickListener onClickListener, View rootView) {

@@ -143,11 +143,9 @@ class CopyBootFiles extends AsyncTask<String, String, String> {
         Log.d("Res_copyAssets:", result);
         if (pd != null) {
             new android.os.Handler().postDelayed(
-                    new Runnable() {
-                        public void run() {
-                            pd.dismiss();
-                            AppNavHomeActivity.setDrawerOptions();
-                        }
+                    () -> {
+                        pd.dismiss();
+                        AppNavHomeActivity.setDrawerOptions();
                     }, 1500);
 
 
@@ -159,10 +157,7 @@ class CopyBootFiles extends AsyncTask<String, String, String> {
             if (copyType.equals("sdcard")) {
                 if (path.equals("")) {
                     return true;
-                } else if (path.startsWith(nh.NH_SD_FOLDER_NAME)) {
-                    return true;
-                }
-                return false;
+                } else return path.startsWith(nh.NH_SD_FOLDER_NAME);
             }
             if (copyType.equals("data")) {
                 if (path.equals("")) {
@@ -171,10 +166,7 @@ class CopyBootFiles extends AsyncTask<String, String, String> {
                     return true;
                 } else if (path.startsWith("wallpapers")) {
                     return true;
-                } else if (path.startsWith("etc")) {
-                    return true;
-                }
-                return false;
+                } else return path.startsWith("etc");
             }
             return false;
         }

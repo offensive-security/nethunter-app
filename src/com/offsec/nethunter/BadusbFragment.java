@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,6 +18,8 @@ import com.offsec.nethunter.utils.ShellExecuter;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import androidx.fragment.app.Fragment;
 
 public class BadusbFragment extends Fragment {
 
@@ -43,12 +44,8 @@ public class BadusbFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.badusb, container, false);
         loadOptions(rootView);
-        final Button button = (Button) rootView.findViewById(R.id.updateOptions);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                updateOptions();
-            }
-        });
+        final Button button = rootView.findViewById(R.id.updateOptions);
+        button.setOnClickListener(v -> updateOptions());
         setHasOptionsMenu(true);
         return rootView;
 
@@ -75,23 +72,18 @@ public class BadusbFragment extends Fragment {
     }
 
     private void loadOptions(View rootView) {
-        final EditText ifc = (EditText) rootView.findViewById(R.id.ifc);
-        new Thread(new Runnable() {
-            public void run() {
-                final String text = exe.ReadFile_SYNC(sourcePath);
-                ifc.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        String regExpatInterface = "^INTERFACE=(.*)$";
-                        Pattern pattern = Pattern.compile(regExpatInterface, Pattern.MULTILINE);
-                        Matcher matcher = pattern.matcher(text);
-                        if (matcher.find()) {
-                            String ifcValue = matcher.group(1);
-                            ifc.setText(ifcValue);
-                        }
-                    }
-                });
-            }
+        final EditText ifc = rootView.findViewById(R.id.ifc);
+        new Thread(() -> {
+            final String text = exe.ReadFile_SYNC(sourcePath);
+            ifc.post(() -> {
+                String regExpatInterface = "^INTERFACE=(.*)$";
+                Pattern pattern = Pattern.compile(regExpatInterface, Pattern.MULTILINE);
+                Matcher matcher = pattern.matcher(text);
+                if (matcher.find()) {
+                    String ifcValue = matcher.group(1);
+                    ifc.setText(ifcValue);
+                }
+            });
         }).start();
     }
 
@@ -121,7 +113,7 @@ public class BadusbFragment extends Fragment {
 
     private void updateOptions() {
         String sourceFile = exe.ReadFile_SYNC(sourcePath);
-        EditText ifc = (EditText) getActivity().findViewById(R.id.ifc);
+        EditText ifc = getActivity().findViewById(R.id.ifc);
         sourceFile = sourceFile.replaceAll("(?m)^INTERFACE=(.*)$", "INTERFACE=" + ifc.getText().toString());
         Boolean r = exe.SaveFileContents(sourceFile, sourcePath);// 1st arg contents, 2nd arg filepath
         if (r) {

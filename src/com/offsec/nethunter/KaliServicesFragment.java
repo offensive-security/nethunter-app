@@ -3,7 +3,6 @@ package com.offsec.nethunter;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -22,6 +20,8 @@ import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
 
 import java.io.File;
+
+import androidx.fragment.app.Fragment;
 
 public class KaliServicesFragment extends Fragment {
     /**
@@ -137,48 +137,40 @@ public class KaliServicesFragment extends Fragment {
 
     private void checkServices(final View rootView) {
 
-        new Thread(new Runnable() {
+        new Thread(() -> {
 
-            public void run() {
+            nh = new NhPaths();
 
-                nh = new NhPaths();
+            ShellExecuter exe = new ShellExecuter();
+            final ListView servicesList = rootView.findViewById(R.id.servicesList);
+            String checkCmd = "";
+            String checkBootStates = "";
+            final String bootScriptPath = nh.APP_INITD_PATH;
 
-                ShellExecuter exe = new ShellExecuter();
-                final ListView servicesList = (ListView) rootView.findViewById(R.id.servicesList);
-                String checkCmd = "";
-                String checkBootStates = "";
-                final String bootScriptPath = nh.APP_INITD_PATH;
+            if (KaliServices == null) {
+                Log.d("Services", "Null KaliServices");
+            } else {
 
-                if (KaliServices == null) {
-                    Log.d("Services", "Null KaliServices");
-                } else {
-
-                    for (String[] KaliService : KaliServices) {
-                        Log.d("bootScriptPath", KaliService[4]);
-                    }
-
-                    for (String[] KaliService : KaliServices) {
-                        Log.d("bootScriptPath", bootScriptPath + "/" + KaliService[4]);
-
-                        File checkBootFile = new File(bootScriptPath + "/" + KaliService[4]);
-                        if (checkBootFile.exists()) {
-                            checkBootStates += "1";
-                        } else {
-                            checkBootStates += "0";
-                        }
-                        checkCmd += KaliService[1] + ";";
-                    }
-
-                    final String serviceStates = exe.RunAsRootOutput(checkCmd);
-                    final String finalCheckBootStates = checkBootStates;
-                    servicesList.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            servicesList.setAdapter(new KaliServicesLoader(getActivity().getApplicationContext(), serviceStates, finalCheckBootStates, KaliServices, bootScriptPath));
-                        }
-                    });
-
+                for (String[] KaliService : KaliServices) {
+                    Log.d("bootScriptPath", KaliService[4]);
                 }
+
+                for (String[] KaliService : KaliServices) {
+                    Log.d("bootScriptPath", bootScriptPath + "/" + KaliService[4]);
+
+                    File checkBootFile = new File(bootScriptPath + "/" + KaliService[4]);
+                    if (checkBootFile.exists()) {
+                        checkBootStates += "1";
+                    } else {
+                        checkBootStates += "0";
+                    }
+                    checkCmd += KaliService[1] + ";";
+                }
+
+                final String serviceStates = exe.RunAsRootOutput(checkCmd);
+                final String finalCheckBootStates = checkBootStates;
+                servicesList.post(() -> servicesList.setAdapter(new KaliServicesLoader(getActivity().getApplicationContext(), serviceStates, finalCheckBootStates, KaliServices, bootScriptPath)));
+
             }
         }).start();
     }
@@ -261,10 +253,10 @@ class KaliServicesLoader extends BaseAdapter {
             // set up the ViewHolder
             vH = new ViewHolderItem();
             // get the reference of switch and the text view
-            vH.swTitle = (TextView) convertView.findViewById(R.id.switchTitle);
-            vH.sw = (Switch) convertView.findViewById(R.id.switch1);
-            vH.swholder = (TextView) convertView.findViewById(R.id.switchHolder);
-            vH.swBootCheckbox = (CheckBox) convertView.findViewById(R.id.initAtBoot);
+            vH.swTitle = convertView.findViewById(R.id.switchTitle);
+            vH.sw = convertView.findViewById(R.id.switch1);
+            vH.swholder = convertView.findViewById(R.id.switchHolder);
+            vH.swBootCheckbox = convertView.findViewById(R.id.initAtBoot);
             convertView.setTag(vH);
             //System.out.println ("created row");
         } else {
@@ -311,59 +303,39 @@ class KaliServicesLoader extends BaseAdapter {
 
         // add listeners
         final ViewHolderItem finalVH = vH;
-        vH.sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    new Thread(new Runnable() {
-                        public void run() {
-                            exe.RunAsRoot(new String[]{services[position][2]});
-                        }
+        vH.sw.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                new Thread(() -> exe.RunAsRoot(new String[]{services[position][2]})).start();
+                _serviceStates[position] = "1";
+                finalVH.swholder.setText(services[position][0] + " Service Started");
+                finalVH.swTitle.setTextColor(mContext.getResources().getColor(R.color.blue));
+                finalVH.swholder.setTextColor(mContext.getResources().getColor(R.color.blue));
 
-                    }).start();
-                    _serviceStates[position] = "1";
-                    finalVH.swholder.setText(services[position][0] + " Service Started");
-                    finalVH.swTitle.setTextColor(mContext.getResources().getColor(R.color.blue));
-                    finalVH.swholder.setTextColor(mContext.getResources().getColor(R.color.blue));
+            } else {
+                new Thread(() -> exe.RunAsRoot(new String[]{services[position][3]})).start();
+                _serviceStates[position] = "0";
+                finalVH.swholder.setText(services[position][0] + " Service Stopped");
+                finalVH.swTitle.setTextColor(mContext.getResources().getColor(R.color.clearTitle));
+                finalVH.swholder.setTextColor(mContext.getResources().getColor(R.color.clearText));
 
-                } else {
-                    new Thread(new Runnable() {
-                        public void run() {
-                            exe.RunAsRoot(new String[]{services[position][3]});
-                        }
-
-                    }).start();
-                    _serviceStates[position] = "0";
-                    finalVH.swholder.setText(services[position][0] + " Service Stopped");
-                    finalVH.swTitle.setTextColor(mContext.getResources().getColor(R.color.clearTitle));
-                    finalVH.swholder.setTextColor(mContext.getResources().getColor(R.color.clearText));
-
-                }
             }
         });
-        vH.swBootCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    new Thread(new Runnable() {
-                        public void run() {
-                            Log.d("bootservice", "ADD " + services[position][4]);
-                            addBootService(position);
-                        }
-                    }).start();
-                    _serviceBootStates[position] = "1";
-                    finalVH.swBootCheckbox.setTextColor(mContext.getResources().getColor(R.color.blue));
-                } else {
-                    new Thread(new Runnable() {
-                        public void run() {
-                            Log.d("bootservice", "REMOVE " + services[position][4]);
-                            removeBootService(position);
-                        }
-                    }).start();
-                    _serviceBootStates[position] = "0";
-                    finalVH.swBootCheckbox.setTextColor(mContext.getResources().getColor(R.color.clearTitle));
+        vH.swBootCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                new Thread(() -> {
+                    Log.d("bootservice", "ADD " + services[position][4]);
+                    addBootService(position);
+                }).start();
+                _serviceBootStates[position] = "1";
+                finalVH.swBootCheckbox.setTextColor(mContext.getResources().getColor(R.color.blue));
+            } else {
+                new Thread(() -> {
+                    Log.d("bootservice", "REMOVE " + services[position][4]);
+                    removeBootService(position);
+                }).start();
+                _serviceBootStates[position] = "0";
+                finalVH.swBootCheckbox.setTextColor(mContext.getResources().getColor(R.color.clearTitle));
 
-                }
             }
         });
         return convertView;

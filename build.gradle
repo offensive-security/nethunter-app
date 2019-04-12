@@ -9,9 +9,6 @@ buildscript {
     }
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.10' //version required
-}
 
 apply plugin: 'com.android.application'
 
@@ -52,7 +49,7 @@ android {
         minSdkVersion 17
         targetSdkVersion 28
         versionCode 22
-        versionName "2019.1"
+        versionName "2019.2-rc4"
     }
 
     sourceSets {
@@ -80,7 +77,7 @@ android {
         (or change the below values, hard-coding or whatever...)
         3. Don't forget to create a proguard.cfg file.  You can find a sample one in the sdk or
            point to it directly.
-
+        
         release {
             storePassword System.getenv("KEYSTORE_PASSWORD")
             storeFile file("${System.properties['user.home']}" +  "/.android/release.keystore")
@@ -88,7 +85,7 @@ android {
             keyPassword System.getenv("KEY_PASSWORD")
 
         }
-        */
+       */ 
     }
 
     buildTypes {

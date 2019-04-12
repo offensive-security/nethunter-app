@@ -2,10 +2,6 @@ package com.offsec.nethunter;
 
 import android.os.Build;
 import android.os.Bundle;
-import androidx.core.app.NavUtils;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
@@ -13,6 +9,9 @@ import com.offsec.nethunter.utils.NhPaths;
 import com.offsec.nethunter.utils.ShellExecuter;
 
 import java.util.Locale;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class DeAuthWhitelistActivity extends AppCompatActivity {
 
@@ -29,7 +28,7 @@ public class DeAuthWhitelistActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(getResources().getColor(R.color.darkTitle));
         }
 
-        EditText whitelist = (EditText) findViewById(R.id.deauth_modify);
+        EditText whitelist = findViewById(R.id.deauth_modify);
         whitelist.setText(String.format(Locale.getDefault(),getString(R.string.loading_file), "/sdcard/nh_files/deauth/whitelist.txt"));
         exe.ReadFile_ASYNC("/sdcard/nh_files/deauth/whitelist.txt", whitelist);
 
@@ -42,7 +41,7 @@ public class DeAuthWhitelistActivity extends AppCompatActivity {
 
 
     public void updatewhitelist(View view) {
-        EditText source = (EditText) findViewById(R.id.deauth_modify);
+        EditText source = findViewById(R.id.deauth_modify);
         String newSource = source.getText().toString();
         Boolean isSaved = exe.SaveFileContents(newSource, "/sdcard/nh_files/deauth/whitelist.txt");
         if (isSaved) {

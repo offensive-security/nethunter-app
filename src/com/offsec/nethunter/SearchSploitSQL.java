@@ -18,9 +18,6 @@ class SearchSploitSQL extends SQLiteOpenHelper {
     private final ShellExecuter exe = new ShellExecuter();
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "SearchSploit";
-    private static final String TAG = "SearchSploitSQL";
-    private static final String CSVfileName = Environment.getExternalStorageDirectory() + "/nh_files/files.csv"; // tmp location
-    private static final String CSVfileName_chroot = "/data/local/nhsystem/kali-armhf/usr/share/exploitdb/files.csv"; // origin
 
     SearchSploitSQL(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -35,10 +32,12 @@ class SearchSploitSQL extends SQLiteOpenHelper {
                 SearchSploit.DESCRIPTION + " TEXT," +
                 SearchSploit.DATE + " TEXT," +
                 SearchSploit.AUTHOR + " TEXT," +
-                SearchSploit.PLATFORM + " TEXT," +
                 SearchSploit.TYPE + " TEXT," +
-                SearchSploit.PORT + " INTEGER)";
+           		  SearchSploit.PLATFORM + " TEXT," +
+                SearchSploit.PORT + " INTEGER DEFAULT 0)";
+
         database.execSQL(CREATE_SEARCHSPLOIT_TABLE);
+        database.disableWriteAheadLogging();
     }
 
     public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
@@ -56,10 +55,12 @@ class SearchSploitSQL extends SQLiteOpenHelper {
     }
 
     Boolean doDbFeed() {
-        // copy csv to /sdcard as temp (so we can read it)
-        String _cmd = "su -c bootkali custom_cmd csv2sqlite.py /usr/share/exploitdb/files.csv /sdcard/nh_files/SearchSploit " + SearchSploit.TABLE;
-        // move to app db folder
-        exe.RunAsRootOutput(_cmd);
+        // Generate the csv to kali /root first as temp (so we can read it)
+        String _cmd1 = "su -c 'bootkali custom_cmd /usr/bin/python /sdcard/nh_files/modules/csv2sqlite.py /usr/share/exploitdb/files_exploits.csv /root/SearchSploit " + SearchSploit.TABLE + "'";
+        exe.RunAsRootOutput(_cmd1);
+        // Then move it to app db folder
+        String _cmd2 = "mv /data/local/nhsystem/kali-armhf/root/SearchSploit /sdcard/nh_files/";
+        exe.RunAsRootOutput(_cmd2);
         return true;
     }
 
@@ -80,13 +81,13 @@ class SearchSploitSQL extends SQLiteOpenHelper {
         return _List;
     }
 
-    List<SearchSploit> getAllExploitsFiltered(String filter, String platform, String type, String port) {
+    List<SearchSploit> getAllExploitsFiltered(String filter, String type, String platform) {
         String wildcard = "%" + filter + "%";
         String query = "SELECT * FROM " + SearchSploit.TABLE
                 + " WHERE " + SearchSploit.DESCRIPTION + " like ?" +
-                " and " + SearchSploit.PLATFORM + "='" + platform + "'" +
                 " and " + SearchSploit.TYPE + "='" + type + "'" +
-                " and " + SearchSploit.PORT + "='" + port + "' GROUP BY " + SearchSploit.ID;
+		" and " + SearchSploit.PLATFORM + "='" + platform + "'" +
+		" GROUP BY " + SearchSploit.ID;
         SQLiteDatabase db = this.getWritableDatabase();
         Log.d("QUERYYY", query);
         Cursor cursor = db.rawQuery(query, new String[]{wildcard});
@@ -98,7 +99,7 @@ class SearchSploitSQL extends SQLiteOpenHelper {
     List<SearchSploit> getAllExploitsRaw(String filter) {
         String wildcard = "%" + filter + "%";
         String query = "SELECT * FROM " + SearchSploit.TABLE
-                + " WHERE ( " + SearchSploit.DESCRIPTION + " like ? or " + SearchSploit.AUTHOR + " like ? or " + SearchSploit.PLATFORM + " like ? or " + SearchSploit.TYPE + " like ? ) GROUP BY " + SearchSploit.ID;
+                + " WHERE ( " + SearchSploit.DESCRIPTION + " like ? or " + SearchSploit.AUTHOR + " like ? or " + SearchSploit.TYPE + " like ? or " + SearchSploit.PLATFORM + " like ? ) GROUP BY " + SearchSploit.ID;
         SQLiteDatabase db = this.getWritableDatabase();
         Log.d("EXPLOIT_QUERY", query);
         Cursor cursor = db.rawQuery(query, new String[]{wildcard, wildcard, wildcard, wildcard});
@@ -132,17 +133,6 @@ class SearchSploitSQL extends SQLiteOpenHelper {
         String query = "SELECT DISTINCT " + SearchSploit.TYPE +
                 " FROM " + SearchSploit.TABLE +
                 " ORDER BY " + SearchSploit.TYPE + " ASC";
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-        List<String> _List = createStringList(cursor);
-        db.close();
-        return _List;
-    }
-
-    List<String> getPorts() {
-        String query = "SELECT DISTINCT " + SearchSploit.PORT +
-                " FROM " + SearchSploit.TABLE +
-                " ORDER BY " + SearchSploit.PORT + " ASC";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         List<String> _List = createStringList(cursor);

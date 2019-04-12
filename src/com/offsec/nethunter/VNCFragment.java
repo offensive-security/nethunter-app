@@ -3,8 +3,8 @@ package com.offsec.nethunter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +18,22 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.offsec.nethunter.utils.NhPaths;
+import com.offsec.nethunter.utils.ShellExecuter;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.AttributeView;
+import java.nio.file.attribute.FileOwnerAttributeView;
+import java.nio.file.attribute.GroupPrincipal;
+import java.nio.file.attribute.PosixFileAttributeView;
+import java.nio.file.attribute.PosixFileAttributes;
+import java.nio.file.attribute.UserPrincipal;
+import java.util.UUID;
+
+import androidx.fragment.app.Fragment;
 
 public class VNCFragment extends Fragment {
 
@@ -26,6 +42,7 @@ public class VNCFragment extends Fragment {
     private String xheight;
     private String localhostonly = "";
 
+    private boolean isbVNCinstalled = false;
     NhPaths nh;
     private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -44,8 +61,6 @@ public class VNCFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         final View rootView = inflater.inflate(R.layout.vnc_setup, container, false);
-        SharedPreferences sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
-        Context mContext = getActivity().getApplicationContext();
 
         // Get screen size to pass to VNC
         DisplayMetrics displaymetrics = new DisplayMetrics();
@@ -61,53 +76,44 @@ public class VNCFragment extends Fragment {
             xwidth = Integer.toString(screen_width);
             xheight = Integer.toString(screen_height);
         }
-        Button SetupVNCButton = (Button) rootView.findViewById(R.id.set_up_vnc);
-        Button StartVNCButton = (Button) rootView.findViewById(R.id.start_vnc);
-        Button StopVNCButton = (Button) rootView.findViewById(R.id.stop_vnc);
-        Button OpenVNCButton = (Button) rootView.findViewById(R.id.vncClientStart);
+        Button SetupVNCButton = rootView.findViewById(R.id.set_up_vnc);
+        Button StartVNCButton = rootView.findViewById(R.id.start_vnc);
+        Button StopVNCButton = rootView.findViewById(R.id.stop_vnc);
+        Button OpenVNCButton = rootView.findViewById(R.id.vncClientStart);
 
         String[] resolutions = new String[]{"Native", "256 Colors", "64 Colors"};
-        Spinner resolution_spinner = (Spinner) rootView.findViewById(R.id.resolution_spinner);
+        Spinner resolution_spinner = rootView.findViewById(R.id.resolution_spinner);
         resolution_spinner.setAdapter(new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_list_item_1, resolutions));
 
         // Checkbox for localhost only
-        final CheckBox localhostCheckBox = (CheckBox) rootView.findViewById(R.id.vnc_checkBox);
+        final CheckBox localhostCheckBox = rootView.findViewById(R.id.vnc_checkBox);
         localhostCheckBox.setChecked(true);
-        View.OnClickListener checkBoxListener = new View.OnClickListener() {
-            public void onClick(View v) {
-                if (localhostCheckBox.isChecked()) {
-                    localhostonly = "-localhost ";
-                } else {
-                    localhostonly = "";
-                }
+        View.OnClickListener checkBoxListener = v -> {
+            if (localhostCheckBox.isChecked()) {
+                localhostonly = "-localhost ";
+            } else {
+                localhostonly = "";
             }
         };
         localhostCheckBox.setOnClickListener(checkBoxListener);
 
-        addClickListener(SetupVNCButton, new View.OnClickListener() {
-            public void onClick(View v) {
-                intentClickListener_NH("vncpasswd && exit"); // since is a kali command we can send it as is
-            }
+        addClickListener(SetupVNCButton, v -> {
+            intentClickListener_NH("vncpasswd && exit"); // since is a kali command we can send it as is
         });
-        addClickListener(StartVNCButton, new View.OnClickListener() {
-            public void onClick(View v) {
-                intentClickListener_NH("vncserver :1 " + localhostonly + "-geometry " + xwidth + "x" + xheight + " && echo \"Closing terminal in 5 secs\" && sleep 5 && exit"); // since is a kali command we can send it as is
-                Log.d(TAG, localhostonly);
-            }
+        addClickListener(StartVNCButton, v -> {
+            intentClickListener_NH("vncserver :1 " + localhostonly + "-geometry " + xwidth + "x" + xheight + " && echo \"Closing terminal in 5 secs\" && sleep 5 && exit"); // since is a kali command we can send it as is
+            Log.d(TAG, localhostonly);
         });
-        addClickListener(StopVNCButton, new View.OnClickListener() {
-            public void onClick(View v) {
-                intentClickListener_NH("vncserver -kill :1 && echo \"Closing terminal in 5 secs\" && sleep 5 && exit"); // since is a kali command we can send it as is
-            }
+        addClickListener(StopVNCButton, v -> {
+            intentClickListener_NH("vncserver -kill :1 && echo \"Closing terminal in 5 secs\" && sleep 5 && exit"); // since is a kali command we can send it as is
         });
-        addClickListener(OpenVNCButton, new View.OnClickListener() {
-            public void onClick(View v) {
-                intentClickListener_VNC(); // since is a kali command we can send it as is
-            }
+        addClickListener(OpenVNCButton, v -> {
+            intentClickListener_VNC(); // since is a kali command we can send it as is
         });
 
 
+	check_bVNC();
         return rootView;
     }
 
@@ -122,29 +128,46 @@ public class VNCFragment extends Fragment {
                 return;
             }
 
-            String _R_IP = ((EditText) getView().findViewById(R.id.vnc_R_IP)).getText().toString();
-            String _R_PORT = ((EditText) getView().findViewById(R.id.vnc_R_PORT)).getText().toString();
+            if (!isbVNCinstalled) {
+                Toast.makeText(getActivity().getApplicationContext(), "bVNC app not found!", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            String _R_IP = ((EditText) getView().findViewById(R.id.vnc_R_IP)).getText().toString().replaceAll(" ", "");
+            String _R_PORT = ((EditText) getView().findViewById(R.id.vnc_R_PORT)).getText().toString().replaceAll(" ", "");
             String _PASSWD = ((EditText) getView().findViewById(R.id.vnc_PASSWD)).getText().toString();
-            String _NICK = ((EditText) getView().findViewById(R.id.vnc_CONN_NICK)).getText().toString();
+            String _NICK = ((EditText) getView().findViewById(R.id.vnc_CONN_NICK)).getText().toString().replaceAll(" ","");
             String _USER = ((EditText) getView().findViewById(R.id.vnc_USER)).getText().toString();
             int _RESOLUTION = ((Spinner) getView().findViewById(R.id.resolution_spinner)).getSelectedItemPosition();
-            if (!_R_IP.equals("") && !_R_PORT.equals("") && !_NICK.equals("")) {
-                Intent intent = getActivity().getApplicationContext().getPackageManager().getLaunchIntentForPackage("com.offsec.nhvnc");
-                intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-                intent.putExtra("com.offsec.nhvnc.EXTRA_CONN_DATA", true);
-                intent.putExtra("R_IP", _R_IP);
-                intent.putExtra("R_PORT", _R_PORT);
-                intent.putExtra("PASSWD", _PASSWD);
-                intent.putExtra("NICK", _NICK);
-                intent.putExtra("USER", _USER);
-                intent.putExtra("COLORMODEL", _RESOLUTION);
 
-                startActivity(intent);
+            if (!_R_IP.equals("") && !_R_PORT.equals("") && !_NICK.equals("")) {
+
+            //Intent intent = getActivity().getApplicationContext().getPackageManager().getLaunchIntentForPackage("com.offsec.nhvnc");
+            Intent intent = getActivity().getApplicationContext().getPackageManager().getLaunchIntentForPackage("com.realvnc.viewer.android");
+            if (intent == null) {
+                    Toast.makeText(getActivity().getApplicationContext(), "Make sure ip,port,nickname & password are not empty!", Toast.LENGTH_LONG).show();
+            } else {
+                    ShellExecuter exe = new ShellExecuter();
+                    String command;
+                    String uuid = UUID.randomUUID().toString();
+                    command = "su -c '/data/data/com.offsec.nethunter/files/scripts/bootkali vnc start " + uuid + " " + _NICK + " " + _R_IP + " " + _R_PORT + " " + _PASSWD + "'";
+                    exe.RunAsRootWithException(command);
+
+                    //intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                    //intent.putExtra("com.offsec.nhvnc.EXTRA_CONN_DATA", true);
+                    //intent.putExtra("R_IP", _R_IP);
+                    //intent.putExtra("R_PORT", _R_PORT);
+                    //intent.putExtra("PASSWD", _PASSWD);
+                    //intent.putExtra("NICK", _NICK);
+                    //intent.putExtra("USER", _USER);
+                    //intent.putExtra("COLORMODEL", _RESOLUTION);
+                    //startActivity(intent);
+                }
             }
 
         } catch (Exception e) {
-            Log.d("errorLAinching", e.toString());
-            Toast.makeText(getActivity().getApplicationContext(), "NetHunter VNC not found!", Toast.LENGTH_SHORT).show();
+            Log.d("errorLaunching", e.toString());
+            Toast.makeText(getActivity().getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -160,4 +183,15 @@ public class VNCFragment extends Fragment {
 
         }
     }
+    private void check_bVNC() {
+        new Thread(new Runnable() {
+            public void run() {
+                ShellExecuter exe_check = new ShellExecuter();
+                if (exe_check.RunAsRootOutput("pm list packages | grep com.iiordanov.freebVNC").equals("")) {
+                    isbVNCinstalled = false;
+                } else isbVNCinstalled = true;
+            }
+        }).start();
+    }
+
 }

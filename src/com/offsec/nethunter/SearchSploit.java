@@ -25,14 +25,14 @@ public class SearchSploit {
 
     }
 
-    public SearchSploit(long id, String file, String description, String date, String author, String platform, String type, Integer port) {
+    public SearchSploit(long id, String file, String description, String date, String author, String type, String platform, Integer port) {
         this.id = id;
         this.file = file;
         this.description = description;
         this.date = date;
         this.author = author;
-        this.platform = platform;
         this.type = type;
+        this.platform = platform;
         this.port = port;
     }
 
@@ -92,13 +92,9 @@ public class SearchSploit {
         this.type = type;
     }
 
-    public Integer getPort() {
-        return port;
-    }
+    public Integer getPort() { return port; }
 
     public void setPort(Integer port) {
         this.port = port;
     }
-
-
 }

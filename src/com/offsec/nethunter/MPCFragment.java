@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +19,8 @@ import android.widget.Toast;
 import com.offsec.nethunter.utils.NhPaths;
 
 import java.util.Locale;
+
+import androidx.fragment.app.Fragment;
 
 public class MPCFragment extends Fragment {
 
@@ -52,7 +53,7 @@ public class MPCFragment extends Fragment {
 
 
         // Payload Type Spinner
-        Spinner typeSpinner = (Spinner) rootView.findViewById(R.id.mpc_type_spinner);
+        Spinner typeSpinner = rootView.findViewById(R.id.mpc_type_spinner);
         ArrayAdapter<CharSequence> typeAdapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.mpc_type_array, R.layout.payload_maker_item);
         //typeAdapter.setDropDownViewResource(R.layout.payload_maker_item);
@@ -115,7 +116,7 @@ public class MPCFragment extends Fragment {
         });
 
         // Payload Spinner
-        Spinner payloadSpinner = (Spinner) rootView.findViewById(R.id.mpc_payload_spinner);
+        Spinner payloadSpinner = rootView.findViewById(R.id.mpc_payload_spinner);
         ArrayAdapter<CharSequence> payloadAdapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.mpc_payload_array, R.layout.payload_maker_item);
         //typeAdapter.setDropDownViewResource(R.layout.payload_maker_item);
@@ -141,7 +142,7 @@ public class MPCFragment extends Fragment {
         });
 
         // Callback Spinner
-        Spinner callbackSpinner = (Spinner) rootView.findViewById(R.id.mpc_callback_spinner);
+        Spinner callbackSpinner = rootView.findViewById(R.id.mpc_callback_spinner);
         ArrayAdapter<CharSequence> callbackAdapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.mpc_callback_array, R.layout.payload_maker_item);
         //typeAdapter.setDropDownViewResource(R.layout.payload_maker_item);
@@ -167,7 +168,7 @@ public class MPCFragment extends Fragment {
         });
 
         // Stager Spinner
-        Spinner stageSpinner = (Spinner) rootView.findViewById(R.id.mpc_stage_spinner);
+        Spinner stageSpinner = rootView.findViewById(R.id.mpc_stage_spinner);
         ArrayAdapter<CharSequence> stagerAdapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.mpc_stage_array, R.layout.payload_maker_item);
         //typeAdapter.setDropDownViewResource(R.layout.payload_maker_item);
@@ -193,7 +194,7 @@ public class MPCFragment extends Fragment {
         });
 
         // Callback Type SPinner
-        Spinner callbackTypeSpinner = (Spinner) rootView.findViewById(R.id.mpc_callbacktype_spinner);
+        Spinner callbackTypeSpinner = rootView.findViewById(R.id.mpc_callbacktype_spinner);
         ArrayAdapter<CharSequence> callbackTypeAdapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.mpc_callbacktype_array, R.layout.payload_maker_item);
         //typeAdapter.setDropDownViewResource(R.layout.payload_maker_item);
@@ -229,7 +230,7 @@ public class MPCFragment extends Fragment {
         });
 
         // Port Text Field
-        EditText port = (EditText) rootView.findViewById(R.id.mpc_port);
+        EditText port = rootView.findViewById(R.id.mpc_port);
         port.setText(R.string.mpc_port_default);
         //final String PortStr = port.getText().toString();
 
@@ -241,7 +242,7 @@ public class MPCFragment extends Fragment {
         String ip = String.format(Locale.getDefault(),"%d.%d.%d.%d", (ipAddress & 0xff), (ipAddress >> 8 & 0xff), (ipAddress >> 16 & 0xff), (ipAddress >> 24 & 0xff));
 
         // IP Text Field
-        EditText ipaddress = (EditText) rootView.findViewById(R.id.mpc_ip_address);
+        EditText ipaddress = rootView.findViewById(R.id.mpc_ip_address);
         ipaddress.setText(ip);
         //final String IPAddressStr = ipaddress.getText().toString();
         // this should not be assigned like that
@@ -251,26 +252,22 @@ public class MPCFragment extends Fragment {
         Log.d("start cmd values", getCmd(rootView));
 
         // Buttons
-        addClickListener(R.id.mpc_GenerateSDCARD, new View.OnClickListener() {
-            public void onClick(View v) {
-                Log.d("thecmd", "cd /sdcard/; msfpc " + getCmd(rootView));
-                intentClickListener_NH("cd /sdcard/; msfpc " + getCmd(rootView)); // since is a kali command we can send it as is
-            }
+        addClickListener(R.id.mpc_GenerateSDCARD, v -> {
+            Log.d("thecmd", "cd /sdcard/; msfpc " + getCmd(rootView));
+            intentClickListener_NH("cd /sdcard/; msfpc " + getCmd(rootView)); // since is a kali command we can send it as is
         }, rootView);
 
-        addClickListener(R.id.mpc_GenerateHTTP, new View.OnClickListener() {
-            public void onClick(View v) {
-                Log.d("thecmd", "cd /var/www/html; msfpc " + getCmd(rootView));
-                intentClickListener_NH("cd /var/www/html; msfpc " + getCmd(rootView)); // since is a kali command we can send it as is
-            }
+        addClickListener(R.id.mpc_GenerateHTTP, v -> {
+            Log.d("thecmd", "cd /var/www/html; msfpc " + getCmd(rootView));
+            intentClickListener_NH("cd /var/www/html; msfpc " + getCmd(rootView)); // since is a kali command we can send it as is
         }, rootView);
 
         return rootView;
     }
 
     private String getCmd(View rootView) {
-        EditText ipaddress = (EditText) rootView.findViewById(R.id.mpc_ip_address);
-        EditText port = (EditText) rootView.findViewById(R.id.mpc_port);
+        EditText ipaddress = rootView.findViewById(R.id.mpc_ip_address);
+        EditText port = rootView.findViewById(R.id.mpc_port);
         return typeVar + " " + ipaddress.getText() + " " + port.getText() + " " + payloadVar + " " + callbackVar + " " + " " + stagerVar + " " + callbackTypeVar;
     }
 

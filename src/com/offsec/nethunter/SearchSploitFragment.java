@@ -2,7 +2,6 @@ package com.offsec.nethunter;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,9 +33,9 @@ import java.nio.channels.FileChannel;
 import java.util.List;
 
 import androidx.appcompat.app.AlertDialog;
-//import androidx.appcompat.widget.SearchView;
-import android.widget.SearchView;
 import androidx.fragment.app.Fragment;
+
+//import androidx.appcompat.widget.SearchView;
 
 
 public class SearchSploitFragment extends Fragment {
@@ -46,9 +46,8 @@ public class SearchSploitFragment extends Fragment {
 
 
     private Boolean withFilters = true;
-    private String sel_platform;
     private String sel_type;
-    private String sel_port;
+    private String sel_platform;
     private String sel_search = "";
     private TextView numex;
     private AlertDialog adi;
@@ -85,8 +84,8 @@ public class SearchSploitFragment extends Fragment {
         adi.setCancelable(false);
         adi.show();
         // Search Bar
-        numex = (TextView) rootView.findViewById(R.id.numex);
-        final SearchView searchStr = (SearchView) rootView.findViewById(R.id.searchSploit_searchbar);
+        numex = rootView.findViewById(R.id.numex);
+        final SearchView searchStr = rootView.findViewById(R.id.searchSploit_searchbar);
         searchStr.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -110,68 +109,58 @@ public class SearchSploitFragment extends Fragment {
             }
         });
         // Load/reload database button
-        final Button searchSearchSploit = (Button) rootView.findViewById(R.id.serchsploit_loadDB);
+        final Button searchSearchSploit = rootView.findViewById(R.id.serchsploit_loadDB);
         searchSearchSploit.setVisibility(View.GONE);
-        searchSearchSploit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final ProgressDialog pd = new ProgressDialog(getActivity());
-                pd.setTitle("Feeding Exploit DB");
-                pd.setMessage("This can take a minute, wait...");
-                pd.setCancelable(false);
-                pd.show();
-                new Thread(new Runnable() {
-                    public void run() {
-                        final Boolean isFeeded = database.doDbFeed();
-                        searchSearchSploit.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (isFeeded) {
-                                    Toast.makeText(getActivity(),
-                                            "DB FEED DONE",
-                                            Toast.LENGTH_LONG).show();
-                                    try {
-                                        // Search List
-                                        String sd = nh.SD_PATH;
-                                        String data = nh.APP_PATH;
-                                        String DATABASE_NAME = "SearchSploit";
-                                        String currentDBPath = "../databases/" + DATABASE_NAME;
-                                        String backupDBPath = "/nh_files/" + DATABASE_NAME; // From SD directory.
+        searchSearchSploit.setOnClickListener(v -> {
+            final ProgressDialog pd = new ProgressDialog(getActivity());
+            pd.setTitle("Feeding Exploit DB");
+            pd.setMessage("This can take a minute, wait...");
+            pd.setCancelable(false);
+            pd.show();
+            new Thread(() -> {
+                final Boolean isFeeded = database.doDbFeed();
+                searchSearchSploit.post(() -> {
+                    if (isFeeded) {
+                        Toast.makeText(getActivity(),
+                                "DB FEED DONE",
+                                Toast.LENGTH_LONG).show();
+                        try {
+                            // Search List
+                            //String sd = nh.SD_PATH;
+                            String sd = "/sdcard";
+                            //String data = nh.APP_PATH;
+                            String data = "/data/data/com.offsec.nethunter/files/";
+                            String DATABASE_NAME = "SearchSploit";
+                            String currentDBPath = "../databases/" + DATABASE_NAME;
+                            String backupDBPath = "/nh_files/" + DATABASE_NAME; // From SD directory.
 
-                                        File backupDB = new File(data, currentDBPath);
-                                        File currentDB = new File(sd, backupDBPath);
+                            File backupDB = new File(data, currentDBPath);
+                            File currentDB = new File(sd, backupDBPath);
 
-                                        FileChannel src = new FileInputStream(currentDB).getChannel();
-                                        FileChannel dst = new FileOutputStream(backupDB).getChannel();
-                                        dst.transferFrom(src, 0, src.size());
+                            FileChannel src = new FileInputStream(currentDB).getChannel();
+                            FileChannel dst = new FileOutputStream(backupDB).getChannel();
+                            dst.transferFrom(src, 0, src.size());
 
-                                        src.close();
-                                        dst.close();
-                                        Log.d("importDB", "Successfuly imported " + DATABASE_NAME);
-                                        main(rootView);
-                                        pd.dismiss();
-                                    } catch (Exception e) {
-                                        Log.d("importDB", e.toString());
-                                    }
-                                    // main(rootView);
-                                } else {
-                                    Toast.makeText(getActivity(),
-                                            "Unable to find Searchsploit files.csv database. Install exploitdb in chroot",
-                                            Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        });
+                            src.close();
+                            dst.close();
+                            Log.d("importDB", "Successfuly imported " + DATABASE_NAME);
+                            main(rootView);
+                            pd.dismiss();
+                        } catch (Exception e) {
+                            Log.d("importDB", e.toString());
+                        }
+                        // main(rootView);
+                    } else {
+                        Toast.makeText(getActivity(),
+                                "Unable to find Searchsploit files.csv database. Install exploitdb in chroot",
+                                Toast.LENGTH_LONG).show();
                     }
-                }).start();
-            }
+                });
+            }).start();
         });
         //prevents menu stuck
         new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        main(rootView);
-                    }
-                }, 250);
+                () -> main(rootView), 250);
 
 
         return rootView;
@@ -198,19 +187,13 @@ public class SearchSploitFragment extends Fragment {
                     builder.setTitle("Raw search warning");
 
                     builder.setMessage("The exploit db is pretty big (+30K exploits), activating raw search will make the search slow.\nIs useful to do global searches when you don't find a exploit.")
-                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.dismiss();
-                                }
-                            })
-                            .setPositiveButton("Enable", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    getView().findViewById(R.id.search_filters).setVisibility(View.GONE);
-                                    item.setTitle("Disable Raw search");
-                                    withFilters = false;
-                                    loadExploits();
-                                    hideSoftKeyboard(getView());
-                                }
+                            .setNegativeButton("Cancel", (dialog, id) -> dialog.dismiss())
+                            .setPositiveButton("Enable", (dialog, id) -> {
+                                getView().findViewById(R.id.search_filters).setVisibility(View.GONE);
+                                item.setTitle("Disable Raw search");
+                                withFilters = false;
+                                loadExploits();
+                                hideSoftKeyboard(getView());
                             });
 
                     AlertDialog ad = builder.create();
@@ -224,20 +207,17 @@ public class SearchSploitFragment extends Fragment {
     }
 
     private static void hideSoftKeyboard(final View caller) {
-        caller.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                InputMethodManager imm = (InputMethodManager) caller.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(caller.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-            }
+        caller.postDelayed(() -> {
+            InputMethodManager imm = (InputMethodManager) caller.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(caller.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }, 100);
     }
 
     private void main(final View rootView) {
 
-        searchSploitListView = (ListView) rootView.findViewById(R.id.searchResultsList);
+        searchSploitListView = rootView.findViewById(R.id.searchResultsList);
         Long exploitCount = database.getCount();
-        Button searchSearchSploit = (Button) rootView.findViewById(R.id.serchsploit_loadDB);
+        Button searchSearchSploit = rootView.findViewById(R.id.serchsploit_loadDB);
         if (exploitCount == 0) {
             searchSearchSploit.setVisibility(View.VISIBLE);
             rootView.findViewById(R.id.search_filters).setVisibility(View.GONE);
@@ -249,25 +229,8 @@ public class SearchSploitFragment extends Fragment {
             searchSearchSploit.setVisibility(View.GONE);
         }
 
-        final List<String> portList = database.getPorts();
-        Spinner portSpin = (Spinner) rootView.findViewById(R.id.exdb_port_spinner);
-        ArrayAdapter<String> adp1 = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, portList);
-        adp1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        portSpin.setAdapter(adp1);
-        portSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                sel_port = portList.get(position);
-                loadExploits();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-            }
-        });
-
         final List<String> platformList = database.getPlatforms();
-        Spinner platformSpin = (Spinner) rootView.findViewById(R.id.exdb_platform_spinner);
+        Spinner platformSpin = rootView.findViewById(R.id.exdb_platform_spinner);
         ArrayAdapter<String> adp12 = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, platformList);
         adp12.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         platformSpin.setAdapter(adp12);
@@ -284,7 +247,7 @@ public class SearchSploitFragment extends Fragment {
         });
 
         final List<String> typeList = database.getTypes();
-        Spinner typeSpin = (Spinner) rootView.findViewById(R.id.exdb_type_spinner);
+        Spinner typeSpin = rootView.findViewById(R.id.exdb_type_spinner);
         ArrayAdapter<String> adp13 = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, typeList);
         adp13.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         typeSpin.setAdapter(adp13);
@@ -303,10 +266,10 @@ public class SearchSploitFragment extends Fragment {
     }
 
     private void loadExploits() {
-        if ((sel_platform != null) && (sel_type != null) && (sel_port != null)) {
+        if ((sel_platform != null) && (sel_type != null)) {
             List<SearchSploit> exploitList;
             if (withFilters) {
-                exploitList = database.getAllExploitsFiltered(sel_search, sel_platform, sel_type, sel_port);
+                exploitList = database.getAllExploitsFiltered(sel_search, sel_type, sel_platform);
             } else {
                 if (sel_search.equals("")) {
                     exploitList = full_exploitList;
@@ -316,11 +279,7 @@ public class SearchSploitFragment extends Fragment {
             }
             if (exploitList == null) {
                 new android.os.Handler().postDelayed(
-                        new Runnable() {
-                            public void run() {
-                                loadExploits();
-                            }
-                        }, 1500);
+                        () -> loadExploits(), 1500);
                 return;
             }
             numex.setText(String.format("%d results", exploitList.size()));
@@ -329,11 +288,7 @@ public class SearchSploitFragment extends Fragment {
             if (!isLoaded) {
                 // preloading the long list lets see if is more performant
                 // preload in the background.
-                new Thread(new Runnable() {
-                    public void run() {
-                        full_exploitList = database.getAllExploitsRaw("");
-                    }
-                }).start();
+                new Thread(() -> full_exploitList = database.getAllExploitsRaw("")).start();
 
                 adi.dismiss();
                 isLoaded = true;
@@ -361,9 +316,8 @@ class ExploitLoader extends BaseAdapter {
         // The switch
         //Switch sw;
         // the msg holder
-
-        TextView platform;
         TextView type;
+        TextView platform;
         TextView author;
         TextView date;
         // the service title
@@ -401,15 +355,15 @@ class ExploitLoader extends BaseAdapter {
             // set up the ViewHolder
             vH = new ViewHolderItem();
             // get the reference of switch and the text view
-            vH.description = (TextView) convertView.findViewById(R.id.description);
+            vH.description = convertView.findViewById(R.id.description);
             // vH.cwSwich = (Switch) convertView.findViewById(R.id.switch1);
-            vH.platform = (TextView) convertView.findViewById(R.id.platform);
-            vH.type = (TextView) convertView.findViewById(R.id.type);
-            vH.author = (TextView) convertView.findViewById(R.id.author);
-            vH.date = (TextView) convertView.findViewById(R.id.exploit_date);
-            vH.viewSource = (Button) convertView.findViewById(R.id.viewSource);
-            vH.openWeb = (Button) convertView.findViewById(R.id.openWeb);
-            vH.sendHid = (Button) convertView.findViewById(R.id.searchsploit_sendhid_button);
+            vH.type = convertView.findViewById(R.id.type);
+	    vH.platform = convertView.findViewById(R.id.platform);
+            vH.author = convertView.findViewById(R.id.author);
+            vH.date = convertView.findViewById(R.id.exploit_date);
+            vH.viewSource = convertView.findViewById(R.id.viewSource);
+            vH.openWeb = convertView.findViewById(R.id.openWeb);
+            vH.sendHid = convertView.findViewById(R.id.searchsploit_sendhid_button);
             convertView.setTag(vH);
             //System.out.println ("created row");
         } else {
@@ -425,46 +379,35 @@ class ExploitLoader extends BaseAdapter {
         String _desc = exploitItem.getDescription();
         String _date = exploitItem.getDate();
         String _author = exploitItem.getAuthor();
-        String _platform = exploitItem.getPlatform();
         String _type = exploitItem.getType();
-        Integer _port = exploitItem.getPort();
-
+        String _platform = exploitItem.getPlatform();
 
         vH.viewSource.setOnClickListener(null);
         vH.openWeb.setOnClickListener(null);
         // set service name
         vH.description.setText(_desc);
-        vH.platform.setText(_platform);
         vH.type.setText(_type);
+	vH.platform.setText(_platform);
         vH.author.setText(_author);
         vH.date.setText(_date);
-        vH.viewSource.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(_mContext, EditSourceActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                i.putExtra("path", "/data/local/nhsystem/kali-armhf/usr/share/exploitdb/" + _file);
-                _mContext.startActivity(i);
+        vH.viewSource.setOnClickListener(v -> {
+            Intent i = new Intent(_mContext, EditSourceActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.putExtra("path", "/data/local/nhsystem/kali-armhf/usr/share/exploitdb/" + _file);
+            _mContext.startActivity(i);
 
-            }
         });
-        vH.sendHid.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                start("/usr/share/exploitdb/" + _file);
-                //_mContext.startActivity(i);
+        vH.sendHid.setOnClickListener(v -> {
+            start("/usr/share/exploitdb/" + _file);
+            //_mContext.startActivity(i);
 
-            }
         });
-        vH.openWeb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                String url = "https://www.exploit-db.com/exploits/" + _id + "/";
-                i.setData(Uri.parse(url));
-                _mContext.startActivity(i);
-            }
+        vH.openWeb.setOnClickListener(v -> {
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            String url = "https://www.exploit-db.com/exploits/" + _id + "/";
+            i.setData(Uri.parse(url));
+            _mContext.startActivity(i);
         });
         return convertView;
 

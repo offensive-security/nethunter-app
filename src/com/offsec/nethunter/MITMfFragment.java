@@ -3,12 +3,6 @@ package com.offsec.nethunter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -34,7 +27,11 @@ import com.offsec.nethunter.utils.ShellExecuter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 public class MITMfFragment extends Fragment {
 
@@ -83,7 +80,7 @@ public class MITMfFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.mitmf, container, false);
         tabsPagerAdapter = new TabsPagerAdapter(getActivity().getSupportFragmentManager());
 
-        ViewPager mViewPager = (ViewPager) rootView.findViewById(R.id.pagerMITMF);
+        ViewPager mViewPager = rootView.findViewById(R.id.pagerMITMF);
         mViewPager.setAdapter(tabsPagerAdapter);
 
         nh = new NhPaths();
@@ -455,23 +452,20 @@ public class MITMfFragment extends Fragment {
             final View rootView = inflater.inflate(R.layout.source_short, container, false);
 
             String description = getResources().getString(R.string.mitmf_config);
-            TextView desc = (TextView) rootView.findViewById(R.id.description);
+            TextView desc = rootView.findViewById(R.id.description);
             desc.setText(description);
 
 
-            EditText source = (EditText) rootView.findViewById(R.id.source);
+            EditText source = rootView.findViewById(R.id.source);
             exe.ReadFile_ASYNC(configFilePath, source);
-            Button button = (Button) rootView.findViewById(R.id.update);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    EditText source = (EditText) rootView.findViewById(R.id.source);
-                    Boolean isSaved = exe.SaveFileContents(source.getText().toString(), configFilePath);
-                    if (isSaved) {
-                        nh.showMessage("Source updated");
-                    } else {
-                        nh.showMessage("Source not updated");
-                    }
+            Button button = rootView.findViewById(R.id.update);
+            button.setOnClickListener(v -> {
+                EditText source1 = rootView.findViewById(R.id.source);
+                Boolean isSaved = exe.SaveFileContents(source1.getText().toString(), configFilePath);
+                if (isSaved) {
+                    nh.showMessage("Source updated");
+                } else {
+                    nh.showMessage("Source not updated");
                 }
             });
             return rootView;

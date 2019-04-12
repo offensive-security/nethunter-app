@@ -19,7 +19,7 @@ public class GpsdServer extends AsyncTask<Void, Void, Void> {
 
     private static final String TAG = "GpsdServer";
 
-    GpsdServer(ConnectionListener listener) throws IOException {
+    GpsdServer(ConnectionListener listener) {
         this.listener = listener;
     }
 
@@ -45,20 +45,18 @@ public class GpsdServer extends AsyncTask<Void, Void, Void> {
             ServerSocket serverSocket = new ServerSocket();
             serverSocket.bind(socketAddress);
 
-            new Thread(new Runnable() {
-                public void run() {
+            new Thread(() -> {
 
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    ShellExecuter exe = new ShellExecuter();
-                    String command = "su -c '" + SCRIPT_PATH + File.separator + "bootkali start_gpsd " + String.valueOf(PORT) + "'";
-                    Log.d(TAG, command);
-                    String response = exe.RunAsRootOutput(command);
-                    Log.d(TAG, "Response = " + response);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
+                ShellExecuter exe = new ShellExecuter();
+                String command = "su -c '" + SCRIPT_PATH + File.separator + "bootkali start_gpsd " + String.valueOf(PORT) + "'";
+                Log.d(TAG, command);
+                String response = exe.RunAsRootOutput(command);
+                Log.d(TAG, "Response = " + response);
             }).start();
 
 

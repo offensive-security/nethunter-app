@@ -1,0 +1,22 @@
+#!/system/bin/sh
+
+# Script to restore your kali chroot folder.
+
+######### IMPORT BOOTKALI INITIALIZATION #########
+SCRIPT_PATH=$(readlink -f $0)
+. ${SCRIPT_PATH%/*}/bootkali_log
+
+[ ! "`which busybox`" ] && bklog "[-] No busybox is installed, if you did have it installed, please symlink it to /system/bin"
+
+case $# in
+2)
+	[ ! -e $1 ] && bklog "[-] $1 not found, please check again." && exit 1;
+	[ ! -d $2 ] && bklog "[-] $2 not existed, please check again." && exit 1;
+	bklog "[!] Restoring the chroot backup from $1 to $2"
+	busybox tar xzf $1 -C `echo "$2" | sed "s/\(\/\+\)$//g"`/
+	;;
+*)
+	echo "[!] Usage: chroot_restore <full_path_of_your_.tar.gz> </data/local/nhsystem/>"
+	echo "[!] For example: chroot_restore /sdcard/kalifs-backup.tar.gz /data/local/nhsystem/"
+	;;
+esac

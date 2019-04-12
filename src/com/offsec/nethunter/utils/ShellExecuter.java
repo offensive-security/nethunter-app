@@ -2,6 +2,7 @@ package com.offsec.nethunter.utils;
 
 import android.util.Log;
 import android.widget.EditText;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -61,6 +62,11 @@ public class ShellExecuter {
             }
             os.writeBytes("exit\n");
             os.flush();
+            try {
+                process.waitFor();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -151,28 +157,21 @@ public class ShellExecuter {
     // if you need to manipulate the outpput use the SYNC method. (down)
     public void ReadFile_ASYNC(String _path, final EditText v) {
         final String command = "cat " + _path;
-        new Thread(new Runnable() {
-            public void run() {
-                String output = "";
-                try {
-                    Process  p = Runtime.getRuntime().exec("su -c " + command);
-                    p.waitFor();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        output = output +  line + "\n";
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+        new Thread(() -> {
+            String output = "";
+            try {
+                Process  p = Runtime.getRuntime().exec("su -c " + command);
+                p.waitFor();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    output = output +  line + "\n";
                 }
-                final String _output = output;
-                v.post(new Runnable() {
-                    @Override
-                    public void run() {
-                     v.setText(_output);
-                    }
-                });
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            final String _output = output;
+            v.post(() -> v.setText(_output));
         }).start();
     }
     // WRAP THIS IN THE BACKGROUND IF POSIBLE WHE USING IT
