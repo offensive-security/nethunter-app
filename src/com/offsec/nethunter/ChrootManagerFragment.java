@@ -292,7 +292,7 @@ ChrootManagerFragment extends Fragment {
 
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
         adb.setTitle("Select chroot install mode:")
-                .setMessage("Download is the prefered mode. Get the latest chroot from the offsec servers.\n\nYou can place a custom\nkalifs-[minimal|full].tar.gz in /sdcard\nand skip the download.\n\nAlso, You can place a back up kalifs-backup.tar.gz in /sdcard to restore your backup chroot.")
+                .setMessage("Download is the preferred mode. Get the latest chroot from the offsec servers.\n\nYou can place a custom\nkalifs-[minimal|full].tar.gz in /sdcard\nand skip the download.\n\nAlso, You can place a back up kalifs-backup.tar.gz in /sdcard to restore your backup chroot.")
                 .setNegativeButton("Restore from SdCard", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
