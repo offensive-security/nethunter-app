@@ -115,7 +115,7 @@ f_mount_chroot_image() {
 
 	######### [ MOUNTING AND BINDING FILESYSTEM ] #########
 	f_mount_fs_to_kali() {
-	$busybox mount -o remount,suid /data && chmod +s $mnt/usr/bin/sudo
+	$busybox mount -o remount,suid /data && chmod +s $mnt/bin/bash -i
 
 	######### SET FD, Thanks @feefik and @zer0conf ########
 	if [ ! -e "/dev/fd" -o ! -e "/dev/stdin" -o ! -e "/dev/stdout" -o ! -e "/dev/stderr" ]; then
@@ -204,7 +204,7 @@ f_mount_chroot_image() {
 	f_mount_external_sd
 
 	#########
-	$busybox chmod 666 /dev/null
+	#$busybox chmod 666 /dev/null
 
 	######### SET 250MB TO ALLOW POSTGRESQL #########
 	$busybox sysctl -w kernel.shmmax=268435456
@@ -238,7 +238,8 @@ f_mount_chroot_image() {
         fi
     done
 
-    $busybox chmod 666 /dev/null
+    # kimocoder has this as backup
+    #$busybox chmod 666 /dev/null
 
     # SET 250MB TO ALLOW POSTGRESQL #
     $busybox sysctl -w kernel.shmmax=268435456
@@ -276,4 +277,3 @@ if [ $res -eq 1 ]; then
 	[ "$is_Dir_or_File" == "File" ] && f_mount_chroot_image
 	f_mount_fs_to_kali
 fi
-
