@@ -405,11 +405,11 @@ ChrootManagerFragment extends Fragment {
         try {
             Intent intent = new Intent("com.offsec.nhterm.RUN_SCRIPT_NH");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
-            intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "echo \"Updating gpg key..\" && wget -q -O - https://archive.kali.org/archive-key.asc | apt-key add && apt-get update && apt-get install " + packages + " -y && apt-get dist-upgrade -y && echo \"\nKali Linux Nethunter setup is complete.\nEnjoy. (You can close the terminal now)\n\"");
+            intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "echo \"Updating gpg key..\" && wget -q -O - https://archive.kali.org/archive-key.asc | apt-key add && apt update && apt install " + packages + " -y && apt full-upgrade -y && echo \"\nKali Linux NetHunter setup is complete.\nEnjoy. (You can close the terminal now)\n\"");
             if (packages.equals("FixedUpdatingToLatestKali")) {
-                intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "echo \"Updating gpg key..\" && wget -q -O - https://archive.kali.org/archive-key.asc | apt-key add && apt update && apt install kali-linux-all -y && apt dist-upgrade -y && echo \"\nKali Linux Nethunter setup is complete.\nEnjoy. (You can close the terminal now)\n\"");
+                intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "echo \"Updating gpg key..\" && wget -q -O - https://archive.kali.org/archive-key.asc | apt-key add && apt update && apt install kali-linux-all -y && apt full-upgrade -y && echo \"\nKali Linux NetHunter setup is complete.\nEnjoy. (You can close the terminal now)\n\"");
             } else {
-                intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "apt update && apt install " + packages + " && echo \"\nUpgrade completed.\nEnjoy. (You can close the terminal now)\n\"");
+                intent.putExtra("com.offsec.nhterm.iInitialCommand", nh.makeTermTitle("Updating") + "apt update && apt install " + packages + " -y && echo \"\nUpgrade completed.\nEnjoy. (You can close the terminal now)\n\"");
             }
             Log.d("PACKS:", "PACKS:" + packages);
             startActivity(intent);
