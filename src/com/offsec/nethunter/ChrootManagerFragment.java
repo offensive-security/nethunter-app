@@ -659,8 +659,10 @@ ChrootManagerFragment extends Fragment {
                 }
                 // Decompress, extract, and deploy the .tar.xz to the chroot destination in one step
                 publishProgress(getActivity().getString(R.string.extract_chroot));
-                if ( zipFilePath.contains("tar.gz")) {
-                    x.RunAsRootOutput(nh.whichBusybox() + " tar -xzf '" + zipFilePath + "' -C '" + nh.NH_SYSTEM_PATH + "'");
+                Log.d(TAG, "Restoring kali chroot from " + zipFilePath + " to " + nh.NH_SYSTEM_PATH);
+
+                if (zipFilePath.contains("tar.gz")) {
+                    x.RunAsRootOutput(nh.APP_SCRIPTS_PATH + "/chroot_restore " + zipFilePath + " " + nh.NH_SYSTEM_PATH);
                 } else {
                     x.RunAsRootOutput(nh.whichBusybox() + " tar -xJf '" + zipFilePath + "' -C '" + nh.NH_SYSTEM_PATH + "'");
                 }
