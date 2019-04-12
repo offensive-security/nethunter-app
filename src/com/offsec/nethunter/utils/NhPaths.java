@@ -63,9 +63,9 @@ public class NhPaths {
         // App base path () /data/data/com.offsec.....
         this.APP_PATH = "/data/data/com.offsec.nethunter/files";
         //this.APP_PATH = getAppContext().getFilesDir().toString();
-        //final CheckForDevices UserDeivce = new CheckForDevices();
+        //final CheckForDevices UserDevice = new CheckForDevices();
         doSetup(this);
-        /*  this one how should be called from inside android app context
+        /*  this one should be called from inside android app context
          *   (anywhere but BOOTSERVICE):
          *   nh = new NhUtil();
         */
@@ -75,10 +75,10 @@ public class NhPaths {
     public NhPaths(String _path) {
         // App base path () /data/data/com.offsec.....
         this.APP_PATH = _path;
-	//final CheckForDevices UserDeivce = new CheckForDevices();
+	//final CheckForDevices UserDevice = new CheckForDevices();
         doSetup(this);
-        /*  this makes the bootService dont cry about getAppContext()
-         *   this is should be called ONLY from BOOTSERVICE like:
+        /*  this makes the bootService not cry about getAppContext()
+         *   this should be called ONLY from BOOTSERVICE like:
          *   nh = new NhUtil(getFilesDir().toString());
         */
     }
@@ -95,7 +95,7 @@ public class NhPaths {
         } else {
             nh.SD_PATH = Environment.getExternalStorageDirectory().toString(); // /sdcard for the friends.
         }
-        // chaged from /files to /nh_files (was too generic.)
+        // changed from /files to /nh_files (was too generic.)
         nh.NH_SD_FOLDER_NAME = "nh_files";  // MUST MATCH assets/nh_files change both or none!!!! ^^
         nh.APP_SD_FILES_PATH = SD_PATH + "/" + NH_SD_FOLDER_NAME;
         // NetHunter paths
