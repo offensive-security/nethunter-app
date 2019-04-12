@@ -61,8 +61,6 @@ public class VNCFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         final View rootView = inflater.inflate(R.layout.vnc_setup, container, false);
-        SharedPreferences sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
-        Context mContext = getActivity().getApplicationContext();
 
         // Get screen size to pass to VNC
         DisplayMetrics displaymetrics = new DisplayMetrics();
