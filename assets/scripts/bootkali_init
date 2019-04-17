@@ -18,8 +18,10 @@ else
 	exit 1
 fi
 
+
 ## No longer needed as SELinux is set to permissive mode via "10setenforce" init script.
-#su -c setenforce 0
+#su -c 'setenforce 0'
+
 
 ######### CHECK FOR ROOT #########
 f_checkforroot(){

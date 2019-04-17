@@ -11,6 +11,9 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.StrictMode;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -240,7 +243,6 @@ public class LocationUpdateService extends Service implements GpsdServer.Connect
                 }
                 Log.d(TAG, "NMEA update: "+nmeaSentence);
                 out.println(nmeaSentence);
-
 
                 if (updateReceiver != null) {
                     if (firstupdate) {
