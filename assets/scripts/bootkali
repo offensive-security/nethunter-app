@@ -17,7 +17,6 @@ SCRIPT_PATH=$(readlink -f $0)
 if [ $# -eq 0 ]; then
 	$busybox chroot $mnt /bin/bash -c "if [ ! -f $HOME/.hushlogin ]; then touch $HOME/.hushlogin; fi; /bin/login -f root"
 else
-
 	#APACHE
 
 	if [ "$1" == "apache" ] && [ "$2" == "start" ]; then
@@ -154,7 +153,7 @@ else
 		if [ ! -x $mnt/usr/bin/hid-keyboard ]; then
 		    bklog "[!] No hid-keyboard executable is found in kali, now trying to compile it."
 		    if [ -e /sdcard/nh_files/modules/hid-keyboard.c ]; then
-		        $busybox chroot $mnt /usr/bin/sudo apt install gcc binutils
+		        $busybox chroot $mnt /usr/bin/sudo apt install -y python gcc binutils
 		        $busybox chroot $mnt /usr/bin/sudo gcc /sdcard/nh_files/modules/hid-keyboard.c -o /usr/bin/hid-keyboard
 				$busybox chroot $mnt /usr/bin/sudo chmod 755 /usr/bin/hid-keyboard
 			fi

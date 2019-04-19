@@ -18,8 +18,10 @@ else
 	exit 1
 fi
 
+
 ## No longer needed as SELinux is set to permissive mode via "10setenforce" init script.
-#su -c setenforce 0
+#su -c 'setenforce 0'
+
 
 ######### CHECK FOR ROOT #########
 f_checkforroot(){
@@ -39,6 +41,16 @@ nhsys=/data/local/nhsystem
 # If we continue on with bootkali even after we
 # remove chroot.  So stop here if removed or else
 # chroot is never uninstalled.
+
+####### SYSFILE CREATION #######
+# Responsible for creating files which are not found in Android,
+# but are needed in Kali.
+
+if [ ! -e "/dev/stdin" -o ! -e "/dev/stdout" -o ! -e "/dev/stderr" ]; then
+	[ -e "/dev/stdin" ] || ln -s /proc/self/fd/0 /dev/stdin
+	[ -e "/dev/stdout" ] || ln -s /proc/self/fd/1 /dev/stdout
+	[ -e "/dev/stderr" ] || ln -s /proc/self/fd/2 /dev/stderr
+fi
 
 
 ######### MOUNT #########

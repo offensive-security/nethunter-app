@@ -1,10 +1,10 @@
 package com.offsec.nethunter.utils;
+
 import android.os.Environment;
 import android.view.Gravity;
 import android.widget.Toast;
 
 import java.io.File;
-
 import static com.offsec.nethunter.AppNavHomeActivity.getAppContext;
 
 
@@ -63,10 +63,11 @@ public class NhPaths {
         // App base path () /data/data/com.offsec.....
         this.APP_PATH = "/data/data/com.offsec.nethunter/files";
         //this.APP_PATH = getAppContext().getFilesDir().toString();
+        //final CheckForDevices UserDevice = new CheckForDevices();
         doSetup(this);
-        /*  this one how should be called from inside android app context
-        *   (anywhere but BOOTSERVICE):
-        *   nh = new NhUtil();
+        /*  this one should be called from inside android app context
+         *   (anywhere but BOOTSERVICE):
+         *   nh = new NhUtil();
         */
     }
     // constructor for service (different ctx)
@@ -74,21 +75,27 @@ public class NhPaths {
     public NhPaths(String _path) {
         // App base path () /data/data/com.offsec.....
         this.APP_PATH = _path;
+	//final CheckForDevices UserDevice = new CheckForDevices();
         doSetup(this);
-        /*  this makes the bootService dont cry about getAppContext()
-        *   this is should be called ONLY from BOOTSERVICE like:
-        *   nh = new NhUtil(getFilesDir().toString());
+        /*  this makes the bootService not cry about getAppContext()
+         *   this should be called ONLY from BOOTSERVICE like:
+         *   nh = new NhUtil(getFilesDir().toString());
         */
     }
 
-    private void doSetup(NhPaths nh){
+    private void doSetup(NhPaths nh) {
         // APP_PATH is now available !!!
         nh.APP_INITD_PATH = APP_PATH + "/etc/init.d";
         nh.APP_SCRIPTS_PATH = APP_PATH + "/scripts";
 
         // SD PATHS
-        nh.SD_PATH = Environment.getExternalStorageDirectory().toString(); // /sdcard for the friends
-        // chaged from /files to /nh_files (was too generic.)
+        CheckForDevices UserDevice = new CheckForDevices();
+        if (UserDevice.isOPO5()) {
+            nh.SD_PATH = "/sdcard";
+        } else {
+            nh.SD_PATH = Environment.getExternalStorageDirectory().toString(); // /sdcard for the friends.
+        }
+        // changed from /files to /nh_files (was too generic.)
         nh.NH_SD_FOLDER_NAME = "nh_files";  // MUST MATCH assets/nh_files change both or none!!!! ^^
         nh.APP_SD_FILES_PATH = SD_PATH + "/" + NH_SD_FOLDER_NAME;
         // NetHunter paths
@@ -102,18 +109,21 @@ public class NhPaths {
         nh.OLD_CHROOT_PATH = "/data/local/kali-armhf";
 
     }
+
     public void showMessage(String message) {
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(getAppContext(), message, duration);
         toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
         toast.show();
     }
+
     public void showMessage_long(String message) {
         int duration = Toast.LENGTH_LONG;
-        Toast toast = Toast.makeText(getAppContext(), message, Toast.LENGTH_LONG);
+        Toast toast = Toast.makeText(getAppContext(), message, duration);
         toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
         toast.show();
     }
+
     public String whichBusybox() {
         String[] BB_PATHS = {
                 "/system/xbin/busybox_nh",
@@ -133,6 +143,6 @@ public class NhPaths {
         return "";
     }
     public String makeTermTitle(String title) {
-        return "echo -ne \"\\033]0;"+ title +"\\007\" && clear;";
+        return "echo -ne \"\\033]0;" + title + "\\007\" && clear;";
     }
 }

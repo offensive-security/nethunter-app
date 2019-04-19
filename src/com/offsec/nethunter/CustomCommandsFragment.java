@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +23,7 @@ import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.SearchView;
 
 import com.offsec.nethunter.utils.BootKali;
 import com.offsec.nethunter.utils.NhPaths;
@@ -30,6 +32,7 @@ import com.offsec.nethunter.utils.ShellExecuter;
 import java.util.List;
 
 import androidx.appcompat.app.AlertDialog;
+import android.widget.SearchView;
 import androidx.fragment.app.Fragment;
 
 //import androidx.appcompat.widget.SearchView;
@@ -118,10 +121,11 @@ public class CustomCommandsFragment extends Fragment {
         String _cmd = command.getCommand();
         //String _mode = command.getExec_Mode();
         String _sendTo = command.getSend_To_Shell();
+        nh = new NhPaths();
 
         String composedCommand;
         if (_sendTo.equals("KALI")) {
-            composedCommand = "su -c bootkali custom_cmd " + _cmd;
+            composedCommand = "su -c '"+nh.APP_SCRIPTS_PATH+"/bootkali custom_cmd " + _cmd + "'";
         } else {
             // SEND TO ANDROID
             // no sure, if we add su -c , we cant exec comands as a normal android user
@@ -129,8 +133,9 @@ public class CustomCommandsFragment extends Fragment {
         }
         String bootServiceFile = bootScriptPath + "/" + custom_commands_runlevel + "_" + command.getId() + "_custom_command";
         String fileContents = shebang + _label + "\n" + composedCommand;
+        Log.d("bootScript", fileContents);
         exe.RunAsRoot(new String[]{
-                "echo '" + fileContents + "' > " + bootServiceFile,
+                "cat > " + bootServiceFile + " <<s0133717hur75\n" + fileContents + "\ns0133717hur75\n",
                 "chmod 700 " + bootServiceFile
         });
 
@@ -370,7 +375,7 @@ public class CustomCommandsFragment extends Fragment {
         database.addCommand("Wlan1 Monitor Mode", nh.makeTermTitle("Wlan1 Monitor UP") + "sudo ifconfig wlan1 down && sudo iwconfig wlan1 mode monitor && sudo ifconfig wlan1 up && echo \"wlan1 Monitor mode enabled\" && sleep 3 && exit", "INTERACTIVE", "KALI", 0);
         database.addCommand("Launch Wifite", nh.makeTermTitle("Wifite") + "wifite", "INTERACTIVE", "KALI", 0);
         database.addCommand("Dump Mifare", nh.makeTermTitle("DumpMifare") + "dumpmifare.sh", "INTERACTIVE", "KALI", 0);
-        database.addCommand("Backup Kali chroot", nh.makeTermTitle("Backup_Kali_Chroot") + "echo \"Creating kalifs-backup.tar.gz in your /sdcard folder.\" && su -c 'bootkali backup-chroot kalifs-backup.tar.gz'",
+        database.addCommand("Backup Kali Chroot", nh.makeTermTitle("Backup_Kali_Chroot") + "su --mount-master -c 'chroot_backup /data/local/nhsystem/kali-armhf /sdcard/kalifs-backup.tar.gz'",
                 "INTERACTIVE", "ANDROID", 0);
     }
 }

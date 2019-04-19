@@ -26,12 +26,6 @@
                 android:checked="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="FixedUpdatingToLatestKali" />
-
-            <CheckBox
-                android:checked="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:text="kali-linux-nethunter" />
 
             <CheckBox
