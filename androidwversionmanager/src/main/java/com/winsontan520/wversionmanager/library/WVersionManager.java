@@ -17,6 +17,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -396,6 +398,7 @@ public class WVersionManager implements IWVersionManager {
                 .apply();
     }
 
+    @NotNull
     private String getGooglePlayStoreUrl() {
         String id = activity.getApplicationInfo().packageName; // current google
         // play is using
@@ -422,7 +425,7 @@ public class WVersionManager implements IWVersionManager {
         }
     }
 
-    class VersionContentRequest extends AsyncTask<String, Void, String> {
+    private class VersionContentRequest extends AsyncTask<String, Void, String> {
         final Context context;
         int statusCode;
 
@@ -558,6 +561,7 @@ public class WVersionManager implements IWVersionManager {
         this.customTagHandler = customTagHandler;
     }
 
+    @Contract(pure = true)
     private boolean isDialogCancelable() {
         return mDialogCancelable;
     }
@@ -571,6 +575,7 @@ public class WVersionManager implements IWVersionManager {
         showDialog();
     }
 
+    @Contract(pure = true)
     private String getAskForRatePositiveLabel() {
         return mAskForRatePositiveLabel == null ? "OK" : mAskForRatePositiveLabel;
     }
@@ -579,6 +584,7 @@ public class WVersionManager implements IWVersionManager {
         mAskForRatePositiveLabel = askForRatePositiveLabel;
     }
 
+    @Contract(pure = true)
     private String getAskForRateNegativeLabel() {
         return mAskForRateNegativeLabel == null ? "Not now" : mAskForRateNegativeLabel;
     }

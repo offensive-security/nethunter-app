@@ -1,5 +1,6 @@
 package com.offsec.nethunter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -22,6 +23,8 @@ import com.offsec.nethunter.utils.ShellExecuter;
 import java.io.File;
 
 import androidx.fragment.app.Fragment;
+
+import org.jetbrains.annotations.NotNull;
 
 public class KaliServicesFragment extends Fragment {
     /**
@@ -47,24 +50,23 @@ public class KaliServicesFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.kali_services, container, false);
         setHasOptionsMenu(true);
         checkServices(rootView);
 
         return rootView;
-
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, @NotNull MenuInflater inflater) {
         prefs = getContext().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
         inflater.inflate(R.menu.kali_services, menu);
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
+    public void onPrepareOptionsMenu(@NotNull Menu menu) {
         MenuItem item = menu.findItem(R.id.bootServicesState);
         if (item != null) {
             if (prefs.getBoolean(RUN_AT_BOOT, true)) {
@@ -76,7 +78,7 @@ public class KaliServicesFragment extends Fragment {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NotNull MenuItem item) {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.bootServicesState:
@@ -134,7 +136,6 @@ public class KaliServicesFragment extends Fragment {
         super.onStop();
     }
 
-
     private void checkServices(final View rootView) {
 
         new Thread(() -> {
@@ -143,8 +144,8 @@ public class KaliServicesFragment extends Fragment {
 
             ShellExecuter exe = new ShellExecuter();
             final ListView servicesList = rootView.findViewById(R.id.servicesList);
-            String checkCmd = "";
-            String checkBootStates = "";
+            StringBuilder checkCmd = new StringBuilder();
+            StringBuilder checkBootStates = new StringBuilder();
             final String bootScriptPath = nh.APP_INITD_PATH;
 
             if (KaliServices == null) {
@@ -160,26 +161,24 @@ public class KaliServicesFragment extends Fragment {
 
                     File checkBootFile = new File(bootScriptPath + "/" + KaliService[4]);
                     if (checkBootFile.exists()) {
-                        checkBootStates += "1";
+                        checkBootStates.append("1");
                     } else {
-                        checkBootStates += "0";
+                        checkBootStates.append("0");
                     }
-                    checkCmd += KaliService[1] + ";";
+                    checkCmd.append(KaliService[1]).append(";");
                 }
 
-                final String serviceStates = exe.RunAsRootOutput(checkCmd);
-                final String finalCheckBootStates = checkBootStates;
+                final String serviceStates = exe.RunAsRootOutput(checkCmd.toString());
+                final String finalCheckBootStates = checkBootStates.toString();
                 servicesList.post(() -> servicesList.setAdapter(new KaliServicesLoader(getActivity().getApplicationContext(), serviceStates, finalCheckBootStates, KaliServices, bootScriptPath)));
 
             }
         }).start();
     }
-
 }
 
 
 // This class is the main for the services
-
 
 class KaliServicesLoader extends BaseAdapter {
 
@@ -241,6 +240,7 @@ class KaliServicesLoader extends BaseAdapter {
     }
 
     // getView method is called for each item of ListView
+    @SuppressLint("SetTextI18n")
     public View getView(final int position, View convertView, ViewGroup parent) {
         // inflate the layout for each item of listView (our services)
 

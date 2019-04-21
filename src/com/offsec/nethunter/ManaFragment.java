@@ -23,6 +23,7 @@ import com.offsec.nethunter.utils.ShellExecuter;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,6 +32,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+
+import org.jetbrains.annotations.NotNull;
 
 //import android.app.Fragment;
 //import android.support.v4.app.FragmentActivity;
@@ -56,7 +59,7 @@ public class ManaFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         nh = new NhPaths();
         View rootView = inflater.inflate(R.layout.mana, container, false);
         TabsPagerAdapter tabsPagerAdapter = new TabsPagerAdapter(getActivity().getSupportFragmentManager());
@@ -68,7 +71,7 @@ public class ManaFragment extends Fragment {
             @Override
             public void onPageSelected(int position) {
                 //actionBar.setSelectedNavigationItem(position);
-                getActivity().invalidateOptionsMenu();
+                Objects.requireNonNull(getActivity()).invalidateOptionsMenu();
             }
         });
 
@@ -84,7 +87,7 @@ public class ManaFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, @NotNull MenuInflater inflater) {
         inflater.inflate(R.menu.mana, menu);
     }
 
@@ -100,7 +103,7 @@ public class ManaFragment extends Fragment {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NotNull MenuItem item) {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.start_service:
@@ -154,11 +157,9 @@ public class ManaFragment extends Fragment {
                     }
                     // we wait ~10 secs before launching msf
                     new android.os.Handler().postDelayed(
-                            new Runnable() {
-                                public void run() {
-                                    nh.showMessage("Starting MSF with BDF resource.rc");
-                                    intentClickListener_NH(nh.makeTermTitle("MSF") + "msfconsole -q -r /usr/share/bdfproxy/bdfproxy_msf_resource.rc");
-                                }
+                            () -> {
+                                nh.showMessage("Starting MSF with BDF resource.rc");
+                                intentClickListener_NH(nh.makeTermTitle("MSF") + "msfconsole -q -r /usr/share/bdfproxy/bdfproxy_msf_resource.rc");
                             }, 10000);
                     break;
                 case 4:
@@ -266,7 +267,7 @@ public class ManaFragment extends Fragment {
         private final String configFilePath = nh.APP_SD_FILES_PATH + "/configs/hostapd-karma.conf";
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+        public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.mana_hostapd, container, false);
             Button button = rootView.findViewById(R.id.updateButton);
@@ -306,9 +307,7 @@ public class ManaFragment extends Fragment {
             return rootView;
         }
 
-
-        public void loadOptions(View rootView) {
-
+        private void loadOptions(@NotNull View rootView) {
 
             final EditText ifc = rootView.findViewById(R.id.ifc);
             final EditText bssid = rootView.findViewById(R.id.bssid);
@@ -402,7 +401,7 @@ public class ManaFragment extends Fragment {
         private final String configFilePath = nh.APP_SD_FILES_PATH + "/configs/hostapd-wpe.conf";
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+        public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.mana_hostapd_wpe, container, false);
 
@@ -451,8 +450,7 @@ public class ManaFragment extends Fragment {
             return rootView;
         }
 
-
-        public void loadOptions(View rootView) {
+        private void loadOptions(@NotNull View rootView) {
 
             final EditText ifc = rootView.findViewById(R.id.wpe_ifc);
             final EditText bssid = rootView.findViewById(R.id.wpe_bssid);
@@ -536,14 +534,13 @@ public class ManaFragment extends Fragment {
         final ShellExecuter exe = new ShellExecuter();
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+        public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             final View rootView = inflater.inflate(R.layout.source_short, container, false);
 
             String description = getResources().getString(R.string.mana_dhcpd);
             TextView desc = rootView.findViewById(R.id.description);
             desc.setText(description);
-
 
             EditText source = rootView.findViewById(R.id.source);
             exe.ReadFile_ASYNC(configFilePath, source);
@@ -567,7 +564,7 @@ public class ManaFragment extends Fragment {
         final ShellExecuter exe = new ShellExecuter();
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+        public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
             View rootView = inflater.inflate(R.layout.source_short, container, false);
@@ -599,7 +596,7 @@ public class ManaFragment extends Fragment {
         private String configFilePath;
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+        public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
             TextView desc = rootView.findViewById(R.id.description);
@@ -636,7 +633,7 @@ public class ManaFragment extends Fragment {
         private String configFilePath;
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+        public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -674,7 +671,7 @@ public class ManaFragment extends Fragment {
         private String configFilePath;
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+        public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
 
@@ -708,7 +705,7 @@ public class ManaFragment extends Fragment {
         private String configFilePath;
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+        public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
 
@@ -753,7 +750,7 @@ public class ManaFragment extends Fragment {
         }
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+        public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.source_short, container, false);
 

@@ -33,6 +33,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 public class MITMfFragment extends Fragment {
 
 
@@ -62,9 +65,7 @@ public class MITMfFragment extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 
-    public MITMfFragment() {
-    }
-
+    public MITMfFragment() { }
 
     public static MITMfFragment newInstance(int sectionNumber) {
         MITMfFragment fragment = new MITMfFragment();
@@ -75,7 +76,7 @@ public class MITMfFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         cleanCmd();
         View rootView = inflater.inflate(R.layout.mitmf, container, false);
         tabsPagerAdapter = new TabsPagerAdapter(getActivity().getSupportFragmentManager());
@@ -98,12 +99,12 @@ public class MITMfFragment extends Fragment {
 
     /* Start execution menu */
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, @NotNull MenuInflater inflater) {
         inflater.inflate(R.menu.mitmf, menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NotNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.mitmf_menu_start_service:
                 start();
@@ -176,7 +177,8 @@ public class MITMfFragment extends Fragment {
             }
         }
 
-        public List<CommandProvider> getCommandProviders() {
+        @Contract(pure = true)
+        private List<CommandProvider> getCommandProviders() {
             return commandProviders;
         }
 
@@ -213,10 +215,8 @@ public class MITMfFragment extends Fragment {
         private ArrayAdapter<CharSequence> interfaceAdapter;
         private int interfaceSelection;
 
-
         MitmfGeneralBinding generalBinding;
         MITMFViewModel mViewModel;
-
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -250,7 +250,7 @@ public class MITMfFragment extends Fragment {
         }
 
         @Override
-        public void getCommands(StringBuilder stringBuilder) {
+        public void getCommands(@NotNull StringBuilder stringBuilder) {
             stringBuilder
                     .append(" -i ")
                     .append(interfaceAdapter.getItem(interfaceSelection))
@@ -321,14 +321,12 @@ public class MITMfFragment extends Fragment {
         private int arpModeOption;
         private MITMFViewModel viewModel;
 
-
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             spoofBinding = MitmfSpoofBinding.inflate(inflater, container, false);
             viewModel = new MITMFViewModel();
             spoofBinding.setViewModel(viewModel);
-
 
             // Redirect Spinner
             final Spinner redirectSpinner = spoofBinding.mitmfSpoofRedirectspin;
@@ -447,7 +445,7 @@ public class MITMfFragment extends Fragment {
         final ShellExecuter exe = new ShellExecuter();
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+        public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             final View rootView = inflater.inflate(R.layout.source_short, container, false);
 
@@ -473,8 +471,8 @@ public class MITMfFragment extends Fragment {
     }
 
     private static void cleanCmd() {
-        for (int j = CommandComposed.size() - 1; j >= 0; j--) {
-            CommandComposed.remove(j);
+        if (CommandComposed.size() > 0) {
+            CommandComposed.subList(0, CommandComposed.size()).clear();
         }
     }
 

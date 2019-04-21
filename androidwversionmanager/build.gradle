@@ -16,6 +16,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
 }
 
 repositories {
@@ -27,7 +31,9 @@ repositories {
 }
 
 dependencies {
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0-rc02'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'org.thoughtcrime.ssl.pinning:AndroidPinning:1.0.0'
-    implementation 'androidx.appcompat:appcompat:1.0.0-rc02'
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha04'
+    implementation 'org.jetbrains:annotations:17.0.0'
+    implementation 'com.android.support:support-annotations:28.0.0'
 }

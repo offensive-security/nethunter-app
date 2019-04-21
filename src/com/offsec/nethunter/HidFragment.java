@@ -35,6 +35,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import org.jetbrains.annotations.NotNull;
+
 public class HidFragment extends Fragment {
 
     private ViewPager mViewPager;
@@ -56,7 +58,7 @@ public class HidFragment extends Fragment {
     private boolean isHIDenable = false;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.hid, container, false);
         HidFragment.TabsPagerAdapter tabsPagerAdapter = new TabsPagerAdapter(getActivity().getSupportFragmentManager());
@@ -82,7 +84,7 @@ public class HidFragment extends Fragment {
 
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, @NotNull MenuInflater inflater) {
         inflater.inflate(R.menu.hid, menu);
     }
 
@@ -98,7 +100,7 @@ public class HidFragment extends Fragment {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NotNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.start_service:
                 if (isHIDenable) {
@@ -313,7 +315,7 @@ public class HidFragment extends Fragment {
         private final String configFileUrlPath = nh.CHROOT_PATH + "/var/www/html/powersploit-url";
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+        public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.hid_powersploit, container, false);
             Button b = rootView.findViewById(R.id.powersploitOptionsUpdate);
@@ -322,7 +324,7 @@ public class HidFragment extends Fragment {
             return rootView;
         }
 
-        public void onClick(View v) {
+        public void onClick(@NotNull View v) {
             switch (v.getId()) {
                 case R.id.powersploitOptionsUpdate:
                     if (getView() == null) {
@@ -350,7 +352,7 @@ public class HidFragment extends Fragment {
             }
         }
 
-        private void loadOptions(final View rootView) {
+        private void loadOptions(@NotNull final View rootView) {
             final EditText payloadUrl = rootView.findViewById(R.id.payloadUrl);
             final EditText port = rootView.findViewById(R.id.port);
             final Spinner payload = rootView.findViewById(R.id.payload);
@@ -416,7 +418,7 @@ public class HidFragment extends Fragment {
         final ShellExecuter exe = new ShellExecuter();
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+        public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.hid_windows_cmd, container, false);
             EditText source = rootView.findViewById(R.id.windowsCmdSource);
@@ -432,7 +434,7 @@ public class HidFragment extends Fragment {
 
         private static final int PICKFILE_RESULT_CODE = 1;
 
-        public void onClick(View v) {
+        public void onClick(@NotNull View v) {
 
             switch (v.getId()) {
                 case R.id.windowsCmdUpdate:
@@ -536,7 +538,7 @@ public class HidFragment extends Fragment {
         private final String configFileUrlPath = nh.CHROOT_PATH + "/var/www/html/powershell-url";
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+        public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.hid_powershell_http, container, false);
             Button b = rootView.findViewById(R.id.powershellOptionsUpdate);
@@ -545,7 +547,7 @@ public class HidFragment extends Fragment {
             return rootView;
         }
 
-        public void onClick(View v) {
+        public void onClick(@NotNull View v) {
             switch (v.getId()) {
                 case R.id.powershellOptionsUpdate:
                     if (getView() == null) {
@@ -566,7 +568,7 @@ public class HidFragment extends Fragment {
             }
         }
 
-        private void loadOptions(final View rootView) {
+        private void loadOptions(@NotNull final View rootView) {
             final EditText payloadUrl = rootView.findViewById(R.id.payloadUrl);
             final ShellExecuter exe = new ShellExecuter();
 

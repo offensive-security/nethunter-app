@@ -3,6 +3,8 @@
  */
 package com.offsec.nethunter;
 
+import org.jetbrains.annotations.Contract;
+
 public class LauncherApp {
 
     private long id;
@@ -15,9 +17,11 @@ public class LauncherApp {
     final static String CMD = "COMMAND";
     final static String[] COLUMNS = {ID, BTN_LABEL, CMD};
 
+    @Contract(pure = true)
     LauncherApp() {
     }
 
+    @Contract(pure = true)
     public LauncherApp(long id, String btn_name, String command) {
         this.id = id;
         this.btn_label = btn_name;

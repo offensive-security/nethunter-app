@@ -34,9 +34,11 @@ import java.util.Random;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 
 public class MacchangerFragment extends Fragment {
-
 
     private SharedPreferences sharedpreferences;
     private NhPaths nh;
@@ -73,12 +75,11 @@ public class MacchangerFragment extends Fragment {
         String cleanInterface = selectedInterface.split(" ")[0];
         menu.findItem(R.id.reset_mac).setTitle(String.format("Reset %s MAC", cleanInterface));
 
-
     }
 
     // menu options
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NotNull MenuItem item) {
 
         switch (item.getItemId()) {
             case R.id.reset_mac:
@@ -90,7 +91,7 @@ public class MacchangerFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         nh = new NhPaths();
         exe = new ShellExecuter();
         sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
@@ -179,12 +180,10 @@ public class MacchangerFragment extends Fragment {
                 }
             }
 
-
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
 
             }
-
 
         });
         setHostname.setOnClickListener(v -> new Thread(() -> {
@@ -237,7 +236,7 @@ public class MacchangerFragment extends Fragment {
                 PowerManager pm = (PowerManager) getContext().getSystemService(Context.POWER_SERVICE);
                 PowerManager.WakeLock mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                         getClass().getName());
-                mWakeLock.acquire();
+                mWakeLock.acquire(10*60*1000L /*10 minutes*/);
                 // Usage: bootkali macchanger <mac address> <interface> || Random: bootkali macchanger random <interface>
                 String command;
                 final String selectedDevice = interfaceSpinner.getSelectedItem().toString().split(" ")[0];
@@ -337,13 +336,12 @@ public class MacchangerFragment extends Fragment {
                 mWakeLock.release();
             }
 
-
         });
 
         return rootView;
     }
 
-    private String[] delFromArray(String[] originalArr, int itemid) {
+    private String[] delFromArray(@NotNull String[] originalArr, int itemid) {
         List<String> templist = new ArrayList<>();
         for (int i = 0; i < originalArr.length; i++) {
             if (itemid != i) {
@@ -353,6 +351,7 @@ public class MacchangerFragment extends Fragment {
         return templist.toArray(new String[templist.size()]);
     }
 
+    @Nullable
     private String getMacValues() {
         if (getView() == null) {
             return null;
@@ -389,7 +388,7 @@ public class MacchangerFragment extends Fragment {
     }
 
 
-    private void getCurrentMac(final String theDevice, final TextView currMac, final Button setMacButton) {
+    private void getCurrentMac(final String theDevice, @NotNull final TextView currMac, final Button setMacButton) {
         //in the bg
 
         currMac.setText(String.format("Reading %s", theDevice));
@@ -495,6 +494,7 @@ public class MacchangerFragment extends Fragment {
         }
     }
 
+    @NotNull
     private String randomMACAddress() {
         Random rand = new Random();
         byte[] macAddr = new byte[6];

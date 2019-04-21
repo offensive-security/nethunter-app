@@ -21,12 +21,12 @@ import com.offsec.nethunter.utils.ShellExecuter;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Created by nik on 20/02/17.
  */
-
-
-
 
     public class DeAuthFragment  extends Fragment {
     private final ShellExecuter exe = new ShellExecuter();
@@ -42,7 +42,7 @@ import androidx.fragment.app.FragmentActivity;
         return fragment;
     }
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.deauth, container, false);
 
         SharedPreferences sharedpreferences = getActivity().getSharedPreferences("com.offsec.nethunter", Context.MODE_PRIVATE);
@@ -80,7 +80,7 @@ import androidx.fragment.app.FragmentActivity;
             });
         scan.setOnClickListener(v -> {
 
-            /**TODO: create .sh that executes the commands and puts its output in a file and then read the file in the textview 20/02/17*/
+            /* TODO: create .sh that executes the commands and puts its output in a file and then read the file in the textview 20/02/17 */
             new BootKali("cp /sdcard/nh_files/deauth/scan.sh /root/scan.sh & chmod +x /root/scan.sh").run_bg();
             String cmd = "./root/scan.sh " + wlan.getText() + " | tr -s [:space:] > /sdcard/nh_files/deauth/output.txt";
             try {
@@ -146,11 +146,11 @@ import androidx.fragment.app.FragmentActivity;
 
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, @NotNull MenuInflater inflater) {
         inflater.inflate(R.menu.deauth, menu);
     }
 
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NotNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.deauth_modify:
                 Intent i = new Intent(getActivity(), DeAuthWhitelistActivity.class);
@@ -174,7 +174,7 @@ import androidx.fragment.app.FragmentActivity;
         }
     }
 
-    public String getmac(final String wlan){
+    private String getmac(final String wlan){
         final String mac;
         mac = exe.RunAsRootOutput("cat /sys/class/net/"+ wlan +  "/address");
         return mac;
