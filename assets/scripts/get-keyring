@@ -1,0 +1,8 @@
+#!/system/bin/sh
+
+echo "* Setting up the APT keyring (downloading & install)"
+curl -O https://http.kali.org/pool/main/k/kali-archive-keyring/kali-archive-keyring_2018.1_all.deb
+dpkg -i *.deb
+rm -rf *.deb
+clear
+apt-get update

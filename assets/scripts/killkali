@@ -17,7 +17,7 @@ else
 fi
 
 export bin=/system/bin
-export mnt=/data/local/nhsystem/kali-armhf
+#export mnt=/data/local/nhsystem/kali-armhf
 PRESERVED_PATH=$PATH
 export PATH=/usr/bin:/usr/sbin:/bin:/usr/local/bin:/usr/local/sbin:$PATH
 export TERM=linux
@@ -111,9 +111,9 @@ if [ -d "$mnt/sdcard" ]; then
     rmdir $mnt/sdcard
 fi
 
-if [ -d "$mnt/external_sd" ]; then
-    rmdir $mnt/external_sd
-fi
+#if [ -d "$mnt/external_sd" ]; then
+#    rmdir $mnt/external_sd
+#fi
 
 if [ $($busybox umount $mnt 2>&1 > /dev/null) ]; then
     echo " [-] Unable to umount the kali chroot image."

@@ -71,21 +71,21 @@ mount_sdcard() {
 	return 1
 }
 
-mount_external_sd() {
-	mountpoint -q "$mnt/external_sd" && return 0
-
-	for external_sd in \
-		/storage/extSdCard \
-		/storage/sdcard1 \
-		/storage/external_sd \
-		/external_sd
-	do
-		[ -d "$external_sd" ] &&
-			$busybox mount -o bind "$external_sd" "$mnt/external_sd" &&
-				return 0
-	done
-	return 1
-}
+#mount_external_sd() {
+#	mountpoint -q "$mnt/external_sd" && return 0
+#
+#	for external_sd in \
+#		/storage/extSdCard \
+#		/storage/sdcard1 \
+#		/storage/external_sd \
+#		/external_sd
+#	do
+#		[ -d "$external_sd" ] &&
+#			$busybox mount -o bind "$external_sd" "$mnt/external_sd" &&
+#				return 0
+#	done
+#	return 1
+#}
 
 mount_usbdisk() {
 	mountpoint -q "$mnt/mnt/usbdisk" && return 0
@@ -174,7 +174,7 @@ mount_kali_chroot() {
     if [ ! "$(mountpoint $mnt/dev/pts 2> /dev/null | grep 'is a')" ]; then
         $busybox mount -t devpts devpts $mnt/dev/pts && bklog "[+] mounted /dev/pts"
     fi
-    
+
     ######### MOUNT DEV SHM ########
     if [ ! "$(mountpoint $mnt/dev/shm 2> /dev/null | grep 'is a')" ]; then
         $busybox mount -t tmpfs tmpfs $mnt/dev/shm && bklog "[+] mounted /dev/shm"
@@ -186,7 +186,7 @@ mount_kali_chroot() {
         $busybox mount -t proc proc $mnt/proc && bklog "[+] mounted /proc"
     fi
 
-  	######### MOUNT SYS ########
+    ######### MOUNT SYS #########
     if [ ! "$(mountpoint $mnt/sys 2> /dev/null | grep 'is a')" ]; then
         [ ! -d $mnt/sys ] && mkdir -p $mnt/sys
         $busybox mount -t sysfs sys $mnt/sys && bklog "[+] mounted /sys"
@@ -198,14 +198,14 @@ mount_kali_chroot() {
         $busybox mount -r -o bind /system $mnt/system && bklog "[+] mounted /system"
     fi
 
-    #enable depmod/modprobe support in rootfs
+    # Enable depmod/modprobe support in rootfs
     if [ ! "$(mountpoint $mnt/lib/modules 2> /dev/null | grep 'is a')" ]; then
        $busybox mount -r -o bind /system/lib/modules $mnt/lib/modules && bklog "[+] mounted /lib/modules"
     fi
 
     ######### MOUNT INTERNAL | EXTERNAL SDCARD | USBDISK ########
     mount_sdcard
-    mount_external_sd
+    #mount_external_sd
 
     #########
     $busybox chmod 666 /dev/null
