@@ -17,7 +17,7 @@ else
 fi
 
 export bin=/system/bin
-#export mnt=/data/local/nhsystem/kali-armhf
+export mnt=/data/local/nhsystem/kali-armhf
 PRESERVED_PATH=$PATH
 export PATH=/usr/bin:/usr/sbin:/bin:/usr/local/bin:/usr/local/sbin:$PATH
 export TERM=linux
