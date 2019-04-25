@@ -1,5 +1,0 @@
-unset LD_PRELOAD
-chroot /data/local/nhsystem/kali-armhf /bin/bash -c "chmod 777 /dev/null"
-chroot /data/local/nhsystem/kali-armhf /bin/bash -c "pkill gpsd"
-chroot /data/local/nhsystem/kali-armhf /bin/bash -c "pkill socat"
-chroot /data/local/nhsystem/kali-armhf /bin/bash -c "rm -f /tmp/gps*"

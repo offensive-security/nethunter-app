@@ -1,7 +1,0 @@
-#!/system/bin/sh
-
-######### IMPORT BOOTKALI ENVIRONMENT #########
-SCRIPT_PATH=$(readlink -f $0)
-. ${SCRIPT_PATH%/*}/bootkali_env
-
-$busybox chroot $mnt /bin/bash -i
